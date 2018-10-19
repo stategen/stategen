@@ -1,0 +1,3 @@
+[submodule "f-dalgenx"]
+	path = f-dalgenx
+	url = ./f-dalgenx/.git
