@@ -39,7 +39,7 @@
     trade
     ├── 1-trade-pojo         # 系统中的基本类，bean enum在这里 ，执行deploy会发到maven仓库中
     ├── 2-trade-facade       # 对外提供dubbo服务jar包，执行deploy会发到maven仓库中
-    ├── 3-trade-intergrade   # 引用别的dubbox服务,只需要引入相应的jar包即可,stategen对dubbo服务是自适应的,不需要写调用代码，执行deloy时该包及以下包均不会发布到maven仓库
+    ├── 3-trade-intergrade   # 引用别的dubbox服务,只需要引入相应的jar包即可,stategen对dubbo服务是自适应的,不需要写调用代码。执行deloy时该包及以下包均不会发布到maven仓库
     ├── 4-trade-dao          # 系统中的dao及配置
     ├── 5-trade-service      # 系统中的service,实现继承facade服务和自有的serivce 
     ├── 6-trade-web-base     # 系统中的api base,stagegen项目以该包向下拓展
@@ -66,7 +66,7 @@
   
 * 每执行一次生成一个项目如
   ```
-   gen.sh project app m -e  #
+   gen.sh project app m -e  
 *  (m指的是mobile模版,还在制作中，没上传，先不要执行) 如下结构
   ```bash
      trade   
