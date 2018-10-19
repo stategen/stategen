@@ -140,4 +140,13 @@
   * 目前前端生成的代码是 typescript,兼容javascript,之所以用typescript,作者认为typescript这种强类型言便于后端做一些简单前端开发，
   * stategen是一个全栈式框架,但并不说你需要了解全栈知识，可以独立开发每一端,开发任一端时也不需要完全掌握一端中的全部知识，边开发边了解.
           
-  
+  ## 鸣谢
+   [react] https://github.com/facebook/react，   
+   [ant-design] https://github.com/ant-design/ant-design   
+   [dva] https://github.com/dvajs/dva   
+   [umi] https://github.com/umijs   
+   [rapid-framework] https://github.com/badqiu/rapid-framework    
+   [zuiidea] https://github.com/zuiidea/antd-admin   
+   [dubbox] https://dangdangdotcom.github.io/dubbox   
+   [spring-framework] https://github.com/spring-projects/spring-framework   
+   ...
