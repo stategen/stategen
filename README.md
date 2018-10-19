@@ -18,6 +18,7 @@
   *  执行命令将stategen framework发布至你公司maven仓库  
      ````
      mvn clean deploy -Dmaven.test.skip=true
+  *  如果只开发业务代码，直接拉 https://github.com/stategen/dalgenx 即可   
   *  环境变量添加 
      ````
      DALGENX_HOME=D:\works\fm\stategen-git\f-dalgenX
@@ -52,6 +53,10 @@
       ├── 6-trade-web-base     
       ├── 7-trade-web-cms
       ├────cms-frontend  #这是一个 git submodue,在当前目录下执行 ./git_add_to_parent_as_sub.sh 也可手动添加至trade-git中,如需发布让服端单独开发 需置gitlab地址,只前端开始直接拉这个git地址就可以
+* 开发前，把dalgenx中2个xml模版配到eclipse或idea中，更于开发
+  ```
+    ....\gen.schemas-1.0.dtd System Id http://sources.alipay.net/svn/dtd/table-config-1.0.dtd
+    ... \dubbo.xsd Namespaces Name http://code.alibabatech.com/schema/dubbo/dubbo.xsd
   
 * 每执行一次生成一个项目如
   ```
@@ -127,6 +132,6 @@
   * 有2种方法生成前端代码的方式， 发布时 deploy 会自动生成一遍，开发时，直接执行UmiFacadeProcessor.java中 main方法或 junit 执行即可
   * 目前前端模版使用到umi+dva技术，需要相应地了解一些react antd,redux,saga dva umi知识
   * 目前前端生成的代码是 typescript,兼容javascript,之所以用typescript,作者认为typescript这种强类型言便于后端做一些简单前端开发，
-  * stategen是一个全栈式框架,但并不说你需要了解全栈知识，可以独立每一端,也不需要完全掌握一端中的全部知识，边开发边了解.
+  * stategen是一个全栈式框架,但并不说你需要了解全栈知识，可以独立开发每一端,开发任一端时也不需要完全掌握一端中的全部知识，边开发边了解.
           
   
