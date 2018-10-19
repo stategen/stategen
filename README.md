@@ -7,7 +7,7 @@
   * 服务端使用到的技术 springmvc ibatis dalgenx progen dubbox
   * 客户端使用到的技术 react dedux saga dva umi antd typescript
   * 开发流程：后端-&gt;sql-&gt;dalgenX代码生成-&gt;业务代码介入-&gt;自动dubbo服务提供或引入-&gt;api-&gt;progen生成客户端rpc代码(apis,beans,enums,interfaces,forms代码片段)
-  -&gt;前端实现界面美化-&gt;运维编译-&gt;发布->ssr
+  -&gt;前端实现界面美化-&gt;运维编译-&gt;发布->ssr（这个比前端写mockjs快，工作不重复） 
   
 ### 开始准备和demo
   * 准备工具(windows上:Gow(.sh脚本用到了linux一些命令,不想为相似的代码写2遍) ,git bash)
