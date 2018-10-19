@@ -1,5 +1,5 @@
 ## Stategen 
-  ***后端做业务，前端做美工，其它交给stategen来做***    
+  ***后端做业务，前端做美工，其它交给stategen来做***   
   ***整合技术不创造技术***
 ### 介绍
   * 服务端 客户端 代码自动化 框架 ,兼顾 服务端开发，客户端开发，运维，发布，迭代，
@@ -114,4 +114,39 @@
       OrderMasterServerImpl.java,    
       OrderMasterControllerBase.java,    
       dubbo服务,以及相应的配置文件.    
-  * 和支付宝的dalgen或市面上代码生成器不同是， dalgenX可以迭代开发,也就是你的bean,service可以继承自别的接口或类java标注，也可以添加
+  * 和支付宝的dalgen或市面上代码生成器不同是， dalgenX可以迭代开发,也就是你的bean,service可以继承自别的接口或类java标注，也可以添加方法，
+    修改参数,import别的类，再次新生成这些均不会丢失，
+    除了减少大量代码维护、调试麻烦外，实现dubbo服务中参数、返回值中类继承非常实用，不用写大量的convertor)
+    这些免去大量地制作一毛一样dto的麻烦，而且不同步的dto在升及后极易出bug ,生成代码的可修改程度详见生成的java代码上的说明
+  * 增加字段或建设字段，可以再次执行 
+    ``` 
+      gen.sh table order_master -e
+  * 在 git bash中将修改的信息复制过来,再次执行 
+    ``` 
+      gen.sh dal order_master -e 
+  * 生成相应的java文件或配置文件，如果缺少import可以手工导入，在下次生成时不会丢 
+  * stategen 遵循的原则时，本地服务，直接从spring容器中拿，即内存调用，调用别人的服务才走dubbo,
+    由于一个stategen系统可以有多个项目，即多个 7-web-xxx,并不是每个7(项目)都需要提供对外dubbo服务，如定时任务项目,需要对外提供的，请将 7中   
+     dubbo-provider-spring.xml 的反注解  
+     ```
+        <!-- 向dubbo注册中心注册本系统提供的服务 -->     
+        <!-- <import resource="classpath*:context/dubbo-provider-auto-*.xml" >     -->   
+        <!-- <import resource="classpath*:context/dubbo-provider-manual-*.xml" >   -->    
+  * api(沿用 swagger2配置，swagger2不够的 stategen衍生或简化)，
+  * 每个api（http,https）可以自动生成相应的typescript文件，或typescript接口，参数，返回值，api调用地址，forms(bean forms,queryForms) ,columns,enum,以及这些冬冬的泛型,这些生成的代码在
+    这些都是代码片段，所以可以方便前端随时随地介入美化，当然，没有介入也会自动封装成 crud的界面
+  * 有2种方法生成前端代码的方式， 发布时 deploy 会自动生成一遍，开发时，直接执行UmiFacadeProcessor.java中 main方法或 junit 执行即可
+  * 目前前端模版使用到umi+dva技术，需要相应地了解一些react antd,redux,saga dva umi知识
+  * 目前前端生成的代码是 typescript,兼容javascript,之所以用typescript,作者认为typescript这种强类型言便于后端做一些简单前端开发，
+  * stategen是一个全栈式框架,但并不说你需要了解全栈知识，可以独立开发每一端,开发任一端时也不需要完全掌握一端中的全部知识，边开发边了解.
+          
+  ## 鸣谢
+   [react] https://github.com/facebook/react，   
+   [ant-design] https://github.com/ant-design/ant-design   
+   [dva] https://github.com/dvajs/dva   
+   [umi] https://github.com/umijs   
+   [rapid-framework] https://github.com/badqiu/rapid-framework    
+   [zuiidea] https://github.com/zuiidea/antd-admin   
+   [dubbox] https://dangdangdotcom.github.io/dubbox   
+   [spring-framework] https://github.com/spring-projects/spring-framework   
+   ...
