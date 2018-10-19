@@ -3,7 +3,7 @@
   ***整合技术不创造技术***
 ### 介绍
   * 服务端 客户端 代码自动化 框架 ,兼顾 服务端开发，客户端开发，运维，发布，迭代，
-  各部门沟通成本，能将开发成本减少到原来的1/5-1/10
+  各部门沟通成本，能将开发成本减少到原来的1/5-1/10,通过大量免维护代码减少开发和迭代中 bug率，同时，保持项目保持活力，不至于越后期维护陡增
   * 服务端使用到的技术 springmvc ibatis dalgenx progen dubbox
   * 客户端使用到的技术 react dedux saga dva umi antd typescript
   * 开发流程：后端-&gt;sql-&gt;dalgenX代码生成-&gt;业务代码介入-&gt;自动dubbo服务提供或引入-&gt;api-&gt;progen生成客户端rpc代码(apis,beans,enums,interfaces,forms代码片段)
