@@ -16,7 +16,7 @@
               192.168.112.128 nexus  
               其中 gitlab指公司代码git托管服务器地址,nexus提maven你公司仓库地址
   * 下载 stategen源码: 
-     ···
+     ```
      git clone --recursive https://github.com/stategen/stategen
  
   *  执行命令将stategen framework发布至你公司maven仓库  
