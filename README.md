@@ -127,6 +127,6 @@
   * 有2种方法生成前端代码的方式， 发布时 deploy 会自动生成一遍，开发时，直接执行UmiFacadeProcessor.java中 main方法或 junit 执行即可
   * 目前前端模版使用到umi+dva技术，需要相应地了解一些react antd,redux,saga dva umi知识
   * 目前前端生成的代码是 typescript,兼容javascript,之所以用typescript,作者认为typescript这种强类型言便于后端做一些简单前端开发，
-  * stategen是一个全栈式框架,但并不说你需要了解全栈知识，可以独立每一端,也不需要完全掌握一端中的全部知识，边开发边了解.
+  * stategen是一个全栈式框架,但并不说你需要了解全栈知识，可以独立开发每一端,开发任一端时也不需要完全掌握一端中的全部知识，边开发边了解.
           
   
