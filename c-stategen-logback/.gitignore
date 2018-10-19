@@ -1,0 +1,12 @@
+*.log
+*.project
+.settings/
+.classpath
+.tern-project
+*.iml
+.idea
+.class
+.jar
+.war
+.rar
+/target/

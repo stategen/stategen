@@ -1,0 +1,34 @@
+1、controller中如果继承过来的，只标注@Controller，没有方法的时候，返回方法中没有包response
+2、handError 可以支持不在controller中加，如果是@ResponseBody 则直接返回json字符串。
+3. dalgen生成时 param java.util.List改为List<?> ，避免黄色符号
++@Profile时间统计
+
+
+负载
+mq
+双亲树一级缓存
+返回值修改为具体的返回值，
+客户端翻译
+rpc
+dalgen模版中增加一个 queryByIds
+
+dalgen中 list参数改为collection
+相同字段检查，避免sql没问题，程序运行出错
+fastjson 反序列化 BussinessException错误,解决胜
+BussinessException 带参数 国际化
+dubbox参数 List<Long> 自动转化为List<Integer>
+dalgen java.util.List enum name
+dalgen 中 order by 到 count 有解析问题
+
+lombok 没完，模版时，需要制作一份,ToString
+columns 是否做排除还是全量
+是否生成前端代码开关
+icon
+多主键
+[aaaa].ftl
+ 角色 icon 默认和自定义
+ field顺序
+ 返回傎为Object警告
+ deleteByxxxId返回值的处理
+ yk xxxx
+ dashboard object处理

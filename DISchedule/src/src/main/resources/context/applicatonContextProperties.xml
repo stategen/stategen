@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop-3.0.xsd 
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 
+    http://www.springframework.org/schema/task 
+    http://www.springframework.org/schema/task/spring-task-3.0.xsd "
+>
+    <bean id="propertyPlaceholder" class="org.stategen.framework.spring.mvc.MultiPropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath*:application.properties</value>
+                <value>file:/data/config/dalgenX.xml</value>
+            </list>
+        </property>
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+    </bean>
+    
+    <bean class="com.taobao.pamirs.schedule.PropertiesOwn">
+        <property name="zkConnectString" value="${scheduleManagerFactory.zkConfig.zkConnectString}"/>
+        <property name="rootPath" value="${scheduleManagerFactory.zkConfig.rootPath}"/>
+        <property name="userName" value="${scheduleManagerFactory.zkConfig.userName}"/>
+        <property name="password" value="${scheduleManagerFactory.zkConfig.password}"/>
+        <property name="zkSessionTimeout" value="${scheduleManagerFactory.zkConfig.zkSessionTimeout}"/>
+        <property name="isCheckParentPath" value="${scheduleManagerFactory.zkConfig.isCheckParentPath}"/>
+    </bean>
+
+</beans>

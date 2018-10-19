@@ -1,0 +1,36 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<configuration>
+	<property name="LOG_LEVEL_SQL" value="error" />
+	<property name="LOG_LEVEL" value="error" />
+	<property name="LOG_HOME" value="../logs" />
+	<property name="LOG_LAYOUT_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %logger{80}[%file:%line]-[%level] %msg%n" />
+	<!-- <property name="LOG_LAYOUT_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %logger-[%level] %msg%n" /> -->
+
+	<timestamp key="byDay" datePattern="yyyy-MM-dd" />
+	<appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${LOG_LAYOUT_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!--日志文件输出的文件名 -->
+			<FileNamePattern>${LOG_HOME}/integral-web.%d{yyyy-MM-dd}.log</FileNamePattern>
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+		<encoder>
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+			<pattern>${LOG_LAYOUT_PATTERN}</pattern>
+		</encoder>
+		<!--日志文件最大的大小 -->
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>50MB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+
+	<root level="${LOG_LEVEL}">
+		<appender-ref ref="file" />
+		<appender-ref ref="consoleAppender" />
+	</root>
+</configuration>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.stategen.framework</groupId>
+    <artifactId>stategen-parent</artifactId>
+    <version>2.0.0.stategen.RELEASE</version>
+    <packaging>pom</packaging>
+    <name>a_stategen-parent</name>
+    <description/>
+
+    <properties>
+        <spring.version>4.3.4.RELEASE</spring.version>
+        <spring-data-redis-version>1.6.4.RELEASE</spring-data-redis-version>
+
+        <swagger.springfox.verion>2.4.0</swagger.springfox.verion>
+        <stategen-version>2.0.0.stategen.RELEASE</stategen-version>
+        <spring-orm-version>3.1.4.RELEASE</spring-orm-version>
+
+        <DI-tbSchedule-version>3.3.3.2</DI-tbSchedule-version>
+
+        <!-- 文件拷贝时的编码 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- 编译时的编码 -->
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <dubbo-version>2.8.4</dubbo-version>
+        <fastjson-version>1.2.29</fastjson-version>
+
+    </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>thirdparty</id>
+            <url>http://nexus:8081/content/repositories/thirdparty/</url>
+        </repository>
+    </distributionManagement>
+
+    <modules>
+        <module>a-stategen-dto-lite</module>
+        <module>b-stategen-util</module>
+        <module>c-stategen-ibatis-util</module>
+        <module>c-stategen-logback</module>
+        <module>c-stategen-cache</module>
+        <module>d-stategen-mvc</module>
+        <module>e-progen</module>
+        <module>e-stategen-rapid-framework</module>
+        <module>f-dalgenx</module>
+        <module>i-swagger2-ui</module>
+        <module>DISchedule</module>
+        <module>DISchedule/src</module>
+    <module>e-stategen-dubbox</module>
+  </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>2.3.28</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+        </plugins>
+    </build>
+</project>
