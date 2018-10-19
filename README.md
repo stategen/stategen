@@ -1,6 +1,6 @@
-##Stategen 
+## Stategen 
   ***后端做业务，前端做美工，其它的stategen来做***
-###介绍
+### 介绍
   * 服务端 客户端 代码自动化 框架 ,兼顾 服务端开发，客户端开发，运维，发布，迭代，
   各部门沟通成本，能将开发成本减少到原来的1/5-1/10
   * 服务端使用到的技术 springmvc ibatis dalgenx progen dubbox
@@ -8,7 +8,7 @@
   * 开发流程：后端-&gt;sql-&gt;dalgenX代码生成-&gt;业务代码介入-&gt;自动dubbo服务提供或引入-&gt;api-&gt;progen生成客户端rpc代码(apis,beans,enums,interfaces,forms代码片段)
   -&gt;前端实现界面美化-&gt;运维编译-&gt;发布->ssr
   
-###开始准备和demo
+### 开始准备和demo
   * 准备工具(windows上:Gow(.sh脚本用到了linux一些命令,不想为相似的代码写2遍) ,git bash)
   * hosts 中添加 如:   
               192.168.112.127 gitlab  
