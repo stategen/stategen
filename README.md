@@ -14,11 +14,16 @@
               192.168.112.127 gitlab  
               192.168.112.128 nexus  
               其中 gitlab指公司代码git托管服务器地址,nexus提maven你公司仓库地址
-  * 下载 stategen源码: https://github.com/stategen/stategen 
+  * 下载 stategen源码: 
+     ···
+     git clone --recursive https://github.com/stategen/stategen
+ 
   *  执行命令将stategen framework发布至你公司maven仓库  
      ````
      mvn clean deploy -Dmaven.test.skip=true
-  *  如果只开发业务代码，直接拉 https://github.com/stategen/dalgenx 即可   
+  *  如果只开发业务代码，直接拉dalgenX即可
+     ```
+     git clone https://github.com/stategen/dalgenx  
   *  环境变量添加 
      ````
      DALGENX_HOME=D:\works\fm\stategen-git\f-dalgenX
