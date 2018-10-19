@@ -26,7 +26,7 @@
      git clone https://github.com/stategen/dalgenx  
   *  环境变量添加 
      ````
-     DALGENX_HOME=D:\works\fm\stategen-git\f-dalgenX
+     DALGENX_HOME=D:\works\fm\stategen-git\f-dalgenx
   *  同时将 DALGENX_HOME添加至 path中,以便任意在命令窗口 找得到 gen.sh
   *  执行命令生成系统 
      ```
