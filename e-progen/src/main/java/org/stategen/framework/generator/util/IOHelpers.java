@@ -114,11 +114,16 @@ public class IOHelpers {
         BufferedReader read = new BufferedReader(isr);
 
         String line = null;
-        int lineNum = 0;
         StringBuffer sb = new StringBuffer(1024 * 256);
-        while ((line = read.readLine()) != null) {
-            appendWithLineNum(writeLineNum, line, lineNum, sb);
-            lineNum++;
+        if (writeLineNum) {
+            int lineNum = 0;
+            while ((line = read.readLine()) != null) {
+                appendWithLineNum(writeLineNum, line, lineNum, sb);
+                lineNum++;
+            }
+        } else {
+            String result = toString(read);
+            sb.append(result);
         }
         read.close();
         isr.close();

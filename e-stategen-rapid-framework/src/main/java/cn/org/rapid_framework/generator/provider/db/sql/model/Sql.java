@@ -99,6 +99,10 @@ public class Sql {
 	public Sql(TableConfig tableConfig) {
 	    this.tableConfig=tableConfig;
 	}
+	
+	public TableConfig getTable() {
+        return tableConfig;
+    }
     
     public boolean isFullColumns(){
         boolean result =isColumnsInSameTable();

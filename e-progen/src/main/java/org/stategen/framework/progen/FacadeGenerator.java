@@ -203,7 +203,7 @@ public class FacadeGenerator {
                     logger.info(new StringBuffer("模版文件或文件夹以@或@.ftl结尾，当目标文件存在时，忽略写入:" + fullTargetFileName).append('\n'+newText).toString());
                     return;
                 }
-
+                
                 if (FileHelpers.isSameFileText(fullTargetFileName, newText)) {
                     logger.info("文件比较结果:相同，忽略写入:" + fullTargetFileName);
                     return;

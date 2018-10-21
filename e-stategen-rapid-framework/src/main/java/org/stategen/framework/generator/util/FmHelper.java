@@ -33,13 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.stategen.framework.lite.CaseInsensitiveHashMap;
-import org.stategen.framework.util.CollectionUtil;
-import org.stategen.framework.util.Consts;
-import org.stategen.framework.util.PropUtil;
-import org.stategen.framework.util.Setting;
-import org.stategen.framework.util.StringUtil;
-
 import cn.org.rapid_framework.generator.GenUtils;
 import cn.org.rapid_framework.generator.GeneratorProperties;
 import cn.org.rapid_framework.generator.provider.db.sql.model.Sql;
@@ -47,14 +40,18 @@ import cn.org.rapid_framework.generator.provider.db.sql.model.SqlParameter;
 import cn.org.rapid_framework.generator.provider.db.table.model.Column;
 import cn.org.rapid_framework.generator.provider.db.table.model.Table;
 import cn.org.rapid_framework.generator.util.GLogger;
-
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.stategen.framework.lite.CaseInsensitiveHashMap;
+import org.stategen.framework.util.CollectionUtil;
+import org.stategen.framework.util.Consts;
+import org.stategen.framework.util.PropUtil;
+import org.stategen.framework.util.Setting;
+import org.stategen.framework.util.StringUtil;
 
 /**
  * The Class FmHelper.
@@ -286,12 +283,12 @@ public class FmHelper {
                 }     
                 
                 if (isFileExits){
-                    String fileText =IOHelpers.readFile(canonicalFile,StringUtil.UTF_8,true);
+                    String fileText =IOHelpers.readFile(canonicalFile,StringUtil.UTF_8,false);
                     String newText =charArrayWriter.toString();
                     if (fileText.equals(newText)){
                         GLogger.info("智能忽略重写入----------------->:"+canonicalFile.getName());
                         return;
-                    } 
+                    }
                 }
                 
                 bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
