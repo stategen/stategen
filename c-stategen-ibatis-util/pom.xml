@@ -6,7 +6,7 @@
         <version>2.0.0.stategen.RELEASE</version>
         <relativePath>../</relativePath>
     </parent>
-    <artifactId>stategen-ibatis-util</artifactId>
+    <artifactId>aa-stategen-ibatis-util</artifactId>
     <version>${stategen-version}</version>
     <name>c-stategen-ibatis-util</name>
 

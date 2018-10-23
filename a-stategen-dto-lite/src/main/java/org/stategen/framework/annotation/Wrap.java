@@ -24,12 +24,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The Interface WrapExcept.
+ * The Interface Wrap.
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.METHOD,ElementType.TYPE,ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Wrap(except=true)
 @Inherited
-public @interface WrapExcept {
+@Documented
+public @interface Wrap {
+    boolean exclude() default false;
 }

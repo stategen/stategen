@@ -17,13 +17,13 @@
 package org.stategen.framework.lite;
 
 /**
- * The Class Response.
+ * The Class BaseResponse.
  * 该类用来包装spring mvc http 请求,当方法上标注@ResponseBody后，返回值会被setData 部分,注意null,string值不会被封装
  *
  * @author Xia Zhengsheng
  * @param <T> the generic type
  */
-public abstract class Response<T> extends SimpleResponse {
+public abstract class BaseResponse<T> extends SimpleResponse {
 
     /***0 成功 ， -1 业务失败  ，-2 权限验证*/
     private Integer code;
@@ -35,7 +35,7 @@ public abstract class Response<T> extends SimpleResponse {
     /***以后业务全部返回字符串*/
     private IResponseStatus status;
     
-    protected Response() {
+    protected BaseResponse() {
         super();
     }
 

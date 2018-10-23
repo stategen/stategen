@@ -29,5 +29,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface HandleError {
-    boolean except() default false;
+    boolean exclude() default false;
 }

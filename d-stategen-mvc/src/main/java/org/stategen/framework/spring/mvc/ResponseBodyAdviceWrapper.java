@@ -124,9 +124,8 @@ public class ResponseBodyAdviceWrapper extends ResponseStatusTypeHandler impleme
                 return needWrapFlag;
             }
 
-            Wrap wrapAnno = AnnotationUtil.getMethodOrOwnerAnnotation(method, Wrap.class);
-            if (wrapAnno != null && wrapAnno.except()) {
-                //如果包装除外的，不包装
+            boolean exclude = AnnotationUtil.getAnnotationValueFormMembers(Wrap.class,false, Wrap::exclude, method);
+            if (exclude){
                 return needWrapFlag;
             }
             needWrapFlag = true;

@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.stategen.framework.annotation.AreaExtraProp;
-import org.stategen.framework.annotation.GenQueryForm;
+import org.stategen.framework.annotation.GenForm;
 import org.stategen.framework.annotation.State;
 import org.stategen.framework.annotation.StateExtraProp;
 import org.stategen.framework.enums.StateOperation;
@@ -72,7 +72,7 @@ public class MethodWrap {
     private StateWrap state = null;
 
     private BaseWrap area;
-    private Boolean genQueryForm = null;
+    private Boolean genForm = null;
 
     public MethodWrap(ApiWrap apiWrap, Method method) {
         super();
@@ -84,11 +84,11 @@ public class MethodWrap {
         genState();
     }
 
-    public Boolean getGenQueryForm() {
-        if (genQueryForm == null) {
-            genQueryForm = AnnotationUtil.getAnnotationValueFormMembers(GenQueryForm.class, GenQueryForm::value, methodFun);
+    public Boolean getGenForm() {
+        if (genForm == null) {
+            genForm = AnnotationUtil.getAnnotationValueFormMembers(GenForm.class,false, GenForm::value, methodFun);
         }
-        return genQueryForm;
+        return genForm;
     }
 
     protected void genReturn() {

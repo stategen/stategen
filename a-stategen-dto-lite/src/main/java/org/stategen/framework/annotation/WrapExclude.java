@@ -24,12 +24,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The Interface GenQueryForm.
+ * The Interface WrapExclude.
  */
-@Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE })
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Inherited
 @Documented
-public @interface GenQueryForm {
-   boolean value() default true;
+@Wrap(exclude=true)
+@Inherited
+public @interface WrapExclude {
 }

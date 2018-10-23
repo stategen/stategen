@@ -38,12 +38,12 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
+<!--         <dependency>
             <groupId>org.stategen.framework</groupId>
             <artifactId>stategen-logback</artifactId>
             <version>${stategen-version}</version>
-            <scope>runtime</scope>
-        </dependency>
+            <scope>provided</scope>
+        </dependency> -->
 
         <dependency>
             <groupId>org.slf4j</groupId>

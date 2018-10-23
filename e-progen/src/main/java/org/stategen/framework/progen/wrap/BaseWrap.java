@@ -32,6 +32,8 @@ public abstract class BaseWrap {
     private Class<?> clazz;
 
     private String description;
+    
+    private Boolean genForm =false;
 
     public Boolean getIsArray() {
         return ClassHelpers.isArray(clazz);
@@ -91,4 +93,12 @@ public abstract class BaseWrap {
         return IPagination.class.isAssignableFrom(getClazz());
     }
 
+    public Boolean getGenForm() {
+        return genForm;
+    }
+    
+    public void setGenForm(Boolean genForm) {
+        this.genForm = genForm;
+    }
+    
 }

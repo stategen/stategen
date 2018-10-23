@@ -117,11 +117,7 @@ public class NamedWrap extends MemberWrap {
 
     public Boolean getHidden() {
         if (hidden == null) {
-            hidden = AnnotationUtil.getAnnotationValueFormMembers(ApiModelProperty.class, ApiModelProperty::hidden, getMembers());
-
-            if (hidden == null) {
-                hidden = false;
-            }
+            hidden = AnnotationUtil.getAnnotationValueFormMembers(ApiModelProperty.class, false,ApiModelProperty::hidden, getMembers());
         }
 
         return hidden;

@@ -24,12 +24,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The Interface Wrap.
+ * The Interface GenForm.
  */
-@Target({ElementType.METHOD,ElementType.TYPE,ElementType.ANNOTATION_TYPE})
+@Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE,ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface Wrap {
-    boolean except() default false;
+public @interface GenForm {
+   boolean value() default true;
 }

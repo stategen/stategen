@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
+import org.stategen.framework.lite.BaseResponse;
 import org.stategen.framework.lite.HandleError;
 import org.stategen.framework.lite.IResponseStatus;
-import org.stategen.framework.lite.Response;
 import org.stategen.framework.response.ResponseStatusTypeHandler;
 import org.stategen.framework.response.ResponseUtil;
 import org.stategen.framework.util.AnnotationUtil;
@@ -65,10 +65,10 @@ public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler imple
         HandleError handleError = AnnotationUtil.getMethodOrOwnerAnnotation(method, HandleError.class);
         IResponseStatus errorResponseStatus = this.getResponseStatus();
         
-        if (handleError == null || !handleError.except()) {
+        if (handleError == null || !handleError.exclude()) {
             ResponseBody responseBodyAnno = AnnotationUtil.getMethodOrOwnerAnnotation(method, ResponseBody.class);
             if (responseBodyAnno!=null){
-                Response<?> errorResponse = ResponseUtil.buildResponse(null, errorResponseStatus);
+                BaseResponse<?> errorResponse = ResponseUtil.buildResponse(null, errorResponseStatus);
                 errorResponse.setExeptionClass(ex.getClass().getSimpleName());
                 errorResponse.setMessage(failMessage);
                 httpServletResponse.setStatus(HttpStatus.OK.value());

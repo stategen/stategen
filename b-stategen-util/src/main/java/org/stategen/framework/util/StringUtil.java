@@ -1,16 +1,16 @@
 /*
  * Copyright (C) 2018  niaoge<78493244@qq.com>
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,6 +31,7 @@ public class StringUtil {
     final static Logger logger = LoggerFactory.getLogger(StringUtil.class);
 
     public static final String SLASH = "/";
+    public static final String BACK_SLASH = "\\";
     public static final String UNDERLINE = "_";
     public static final String $ = "$";
     public static final String COLON = ":";
@@ -117,7 +118,7 @@ public class StringUtil {
 
     /**
      * <p>Checks if a String is not empty (""), not null and not whitespace only.</p>
-     * 
+     *
      * <pre>
      * isNotBlank(null)      = false
      * isNotBlank("")        = false
@@ -435,7 +436,7 @@ public class StringUtil {
 
     /**
      * 字符串相加，null变为空.
-     * 
+     *
      * @param strs
      * @return
      */
@@ -459,7 +460,7 @@ public class StringUtil {
             for (int i = 0; i < subPaths.length; i++) {
                 String subPath = subPaths[i];
                 if (isNotEmpty(subPath)) {
-                    subPath =subPath.replace("\\",StringUtil.SLASH);
+                    subPath =subPath.replace(StringUtil.BACK_SLASH,StringUtil.SLASH);
                     subPath=endWithSlash(subPath);
                     sb.append(subPath);
                 }
@@ -545,10 +546,14 @@ public class StringUtil {
         return endWith(dest, SLASH);
     }
 
+    public static boolean isFolderEnd(String fileName){
+        return fileName.endsWith(SLASH) || fileName.endsWith(BACK_SLASH);
+    }
+
     public static String endtWith(String dest) {
         return endWith(dest, SLASH);
     }
-    
+
     public static String join(String joinStr,String...dests){
         StringBuffer sb =new StringBuffer();
         for (String dest : dests) {
@@ -556,10 +561,10 @@ public class StringUtil {
             if (!dest.endsWith(joinStr)){
                 sb.append(joinStr);
             }
-        } 
+        }
         return sb.toString();
     }
-    
+
     public static String joinSLash(String...dests){
         return join(SLASH, dests);
     }
@@ -589,7 +594,7 @@ public class StringUtil {
         }
         return dest;
     }
-    
+
 
     public static String trimLeftTo(String dest, String indexStr) {
         if (StringUtil.isEmpty(dest) || StringUtil.isEmpty(indexStr)) {
@@ -606,7 +611,7 @@ public class StringUtil {
     public static String trimPrefix(String dest, String indexStr) {
         return trimLeft(dest, indexStr);
     }
-    
+
     public static String trimLeft(String dest, String indexStr) {
         if (StringUtil.isEmpty(dest) || StringUtil.isEmpty(indexStr)) {
             return dest;
@@ -626,19 +631,19 @@ public class StringUtil {
         subStr = subStr.toUpperCase();
         return dest.contains(subStr);
     }
-    
+
     public static String getSimpleTitle(String title){
         if (StringUtil.isEmpty(title)){
             return title;
         }
-        
+
         title = StringUtil.trimRightTo(title, " ");
         title = StringUtil.trimRightTo(title, ",");
         title = StringUtil.trimRightTo(title, ";");
         title = StringUtil.trimRightTo(title, "，");
         return title;
     }
-    
+
     public static String beforeLines(String destLines ,String dest){
         if (StringUtil.isEmpty(destLines)|| StringUtil.isEmpty(dest)){
             return destLines;

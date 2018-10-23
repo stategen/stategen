@@ -20,11 +20,14 @@ import java.util.List;
 
 import javax.org.stategen.framework.lite.BusinessException;
 
+import org.stategen.framework.annotation.GenForm;
+
 /**
  * The Class AntdPageList.
  *
  * @param <E> the element type
  */
+@GenForm(false)
 public class AntdPageList<E> implements IPageList {
     
     private transient PageList<E> pageList;

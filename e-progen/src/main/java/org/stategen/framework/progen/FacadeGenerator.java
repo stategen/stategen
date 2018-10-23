@@ -142,6 +142,9 @@ public class FacadeGenerator {
         
         
         String targetFileName = TemplateHelpers.processString(root, relativeFileName);
+        if (StringUtil.isEmpty(targetFileName)){
+            targetFileName=StringUtil.SLASH; 
+        }
 
         String notOverrideTargetFilenName = null;
         boolean doOverride = true;
@@ -164,6 +167,7 @@ public class FacadeGenerator {
         CharArrayWriter writer = new CharArrayWriter(1024 * 1024);
         
         String fullTargetFileName = FileHelpers.getCanonicalPath(outputDir, targetFileName);
+        
         if (FileHelpers.isUnOverridePath(fullTargetFileName)){
             fullTargetFileName =FileHelpers.replaceUnOverridePath(fullTargetFileName);
             doOverride =false;
@@ -192,6 +196,8 @@ public class FacadeGenerator {
                 processFileString(root, writer, template, targetFileName);
             }
         }
+        
+
 
         String newTargetFileName = fullTargetFileName;
         String newText = writer.toString();

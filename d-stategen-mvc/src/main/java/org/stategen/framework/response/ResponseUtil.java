@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.stategen.framework.lite.IResponseStatus;
-import org.stategen.framework.lite.Response;
+import org.stategen.framework.lite.BaseResponse;
 import org.stategen.framework.spring.mvc.SpringContextHolder;
 import org.stategen.framework.web.cookie.ServletContextUtil;
 
@@ -37,19 +37,19 @@ public class ResponseUtil {
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ResponseUtil.class);
 
     @SuppressWarnings("unchecked")
-    public static <T> Response<T> buildResponse(T data, IResponseStatus responseStatus) {
-        Response<T> resultResponse = null;
+    public static <T> BaseResponse<T> buildResponse(T data, IResponseStatus responseStatus) {
+        BaseResponse<T> resultResponse = null;
         if (data == null) {
             resultResponse = SpringContextHolder.getBean(Constant.RESPONSE_NAME);
             resultResponse.setStatus(responseStatus);
         } else {
             Class<?> resultClz = data.getClass();
-            if (!Response.class.isAssignableFrom(resultClz)) {
+            if (!BaseResponse.class.isAssignableFrom(resultClz)) {
                 resultResponse = SpringContextHolder.getBean(Constant.RESPONSE_NAME);
                 resultResponse.setData(data);
                 resultResponse.setStatus(responseStatus);
             } else {
-                resultResponse = (Response<T>) data;
+                resultResponse = (BaseResponse<T>) data;
             }
         }
         return resultResponse;
@@ -66,11 +66,11 @@ public class ResponseUtil {
     }
     
     public static <T> void writhResponse(T data, IResponseStatus responseStatus) {
-        Response<Object> response = ResponseUtil.buildResponse(data, responseStatus);
+        BaseResponse<Object> response = ResponseUtil.buildResponse(data, responseStatus);
         writhResponse(response);
     }
     
-    public static <T> void writhResponse(Response<T> response) {
+    public static <T> void writhResponse(BaseResponse<T> response) {
         if (Configration.WRAPPER_REPONSE){
             FastJsonResponseUtil.writeResponse(response);
         } else {
@@ -111,7 +111,7 @@ public class ResponseUtil {
     //            String failMessage = new StringBuffer("failResponse").append(annotationType).append(" not defined!").toString();
     //            logger.warn(new StringBuffer("输出warn信息:failMessage:").append(failResponse).toString());
     //
-    //            return Response.error(failMessage);
+    //            return BaseResponse.error(failMessage);
     //        }
     //    }
 }

@@ -33,13 +33,13 @@ import javax.servlet.http.HttpServletResponse;
  * @author XiaZhengsheng
  */
 public class CORSFilter implements Filter {
+    final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CORSFilter.class);
 
     public void destroy() {
 
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         // 指定允许其他域名访问

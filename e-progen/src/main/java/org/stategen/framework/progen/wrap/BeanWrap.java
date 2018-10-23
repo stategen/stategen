@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.stategen.framework.annotation.GenForm;
 import org.stategen.framework.progen.GenContext;
 import org.stategen.framework.progen.GenericTypeResolver;
 import org.stategen.framework.progen.WrapContainer;
@@ -55,6 +56,8 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
 
     private Map<String, FieldWrap> fieldMap = new LinkedHashMap<String, FieldWrap>();
     private Map<String, FieldWrap> allFieldMap = new LinkedHashMap<String, FieldWrap>();
+
+    private Boolean genForm;
 
     @Override
     public String getImportPath() {
@@ -191,7 +194,13 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
     public String getIdKeyName() {
         return idKeyName;
     }
-    
 
+    @Override
+    public Boolean getGenForm() {
+        if (genForm == null) {
+            genForm =AnnotationUtil.getAnnotationValueFormMembers(GenForm.class,true, GenForm::value, getClazz());
+        }
+        return genForm;
+    }
 
 }

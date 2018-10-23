@@ -47,7 +47,7 @@ public class TemplateHelpers {
     public static List<String> getAvailableAutoInclude(Configuration conf, List<String> autoIncludes) {
         List<String> results = new ArrayList();
         for (String autoInclude : autoIncludes) {
-            autoInclude =autoInclude.replace("\\", StringUtil.SLASH);
+            autoInclude =autoInclude.replace(StringUtil.BACK_SLASH, StringUtil.SLASH);
             try {
                 Template t = new Template("__auto_include_test__", new StringReader("1"), conf);
                 conf.setAutoIncludes(Arrays.asList(new String[] { autoInclude }));
@@ -83,7 +83,7 @@ public class TemplateHelpers {
     public static String processString(Map<Object, Object> root, String dest) throws IOException, TemplateException {
         Configuration conf =new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
         final String stringTemplate = " ___stringTemplate";
-        dest=dest.replace("\\", "/");
+        dest=dest.replace(StringUtil.BACK_SLASH, StringUtil.SLASH);
         dest=dest.replace("[", "<");
         dest=dest.replace("]", ">");
         dest=dest.replace("<%", "</");

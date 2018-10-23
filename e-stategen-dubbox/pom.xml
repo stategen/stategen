@@ -9,7 +9,7 @@
         <version>2.0.0.stategen.RELEASE</version>
     </parent>
 
-    <artifactId>stategen-dubbox</artifactId>
+    <artifactId>aa-stategen-dubbox</artifactId>
     <name>f-stategen-dubbox</name>
 
     <properties>

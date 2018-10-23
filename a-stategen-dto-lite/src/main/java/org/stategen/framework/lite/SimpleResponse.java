@@ -16,9 +16,12 @@
  */
 package org.stategen.framework.lite;
 
+import org.stategen.framework.annotation.GenForm;
+
 /**
  * The Class SimpleResponse.
  */
+@GenForm(false)
 public class SimpleResponse {
 
     private String message;

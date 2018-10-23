@@ -206,7 +206,7 @@ public class FileHelpers {
         File result = new File(fileName);
         if (!result.exists()) {
             File parentFile = null;
-            if (fileName.endsWith(StringUtil.SLASH)) {
+            if (StringUtil.isFolderEnd(fileName)) {
                 parentFile = result;
             } else {
                 parentFile = result.getParentFile();
@@ -284,10 +284,10 @@ public class FileHelpers {
     
     private static String processCononicalPath(File targetFile ,String targetFileName) throws IOException{
         String canonicalPath = targetFile.getCanonicalPath();
-        if (canonicalPath.endsWith(StringUtil.SLASH)) {
+        if (StringUtil.isFolderEnd(targetFileName)) {
             canonicalPath = StringUtil.endWithSlash(canonicalPath);
         }
-        canonicalPath =canonicalPath.replace("\\", StringUtil.SLASH);
+        canonicalPath =canonicalPath.replace(StringUtil.BACK_SLASH, StringUtil.SLASH);
         return canonicalPath;
     }
 
