@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.stategen.framework.util.CollectionUtil;
@@ -36,13 +37,15 @@ import org.stategen.framework.util.CollectionUtil;
  * @author huligong
  *
  */
-public class MultiViewResolver implements ViewResolver {
+public class MultiViewResolver implements ViewResolver ,Ordered {
 
     private static Logger             logger              = LoggerFactory.getLogger(MultiViewResolver.class);
 
     private Map<String, ViewResolver> viewResolverMap     = null;
 
     private ViewResolver              defaultViewResolver = null;
+    
+    private int order = Integer.MAX_VALUE;  // default: same as non-Ordered
 
     /**
      * 根据 spring mvc return 的返回置的 后缀名快速解析.
@@ -109,5 +112,13 @@ public class MultiViewResolver implements ViewResolver {
      */
     public void setDefaultViewResolver(ViewResolver defaultViewResolver) {
         this.defaultViewResolver = defaultViewResolver;
+    }
+    
+    @Override
+    public int getOrder() {
+        return this.order;
+    }
+    public void setOrder(int order) {
+        this.order = order;
     }
 }

@@ -595,7 +595,14 @@ public class StringUtil {
         return dest;
     }
 
-
+    
+    /**
+     * trimLeftTo(abcdeabcde,c)=>de
+     * 
+     * @param dest
+     * @param indexStr
+     * @return
+     */
     public static String trimLeftTo(String dest, String indexStr) {
         if (StringUtil.isEmpty(dest) || StringUtil.isEmpty(indexStr)) {
             return dest;
@@ -611,7 +618,14 @@ public class StringUtil {
     public static String trimPrefix(String dest, String indexStr) {
         return trimLeft(dest, indexStr);
     }
-
+    
+    /**
+     * trimLeft(abcdec,abc)=>dec
+     * 
+     * @param dest
+     * @param indexStr
+     * @return
+     */
     public static String trimLeft(String dest, String indexStr) {
         if (StringUtil.isEmpty(dest) || StringUtil.isEmpty(indexStr)) {
             return dest;
