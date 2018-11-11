@@ -65,7 +65,9 @@ public class TemplateHelpers {
         List<File> templateRootDirs = new ArrayList<File>(tempRoots.length);
         for (String fileName : tempRoots) {
             File file = FileHelpers.getFile(fileName);
-            templateRootDirs.add(file);
+            if (file.exists() && file.isDirectory()){
+              templateRootDirs.add(file);
+            }
         }
 
         Configuration conf = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);

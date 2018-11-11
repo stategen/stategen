@@ -92,10 +92,10 @@ public class BaseProgen {
         List<File> allFiles = FileHelpers.searchAllNotIgnoreFile(tempFolderFile);
         String projectName = null;
         int folderCount = 0;
-        for (File file : allFiles) {
-            String relativeFileName = FileHelpers.getRelativeFileName(tempFolderFile, file);
-            if (file.isFile()) {
-                FacadeGenerator.processTemplate(tempPath, conf, root, cmdPath, relativeFileName);
+        for (File ftlFile : allFiles) {
+            String relativeFileName = FileHelpers.getRelativeFileName(tempFolderFile, ftlFile);
+            if (ftlFile.isFile()) {
+                FacadeGenerator.processTemplate(ftlFile, conf, root, cmdPath, relativeFileName);
             } else {
                 String targetFileName = TemplateHelpers.processString(root, relativeFileName);
                 String filePath = cmdPath + "/" + targetFileName + "/";

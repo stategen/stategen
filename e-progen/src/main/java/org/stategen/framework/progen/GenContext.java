@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,7 +40,7 @@ public class GenContext {
     public static WrapContainer wrapContainer = new WrapContainer();
 
     public static Set<Class<?>> staticUtils = new HashSet<Class<?>>();
-    public static String tempDir;
+    public static List<String> tempDirs;
     public static String outDir;
     public static String outConfigDir;
 

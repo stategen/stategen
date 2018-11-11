@@ -80,26 +80,26 @@ public class FacadeGenerator {
         }
 
         GenContext.wrapContainer.scanBeanRelationShipAndMakeFeilds();
-        String tempDir = GenContext.tempDir;
+        List<String> tempDirs = GenContext.tempDirs;
+
         String outDir = GenContext.outDir;
         String outConfigDir = GenContext.outConfigDir;
         root.put("configDir", outConfigDir);
 
         String tempRootPath = GenContext.tempRootPath;
         String projectRootPath = GenContext.projectRootPath;
-        String sharedPath = FileHelpers.getCanonicalPath(StringUtil.joinSLash(tempRootPath, tempDir, "share"));
 
         Map<String, List<CanbeImportWrap>> canbeImportWrapMap = new HashMap<String, List<CanbeImportWrap>>();
 
         for (Entry<PathType, String> entry : GenContext.pathMap.entrySet()) {
             PathType pathType = entry.getKey();
             String importPath = entry.getValue();
-
-            String tempPath = StringUtil.joinSLash(tempDir, "dal", importPath);
-            String tempWholePath = StringUtil.joinSLash(tempRootPath, tempPath);
+            
+            List<String> tempWholePaths=getTempPaths(tempDirs, tempRootPath, importPath, "dal");
+            
             String reletiveOutWholePath = StringUtil.joinSLash(projectRootPath, outDir, importPath);
             String outWholePath = FileHelpers.getFile(reletiveOutWholePath).getAbsolutePath();
-            FreeMarkerTempFileContext beanFltContext = new FreeMarkerTempFileContext(tempWholePath, sharedPath);
+            FreeMarkerTempFileContext beanFltContext = new FreeMarkerTempFileContext(tempWholePaths);
             Configuration conf = beanFltContext.getConf();
             List<String> availableAutoInclude = TemplateHelpers.getAvailableAutoInclude(conf, Arrays.asList("macro.include.ftl"));
             conf.setAutoIncludes(availableAutoInclude);
@@ -110,31 +110,51 @@ public class FacadeGenerator {
             for (CanbeImportWrap canbeImportWrap : wrapMap.values()) {
                 String wrapName = pathType.getWrapName();
                 root.put(wrapName, canbeImportWrap);
-                for (File ftlFile : beanFltContext.getFltFiles()) {
-                    String relativeFileName = FileHelpers.getRelativeFileName(beanFltContext.getTempPathFile(), ftlFile);
-                    processTemplate(tempWholePath, conf, root, outWholePath, relativeFileName);
+                for (FtlFile ftlFile : beanFltContext.getFtlFiles()) {
+                    File tempPathFile = ftlFile.getTempPathFile();
+                    File tempFile = ftlFile.getTempFile();
+                    String relativeFileName = FileHelpers.getRelativeFileName(tempPathFile, tempFile);
+                    processTemplate(tempFile, conf, root, outWholePath, relativeFileName);
                 }
                 root.remove(wrapName);
             }
         }
-
-        String tempPath = StringUtil.joinSLash(tempDir, "set");
-        String tempWholePath = StringUtil.joinSLash(tempRootPath, tempPath);
+        List<String> tempWholePaths=getTempPaths(tempDirs, tempRootPath, "", "set");
+        FreeMarkerTempFileContext beanFltContext = new FreeMarkerTempFileContext(tempWholePaths);
+        
         String reletiveOutWholePath = StringUtil.joinSLash(projectRootPath, outDir, outConfigDir);
         String outWholePath = FileHelpers.getFile(reletiveOutWholePath).getAbsolutePath();
-        FreeMarkerTempFileContext beanFltContext = new FreeMarkerTempFileContext(tempWholePath, sharedPath);
+        
         Configuration conf = beanFltContext.getConf();
         List<String> availableAutoInclude = TemplateHelpers.getAvailableAutoInclude(conf, Arrays.asList("macro.include.ftl"));
         conf.setAutoIncludes(availableAutoInclude);
         root.putAll(canbeImportWrapMap);
 
-        for (File ftlFile : beanFltContext.getFltFiles()) {
-            String relativeFileName = FileHelpers.getRelativeFileName(beanFltContext.getTempPathFile(), ftlFile);
-            processTemplate(tempWholePath, conf, root, outWholePath, relativeFileName);
+        for (FtlFile ftlFile : beanFltContext.getFtlFiles()) {
+            File tempPathFile = ftlFile.getTempPathFile();
+            File tempFile = ftlFile.getTempFile();
+            String relativeFileName = FileHelpers.getRelativeFileName(tempPathFile, tempFile);
+            processTemplate(tempFile, conf, root, outWholePath, relativeFileName);
         }
     }
 
-    public static void processTemplate(String tempPath, Configuration conf, Properties root, String outputDir,
+    private List<String> getTempPaths(List<String> tempDirs, String tempRootPath, String importPath,String subName) throws IOException {
+        List<String> tempWholePaths =new ArrayList<String>(tempDirs.size()*2);
+        
+        for (String tempDir : tempDirs) {
+            String tempPath = StringUtil.joinSLash(tempDir, subName);
+            if (StringUtil.isNotEmpty(importPath)){
+                tempPath=StringUtil.joinSLash(tempPath,importPath);
+            }
+            String tempWholePath = StringUtil.joinSLash(tempRootPath, tempPath);
+            tempWholePaths.add(tempWholePath);
+        }
+        String sharedPath = FileHelpers.getCanonicalPath(StringUtil.joinSLash(tempRootPath, tempDirs.get(0), "share"));
+        tempWholePaths.add(sharedPath);
+        return tempWholePaths;
+    }
+
+    public static void processTemplate(File tempFile,Configuration conf, Properties root, String outputDir,
                                        String relativeFileName) throws TemplateException, IOException {
 
         final String blobExt = "@blob";
@@ -183,11 +203,10 @@ public class FacadeGenerator {
                 return ;
             }
             
-            File blobTemplateFile = new File(tempPath + "/" + relativeFileName);
             if (logger.isInfoEnabled()) {
                 logger.info(new StringBuffer("写入二进制文件").append(fullTargetFile).toString());
             }
-            Files.copy(blobTemplateFile.toPath(), fullTargetFile.toPath());
+            Files.copy(tempFile.toPath(), fullTargetFile.toPath());
             writer.close();
             return;
         } else {

@@ -29,32 +29,37 @@ import freemarker.template.Configuration;
 /**
  * The Class FreeMarkerTempFileContext.
  */
-class FreeMarkerTempFileContext{
-    private Configuration conf =null;
-    private List<File> fltFiles=null;
-    private File tempPathFile =null;
-    
-    public FreeMarkerTempFileContext(String tempPath,String sharePath) throws IOException{
-        conf = TemplateHelpers.getConfiguration(tempPath,sharePath);
-        tempPathFile = FileHelpers.getFile(tempPath);
-        List<File> allFiles = FileHelpers.searchAllNotIgnoreFile(tempPathFile);
-        fltFiles = new ArrayList<File>();
-        for (File file : allFiles) {
-            if (file.isFile() && !file.getName().endsWith(".include.ftl")) {
-                fltFiles.add(file);
+class FreeMarkerTempFileContext {
+    private Configuration conf = null;
+    private List<FtlFile> ftlFiles = null;
+
+    public FreeMarkerTempFileContext(List<String> tempPaths) throws IOException {
+        String[] tempPathArray = new String[tempPaths.size()];
+        tempPaths.toArray(tempPathArray);
+        conf = TemplateHelpers.getConfiguration(tempPathArray);
+        ftlFiles = new ArrayList<FtlFile>();
+
+        for (String tempPath : tempPaths) {
+            File tempPathFile = FileHelpers.getFile(tempPath);
+            if (tempPathFile.exists() && tempPathFile.isDirectory()) {
+                List<File> allSubFiles = FileHelpers.searchAllNotIgnoreFile(tempPathFile);
+                for (File tempFile : allSubFiles) {
+                    if (tempFile.isFile() && !tempFile.getName().endsWith(".include.ftl")) {
+                        ftlFiles.add(new FtlFile(tempPathFile, tempFile));
+                    }
+                }
             }
         }
+
     }
-    
+
     public Configuration getConf() {
         return conf;
     }
-    
-    public List<File> getFltFiles() {
-        return fltFiles;
+
+
+    public List<FtlFile> getFtlFiles() {
+        return ftlFiles;
     }
-    
-    public File getTempPathFile() {
-        return tempPathFile;
-    }
+
 }
