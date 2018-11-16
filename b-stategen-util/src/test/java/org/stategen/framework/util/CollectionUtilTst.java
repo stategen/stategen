@@ -62,7 +62,7 @@ public class CollectionUtilTst {
             }
         );
         
-        CollectionUtil.getAndSetModelByMap(users, teacherMap,User::getTeachId,User::setTeacher); 
+        CollectionUtil.setModelByMap(users, teacherMap,User::getTeachId,User::setTeacher); 
         System.out.println("users<===========>:" + users);
     }
     

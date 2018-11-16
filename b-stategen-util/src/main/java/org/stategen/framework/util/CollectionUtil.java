@@ -506,7 +506,7 @@ public class CollectionUtil {
         }
     }
 
-    public static <K, D, S, V> void getAndSetValueByMap(Collection<D> dests, Function<? super D, K> destGetMethod, Map<K, S> sourceMap,
+    public static <K, D, S, V> void setValueByMap(Collection<D> dests, Function<? super D, K> destGetMethod, Map<K, S> sourceMap,
                                                         Function<? super S, Object> sourceGetMethod, BiConsumer<D, Object> destSetMethod) {
         if (CollectionUtil.isNotEmpty(dests) && (CollectionUtil.isNotEmpty(sourceMap))) {
             for (D d : dests) {
@@ -522,7 +522,7 @@ public class CollectionUtil {
         }
     }
 
-    public static <D, K, S> void getAndSetModelByMap(Collection<D> dests, Map<K, S> sourceMap, Function<? super D, K> destGetMethod,
+    public static <D, K, S> void setModelByMap(Collection<D> dests, Map<K, S> sourceMap, Function<? super D, K> destGetMethod,
                                                      BiConsumer<D, S> destSetMethod) {
         if (CollectionUtil.isNotEmpty(dests) && CollectionUtil.isNotEmpty(sourceMap)) {
             for (D d : dests) {
@@ -536,8 +536,14 @@ public class CollectionUtil {
             }
         }
     }
+    
+    public static <D,K,S> void setModelByList(Collection<D> dests,Collection<S> sources,Function<? super D, K> destGetMethod,
+        BiConsumer<D, S> destSetMethod,Function<? super S, K> sourceGetMethod ){
+        Map<K, S> sourceMap = CollectionUtil.toMap(sourceGetMethod,sources);
+        CollectionUtil.setModelByMap(dests, sourceMap, destGetMethod, destSetMethod);
+    }
 
-    public static <D, K, S, V> void getAndSetFeildToFieldByMap(Collection<D> dests, Map<K, S> sourceMap, Function<? super D, K> destGetMethod,
+    public static <D, K, S, V> void setFeildToFieldByMap(Collection<D> dests, Map<K, S> sourceMap, Function<? super D, K> destGetMethod,
                                                                Function<? super S, V> sourceGetMethod, BiConsumer<D, V> destSetMethod) {
         if (isNotEmpty(dests)) {
             for (D d : dests) {
@@ -559,7 +565,7 @@ public class CollectionUtil {
         }
     }
 
-    public static <D, K, S> void getAndSetListByMap(List<D> dests, Map<K, List<S>> sourceListMap, Function<? super D, K> destGetMethod,
+    public static <D, K, S> void setListByMap(List<D> dests, Map<K, List<S>> sourceListMap, Function<? super D, K> destGetMethod,
                                                     BiConsumer<D, List<S>> destSetMethod) {
         for (D d : dests) {
             if (d != null) {
@@ -570,6 +576,12 @@ public class CollectionUtil {
                 }
             }
         }
+    }
+    
+    public static <D, K, S> void setListByList(List<D> dests, List<S> sourceList, Function<? super D, K> destGetMethod,
+                                              BiConsumer<D, List<S>> destSetMethod,Function<? super S, K> sourceGetMethod) {
+        Map<K, List<S>> sourceListMap = toGroup(sourceList, sourceGetMethod);
+        setListByMap(dests, sourceListMap, destGetMethod, destSetMethod);
     }
 
     public static <T> List<T> newEmptyList() {
