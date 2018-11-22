@@ -176,7 +176,7 @@ public class ApiWrap extends BaseHasImportsWrap implements CanbeImportWrap {
     @Override
     public String toString() {
         String name = getClassName();
-        name = name.replace("_$", "$");
+        //name = name.replace("_$", "$");
         return name;
     }
 
