@@ -497,7 +497,10 @@ public class Sql {
 	}
 	
 	public String replaceWildcardWithColumnsSqlName(String sql) {
-		if(SqlTypeChecker.isSelectSql(sql) && SqlParseHelper.getSelect(SqlParseHelper.removeSqlComments(sql)).indexOf("*") >= 0 && SqlParseHelper.getSelect(SqlParseHelper.removeSqlComments(sql)).indexOf("count(") < 0) {
+	    String sqlLower =sql.toLowerCase();
+		if(SqlTypeChecker.isSelectSql(sql) 
+		        && SqlParseHelper.getSelect(SqlParseHelper.removeSqlComments(sqlLower)).indexOf("*") >= 0 
+		        && SqlParseHelper.getSelect(SqlParseHelper.removeSqlComments(sqlLower)).indexOf("count(") < 0) {
 			return SqlParseHelper.getPrettySql("select " + joinColumnsSqlName() + " " + SqlParseHelper.removeSelect(sql));
 		}else {
 			return sql;

@@ -30,6 +30,10 @@ public class Pagination implements IPagination {
 
     }
     
+    public Pagination(PageList<?> pageList) {
+        this.pageList = pageList;
+    }
+    
     public int getPage() {
         return page;
     }
@@ -40,10 +44,6 @@ public class Pagination implements IPagination {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
-    }
-
-    public Pagination(PageList<?> pageList) {
-        this.pageList = pageList;
     }
 
     public int getCurrent() {

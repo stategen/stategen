@@ -337,7 +337,8 @@ public class TableConfig {
 		}
 
 		private static String getIbatisSql(OperationConfig op, Sql sql) {
-            String ibatisNamedSql = sql.replaceWildcardWithColumnsSqlName(SqlParseHelper.convert2NamedParametersSql(op.getSql(),"#","#")) + " "+ StringHelper.defaultString(op.getAppend());
+		    String convert2NamedParametersSql = SqlParseHelper.convert2NamedParametersSql(op.getSql(),"#","#");
+            String ibatisNamedSql = sql.replaceWildcardWithColumnsSqlName(convert2NamedParametersSql) + " "+ StringHelper.defaultString(op.getAppend());
             String ibatisSql = processSqlForMoneyParam(ibatisNamedSql,sql.getParams());
             return ibatisSql;
         }

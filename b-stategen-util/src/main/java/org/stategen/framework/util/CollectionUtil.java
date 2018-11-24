@@ -565,6 +565,7 @@ public class CollectionUtil {
         }
     }
 
+
     public static <D, K, S> void setListByMap(List<D> dests, Map<K, List<S>> sourceListMap, Function<? super D, K> destGetMethod,
                                                     BiConsumer<D, List<S>> destSetMethod) {
         for (D d : dests) {

@@ -32,7 +32,6 @@ public class AntdPageList<E> implements IPageList {
     
     private transient PageList<E> pageList;
     
-    private Pagination pagination;
     
     public static <T> AntdPageList<T> create(PageList<T> pageList){
         return new AntdPageList<T>(pageList);
@@ -48,11 +47,10 @@ public class AntdPageList<E> implements IPageList {
             throw new BusinessException("pageList不能为空");
         }
         this.pageList =pageList;
-        pagination =new Pagination(pageList);
     }
     
     public Pagination getPagination() {
-        return pagination;
+        return pageList.getPagination();
     }
     
     public List<E> getList(){

@@ -27,6 +27,8 @@ public class PageList<E> implements IPageList ,Serializable {
     private long               totalPages;
 
     private List<E> items;
+    
+    private Pagination pagination;
 
     public PageList() {
         items =new ArrayList<>(0);
@@ -91,6 +93,10 @@ public class PageList<E> implements IPageList ,Serializable {
 
     public void setTotalPages(long totalPages) {
         this.totalPages = totalPages;
+    }
+    
+    public Pagination getPagination() {
+        return new Pagination(this);
     }
 
 }
