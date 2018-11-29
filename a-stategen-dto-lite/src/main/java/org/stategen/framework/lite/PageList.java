@@ -51,7 +51,7 @@ public class PageList<E> implements IPageList ,Serializable {
     private void calculteTotalPages(){
         if (totalCount!=0 && pageSize!=0){
             double c = totalCount /pageSize ;
-            this.totalPages = ((long) Math.ceil(c))+1;
+            this.totalPages = ((long) Math.ceil(c));
         }
     }
 

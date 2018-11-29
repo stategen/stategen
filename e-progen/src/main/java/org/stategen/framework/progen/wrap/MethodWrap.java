@@ -39,9 +39,10 @@ import org.stategen.framework.annotation.AreaExtraProp;
 import org.stategen.framework.annotation.GenForm;
 import org.stategen.framework.annotation.State;
 import org.stategen.framework.annotation.StateExtraProp;
-import org.stategen.framework.enums.StateOperation;
+import org.stategen.framework.enums.DataOpt;
 import org.stategen.framework.generator.util.ControllerHelpers;
 import org.stategen.framework.generator.util.RequestMethodWrap;
+import org.stategen.framework.lite.SimpleResponse;
 import org.stategen.framework.progen.GenContext;
 import org.stategen.framework.progen.UrlPart;
 import org.stategen.framework.util.AnnotationUtil;
@@ -102,13 +103,15 @@ public class MethodWrap {
         Class<?> returnClz = returnWrap.getIsGeneric() ? returnWrap.getGeneric().getClazz() : returnWrap.getClazz();
         boolean stateFieldAdded = false;
 
-        StateOperation operation = StateOperation.APPEND_OR_UPDATE_CURRENT;
+        DataOpt dataOpt = DataOpt.APPEND_OR_UPDATE;
         Set<String> areaExtraProps = null;
         Set<String> stateExtraProps = null;
         Boolean init = false;
         Boolean isSetted = false;
         Boolean genEffect = true;
         Boolean initCheck =true;
+        BaseWrap areaTemp = null; 
+        Boolean genRefresh =false;
 
         StateWrap stateWrap = new StateWrap();
         this.setState(stateWrap);
@@ -117,40 +120,41 @@ public class MethodWrap {
 
         Set<StateExtraProp> stateExtraPropAnnos = AnnotatedElementUtils.getMergedRepeatableAnnotations(methodFun, StateExtraProp.class);
         stateExtraProps = CollectionUtil.toSet(stateExtraPropAnnos, StateExtraProp::value);
-        
-        
 
         State stateAnno = AnnotatedElementUtils.getMergedAnnotation(methodFun, State.class);
         if (stateAnno != null) {
             init = stateAnno.init();
-            operation = stateAnno.operation();
+            dataOpt = stateAnno.dataOpt();
             isSetted = true;
             genEffect = stateAnno.genEffect();
             initCheck=stateAnno.initCheck();
-            Class<?> stateAnnoEffectField = stateAnno.area();
-            if (stateAnnoEffectField != Object.class) {
-                if (stateAnnoEffectField != returnClz) {
-                    area = GenContext.wrapContainer.add(stateAnnoEffectField, false);
+            genRefresh =stateAnno.genRefresh();
+            Class<?> stateAreaClass = stateAnno.area();
+            if (stateAreaClass != Object.class) {
+                if (stateAreaClass != returnClz) {
+                    areaTemp = GenContext.wrapContainer.add(stateAreaClass, false);
                     stateFieldAdded = true;
                 }
             }
         }
 
         if (!stateFieldAdded && area == null) {
-            area = GenContext.wrapContainer.add(returnClz, false);
+            areaTemp = GenContext.wrapContainer.add(returnClz, false);
         }
 
-        if (area != null) {
-            apiWrap.addArea(area);
+        if (areaTemp != null && !SimpleResponse.class.isAssignableFrom(areaTemp.getClazz())) {
+            apiWrap.addArea(areaTemp);
+            this.area =areaTemp;
         }
 
         stateWrap.setInit(init);
         stateWrap.setAreaExtraProps(areaExtraProps);
         stateWrap.setStateExtraProps(stateExtraProps);
-        stateWrap.setOperation(operation);
+        stateWrap.setDataOpt(dataOpt);
         stateWrap.setIsSetted(isSetted);
         stateWrap.setGenEffect(genEffect);
         stateWrap.setInitCheck(initCheck);
+        stateWrap.setGenRefresh(genRefresh);
     }
 
     public BaseWrap getArea() {

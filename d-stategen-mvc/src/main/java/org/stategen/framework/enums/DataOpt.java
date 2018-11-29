@@ -17,14 +17,14 @@
 package org.stategen.framework.enums;
 
 /**
- * The Enum StateOperation.
+ * The Enum DataOpt.
  */
-public enum StateOperation {
+public enum DataOpt {
     /***替换state中的Array*/
     FULL_REPLACE,
     
     /***更新当前Array中的内容，如果Id相同，则用新的替换，如果没有，则增加*/
-    APPEND_OR_UPDATE_CURRENT,
+    APPEND_OR_UPDATE,
     
     /***带入id查找当前Array中的内容，如果有，删除*/
     DELETE_IF_EXIST,

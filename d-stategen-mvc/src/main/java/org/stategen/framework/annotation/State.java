@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.springframework.core.annotation.AliasFor;
-import org.stategen.framework.enums.StateOperation;
+import org.stategen.framework.enums.DataOpt;
 
 /**
  * The Interface State.
@@ -39,7 +39,7 @@ public @interface State {
     @AliasFor(attribute = "value")
     Class<?> area() default Object.class;
 
-    StateOperation operation() default StateOperation.APPEND_OR_UPDATE_CURRENT;
+    DataOpt dataOpt() default DataOpt.APPEND_OR_UPDATE;
 
     boolean init() default false;
 
@@ -47,6 +47,8 @@ public @interface State {
     boolean initCheck() default true;
     
     boolean genEffect() default true;
+    
+    boolean genRefresh() default false;
     
     
 

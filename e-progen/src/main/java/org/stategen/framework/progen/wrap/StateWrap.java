@@ -18,14 +18,14 @@ package org.stategen.framework.progen.wrap;
 
 import java.util.Set;
 
-import org.stategen.framework.enums.StateOperation;
+import org.stategen.framework.enums.DataOpt;
 
 /**
  * The Class StateWrap.
  */
 public class StateWrap {
 
-    private StateOperation operation;
+    private DataOpt dataOpt;
 
     private Boolean init;
 
@@ -34,6 +34,8 @@ public class StateWrap {
     private Boolean genEffect;
 
     private Boolean initCheck;
+    
+    private Boolean genRefresh;
 
     private Set<String> areaExtraProps;
 
@@ -47,14 +49,14 @@ public class StateWrap {
         this.init = init;
     }
 
-    public StateOperation getOperation() {
-        return operation;
+    public DataOpt getDataOpt() {
+        return dataOpt;
     }
-
-    public void setOperation(StateOperation operation) {
-        this.operation = operation;
+    
+    public void setDataOpt(DataOpt dataOpt) {
+        this.dataOpt = dataOpt;
     }
-
+    
     public Boolean getIsSetted() {
         return isSetted;
     }
@@ -93,6 +95,14 @@ public class StateWrap {
     
     public void setInitCheck(Boolean initCheck) {
         this.initCheck = initCheck;
+    }
+    
+    public void setGenRefresh(Boolean genRefresh) {
+        this.genRefresh = genRefresh;
+    }
+    
+    public Boolean getGenRefresh() {
+        return genRefresh;
     }
 
 }
