@@ -18,6 +18,7 @@
 package org.stategen.framework.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -658,14 +659,11 @@ public class StringUtil {
         return title;
     }
 
-    public static String beforeLines(String destLines ,String dest){
-        if (StringUtil.isEmpty(destLines)|| StringUtil.isEmpty(dest)){
-            return destLines;
+    public static List<String> toLines(String destLines){
+        if (StringUtil.isEmpty(destLines)){
+            return Arrays.asList(destLines);
         }
-
-        destLines =dest+destLines;
-        destLines = destLines.replace("\n", "\n"+dest);
-        System.out.println(destLines);
-        return destLines;
+        String lines[] = destLines.split("\\r?\\n");
+        return Arrays.asList(lines);
     }
 }
