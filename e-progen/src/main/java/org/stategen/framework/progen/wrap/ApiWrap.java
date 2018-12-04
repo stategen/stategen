@@ -18,7 +18,6 @@ package org.stategen.framework.progen.wrap;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -56,7 +55,7 @@ public class ApiWrap extends BaseHasImportsWrap implements CanbeImportWrap {
     private List<MethodWrap> inits = null;
     private List<MethodWrap> effectInits = null;
 
-    private Map<Class<?>, BaseWrap> areas = new LinkedHashMap<Class<?>, BaseWrap>();
+    private Map<String, BaseWrap> areas = new TreeMap<String, BaseWrap>(new StringComparetor());
 
     public ApiWrap(Class<?> controllerClz, String className) {
         super();
@@ -92,8 +91,9 @@ public class ApiWrap extends BaseHasImportsWrap implements CanbeImportWrap {
 
     public void addArea(BaseWrap area) {
         Class<?> clazz = area.getClazz();
-        if (!areas.containsKey(clazz)) {
-            areas.put(clazz, area);
+        String className=clazz.getName();
+        if (!areas.containsKey(className)) {
+            areas.put(className, area);
         }
     }
 

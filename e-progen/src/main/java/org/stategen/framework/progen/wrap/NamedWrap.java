@@ -24,7 +24,6 @@ import javax.persistence.TemporalType;
 
 import org.stategen.framework.annotation.Editor;
 import org.stategen.framework.lite.Image;
-import org.stategen.framework.lite.enums.EditorType;
 import org.stategen.framework.progen.FieldRule;
 import org.stategen.framework.util.AnnotationUtil;
 import org.stategen.framework.util.StringUtil;
@@ -104,9 +103,9 @@ public class NamedWrap extends MemberWrap {
     
     public String getEditorType() {
         if (editorType == null) {
-            EditorType edType = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::value, getMembers());
+            String edType = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::value, getMembers());
             if (edType!=null){
-                editorType=edType.name();
+                editorType=edType;
             } else {
                 editorType ="";
             }
