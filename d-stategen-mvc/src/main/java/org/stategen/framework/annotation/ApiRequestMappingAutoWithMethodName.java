@@ -41,7 +41,6 @@ import io.swagger.annotations.ResponseHeader;
 @RequestMapping()
 @ResponseBody
 @ApiOperation(value = "")
-@GenForm(false)
 /***
  * 这是一个集成swagger ApiOperation与requestMapping的标注，该类可以可以方法名(method)，方法名自动映射到路径上，减少开发中的不一致
  * 
@@ -63,9 +62,6 @@ public @interface ApiRequestMappingAutoWithMethodName {
 
     @AliasFor(annotation = RequestMapping.class)
     String produces() default Constant.APPLICATION_JSON;
-    
-    @AliasFor(annotation = GenForm.class,attribute="value")
-    boolean genForm() default false;
     
     /***
      * <pre>

@@ -30,13 +30,10 @@ import org.stategen.framework.enums.DataOpt;
  */
 @Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
+@GenForm(false)
 @Inherited
 public @interface State {
 
-    @AliasFor(attribute = "area")
-    Class<?> value() default Object.class;
-
-    @AliasFor(attribute = "value")
     Class<?> area() default Object.class;
 
     DataOpt dataOpt() default DataOpt.APPEND_OR_UPDATE;
@@ -49,6 +46,9 @@ public @interface State {
     boolean genEffect() default true;
     
     boolean genRefresh() default false;
+    
+    @AliasFor(annotation = GenForm.class,attribute="value")
+    boolean genForm() default false;
     
     
 
