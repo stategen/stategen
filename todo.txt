@@ -32,3 +32,4 @@ icon
  deleteByxxxId返回值的处理
  yk xxxx
  dashboard object处理
+ request param and Object equal
