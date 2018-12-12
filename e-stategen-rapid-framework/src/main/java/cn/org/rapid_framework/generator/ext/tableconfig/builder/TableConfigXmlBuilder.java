@@ -17,15 +17,10 @@
  */
 package cn.org.rapid_framework.generator.ext.tableconfig.builder;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
-
-import org.xml.sax.SAXException;
 
 import cn.org.rapid_framework.generator.GeneratorConstants;
 import cn.org.rapid_framework.generator.GeneratorProperties;
@@ -37,10 +32,10 @@ import cn.org.rapid_framework.generator.ext.tableconfig.model.TableConfig.Result
 import cn.org.rapid_framework.generator.ext.tableconfig.model.TableConfig.SqlConfig;
 import cn.org.rapid_framework.generator.ext.tableconfig.model.TableConfigSet;
 import cn.org.rapid_framework.generator.util.BeanHelper;
-import cn.org.rapid_framework.generator.util.IOHelper;
 import cn.org.rapid_framework.generator.util.StringHelper;
 import cn.org.rapid_framework.generator.util.XMLHelper;
 import cn.org.rapid_framework.generator.util.XMLHelper.NodeData;
+import org.xml.sax.SAXException;
 
 public class TableConfigXmlBuilder {
 
@@ -62,27 +57,21 @@ public class TableConfigXmlBuilder {
         for(String filepath : tableConfigFiles ) {
             if(filepath.endsWith(".xml")) {
                 File file = new File(basedir,filepath);
-                TableConfig tableConfig=parseFromXML(file);
+                TableConfig tableConfig = null;
+                try {
+                    tableConfig = parseFromXML(file);
+                }catch(Throwable e) {
+                  throw new RuntimeException("parse file:"+file.getAbsolutePath()+" occer error",e);
+                }
                 result.addTableConfig(tableConfig);
             }
         }
         return result;
     }
 
-    public TableConfig parseFromXML(File file) {
-        InputStream in = null;
-        try {
-            in = new BufferedInputStream(new FileInputStream(file));
-            return parseFromXML(in);
-        }catch(Throwable e) {
-            throw new RuntimeException("parse file:"+file.getAbsolutePath()+" occer error",e);
-        }finally {
-            IOHelper.close(in, null);
-        }
-    }
     
-    public TableConfig parseFromXML(InputStream inputStream) throws SAXException, IOException {
-        NodeData nodeData = new XMLHelper().parseXML(inputStream);
+    public TableConfig parseFromXML(File file) throws SAXException, IOException {
+        NodeData nodeData = new XMLHelper().parseXML(file);
         TableConfig config = new TableConfig();
         
         // table

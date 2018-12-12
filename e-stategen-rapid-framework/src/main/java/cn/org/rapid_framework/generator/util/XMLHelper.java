@@ -1,8 +1,8 @@
 package cn.org.rapid_framework.generator.util;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -75,11 +75,9 @@ public class XMLHelper {
     }
     
     public static class SimpleXmlParser {
-    	public static Document getLoadingDoc(String file) throws FileNotFoundException, SAXException, IOException{
-    		return getLoadingDoc(new FileInputStream(file));
-    	}
+        
     	
-        static Document getLoadingDoc(InputStream in) throws SAXException,IOException {
+        static Document getLoadingDoc(File file) throws SAXException,IOException {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setIgnoringElementContentWhitespace(false);
             dbf.setValidating(false);
@@ -94,13 +92,25 @@ public class XMLHelper {
                                                      String systemId)
                                                                      throws SAXException,
                                                                      IOException {
-                        InputSource is = new InputSource(new StringReader(""));
+                        String text=null;
+                        if (systemId.startsWith("file://")){
+                            File entityFile =new File(systemId);
+                            String systemIdFileName = file.getParent()+"/"+entityFile.getName();
+                            File systemIdFile =new File(systemIdFileName);
+                            if (!systemIdFile.isFile() || !systemIdFile.exists()){
+                                throw new IOException(systemIdFile+" not exists");
+                            }
+                            String systemIdFileText = IOHelper.readFile(systemIdFile);
+                            text =systemIdFileText;
+                        } else{
+                            text="";
+                        }
+                        InputSource is=new InputSource(new StringReader(text));
                         is.setSystemId(systemId);
                         return is;
                     }
                 });
-                
-                InputSource is = new InputSource(in);
+                InputSource is = new InputSource(new BufferedInputStream(new FileInputStream(file)));
                 return db.parse(is);
             } catch (ParserConfigurationException x) {
                 throw new Error(x);
@@ -236,15 +246,11 @@ public class XMLHelper {
         return node.getNodeValue();
     }
     
-    public NodeData parseXML(InputStream in) throws SAXException, IOException {
-        Document doc = SimpleXmlParser.getLoadingDoc(in);
+    public NodeData parseXML(File file) throws SAXException, IOException {
+        Document doc = SimpleXmlParser.getLoadingDoc(file);
         return new SimpleXmlParser().treeWalk(doc.getDocumentElement());
     }
 
-    public NodeData parseXML(File file) throws SAXException, IOException {
-        FileInputStream in = new FileInputStream(file);
-		try {return parseXML(in);}finally{in.close();}
-    }
     
     public static String getXMLEncoding(InputStream inputStream) throws UnsupportedEncodingException, IOException {
     	return getXMLEncoding(IOHelper.toString("UTF-8", inputStream));
@@ -296,15 +302,5 @@ public class XMLHelper {
         return result;
     }
     
-    public static void main(String[] args) throws FileNotFoundException, SAXException, IOException {
-        String file = "D:/dev/workspaces/alipay/ali-generator/generator/src/table_test.xml";
-        NodeData nd = new XMLHelper().parseXML(new FileInputStream(new File(file)));
-        
-        LinkedHashMap table = nd.attributes;
-        List columns = nd.childs;
-        System.out.println(table);
-        System.out.println(columns);
-//        System.out.println(nd);
-    }
 
 }

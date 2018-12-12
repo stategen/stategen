@@ -47,10 +47,6 @@ public @interface ApiConfig {
     @AliasFor(annotation = Menu.class,attribute="value")
     boolean menu() default true;
     
-    /***面包屑*/
-    @AliasFor(annotation = Menu.class)
-    Class<?> breadParent() default Object.class;
-    
     @AliasFor(annotation = Api.class)
     boolean hidden() default false;
     

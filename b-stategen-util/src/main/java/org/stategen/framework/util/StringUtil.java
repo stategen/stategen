@@ -454,6 +454,25 @@ public class StringUtil {
         return "";
     }
 
+    public static String concat(String join, String... strs) {
+        StringBuffer sb = new StringBuffer();
+        boolean append = false;
+        boolean joinIsNotEmpty = isNotEmpty(join);
+        for (String str : strs) {
+            if (isNotEmpty(str)) {
+                if (append) {
+                    if (joinIsNotEmpty) {
+                        sb.append(join);
+                    }
+                }
+                sb.append(str);
+                append = true;
+            }
+
+        }
+        return sb.toString();
+    }
+
     public static String concatPath(String... subPaths) {
         if (CollectionUtil.isNotEmpty(subPaths)) {
             StringBuffer sb = new StringBuffer();
@@ -461,8 +480,8 @@ public class StringUtil {
             for (int i = 0; i < subPaths.length; i++) {
                 String subPath = subPaths[i];
                 if (isNotEmpty(subPath)) {
-                    subPath =subPath.replace(StringUtil.BACK_SLASH,StringUtil.SLASH);
-                    subPath=endWithSlash(subPath);
+                    subPath = subPath.replace(StringUtil.BACK_SLASH, StringUtil.SLASH);
+                    subPath = endWithSlash(subPath);
                     sb.append(subPath);
                 }
             }
@@ -547,7 +566,7 @@ public class StringUtil {
         return endWith(dest, SLASH);
     }
 
-    public static boolean isFolderEnd(String fileName){
+    public static boolean isFolderEnd(String fileName) {
         return fileName.endsWith(SLASH) || fileName.endsWith(BACK_SLASH);
     }
 
@@ -555,21 +574,20 @@ public class StringUtil {
         return endWith(dest, SLASH);
     }
 
-    public static String join(String joinStr,String...dests){
-        StringBuffer sb =new StringBuffer();
+    public static String join(String joinStr, String... dests) {
+        StringBuffer sb = new StringBuffer();
         for (String dest : dests) {
             sb.append(dest);
-            if (!dest.endsWith(joinStr)){
+            if (!dest.endsWith(joinStr)) {
                 sb.append(joinStr);
             }
         }
         return sb.toString();
     }
 
-    public static String joinSLash(String...dests){
+    public static String joinSLash(String... dests) {
         return join(SLASH, dests);
     }
-
 
     public static String trimRightTo(String dest, String indexStr) {
         if (StringUtil.isEmpty(dest) || StringUtil.isEmpty(indexStr)) {
@@ -586,6 +604,7 @@ public class StringUtil {
     public static String trimSubfix(String dest, String indexStr) {
         return trimRight(dest, indexStr);
     }
+
     public static String trimRight(String dest, String indexStr) {
         if (StringUtil.isEmpty(dest) || StringUtil.isEmpty(indexStr)) {
             return dest;
@@ -596,7 +615,6 @@ public class StringUtil {
         return dest;
     }
 
-    
     /**
      * trimLeftTo(abcdeabcde,c)=>de
      * 
@@ -614,12 +632,13 @@ public class StringUtil {
             return dest.substring(idx + indexStr.length());
         }
         return dest;
+
     }
 
     public static String trimPrefix(String dest, String indexStr) {
         return trimLeft(dest, indexStr);
     }
-    
+
     /**
      * trimLeft(abcdec,abc)=>dec
      * 
@@ -647,8 +666,8 @@ public class StringUtil {
         return dest.contains(subStr);
     }
 
-    public static String getSimpleTitle(String title){
-        if (StringUtil.isEmpty(title)){
+    public static String getSimpleTitle(String title) {
+        if (StringUtil.isEmpty(title)) {
             return title;
         }
 
@@ -659,8 +678,8 @@ public class StringUtil {
         return title;
     }
 
-    public static List<String> toLines(String destLines){
-        if (StringUtil.isEmpty(destLines)){
+    public static List<String> toLines(String destLines) {
+        if (StringUtil.isEmpty(destLines)) {
             return Arrays.asList(destLines);
         }
         String lines[] = destLines.split("\\r?\\n");

@@ -257,9 +257,9 @@ public class HttpRequestUtil {
         String requestURI = RequestUtil.getRequestPath();
         String newURI = requestURI.replaceFirst(orgUrlRex, reWrite);
         StringBuffer newUrlBuffer = new StringBuffer(targetServer).append(newURI);
-        String params = request.getQueryString();
+        String queryString = request.getQueryString();
         String newUrl = newUrlBuffer.toString();
-        String result = HttpRequestUtil.sendGet(newUrl, params);
+        String result = HttpRequestUtil.sendGet(newUrl, queryString);
         return result;
     }
 

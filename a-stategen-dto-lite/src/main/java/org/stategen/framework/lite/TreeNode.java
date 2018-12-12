@@ -1,43 +1,49 @@
 package org.stategen.framework.lite;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 
-public abstract class TreeNode<T extends TreeNode<T>> {
-    
+public abstract class TreeNode<T extends TreeNode<T>> implements ITreeNode<T> {
+
     protected transient T parent;
-    
-    protected List<T> _children;
+
+    protected transient String _uuid = UUID.randomUUID().toString();
+
+    protected LinkedHashMap<String, T> _children;
 
     public T getParent() {
         return parent;
     }
-    
+
     /***不会被fastjson序列化，用 getChildren 或 getChildList 或其它方法 调用 get_Children */
-    public List<T> get_Children() {
-        return _children;
+    protected synchronized List<T> getChildren() {
+        if (_children != null) {
+            return new ArrayList<T>(_children.values());
+        }
+        return null;
     }
-        
+
     @SuppressWarnings("unchecked")
-    public void setParent(T parent) {
-        T oldParent = this.parent;
-        if (oldParent!=null){
-            if (oldParent!=parent){
-                List<T> children = oldParent.get_Children();
-                if (children!=null){
-                    children.remove(this);
+    @Override
+    public void addChild(T child) {
+        if (child != null) {
+            if (child.parent != null) {
+                if (child.parent==this){
+                    return;
+                }
+                if (child.parent._children != null) {
+                    child.parent._children.remove(child._uuid);
                 }
             }
-        }
-        this.parent=parent;
-        if (parent!=null){
-            List<T> children = parent.get_Children();
-            if (children==null){
-                children=new ArrayList<T>();
-                parent._children=children;
-            }
-            children.add((T)this);
             
+            if (this._children == null) {
+                this._children = new LinkedHashMap<String, T>();
+            }
+            child.parent=(T) this;
+            this._children.put(child._uuid, child);
         }
     }
+
 }

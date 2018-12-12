@@ -17,7 +17,7 @@
 package org.stategen.framework.lite;
 
 import org.stategen.framework.lite.enums.VisitCheckType;
-import org.stategen.framework.lite.enums.VisitType;
+import org.stategen.framework.lite.enums.MenuType;
 
 /**
  * IMenu
@@ -31,7 +31,7 @@ import org.stategen.framework.lite.enums.VisitType;
  *
  * @param <M> the generic type
  */
-public interface IMenu<M> {
+public interface IMenu<T extends IMenu<T>> extends  ITreeNode<T> {
 
     public void setProjectName(String projectName);
 
@@ -45,18 +45,14 @@ public interface IMenu<M> {
 
     public void setRoute(String route);
 
-    public void setVisitType(VisitType visitType);
+    public void setMenuType(MenuType menuType);
 
     public void setCheckType(VisitCheckType visitCheckType);
-
-    public void setMenuParent(M menuParent);
-    
-    public void setBreadParent(M BreadParent);
     
     public String getControllerName();
 
-    public static <M extends IMenu<M>> M createMenu(Class<M> menuClz, String controllerName, String methodName, String url, String name,
-                                                      String route, VisitType visitType,
+    public static <M extends IMenu> M createMenu(Class<M> menuClz, String controllerName, String methodName, String url, String name,
+                                                      String route, MenuType menuType,
                                                       VisitCheckType visitCheckType) throws IllegalArgumentException, IllegalAccessException  {
         M result;
         try {
@@ -69,7 +65,7 @@ public interface IMenu<M> {
         result.setUrl(url);
         result.setName(name);
         result.setRoute(route);
-        result.setVisitType(visitType);
+        result.setMenuType(menuType);
         result.setCheckType(visitCheckType);
         return result;
     }

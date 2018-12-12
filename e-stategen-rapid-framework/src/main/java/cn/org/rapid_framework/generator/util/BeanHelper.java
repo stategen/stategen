@@ -104,6 +104,9 @@ public class BeanHelper {
     public static void copyProperties(Object target, Map source,boolean ignoreCase)  {
         Set<String> keys = source.keySet();
         for(String key : keys) {
+            if ("xml:base".equalsIgnoreCase(key)){
+                continue;
+            }
         	PropertyDescriptor pd = getPropertyDescriptor(target.getClass(), key, ignoreCase);
         	if(pd == null) {
         		throw new IllegalArgumentException("not found property:'"+key+"' on class:"+target.getClass());

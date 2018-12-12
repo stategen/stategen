@@ -64,13 +64,13 @@ public class IOHelper {
     
 	public static String readFile(File file)  {
 		try {
-			Reader in = new BufferedReader(new FileReader(file));
+		    Reader in = new BufferedReader(new FileReader(file));
 			String result = toString(in);
 			in.close();
 			return result;
 		}catch(IOException e){
 			throw new RuntimeException("occer IOException when read file:"+file,e);
-		}
+		} 
 	}
 
     public static String toString(Reader in) {

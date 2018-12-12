@@ -17,14 +17,12 @@
 package org.stategen.framework.lite.enums;
 
 /**
- * The Enum VisitType.
+ * The Enum MenuType.
  */
-public enum VisitType {
+public enum MenuType {
+    NONE,
     MENU,
+    DYNAMIC,
     API_PATH,
     ;
-    
-    public static VisitType getType(boolean isMenu){
-        return isMenu?MENU:API_PATH;
-    }
 }

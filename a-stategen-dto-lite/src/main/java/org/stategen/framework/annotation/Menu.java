@@ -33,6 +33,4 @@ import java.lang.annotation.Target;
 public @interface Menu {
     
     boolean value() default true;
-    /***面包屑*/
-    Class<?> breadParent() default Object.class;
 }

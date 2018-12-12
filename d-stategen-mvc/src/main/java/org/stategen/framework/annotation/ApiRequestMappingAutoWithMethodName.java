@@ -17,6 +17,7 @@
 package org.stategen.framework.annotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -41,6 +42,7 @@ import io.swagger.annotations.ResponseHeader;
 @RequestMapping()
 @ResponseBody
 @ApiOperation(value = "")
+@Inherited
 /***
  * 这是一个集成swagger ApiOperation与requestMapping的标注，该类可以可以方法名(method)，方法名自动映射到路径上，减少开发中的不一致
  * 

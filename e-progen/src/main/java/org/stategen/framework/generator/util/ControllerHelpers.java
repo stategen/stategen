@@ -36,8 +36,8 @@ import org.stategen.framework.annotation.Menu;
 import org.stategen.framework.annotation.Route;
 import org.stategen.framework.annotation.VisitCheck;
 import org.stategen.framework.lite.IMenu;
+import org.stategen.framework.lite.enums.MenuType;
 import org.stategen.framework.lite.enums.VisitCheckType;
-import org.stategen.framework.lite.enums.VisitType;
 import org.stategen.framework.progen.ApiMethodFilter;
 import org.stategen.framework.spring.util.RequestMappingResolveResult;
 import org.stategen.framework.spring.util.RequestMappingResolver;
@@ -83,53 +83,6 @@ public class ControllerHelpers {
         return route;
     }
 
-    /**
-     * The Class ControllerMenuWrap.
-     *
-     * @param <M> the generic type
-     */
-    private static class ControllerMenuWrap<M> {
-        M menu;
-        String controllerSimpleName;
-        Class<?> controllerClass;
-        Class<?> breadParentClass;
-
-        public ControllerMenuWrap(String controllerSimpleName, M menu, Class<?> controllerClass, Class<?> breadParentClass) {
-            super();
-            this.controllerSimpleName = controllerSimpleName;
-            this.menu = menu;
-            this.controllerClass = controllerClass;
-            this.breadParentClass = breadParentClass;
-        }
-
-        public M getMenu() {
-            return menu;
-        }
-
-        //        public Class<?> getControllerClass() {
-        //            return controllerClass;
-        //        }
-        //
-        //        public Class<?> getBreadParentClass() {
-        //            return breadParentClass;
-        //        }
-
-        public String getControllerSimpleName() {
-            return controllerSimpleName;
-        }
-
-        public String getControllerClassName() {
-            return controllerClass.getName();
-        }
-
-        public String getBreadParentClassName() {
-            if (breadParentClass != null) {
-                return breadParentClass.getName();
-            }
-            return null;
-        }
-    }
-
     public static RequestMethodWrap getMethodUrlAndMethod(String controllerUrl, Method method, boolean defautPost) {
         RequestMappingResolveResult resolved = RequestMappingResolver.resolveOwnPath(method);
         RequestMethod requestMethod = resolved.getRequestMethod();
@@ -166,10 +119,10 @@ public class ControllerHelpers {
      * @throws IllegalAccessException
      */
     public static <M extends IMenu<M>> List<M> genAllControllerMenus(Class<M> menuClz,
-                                                                     RequestMappingHandlerMapping requestMappingHandlerMapping) throws InstantiationException, IllegalAccessException {
+                                                                  RequestMappingHandlerMapping requestMappingHandlerMapping) throws InstantiationException, IllegalAccessException {
 
         Map<RequestMappingInfo, HandlerMethod> requestMappingMap = requestMappingHandlerMapping.getHandlerMethods();
-        List<M> allMenus = new ArrayList<M>();
+        List<M> allControllerMenus = new ArrayList<M>();
 
         Set<String> packageNames = new HashSet<String>(requestMappingMap.size());
         for (Map.Entry<RequestMappingInfo, HandlerMethod> requestMappingEntry : requestMappingMap.entrySet()) {
@@ -207,11 +160,10 @@ public class ControllerHelpers {
             controllerClassSet.add(controllerClass);
         }
 
-        List<ControllerMenuWrap<M>> controllerMenus = new ArrayList<ControllerMenuWrap<M>>();
-        scanControllerMenus(controllerClassSet, menuClz, allMenus, controllerMenus);
-        genControllerMenuRelations(controllerMenus);
+        scanControllerMenus(controllerClassSet, menuClz, allControllerMenus);
+        allControllerMenus=genControllerMenuRelations(menuClz,allControllerMenus);
 
-        return allMenus;
+        return allControllerMenus;
 
     }
 
@@ -219,44 +171,56 @@ public class ControllerHelpers {
      * 转换菜单的关系，变为树
      * 
      * @param projectControllerMenuMap
+     * @throws IllegalAccessException 
+     * @throws IllegalArgumentException 
      */
-    private static <M extends IMenu<M>> void genControllerMenuRelations(List<ControllerMenuWrap<M>> controllerMenus) {
-        Map<String, M> simpleNameMap = new LinkedCaseInsensitiveMap<M>(controllerMenus.size());
-        CollectionUtil.toMap(simpleNameMap, ControllerMenuWrap::getControllerSimpleName, controllerMenus, ControllerMenuWrap::getMenu);
-        Map<String, M> controllClassMap = CollectionUtil.toMap(ControllerMenuWrap::getControllerClassName, controllerMenus,
-            ControllerMenuWrap::getMenu);
-        Map<M, String> breadControllerClassMap = CollectionUtil.toMap(ControllerMenuWrap::getMenu, controllerMenus,
-            ControllerMenuWrap::getBreadParentClassName);
+    private static <M extends IMenu<M>> List<M> genControllerMenuRelations(Class<M> menuClass,List<M> allControllerMenus) throws IllegalArgumentException, IllegalAccessException {
 
+        Map<String, M> simpleNameMap =new LinkedCaseInsensitiveMap<M>(allControllerMenus.size());
+        CollectionUtil.toMap(simpleNameMap, allControllerMenus, M::getControllerName);
         List<String> simpleControllerNames = new ArrayList<String>(simpleNameMap.keySet());
+        
 
         for (String simpleControllerName : simpleControllerNames) {
-            M currentMenu = simpleNameMap.get(simpleControllerName);
-            M menuParent = null;
-            M breadParent = null;
-
-            int lastIdx = simpleControllerName.lastIndexOf(StringUtil.UNDERLINE);
-            if (lastIdx > 0) {
-                String menuParentControllerName = simpleControllerName.substring(0, lastIdx);
-                menuParent = simpleNameMap.get(menuParentControllerName);
-            } else {
-                String breadParentControllerClass = breadControllerClassMap.get(currentMenu);
-                if (breadParentControllerClass != null) {
-                    breadParent = controllClassMap.get(breadParentControllerClass);
+            String currentMenuName =simpleControllerName;
+            int lastIdx = currentMenuName.lastIndexOf(StringUtil.UNDERLINE);
+            while (lastIdx>0) {
+                M currentMenu =simpleNameMap.get(currentMenuName);
+                
+                String menuParentControllerName = currentMenuName.substring(0, lastIdx);
+                M menuParent = simpleNameMap.get(menuParentControllerName);
+                
+                if (menuParent==null){
+                    String menuName =StringUtil.trimLeftTo(menuParentControllerName, StringUtil.UNDERLINE);
+                    MenuType menuType =getMenuTypeByControllerName(menuParentControllerName, true);
+                    menuParent=IMenu.createMenu(menuClass, menuParentControllerName, null, null, menuName, null, menuType, VisitCheckType.NONE);
+                    simpleNameMap.put(menuParentControllerName, menuParent);
                 }
-            }
-
-            if (menuParent != null) {
-                currentMenu.setMenuParent(menuParent);
-                currentMenu.setBreadParent(menuParent);
-            } else if (breadParent != null) {
-                currentMenu.setBreadParent(breadParent);
+                menuParent.addChild(currentMenu);
+                
+                currentMenuName =menuParentControllerName;
+                lastIdx = currentMenuName.lastIndexOf(StringUtil.UNDERLINE);
+            } 
+        }
+        
+        ArrayList<M> result =new ArrayList<M>();
+        for (M m : allControllerMenus) {
+            if (m.getParent()==null){
+                result.add(m);
             }
         }
+        return result;
+    }
+    
+    private static MenuType getMenuTypeByControllerName(String controllerName,boolean isMenu){
+        if (!isMenu){
+            return MenuType.NONE; 
+        }
+        return controllerName.contains(StringUtil.$)?MenuType.DYNAMIC:MenuType.MENU;
     }
 
-    private static <M extends IMenu<M>> void scanControllerMenus(Set<Class<?>> controllerClassSet, Class<M> menuClz, List<M> allMenus,
-                                                                 List<ControllerMenuWrap<M>> controllerMenus) throws InstantiationException, IllegalAccessException {
+    private static <M extends IMenu<M>> void scanControllerMenus(Set<Class<?>> controllerClassSet, Class<M> menuClz,
+                                                                 List<M> allControllerMenus) throws InstantiationException, IllegalAccessException {
         Set<String> controllerApiNames = new HashSet<String>();
 
         for (Class<?> controllerClass : controllerClassSet) {
@@ -267,37 +231,28 @@ public class ControllerHelpers {
 
             final String controllerName = StringUtil.trimRight(controllerClass.getSimpleName(), CONTROLLER_SUBFIX);
 
-            String controllerRoute = null;
+            String route = null;
             if (routeAnno != null && routeAnno.value()) {
-                controllerRoute = ControllerHelpers.getRoute(controllerName, false);
-                controllerRoute = StringUtil.startWithSlash(controllerRoute);
+                route = ControllerHelpers.getRoute(controllerName, false);
+                route = StringUtil.startWithSlash(route);
             }
+
             boolean isMenu = menuAnno != null && menuAnno.value();
-            VisitType controllerVisitType = VisitType.getType(isMenu);
+            
+            MenuType controllerVisitType = getMenuTypeByControllerName(controllerName,isMenu);
             VisitCheckType controllerVisitCheckType = VisitCheckType.getCheckType(controllerVisitCheckAnno != null);
 
-            String controllerApiName = apiAnno != null ? apiAnno.value() : null;
-            if (StringUtil.isBlank(controllerApiName)) {
-                controllerApiName = StringUtil.trimLeftTo(controllerName, StringUtil.UNDERLINE);
+            String apiName = apiAnno != null ? apiAnno.value() : null;
+            if (StringUtil.isBlank(apiName)) {
+                apiName = StringUtil.trimLeftTo(controllerName, StringUtil.UNDERLINE);
             }
 
-            AssertUtil.mustNotContainsAndAdd(controllerApiNames, controllerApiName, "菜单名称不能相同：" + controllerApiName);
-            M controllerMenu = IMenu.createMenu(menuClz, controllerName, null, null, controllerApiName, controllerRoute, controllerVisitType,
-                controllerVisitCheckType);
-            allMenus.add(controllerMenu);
+            AssertUtil.mustNotContainsAndAdd(controllerApiNames, apiName, "菜单名称不能相同：" + apiName);
+            M controllerMenu = IMenu.createMenu(menuClz, controllerName, null, null, apiName, route, controllerVisitType, controllerVisitCheckType);
+            allControllerMenus.add(controllerMenu);
 
-            Class<?> breadParentClass = null;
-
-            if (isMenu) {
-                breadParentClass = menuAnno.breadParent();
-                if (breadParentClass == null || breadParentClass == Object.class || breadParentClass == controllerClass) {
-                    breadParentClass = null;
-                }
-            }
-
-            controllerMenus.add(new ControllerMenuWrap<M>(controllerName, controllerMenu, controllerClass, breadParentClass));
             String controllerUrl = getControllerUrl(controllerClass);
-            scanMethodMenus(allMenus, menuClz, controllerClass, controllerName, controllerMenu, controllerUrl);
+            scanMethodMenus(menuClz, controllerClass, controllerName, controllerMenu, controllerUrl);
         }
     }
 
@@ -310,14 +265,14 @@ public class ControllerHelpers {
      * @param controllerMenu
      * @param controllerUrl
      */
-    private static <M extends IMenu<M>> void scanMethodMenus(List<M> allMenus, Class<M> menuClz, Class<?> controllerClass,
-                                                             final String controllerName, M controllerMenu, String controllerUrl) {
+    private static <M extends IMenu<M>> void scanMethodMenus(Class<M> menuClz, Class<?> controllerClass, final String controllerName,
+                                                             M controllerMenu, String controllerUrl) {
         ReflectionUtil.doWithMethods(controllerClass, new MethodCallback() {
             @Override
             public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
                 VisitCheck visitCheckAnno = AnnotatedElementUtils.findMergedAnnotation(method, VisitCheck.class);
                 String methodName = method.getName();
-                VisitType visitType = VisitType.API_PATH;
+                MenuType menuType = MenuType.API_PATH;
                 VisitCheckType visitCheckType = VisitCheckType.getCheckType(visitCheckAnno != null);
 
                 ApiOperation apiOperation = AnnotatedElementUtils.findMergedAnnotation(method, ApiOperation.class);
@@ -326,9 +281,8 @@ public class ControllerHelpers {
 
                 String url = ControllerHelpers.getMethodUrlAndMethod(controllerUrl, method, true).getUrl();
 
-                M methodMenu = IMenu.createMenu(menuClz, controllerName, methodName, url, methodApiName, null, visitType, visitCheckType);
-                allMenus.add(methodMenu);
-                methodMenu.setMenuParent(controllerMenu);
+                M methodMenu = IMenu.createMenu(menuClz, controllerName, methodName, url, methodApiName, null, menuType, visitCheckType);
+                controllerMenu.addChild(methodMenu);
             }
         }, ApiMethodFilter.filter);
     }
