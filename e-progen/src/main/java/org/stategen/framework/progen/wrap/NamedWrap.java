@@ -23,7 +23,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.stategen.framework.annotation.Editor;
-import org.stategen.framework.lite.Image;
+import org.stategen.framework.annotation.Image;
+import org.stategen.framework.annotation.SelectProvidor;
 import org.stategen.framework.progen.FieldRule;
 import org.stategen.framework.util.AnnotationUtil;
 import org.stategen.framework.util.StringUtil;
@@ -52,6 +53,8 @@ public class NamedWrap extends MemberWrap {
     private boolean _hasGentemporalType = false;
     
     private String editorType;
+    
+    private String selectProvidor;
     
 
     public List<FieldRule> getRules() {
@@ -155,6 +158,20 @@ public class NamedWrap extends MemberWrap {
     @Override
     public boolean getIsEnum() {
         return super.getIsEnum();
+    }
+    
+    
+    public String getSelectProvidor() {
+        if (selectProvidor==null){
+            Class<?> selectProvidorClass = AnnotationUtil.getAnnotationValueFormMembers(SelectProvidor.class, SelectProvidor::value, getMembers());
+            if (selectProvidorClass!=null){
+                selectProvidor = selectProvidorClass.getSimpleName();
+                selectProvidor =StringUtil.capfirst(selectProvidor);
+            } else {
+                selectProvidor="";
+            }
+        }
+        return selectProvidor;
     }
 
 }

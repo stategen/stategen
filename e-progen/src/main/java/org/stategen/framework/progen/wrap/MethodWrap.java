@@ -112,6 +112,7 @@ public class MethodWrap {
         Boolean initCheck =true;
         BaseWrap areaTemp = null; 
         Boolean genRefresh =false;
+        
 
         StateWrap stateWrap = new StateWrap();
         this.setState(stateWrap);

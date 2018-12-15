@@ -37,9 +37,10 @@ public class ParamWrap extends NamedWrap {
     private String description;
 
     private Boolean required;
+    
 
-    AnnotatedElement[] members;
-
+    private AnnotatedElement[] members;
+    
     public void setOrgName(String orgName) {
         this.orgName = orgName;
     }

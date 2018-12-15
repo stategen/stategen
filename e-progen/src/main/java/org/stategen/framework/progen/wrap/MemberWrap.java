@@ -53,7 +53,7 @@ public abstract class MemberWrap extends BaseWrap {
 
     @Override
     public Boolean getIsGeneric() {
-        return ownClazzWrap.getIsGeneric() || StringUtil.isNotEmpty(genericName) || getGeneric() != null;
+        return ownClazzWrap.getIsGeneric() || StringUtil.isNotEmpty(genericName) || getGeneric() != null ;
     }
 
     public void setApiWap(ApiWrap apiWrap) {
