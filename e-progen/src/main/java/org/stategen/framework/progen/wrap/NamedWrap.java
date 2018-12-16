@@ -155,11 +155,6 @@ public class NamedWrap extends MemberWrap {
         return super.getDescription();
     }
     
-    @Override
-    public boolean getIsEnum() {
-        return super.getIsEnum();
-    }
-    
     
     public String getSelectProvidor() {
         if (selectProvidor==null){
