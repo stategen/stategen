@@ -51,7 +51,7 @@ import io.swagger.annotations.ResponseHeader;
 public @interface ApiRequestMappingAutoWithMethodName {
     
     @AliasFor(annotation = RequestMapping.class)
-    RequestMethod method() default RequestMethod.GET ;
+    RequestMethod method() default RequestMethod.POST ;
     
     @AliasFor(annotation = RequestMapping.class)
     String path() default "";

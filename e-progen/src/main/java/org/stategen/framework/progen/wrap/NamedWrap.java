@@ -24,8 +24,9 @@ import javax.persistence.TemporalType;
 
 import org.stategen.framework.annotation.Editor;
 import org.stategen.framework.annotation.Image;
-import org.stategen.framework.annotation.SelectProvidor;
+import org.stategen.framework.annotation.OptionConfig;
 import org.stategen.framework.progen.FieldRule;
+import org.stategen.framework.progen.GenContext;
 import org.stategen.framework.util.AnnotationUtil;
 import org.stategen.framework.util.StringUtil;
 
@@ -51,11 +52,12 @@ public class NamedWrap extends MemberWrap {
     private Boolean isImage;
 
     private boolean _hasGentemporalType = false;
-    
+
     private String editorType;
-    
-    private String selectProvidor;
-    
+
+    private OptionConfigWrap optionConfig;
+
+    private Boolean isSimple;
 
     public List<FieldRule> getRules() {
         if (rules == null) {
@@ -103,14 +105,14 @@ public class NamedWrap extends MemberWrap {
         }
         return isId;
     }
-    
+
     public String getEditorType() {
         if (editorType == null) {
             String edType = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::value, getMembers());
-            if (edType!=null){
-                editorType=edType;
+            if (edType != null) {
+                editorType = edType;
             } else {
-                editorType ="";
+                editorType = "";
             }
         }
         return editorType;
@@ -135,7 +137,7 @@ public class NamedWrap extends MemberWrap {
 
     public Boolean getHidden() {
         if (hidden == null) {
-            hidden = AnnotationUtil.getAnnotationValueFormMembers(ApiModelProperty.class, false,ApiModelProperty::hidden, getMembers());
+            hidden = AnnotationUtil.getAnnotationValueFormMembers(ApiModelProperty.class, false, ApiModelProperty::hidden, getMembers());
         }
 
         return hidden;
@@ -154,19 +156,26 @@ public class NamedWrap extends MemberWrap {
 
         return super.getDescription();
     }
-    
-    
-    public String getSelectProvidor() {
-        if (selectProvidor==null){
-            Class<?> selectProvidorClass = AnnotationUtil.getAnnotationValueFormMembers(SelectProvidor.class, SelectProvidor::value, getMembers());
-            if (selectProvidorClass!=null){
-                selectProvidor = selectProvidorClass.getSimpleName();
-                selectProvidor =StringUtil.capfirst(selectProvidor);
-            } else {
-                selectProvidor="";
+
+    public OptionConfigWrap getOptionConfig() {
+        if (optionConfig == null) {
+            OptionConfig optionConfigAnno = AnnotationUtil.getAnnotationFormMembers(OptionConfig.class, getMembers());
+            if (optionConfigAnno != null) {
+                optionConfig = new OptionConfigWrap();
+                optionConfig.setBean(optionConfigAnno.bean().getSimpleName());
+                optionConfig.setNone(optionConfigAnno.none());
+                optionConfig.setChangeBy(optionConfigAnno.changeBy());
             }
         }
-        return selectProvidor;
+        return optionConfig;
+    }
+
+    public Boolean getIsSimple() {
+        if (isSimple == null) {
+            SimpleWrap simpleWrap = GenContext.wrapContainer.checkAndGetFromSimple(this.getClazz());
+            isSimple = simpleWrap != null;
+        }
+        return isSimple;
     }
 
 }

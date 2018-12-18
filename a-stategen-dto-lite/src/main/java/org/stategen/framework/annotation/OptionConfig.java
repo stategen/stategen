@@ -11,6 +11,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface SelectProvidor {
-    Class<?> value();
+public @interface OptionConfig {
+    Class<?> bean();
+    String changeBy() default "";
+    String none() default "";
 }
