@@ -165,6 +165,7 @@ public class NamedWrap extends MemberWrap {
                 optionConfig.setBean(optionConfigAnno.bean().getSimpleName());
                 optionConfig.setNone(optionConfigAnno.none());
                 optionConfig.setChangeBy(optionConfigAnno.changeBy());
+                optionConfig.setDefaultOption(optionConfigAnno.defaultOption());
             }
         }
         return optionConfig;

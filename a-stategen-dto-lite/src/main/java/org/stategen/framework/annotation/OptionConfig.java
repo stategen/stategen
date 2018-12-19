@@ -15,4 +15,5 @@ public @interface OptionConfig {
     Class<?> bean();
     String changeBy() default "";
     String none() default "";
+    String defaultOption() default "";
 }

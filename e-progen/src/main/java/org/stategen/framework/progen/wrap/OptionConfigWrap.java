@@ -6,6 +6,8 @@ public class OptionConfigWrap {
     private String bean;
     private String none ;
     private String changeBy ;
+    private String defaultOption;
+    
 
     public String getNone() {
         return none;
@@ -28,7 +30,6 @@ public class OptionConfigWrap {
 
 
     public String getChangeBy() {
-
         return changeBy;
     }
     
@@ -39,4 +40,14 @@ public class OptionConfigWrap {
         this.changeBy = changeBy;
     }
     
+    public String getDefaultOption() {
+        return defaultOption;
+    }
+    
+    public void setDefaultOption(String defaultOption) {
+        if (StringUtil.isEmpty(defaultOption)){
+            return;
+        }
+        this.defaultOption = defaultOption;
+    }
 }
