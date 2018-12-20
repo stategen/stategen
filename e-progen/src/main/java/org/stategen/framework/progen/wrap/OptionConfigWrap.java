@@ -3,31 +3,31 @@ package org.stategen.framework.progen.wrap;
 import org.stategen.framework.util.StringUtil;
 
 public class OptionConfigWrap {
-    private String bean;
+    private String api;
     private String none ;
     private String changeBy ;
     private String defaultOption;
-    
 
     public String getNone() {
         return none;
     }
 
-    public String getBean() {
-        return bean;
+
+    public String getApi() {
+        return api;
     }
     
-    public void setBean(String bean) {
-        this.bean = bean;
+    public void setApi(String api) {
+        this.api = api;
     }
-
+    
+    
     public void setNone(String none) {
         if (StringUtil.isEmpty(none)){
             return;
         }
         this.none = none;
     }
-
 
     public String getChangeBy() {
         return changeBy;

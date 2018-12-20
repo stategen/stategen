@@ -18,6 +18,6 @@ import org.stategen.framework.lite.enums.EditorType;
 @Target({ METHOD,ElementType.PARAMETER, FIELD, ANNOTATION_TYPE })
 @Inherited
 public @interface Editor {
-    String value() default EditorType.input;
+    Class<? extends EditorType> value() default EditorType.Input.class;
 
 }

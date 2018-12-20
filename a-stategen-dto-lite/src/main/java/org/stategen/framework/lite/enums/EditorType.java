@@ -1,10 +1,37 @@
 package org.stategen.framework.lite.enums;
 
-public class EditorType {
+public abstract class EditorType {
 
-    public final static String password = "password";
-    public final static String input = "input";
-    public final static String hidden = "hidden";
-    public final static String textarea = "textarea";
+    public static abstract class Password extends EditorType {
+
+    }
+
+    public static abstract class Input extends EditorType {
+
+    }
+
+    public static abstract class Hidden extends EditorType {
+
+    }
+
+    public static abstract class Textarea extends EditorType {
+
+    }
+
+    public static abstract class RadioGroup extends EditorType {
+
+    }
+
+    public static abstract class Checkbox extends EditorType {
+
+    }
+
+    public static abstract class Number extends EditorType {
+
+    }
+    
+    public static abstract class Search extends EditorType {
+        
+    }
 
 }
