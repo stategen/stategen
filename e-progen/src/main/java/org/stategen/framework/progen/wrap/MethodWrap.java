@@ -178,18 +178,14 @@ public class MethodWrap {
                 continue;
             }
             Class<?> paramRawType = parameter.getType();
-            boolean isOrg = GenContext.wrapContainer.checkIsOrgSimple(paramRawType);
-            if (!isOrg) {
-                noneOrigParameters.add(paramRawType);
-            }
 
             ApiParam apiParamAnno = AnnotatedElementUtils.getMergedAnnotation(parameter, ApiParam.class);
             if (apiParamAnno != null && apiParamAnno.hidden()) {
+                noneOrigParameters.add(paramRawType);
                 continue;
             }
 
-            String paramName = null;
-            paramName = AnnotationUtil.getAnnotationValueFormMembers(PathVariable.class, PathVariable::value, parameter);
+            String paramName  = AnnotationUtil.getAnnotationValueFormMembers(PathVariable.class, PathVariable::value, parameter);
 
             if (StringUtil.isBlank(paramName)) {
                 paramName = AnnotationUtil.getAnnotationValueFormMembers(RequestParam.class, RequestParam::value, parameter);
@@ -218,8 +214,12 @@ public class MethodWrap {
             if (isJson) {
                 this.json = paramWrap;
             }
-            if (isOrg) {
+            
+            boolean isOrgOrEnum = GenContext.wrapContainer.checkIsOrgSimpleOrEnum(paramRawType);
+            if (isOrgOrEnum) {
                 orgParamWraps.add(paramWrap);
+            } else {
+                noneOrigParameters.add(paramRawType);
             }
             
         }
@@ -228,9 +228,9 @@ public class MethodWrap {
         Map<String , Field> fieldMaps =new HashMap<String, Field>();
         
         //TODO set方法是查找??
-        for (Class<?> noeOrgClz : noneOrigParameters) {
-            Map<String, Field> fieldNameFieldMap = ReflectionUtil.getFieldNameFieldMap(noeOrgClz);
-            Map<String, Method> getterNameMethods = ReflectionUtil.getGetterNameMethods(noeOrgClz);
+        for (Class<?> noneOrgClz : noneOrigParameters) {
+            Map<String, Field> fieldNameFieldMap = ReflectionUtil.getFieldNameFieldMap(noneOrgClz);
+            Map<String, Method> getterNameMethods = ReflectionUtil.getGetterNameMethods(noneOrgClz);
             
             getterMethodMap.putAll(getterNameMethods);
             fieldMaps.putAll(fieldNameFieldMap);

@@ -50,9 +50,9 @@ public class WrapContainer {
     /**基本数据类型,integer,long ,string,void等转换  */
     private Map<Class<?>, SimpleWrap> simpleWrapMap = new HashMap<Class<?>, SimpleWrap>();
     private Map<Class<?>, SimpleWrap> simpleWrapMapNoPath = new HashMap<Class<?>, SimpleWrap>();
-    
+
     /***simpleClassName*/
-    
+
     private Set<String> simpleClassNameSet = new HashSet<String>();
 
     public WrapContainer() {
@@ -62,23 +62,29 @@ public class WrapContainer {
         }
     }
 
-    public void registSimpleClz(Class<?> dest, String convertTo,String wholeImportPath) {
+    public void registSimpleClz(Class<?> dest, String convertTo, String wholeImportPath) {
         SimpleWrap simpleWrap = new SimpleWrap(dest, convertTo);
         simpleWrapMap.put(dest, simpleWrap);
-        
-        if (StringUtil.isNotEmpty(wholeImportPath)){
+
+        if (StringUtil.isNotEmpty(wholeImportPath)) {
             simpleWrap.setWholeImportPath(wholeImportPath);
         } else {
             simpleWrapMapNoPath.put(dest, simpleWrap);
         }
     }
-    
 
-    public boolean checkIsOrgSimple(Class<?> clz){
-        clz = ClassHelpers.getClazzIfCollection(clz); 
-        return simpleWrapMapNoPath.containsKey(clz);
+    public boolean checkIsOrgSimpleOrEnum(Class<?> clz) {
+        clz = ClassHelpers.getClazzIfCollection(clz);
+        boolean result = simpleWrapMapNoPath.containsKey(clz);
+        if (!result) {
+            BaseWrap wrap = checkInWrapMap(clz);
+            if (wrap != null) {
+                result = wrap.getIsEnum();
+            }
+        }
+        return result;
     }
-    
+
     public Map<Class<?>, CanbeImportWrap> getCanbeImportWrapMapByPathType(PathType pathType) {
         return wrapMaps.get(pathType);
     }
@@ -214,17 +220,15 @@ public class WrapContainer {
 
     public boolean needAddImports(Class<?> clz) {
         clz = ClassHelpers.getClazzIfCollection(clz);
-        if (ClassHelpers.isArrayOrMap(clz)){
+        if (ClassHelpers.isArrayOrMap(clz)) {
             return false;
         }
-        
+
         if (clz.equals(Void.TYPE)) {
             return false;
         }
-        
+
         return true;
     }
-    
-    
 
 }
