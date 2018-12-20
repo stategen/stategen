@@ -63,15 +63,11 @@ public class NamedWrap extends MemberWrap {
 
     public List<FieldRule> getRules() {
         if (rules == null) {
-            rules = genRules();
+            rules = FieldRule.checkRules(getMembers());
         }
         return rules;
     }
 
-    public List<FieldRule> genRules() {
-        List<FieldRule> checkRules = FieldRule.checkRules(getMembers());
-        return checkRules;
-    }
 
     public String getName() {
         return name;
