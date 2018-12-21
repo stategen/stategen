@@ -22,7 +22,7 @@ public abstract class EditorType {
 
     }
 
-    public static abstract class Checkbox extends EditorType {
+    public static abstract class CheckboxGroup extends EditorType {
 
     }
 

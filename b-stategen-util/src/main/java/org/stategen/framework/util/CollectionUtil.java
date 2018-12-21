@@ -294,7 +294,6 @@ public class CollectionUtil {
         return result;
     }
 
-
     /**
      * The Interface KeyCalculator.
      *
@@ -337,45 +336,51 @@ public class CollectionUtil {
             for (T t : items) {
                 if (t != null) {
                     StringBuffer sb = new StringBuffer();
+                    boolean append =false;
                     for (Function<? super T, ?> function : getMethods) {
+                        if (append){
+                            sb.append('.') ;
+                        }
                         Object key = function.apply(t);
-                        sb.append(key).append('.');
+                        sb.append(key);
+                        append=append || true;
                     }
                     result.put(sb.toString(), t);
                 }
             }
             return result;
         }
-        
+
         if (dest != null) {
             return dest;
         }
         return new HashMap<String, T>(0);
     }
-    
-    public static <K,V,T> Map<K, V> toMap(Map<K, V> dest,Function<? super T, K> keyGetMethod,Collection<T> items,Function<? super T, V> valueGetMethod){
+
+    public static <K, V, T> Map<K, V> toMap(Map<K, V> dest, Function<? super T, K> keyGetMethod, Collection<T> items,
+                                            Function<? super T, V> valueGetMethod) {
         if (CollectionUtil.isNotEmpty(items)) {
             Map<K, V> result = dest != null ? dest : new HashMap<K, V>(items.size());
             for (T t : items) {
                 if (t != null) {
-                    K k =keyGetMethod.apply(t);
-                    if (k!=null){
-                        V v =valueGetMethod.apply(t);
+                    K k = keyGetMethod.apply(t);
+                    if (k != null) {
+                        V v = valueGetMethod.apply(t);
                         result.put(k, v);
                     }
                 }
             }
             return result;
         }
-        
+
         if (dest != null) {
             return dest;
         }
         return new HashMap<K, V>(0);
     }
-    
-    public static <K,V,T> Map<K, V> toMap(Function<? super T, K> keyGetMethod,Collection<T> items,Function<? super T, V> valueGetMethod){
-        return toMap(null,keyGetMethod, items,valueGetMethod);
+
+    public static <K, V, T> Map<K, V> toMap(Function<? super T, K> keyGetMethod, Collection<T> items, Function<? super T, V> valueGetMethod) {
+        return toMap(null, keyGetMethod, items, valueGetMethod);
     }
 
     @SafeVarargs
@@ -425,23 +430,42 @@ public class CollectionUtil {
         return toMap(null, getMethod, items);
     }
 
-    public static <V, T> Map<V, List<T>> toGroup(Collection<T> items, Function<? super T, V> getMethod) {
+    public static <K, T> Map<K, List<T>> toGroup(Collection<T> items, Function<? super T, K> getMethod) {
         if (CollectionUtil.isNotEmpty(items)) {
-            Map<V, List<T>> result = new HashMap<V, List<T>>(items.size());
+            Map<K, List<T>> result = new HashMap<K, List<T>>(items.size());
             for (T t : items) {
                 if (t != null) {
-                    V typeValue = getMethod.apply(t);
-                    List<T> list = result.get(typeValue);
+                    K k = getMethod.apply(t);
+                    List<T> list = result.get(k);
                     if (list == null) {
                         list = new ArrayList<T>();
-                        result.put(typeValue, list);
+                        result.put(k, list);
                     }
                     list.add(t);
                 }
             }
             return result;
         }
-        return new HashMap<V, List<T>>(0);
+        return new HashMap<K, List<T>>(0);
+    }
+
+    public static <K, T, V> Map<K, List<V>> toGroup(Collection<T> items, Function<? super T, K> getMethod, Function<? super T, V> getValueMethod) {
+        if (CollectionUtil.isNotEmpty(items)) {
+            Map<K, List<V>> result = new HashMap<K, List<V>>(items.size());
+            for (T t : items) {
+                if (t != null) {
+                    K k = getMethod.apply(t);
+                    List<V> list = result.get(k);
+                    if (list == null) {
+                        list = new ArrayList<V>();
+                        result.put(k, list);
+                    }
+                    list.add(getValueMethod.apply(t));
+                }
+            }
+            return result;
+        }
+        return new HashMap<K, List<V>>(0);
     }
 
     public static <V, T> List<V> toList(Collection<T> items, Function<? super T, V> getMethod) {
@@ -507,7 +531,7 @@ public class CollectionUtil {
     }
 
     public static <K, D, S, V> void setValueByMap(Collection<D> dests, Function<? super D, K> destGetMethod, Map<K, S> sourceMap,
-                                                        Function<? super S, Object> sourceGetMethod, BiConsumer<D, Object> destSetMethod) {
+                                                  Function<? super S, Object> sourceGetMethod, BiConsumer<D, Object> destSetMethod) {
         if (CollectionUtil.isNotEmpty(dests) && (CollectionUtil.isNotEmpty(sourceMap))) {
             for (D d : dests) {
                 if (d != null) {
@@ -523,7 +547,7 @@ public class CollectionUtil {
     }
 
     public static <D, K, S> void setModelByMap(Collection<D> dests, Map<K, S> sourceMap, Function<? super D, K> destGetMethod,
-                                                     BiConsumer<D, S> destSetMethod) {
+                                               BiConsumer<D, S> destSetMethod) {
         if (CollectionUtil.isNotEmpty(dests) && CollectionUtil.isNotEmpty(sourceMap)) {
             for (D d : dests) {
                 if (d != null) {
@@ -536,15 +560,15 @@ public class CollectionUtil {
             }
         }
     }
-    
-    public static <D,K,S> void setModelByList(Collection<D> dests,Collection<S> sources,Function<? super D, K> destGetMethod,
-        BiConsumer<D, S> destSetMethod,Function<? super S, K> sourceGetMethod ){
-        Map<K, S> sourceMap = CollectionUtil.toMap(sourceGetMethod,sources);
+
+    public static <D, K, S> void setModelByList(Collection<D> dests, Collection<S> sources, Function<? super D, K> destGetMethod,
+                                                BiConsumer<D, S> destSetMethod, Function<? super S, K> sourceGetMethod) {
+        Map<K, S> sourceMap = CollectionUtil.toMap(sourceGetMethod, sources);
         CollectionUtil.setModelByMap(dests, sourceMap, destGetMethod, destSetMethod);
     }
 
     public static <D, K, S, V> void setFeildToFieldByMap(Collection<D> dests, Map<K, S> sourceMap, Function<? super D, K> destGetMethod,
-                                                               Function<? super S, V> sourceGetMethod, BiConsumer<D, V> destSetMethod) {
+                                                         Function<? super S, V> sourceGetMethod, BiConsumer<D, V> destSetMethod) {
         if (isNotEmpty(dests)) {
             for (D d : dests) {
                 if (d != null) {
@@ -565,9 +589,8 @@ public class CollectionUtil {
         }
     }
 
-
     public static <D, K, S> void setListByMap(List<D> dests, Map<K, List<S>> sourceListMap, Function<? super D, K> destGetMethod,
-                                                    BiConsumer<D, List<S>> destSetMethod) {
+                                              BiConsumer<D, List<S>> destSetMethod) {
         for (D d : dests) {
             if (d != null) {
                 K key = destGetMethod.apply(d);
@@ -578,10 +601,19 @@ public class CollectionUtil {
             }
         }
     }
-    
-    public static <D, K, S> void setListByList(List<D> dests, List<S> sourceList, Function<? super D, K> destGetMethod,
-                                              BiConsumer<D, List<S>> destSetMethod,Function<? super S, K> sourceGetMethod) {
-        Map<K, List<S>> sourceListMap = toGroup(sourceList, sourceGetMethod);
+
+    /*** 把 sources  按 id分组 ，变成List,设置到 dests中一个字段*/
+    public static <D, K, S> void setListByList(List<D> dests, List<S> sources, Function<? super D, K> destGetMethod,
+                                               BiConsumer<D, List<S>> destSetMethod, Function<? super S, K> sourceGetMethod) {
+        Map<K, List<S>> sourceListMap = toGroup(sources, sourceGetMethod);
+        setListByMap(dests, sourceListMap, destGetMethod, destSetMethod);
+    }
+
+    /*** 把 sources 中 某个值 按 id分组 ，变成List,设置到 dests中一个字段*/
+    public static <D, K, S, V> void setListByList(List<D> dests, List<S> sources, Function<? super D, K> destGetMethod,
+                                                  BiConsumer<D, List<V>> destSetMethod, Function<? super S, K> sourceGetMethod,
+                                                  Function<? super S, V> sourceGetValueMethod) {
+        Map<K, List<V>> sourceListMap = toGroup(sources, sourceGetMethod, sourceGetValueMethod);
         setListByMap(dests, sourceListMap, destGetMethod, destSetMethod);
     }
 
