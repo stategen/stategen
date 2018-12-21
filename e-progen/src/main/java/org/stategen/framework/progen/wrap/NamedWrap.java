@@ -23,6 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.stategen.framework.annotation.ChangeBy;
 import org.stategen.framework.annotation.Editor;
 import org.stategen.framework.annotation.Image;
 import org.stategen.framework.annotation.OptionConfig;
@@ -60,6 +61,8 @@ public class NamedWrap extends MemberWrap {
     private OptionConfigWrap optionConfig;
 
     private Boolean isSimple;
+    
+    private String changeBy;
 
     public List<FieldRule> getRules() {
         if (rules == null) {
@@ -67,7 +70,6 @@ public class NamedWrap extends MemberWrap {
         }
         return rules;
     }
-
 
     public String getName() {
         return name;
@@ -106,7 +108,7 @@ public class NamedWrap extends MemberWrap {
 
     public String getEditorType() {
         if (editorType == null) {
-             Class<? extends EditorType> editorTypeClass = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::value, getMembers());
+            Class<? extends EditorType> editorTypeClass = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::value, getMembers());
             if (editorTypeClass != null) {
                 editorType = editorTypeClass.getSimpleName();
             } else {
@@ -155,6 +157,16 @@ public class NamedWrap extends MemberWrap {
         return super.getDescription();
     }
     
+    public String getChangeBy() {
+        if (changeBy==null){
+            changeBy = AnnotationUtil.getAnnotationValueFormMembers(ChangeBy.class, ChangeBy::value, getMembers());
+            if (StringUtil.isEmpty(changeBy)){
+                changeBy ="";
+            }
+        }
+        
+        return changeBy;
+    }
 
     public OptionConfigWrap getOptionConfig() {
         if (optionConfig == null) {
@@ -162,40 +174,41 @@ public class NamedWrap extends MemberWrap {
             if (optionConfigAnno != null) {
                 optionConfig = new OptionConfigWrap();
                 optionConfig.setNone(optionConfigAnno.none());
-                optionConfig.setChangeBy(optionConfigAnno.changeBy());
-                
-                String optionName =null;
-                Class<?> bean = optionConfigAnno.bean();
-                if (bean!=Void.class){
-                    optionName=bean.getSimpleName();
-                }
-                List<String> idSubfixs = Arrays.asList("Id" ,"Ids","ID","IDs");
- 
-                if (StringUtil.isEmpty(optionName)){
-                    optionName = this.getName();
-                    for (String idSubfix : idSubfixs) {
-                        if (optionName.endsWith(idSubfix)){
-                            optionName =optionName.substring(0,(optionName.length()-idSubfix.length()));
-                            break;
+                if (!getIsEnum()) {
+                    String optionName = null;
+                    Class<?> bean = optionConfigAnno.bean();
+                    if (bean != Void.class) {
+                        optionName = bean.getSimpleName();
+                    }
+                    List<String> idSubfixs = Arrays.asList("Id", "Ids", "ID", "IDs");
+
+                    if (StringUtil.isEmpty(optionName)) {
+                        optionName = this.getName();
+                        for (String idSubfix : idSubfixs) {
+                            if (optionName.endsWith(idSubfix)) {
+                                optionName = optionName.substring(0, (optionName.length() - idSubfix.length()));
+                                break;
+                            }
                         }
                     }
-                }
-                
-                
-                String api = optionConfigAnno.api();
-                if (StringUtil.isBlank(api)){
-                    api ="get"+StringUtil.capfirst(optionName)+"Options";
-                }
-                optionConfig.setApi(api);
-                
-                String defaultOption = optionConfigAnno.defaultOption();
-                if (StringUtil.isBlank(defaultOption)){
-                    defaultOption =optionName;
-                    if (this.getIsArray()){
-                        defaultOption =optionName+"s";
+
+                    String api = optionConfigAnno.api();
+                    if (StringUtil.isBlank(api)) {
+                        api = "get" + StringUtil.capfirst(optionName) + "Options";
                     }
+                    optionConfig.setApi(api);
+
+                    String defaultOption = optionConfigAnno.defaultOption();
+                    if (StringUtil.isBlank(defaultOption)) {
+                        defaultOption = optionName;
+                        if (this.getIsArray()) {
+                            defaultOption = optionName + "s";
+                        }
+                    }
+                    optionConfig.setDefaultOption(defaultOption);
                 }
-                optionConfig.setDefaultOption(defaultOption);
+            } else if (getIsEnum()){
+                optionConfig = new OptionConfigWrap();
             }
         }
         return optionConfig;

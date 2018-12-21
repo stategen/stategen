@@ -22,10 +22,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface OptionConfig {
-    
-    Class<?> bean() default Void.class;
-    String api() default "";
-    String none() default "";
-    String defaultOption() default "";
+public @interface ChangeBy {
+    String value() ;
 }
