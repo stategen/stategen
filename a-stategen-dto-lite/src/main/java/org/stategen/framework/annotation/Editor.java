@@ -19,5 +19,6 @@ import org.stategen.framework.lite.enums.EditorType;
 @Inherited
 public @interface Editor {
     Class<? extends EditorType> value() default EditorType.Input.class;
+    String props() default "";
 
 }

@@ -16,8 +16,11 @@
  */
 package org.stategen.framework.progen.wrap;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Id;
 import javax.persistence.Temporal;
@@ -61,14 +64,26 @@ public class NamedWrap extends MemberWrap {
     private OptionConfigWrap optionConfig;
 
     private Boolean isSimple;
-    
+
     private String changeBy;
+
+    private String props;
+    
+    private Set<Class<? extends Annotation>> _excludeAnnos;
 
     public List<FieldRule> getRules() {
         if (rules == null) {
-            rules = FieldRule.checkRules(getMembers());
+            Set<Class<? extends Annotation>> excludeAnnos =_excludeAnnos;
+            if (excludeAnnos==null){
+                excludeAnnos=new HashSet<Class<? extends Annotation>>(0);
+            }
+            rules = FieldRule.checkRules(excludeAnnos,getMembers());
         }
         return rules;
+    }
+    
+    public void set_excludeAnnos(Set<Class<? extends Annotation>> _excludeAnnos) {
+        this._excludeAnnos = _excludeAnnos;
     }
 
     public String getName() {
@@ -118,6 +133,16 @@ public class NamedWrap extends MemberWrap {
         return editorType;
     }
 
+    public String getProps() {
+        if (props == null) {
+            props = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::props, getMembers());
+            if (props == null) {
+                props = "";
+            }
+        }
+        return props;
+    }
+
     public String getTemporalType() {
         if (!_hasGentemporalType && temporalType == null) {
             TemporalType temporalTypeEnum = AnnotationUtil.getAnnotationValueFormMembers(Temporal.class, Temporal::value, getMembers());
@@ -156,15 +181,15 @@ public class NamedWrap extends MemberWrap {
 
         return super.getDescription();
     }
-    
+
     public String getChangeBy() {
-        if (changeBy==null){
+        if (changeBy == null) {
             changeBy = AnnotationUtil.getAnnotationValueFormMembers(ChangeBy.class, ChangeBy::value, getMembers());
-            if (StringUtil.isEmpty(changeBy)){
-                changeBy ="";
+            if (StringUtil.isEmpty(changeBy)) {
+                changeBy = "";
             }
         }
-        
+
         return changeBy;
     }
 
@@ -207,7 +232,7 @@ public class NamedWrap extends MemberWrap {
                     }
                     optionConfig.setDefaultOption(defaultOption);
                 }
-            } else if (getIsEnum()){
+            } else if (getIsEnum()) {
                 optionConfig = new OptionConfigWrap();
             }
         }

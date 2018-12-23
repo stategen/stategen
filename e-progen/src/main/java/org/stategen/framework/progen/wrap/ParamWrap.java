@@ -71,23 +71,27 @@ public class ParamWrap extends NamedWrap {
             if (getIsPath()) {
                 required = true;
             }
+            if (this.getName().equals("cityIds")){
+                if (logger.isInfoEnabled()) {
+                    logger.info(new StringBuffer("输出info信息: description:").append(description).toString());
+                }
+            }
 
             if (!required) {
-                AnnotatedElement[] members = getMembers();
-                if (AnnotationUtil.getAnnotationFormMembers(RequestBody.class, members) != null) {
+                if (AnnotationUtil.getAnnotationFormMembers(RequestBody.class, getMembers()) != null) {
                     required = true;
                 }
             }
 
             if (!required) {
-                Boolean tempRequired = AnnotationUtil.getAnnotationValueFormMembers(RequestParam.class, RequestParam::required, members);
+                Boolean tempRequired = AnnotationUtil.getAnnotationValueFormMembers(RequestParam.class, RequestParam::required, getMembers());
                 if (tempRequired!=null) {
                     required = tempRequired;
                 }
             }
 
             if (!required) {
-                Boolean tempRequired = AnnotationUtil.getAnnotationValueFormMembers(ApiParam.class, ApiParam::required, members);
+                Boolean tempRequired = AnnotationUtil.getAnnotationValueFormMembers(ApiParam.class, ApiParam::required, getMembers());
                 if (tempRequired!=null) {
                     required = tempRequired;
                 }

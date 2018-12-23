@@ -16,6 +16,8 @@
  */
 package org.stategen.framework.progen.wrap;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.stategen.framework.annotation.AreaExtraProp;
+import org.stategen.framework.annotation.ExcludeBeanRule;
 import org.stategen.framework.annotation.GenForm;
 import org.stategen.framework.annotation.State;
 import org.stategen.framework.annotation.StateExtraProp;
@@ -163,7 +166,10 @@ public class MethodWrap {
     }
 
     protected void genParams() {
-
+        
+        Set<Class<? extends Annotation>> methodExcludeBeanRules =findExcludeAnnoClasses(this.methodFun);
+        
+        
         Parameter[] parameters = methodFun.getParameters();
         DefaultParameterNameDiscoverer defaultParameterNameDiscoverer = new DefaultParameterNameDiscoverer();
         String[] parameterNames = defaultParameterNameDiscoverer.getParameterNames(methodFun);
@@ -211,6 +217,10 @@ public class MethodWrap {
             paramWrap.setOrgName(orgName);
             params.add(paramWrap);
             
+            Set<Class<? extends Annotation>> parameterExcludeBeanRules = findExcludeAnnoClasses(parameter);
+            parameterExcludeBeanRules.addAll(methodExcludeBeanRules);
+            paramWrap.set_excludeAnnos(parameterExcludeBeanRules);
+            
             if (isJson) {
                 this.json = paramWrap;
             }
@@ -245,6 +255,18 @@ public class MethodWrap {
 
 
 
+    }
+
+    private Set<Class<? extends Annotation>> findExcludeAnnoClasses(AnnotatedElement member) {
+        Set<ExcludeBeanRule> memberExcludeBeanRuleAnnos= AnnotatedElementUtils.findMergedRepeatableAnnotations(member, ExcludeBeanRule.class);
+        Set<Class<? extends Annotation>> result =new HashSet<Class<? extends Annotation>>(5);
+        for (ExcludeBeanRule excludeBeanRule : memberExcludeBeanRuleAnnos) {
+            Class<? extends Annotation>[] annoClasses = excludeBeanRule.value();
+            for (Class<? extends Annotation> annoClass : annoClasses) {
+                result.add(annoClass);
+            }
+        }
+        return result;
     }
 
     public ParamWrap getJson() {

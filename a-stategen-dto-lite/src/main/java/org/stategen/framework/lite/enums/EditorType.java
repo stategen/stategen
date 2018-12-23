@@ -33,5 +33,16 @@ public abstract class EditorType {
     public static abstract class Search extends EditorType {
         
     }
+    
+    public static abstract class Switch extends EditorType {
+        
+    }
+    
+    public static abstract class Checkbox extends EditorType {
+        
+    }
+    public static abstract class Rate extends EditorType {
+        
+    }
 
 }

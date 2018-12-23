@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +41,7 @@ import com.github.javaparser.Position;
 import com.github.javaparser.Range;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
@@ -198,8 +200,8 @@ class ASTHelper {
      * @throws InstantiationException the instantiation exception
      * @throws IllegalAccessException the illegal access exception
      */
-    static boolean addAnnotationExprsToBody(NodeList<AnnotationExpr> oldAnnotationExprs,
-                                            BodyDeclaration bodyDeclaration,boolean replace) throws InstantiationException, IllegalAccessException {
+    static boolean addAnnotationExprsToBody(NodeList<AnnotationExpr> oldAnnotationExprs, BodyDeclaration bodyDeclaration,
+                                            boolean replace) throws InstantiationException, IllegalAccessException {
         if (CollectionUtil.isNotEmpty(oldAnnotationExprs)) {
 
             //            List<AnnotationExpr> newAnnotationExprs = new LinkedList<AnnotationExpr>(
@@ -212,18 +214,37 @@ class ASTHelper {
                 bodyDeclaration.setAnnotations(oldAnnotationExprs);
                 return true;
             }
+
             //TODO List怎么处理?
             Map<String, AnnotationExpr> tempMap = CollectionUtil.toMap(annotations, AnnotationExpr::getNameAsString);
             for (AnnotationExpr oldAnnotationExpr : oldAnnotationExprs) {
                 String nameAsString = oldAnnotationExpr.getNameAsString();
-                if (!tempMap.containsKey(nameAsString)){
+                if (!tempMap.containsKey(nameAsString)) {
                     annotations.add(oldAnnotationExpr);
-                } else{
-                    if (replace){
+                } else {
+                    //使用旧的标注
+                    if (replace) {
+                        
+                        if (bodyDeclaration instanceof FieldDeclaration) {
+                            FieldDeclaration fieldDeclaration = (FieldDeclaration) bodyDeclaration;
+                            EnumSet<Modifier> modifiers = fieldDeclaration.getModifiers();
+                            //不是自定义查询字段，使用数据库中的设置优先
+                            if (!modifiers.contains(Modifier.TRANSIENT)) {
+                                continue;
+                            }
+                            
+                            String elementType = fieldDeclaration.getElementType().toString();
+                            if (!elementType.equals("String") || !elementType.equals("java.lang.String")){
+                                if (nameAsString.equals("Max") || nameAsString.equals("Min")){
+                                    continue;
+                                }
+                            }
+                        }
+
                         AnnotationExpr annotationExpr = tempMap.get(nameAsString);
-                        if (annotationExpr!=null){
+                        if (annotationExpr != null) {
                             int indexOf = annotations.indexOf(annotationExpr);
-                            annotations.remove(indexOf); 
+                            annotations.remove(indexOf);
                             tempMap.remove(nameAsString);
                             annotations.add(indexOf, oldAnnotationExpr);
                         }
@@ -414,7 +435,7 @@ class ASTHelper {
 
                     //将之前java类 标注加入 ,不再处理controller ,service,serviceImpl
                     if (JavaType.isEntry == javaType) {
-                        if (addAnnotationExprsToBody(oldClassDeclaration.getAnnotations(), nowClassDeclaration,true)) {
+                        if (addAnnotationExprsToBody(oldClassDeclaration.getAnnotations(), nowClassDeclaration, true)) {
                             replaced = true;
                         }
                     }
@@ -450,9 +471,14 @@ class ASTHelper {
                                 continue;
                             }
 
-                            if (addAnnotationExprsToBody(oldFieldDeclaration.getAnnotations(), nowFieldDeclaration,true)) {
+                            if (addAnnotationExprsToBody(oldFieldDeclaration.getAnnotations(), nowFieldDeclaration, true)) {
                                 replaced = true;
                             }
+                            //把Modifile加进来
+                            if (oldFieldDeclaration.getModifiers() != null) {
+                                nowFieldDeclaration.getModifiers().addAll(oldFieldDeclaration.getModifiers());
+                            }
+
                             //oldFieldDeclarationMap.remove(fieldName);
                         }
                     }

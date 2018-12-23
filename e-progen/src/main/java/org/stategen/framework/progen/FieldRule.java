@@ -16,9 +16,12 @@
  */
 package org.stategen.framework.progen;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
@@ -34,8 +37,8 @@ import org.stategen.framework.util.CollectionUtil;
  * The Class FieldRule.
  */
 public class FieldRule {
-    
-    private Boolean required =false;
+
+    private Boolean required = false;
 
     private Long max;
 
@@ -47,10 +50,24 @@ public class FieldRule {
 
     private String pattern;
 
-    public static List<FieldRule> checkRules(AnnotatedElement... members) {
+    public static List<FieldRule> checkRules(Set<Class<? extends Annotation>> excludeAnnos, AnnotatedElement... members) {
+
         if (CollectionUtil.isNotEmpty(members)) {
             List<FieldRule> result = new ArrayList<FieldRule>();
-            NotNull notNull = AnnotationUtil.getAnnotationFormMembers(NotNull.class, members);
+            List<AnnotatedElement> paramsAnnotatedElementList = new ArrayList<AnnotatedElement>(members.length);
+            if (CollectionUtil.isNotEmpty(excludeAnnos)) {
+                for (AnnotatedElement annotatedElement : members) {
+                    if (annotatedElement instanceof Parameter) {
+                        paramsAnnotatedElementList.add(annotatedElement);
+                    }
+                }
+            }
+
+            AnnotatedElement[] paramsAnnotatedElements = new AnnotatedElement[paramsAnnotatedElementList.size()];
+            paramsAnnotatedElementList.toArray(paramsAnnotatedElements);
+
+            NotNull notNull = AnnotationUtil.getAnnotationFormMembers(NotNull.class,
+                excludeAnnos.contains(NotNull.class) ? paramsAnnotatedElements : members);
             if (notNull != null) {
                 FieldRule rule = new FieldRule();
                 rule.required = notNull != null;
@@ -58,7 +75,7 @@ public class FieldRule {
                 result.add(rule);
             }
 
-            Max maxAnno = AnnotationUtil.getAnnotationFormMembers(Max.class, members);
+            Max maxAnno = AnnotationUtil.getAnnotationFormMembers(Max.class, excludeAnnos.contains(Max.class) ? paramsAnnotatedElements : members);
             if (maxAnno != null) {
                 Long max = maxAnno != null ? maxAnno.value() : null;
                 FieldRule rule = new FieldRule();
@@ -67,7 +84,7 @@ public class FieldRule {
                 result.add(rule);
             }
 
-            Min minAnno = AnnotationUtil.getAnnotationFormMembers(Min.class, members);
+            Min minAnno = AnnotationUtil.getAnnotationFormMembers(Min.class, excludeAnnos.contains(Min.class) ? paramsAnnotatedElements : members);
             if (minAnno != null) {
                 Long min = minAnno != null ? minAnno.value() : null;
                 FieldRule rule = new FieldRule();
@@ -76,7 +93,8 @@ public class FieldRule {
                 result.add(rule);
             }
 
-            NotBlank notBlank = AnnotationUtil.getAnnotationFormMembers(NotBlank.class, members);
+            NotBlank notBlank = AnnotationUtil.getAnnotationFormMembers(NotBlank.class,
+                excludeAnnos.contains(NotBlank.class) ? paramsAnnotatedElements : members);
             if (notBlank != null) {
                 FieldRule rule = new FieldRule();
                 rule.whitespace = true;
@@ -84,12 +102,14 @@ public class FieldRule {
                 result.add(rule);
             }
 
-            Email email = AnnotationUtil.getAnnotationFormMembers(Email.class, members);
+            Email email = AnnotationUtil.getAnnotationFormMembers(Email.class,
+                excludeAnnos.contains(Email.class) ? paramsAnnotatedElements : members);
             if (email != null) {
                 createRegRule(result, email.regexp(), email.message());
             }
 
-            Pattern pattern = AnnotationUtil.getAnnotationFormMembers(Pattern.class, members);
+            Pattern pattern = AnnotationUtil.getAnnotationFormMembers(Pattern.class,
+                excludeAnnos.contains(Pattern.class) ? paramsAnnotatedElements : members);
             if (pattern != null) {
                 createRegRule(result, pattern.regexp(), pattern.message());
             }
