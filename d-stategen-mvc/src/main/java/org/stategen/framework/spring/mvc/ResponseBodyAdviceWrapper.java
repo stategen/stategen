@@ -124,7 +124,7 @@ public class ResponseBodyAdviceWrapper extends ResponseStatusTypeHandler impleme
                 return needWrapFlag;
             }
 
-            boolean exclude = AnnotationUtil.getAnnotationValueFormMembers(Wrap.class,false, Wrap::exclude, method);
+            boolean exclude = AnnotationUtil.getAnnotationValueFormMembers(Wrap.class, Wrap::exclude,false, method);
             if (exclude){
                 return needWrapFlag;
             }

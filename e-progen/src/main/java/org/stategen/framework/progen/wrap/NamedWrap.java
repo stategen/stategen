@@ -28,7 +28,6 @@ import javax.persistence.TemporalType;
 
 import org.stategen.framework.annotation.ChangeBy;
 import org.stategen.framework.annotation.Editor;
-import org.stategen.framework.annotation.Image;
 import org.stategen.framework.annotation.OptionConfig;
 import org.stategen.framework.lite.enums.EditorType;
 import org.stategen.framework.progen.FieldRule;
@@ -101,7 +100,12 @@ public class NamedWrap extends MemberWrap {
 
     public Boolean getIsImage() {
         if (isImage == null) {
-            isImage = AnnotationUtil.getAnnotationFormMembers(Image.class, getMembers()) != null;
+            Class<? extends EditorType> editorType = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::value, null, getMembers());
+            if (editorType!=null){
+                isImage=editorType.getSimpleName().equals(EditorType.Image.class.getSimpleName());
+            } else {
+                isImage =false;
+            }
         }
         return isImage;
     }
@@ -123,7 +127,7 @@ public class NamedWrap extends MemberWrap {
 
     public String getEditorType() {
         if (editorType == null) {
-            Class<? extends EditorType> editorTypeClass = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::value, getMembers());
+            Class<? extends EditorType> editorTypeClass = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::value,null, getMembers());
             if (editorTypeClass != null) {
                 editorType = editorTypeClass.getSimpleName();
             } else {
@@ -135,17 +139,14 @@ public class NamedWrap extends MemberWrap {
 
     public String getProps() {
         if (props == null) {
-            props = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::props, getMembers());
-            if (props == null) {
-                props = "";
-            }
+            props = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::props,"", getMembers());
         }
         return props;
     }
 
     public String getTemporalType() {
         if (!_hasGentemporalType && temporalType == null) {
-            TemporalType temporalTypeEnum = AnnotationUtil.getAnnotationValueFormMembers(Temporal.class, Temporal::value, getMembers());
+            TemporalType temporalTypeEnum = AnnotationUtil.getAnnotationValueFormMembers(Temporal.class, Temporal::value,null, getMembers());
             if (temporalTypeEnum != null) {
                 temporalType = temporalTypeEnum.toString();
             } else {
@@ -162,7 +163,7 @@ public class NamedWrap extends MemberWrap {
 
     public Boolean getHidden() {
         if (hidden == null) {
-            hidden = AnnotationUtil.getAnnotationValueFormMembers(ApiModelProperty.class, false, ApiModelProperty::hidden, getMembers());
+            hidden = AnnotationUtil.getAnnotationValueFormMembers(ApiModelProperty.class, ApiModelProperty::hidden,false, getMembers());
         }
 
         return hidden;
@@ -172,7 +173,7 @@ public class NamedWrap extends MemberWrap {
     public String getDescription() {
         String description = super.getDescription();
         if (StringUtil.isEmpty(description)) {
-            description = AnnotationUtil.getAnnotationValueFormMembers(ApiModelProperty.class, ApiModelProperty::value, getMembers());
+            description = AnnotationUtil.getAnnotationValueFormMembers(ApiModelProperty.class, ApiModelProperty::value,null, getMembers());
             if (StringUtil.isEmpty(description)) {
                 description = getName();
             }
@@ -184,10 +185,7 @@ public class NamedWrap extends MemberWrap {
 
     public String getChangeBy() {
         if (changeBy == null) {
-            changeBy = AnnotationUtil.getAnnotationValueFormMembers(ChangeBy.class, ChangeBy::value, getMembers());
-            if (StringUtil.isEmpty(changeBy)) {
-                changeBy = "";
-            }
+            changeBy = AnnotationUtil.getAnnotationValueFormMembers(ChangeBy.class, ChangeBy::value,"", getMembers());
         }
 
         return changeBy;

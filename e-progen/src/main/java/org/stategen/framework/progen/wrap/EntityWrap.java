@@ -30,7 +30,7 @@ public class EntityWrap extends BaseWrap {
 
     public String getApiDescription() {
         if (_apiDescription == null) {
-            _apiDescription = AnnotationUtil.getAnnotationValueFormMembers(ApiModel.class, ApiModel::value, getClazz());
+            _apiDescription = AnnotationUtil.getAnnotationValueFormMembers(ApiModel.class, ApiModel::value,"", getClazz());
         }
         return _apiDescription;
     }

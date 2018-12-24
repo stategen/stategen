@@ -39,7 +39,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.stategen.framework.annotation.AreaExtraProp;
 import org.stategen.framework.annotation.ExcludeBeanRule;
+import org.stategen.framework.annotation.GenEffect;
 import org.stategen.framework.annotation.GenForm;
+import org.stategen.framework.annotation.GenReducer;
+import org.stategen.framework.annotation.GenRefresh;
 import org.stategen.framework.annotation.State;
 import org.stategen.framework.annotation.StateExtraProp;
 import org.stategen.framework.enums.DataOpt;
@@ -90,7 +93,7 @@ public class MethodWrap {
 
     public Boolean getGenForm() {
         if (genForm == null) {
-            genForm = AnnotationUtil.getAnnotationValueFormMembers(GenForm.class,false, GenForm::value, methodFun);
+            genForm = AnnotationUtil.getAnnotationValueFormMembers(GenForm.class, GenForm::value,false, methodFun);
         }
         return genForm;
     }
@@ -112,6 +115,7 @@ public class MethodWrap {
         Boolean init = false;
         Boolean isSetted = false;
         Boolean genEffect = true;
+        Boolean genReducer = true;
         Boolean initCheck =true;
         BaseWrap areaTemp = null; 
         Boolean genRefresh =false;
@@ -124,15 +128,17 @@ public class MethodWrap {
 
         Set<StateExtraProp> stateExtraPropAnnos = AnnotatedElementUtils.getMergedRepeatableAnnotations(methodFun, StateExtraProp.class);
         stateExtraProps = CollectionUtil.toSet(stateExtraPropAnnos, StateExtraProp::value);
+        
+        genEffect = AnnotationUtil.getAnnotationValueFormMembers(GenEffect.class, GenEffect::value,false, methodFun);
+        genReducer = AnnotationUtil.getAnnotationValueFormMembers(GenReducer.class, GenReducer::value,false, methodFun);
+        genRefresh = AnnotationUtil.getAnnotationValueFormMembers(GenRefresh.class, GenRefresh::value,false, methodFun);
 
         State stateAnno = AnnotatedElementUtils.getMergedAnnotation(methodFun, State.class);
         if (stateAnno != null) {
             init = stateAnno.init();
             dataOpt = stateAnno.dataOpt();
             isSetted = true;
-            genEffect = stateAnno.genEffect();
             initCheck=stateAnno.initCheck();
-            genRefresh =stateAnno.genRefresh();
             Class<?> stateAreaClass = stateAnno.area();
             if (stateAreaClass != Object.class) {
                 if (stateAreaClass != returnClz) {
@@ -159,6 +165,7 @@ public class MethodWrap {
         stateWrap.setGenEffect(genEffect);
         stateWrap.setInitCheck(initCheck);
         stateWrap.setGenRefresh(genRefresh);
+        stateWrap.setGenReducer(genReducer);
     }
 
     public BaseWrap getArea() {
@@ -191,11 +198,13 @@ public class MethodWrap {
                 continue;
             }
 
-            String paramName  = AnnotationUtil.getAnnotationValueFormMembers(PathVariable.class, PathVariable::value, parameter);
+            String paramName  = AnnotationUtil.getAnnotationValueFormMembers(PathVariable.class, PathVariable::value,"", parameter);
 
             if (StringUtil.isBlank(paramName)) {
-                paramName = AnnotationUtil.getAnnotationValueFormMembers(RequestParam.class, RequestParam::value, parameter);
-                paramName =StringUtil.trimRight(paramName, "[]");
+                paramName = AnnotationUtil.getAnnotationValueFormMembers(RequestParam.class, RequestParam::value,"", parameter);
+                if (StringUtil.isNotBlank(paramName)){
+                  paramName =StringUtil.trimRight(paramName, "[]");
+                }
             }
 
             String orgName =parameterNames[i];
@@ -326,10 +335,7 @@ public class MethodWrap {
 
     public String getDescription() {
         if (description == null) {
-            description = AnnotationUtil.getAnnotationValueFormMembers(ApiOperation.class, ApiOperation::value, methodFun);
-            if (StringUtil.isEmpty(description)) {
-                description = "";
-            }
+            description = AnnotationUtil.getAnnotationValueFormMembers(ApiOperation.class, ApiOperation::value,"", methodFun);
         }
         return description;
     }

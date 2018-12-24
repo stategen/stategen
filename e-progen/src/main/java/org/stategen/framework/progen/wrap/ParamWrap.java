@@ -71,11 +71,6 @@ public class ParamWrap extends NamedWrap {
             if (getIsPath()) {
                 required = true;
             }
-            if (this.getName().equals("cityIds")){
-                if (logger.isInfoEnabled()) {
-                    logger.info(new StringBuffer("输出info信息: description:").append(description).toString());
-                }
-            }
 
             if (!required) {
                 if (AnnotationUtil.getAnnotationFormMembers(RequestBody.class, getMembers()) != null) {
@@ -84,17 +79,11 @@ public class ParamWrap extends NamedWrap {
             }
 
             if (!required) {
-                Boolean tempRequired = AnnotationUtil.getAnnotationValueFormMembers(RequestParam.class, RequestParam::required, getMembers());
-                if (tempRequired!=null) {
-                    required = tempRequired;
-                }
+                required = AnnotationUtil.getAnnotationValueFormMembers(RequestParam.class, RequestParam::required,false, getMembers());
             }
 
             if (!required) {
-                Boolean tempRequired = AnnotationUtil.getAnnotationValueFormMembers(ApiParam.class, ApiParam::required, getMembers());
-                if (tempRequired!=null) {
-                    required = tempRequired;
-                }
+                required = AnnotationUtil.getAnnotationValueFormMembers(ApiParam.class, ApiParam::required,false, getMembers());
             }
         }
         return required;
@@ -110,7 +99,7 @@ public class ParamWrap extends NamedWrap {
     @Override
     public String getDescription() {
         if (description == null) {
-            description = AnnotationUtil.getAnnotationValueFormMembers(ApiParam.class, ApiParam::value, members);
+            description = AnnotationUtil.getAnnotationValueFormMembers(ApiParam.class, ApiParam::value,null, members);
             if (StringUtil.isBlank(description)) {
                 description = super.getDescription();
             }

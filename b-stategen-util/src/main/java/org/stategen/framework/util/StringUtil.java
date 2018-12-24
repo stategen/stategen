@@ -190,8 +190,8 @@ public class StringUtil {
      * @see java.lang.String#endsWith(String)
      */
     private static boolean endsWith(String str, String suffix, boolean ignoreCase) {
-        if (str == null || suffix == null) {
-            return (str == null && suffix == null);
+        if (StringUtil.isEmpty(str) || StringUtil.isEmpty(suffix)) {
+            return false;
         }
         if (suffix.length() > str.length()) {
             return false;

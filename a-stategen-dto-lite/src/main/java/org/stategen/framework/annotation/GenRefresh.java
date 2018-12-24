@@ -24,12 +24,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The Interface Image.
+ * The Interface GenForm.
  */
-@Target({ElementType.METHOD,ElementType.FIELD,ElementType.ANNOTATION_TYPE})
+@Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE,ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Documented
 @Inherited
-public @interface Image {
-
+@Documented
+public @interface GenRefresh {
+   boolean value() default true;
 }

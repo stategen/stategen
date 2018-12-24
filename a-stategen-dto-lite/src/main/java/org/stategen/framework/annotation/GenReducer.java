@@ -16,48 +16,20 @@
  */
 package org.stategen.framework.annotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.core.annotation.AliasFor;
-import org.stategen.framework.enums.DataOpt;
-
 /**
- * The Interface State.
+ * The Interface GenForm.
  */
-@Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE })
+@Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE,ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@GenForm()
-@GenEffect()
-@GenReducer()
-@GenRefresh()
 @Inherited
-public @interface State {
-
-    Class<?> area() default Object.class;
-
-    DataOpt dataOpt() default DataOpt.APPEND_OR_UPDATE;
-
-    boolean init() default false;
-
-    /*** 检查路径和是否打开过 */
-    boolean initCheck() default true;
-    
-    @AliasFor(annotation = GenReducer.class,attribute="value")
-    boolean genReducer() default true;
-    
-    @AliasFor(annotation = GenEffect.class,attribute="value")
-    boolean genEffect() default true;
-    
-    @AliasFor(annotation = GenForm.class,attribute="value")
-    boolean genForm() default false;
-    
-    @AliasFor(annotation = GenRefresh.class,attribute="value")
-    boolean genRefresh() default false;
-    
-    
-
+@Documented
+public @interface GenReducer {
+   boolean value() default true;
 }

@@ -36,6 +36,7 @@ public class StateWrap {
     private Boolean initCheck;
     
     private Boolean genRefresh;
+    private Boolean genReducer;
 
     private Set<String> areaExtraProps;
 
@@ -103,6 +104,14 @@ public class StateWrap {
     
     public Boolean getGenRefresh() {
         return genRefresh;
+    }
+    
+    public Boolean getGenReducer() {
+        return genReducer;
+    }
+    
+    public void setGenReducer(Boolean genReducer) {
+        this.genReducer = genReducer;
     }
 
 }

@@ -170,7 +170,7 @@ public class AnnotationUtil {
         return annotation;
     }
 
-    public static <V, A extends Annotation> V getAnnotationValueFormMembers(Class<A> annotationType, Function<? super A, V> valueMethod,
+    private static <V, A extends Annotation> V getAnnotationValueFormMembers(Class<A> annotationType, Function<? super A, V> valueMethod,
                                                                             AnnotatedElement... members) {
         if (members != null && annotationType != null && valueMethod != null) {
             A mergedAnnotation = getAnnotationFormMembers(annotationType, members);
@@ -181,7 +181,7 @@ public class AnnotationUtil {
         return null;
     }
 
-    public static <V, A extends Annotation> V getAnnotationValueFormMembers(Class<A> annotationType, V defautValue,Function<? super A, V> valueMethod,
+    public static <V, A extends Annotation> V getAnnotationValueFormMembers(Class<A> annotationType,Function<? super A, V> valueMethod,V defautValue,
                                                                             AnnotatedElement... members) {
         V value = getAnnotationValueFormMembers(annotationType, valueMethod, members);
         if (value == null) {

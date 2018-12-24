@@ -45,7 +45,7 @@ public class EnumFieldWrap<T extends Enum<T>> {
     public String getApiDescription() throws NoSuchFieldException, SecurityException {
         if (_apiDescription == null) {
             String enumName = ((Enum<?>) enumConst).name();
-            _apiDescription = AnnotationUtil.getAnnotationValueFormMembers(ApiModelProperty.class, ApiModelProperty::value,
+            _apiDescription = AnnotationUtil.getAnnotationValueFormMembers(ApiModelProperty.class, ApiModelProperty::value, "",
                 enumConst.getClass().getField(enumName));
         }
         return _apiDescription;
@@ -73,7 +73,7 @@ public class EnumFieldWrap<T extends Enum<T>> {
     public String getTitle() throws NoSuchFieldException, SecurityException {
         if (title == null) {
             String description = this.getDescription();
-            title =StringUtil.trimLeftTo(description, " ");
+            title = StringUtil.trimLeftTo(description, " ");
         }
         return title;
     }
