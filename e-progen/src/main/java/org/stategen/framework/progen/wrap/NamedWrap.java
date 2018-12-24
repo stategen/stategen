@@ -28,7 +28,7 @@ import javax.persistence.TemporalType;
 
 import org.stategen.framework.annotation.ChangeBy;
 import org.stategen.framework.annotation.Editor;
-import org.stategen.framework.annotation.OptionConfig;
+import org.stategen.framework.annotation.ReferConfig;
 import org.stategen.framework.lite.enums.EditorType;
 import org.stategen.framework.progen.FieldRule;
 import org.stategen.framework.progen.GenContext;
@@ -60,7 +60,7 @@ public class NamedWrap extends MemberWrap {
 
     private String editorType;
 
-    private OptionConfigWrap optionConfig;
+    private ReferConfigWrap referConfig;
 
     private Boolean isSimple;
 
@@ -191,50 +191,50 @@ public class NamedWrap extends MemberWrap {
         return changeBy;
     }
 
-    public OptionConfigWrap getOptionConfig() {
-        if (optionConfig == null) {
-            OptionConfig optionConfigAnno = AnnotationUtil.getAnnotationFormMembers(OptionConfig.class, getMembers());
-            if (optionConfigAnno != null) {
-                optionConfig = new OptionConfigWrap();
-                optionConfig.setNone(optionConfigAnno.none());
+    public ReferConfigWrap getReferConfig() {
+        if (referConfig == null) {
+            ReferConfig referConfigAnno = AnnotationUtil.getAnnotationFormMembers(ReferConfig.class, getMembers());
+            if (referConfigAnno != null) {
+                referConfig = new ReferConfigWrap();
+                referConfig.setNone(referConfigAnno.none());
                 if (!getIsEnum()) {
-                    String optionName = null;
-                    Class<?> bean = optionConfigAnno.bean();
+                    String referName = null;
+                    Class<?> bean = referConfigAnno.bean();
                     if (bean != Void.class) {
-                        optionName = bean.getSimpleName();
+                        referName = bean.getSimpleName();
                     }
                     List<String> idSubfixs = Arrays.asList("Id", "Ids", "ID", "IDs");
 
-                    if (StringUtil.isEmpty(optionName)) {
-                        optionName = this.getName();
+                    if (StringUtil.isEmpty(referName)) {
+                        referName = this.getName();
                         for (String idSubfix : idSubfixs) {
-                            if (optionName.endsWith(idSubfix)) {
-                                optionName = optionName.substring(0, (optionName.length() - idSubfix.length()));
+                            if (referName.endsWith(idSubfix)) {
+                                referName = referName.substring(0, (referName.length() - idSubfix.length()));
                                 break;
                             }
                         }
                     }
 
-                    String api = optionConfigAnno.api();
+                    String api = referConfigAnno.api();
                     if (StringUtil.isBlank(api)) {
-                        api = "get" + StringUtil.capfirst(optionName) + "Options";
+                        api = "get" + StringUtil.capfirst(referName) + "Options";
                     }
-                    optionConfig.setApi(api);
+                    referConfig.setApi(api);
 
-                    String defaultOption = optionConfigAnno.defaultOption();
-                    if (StringUtil.isBlank(defaultOption)) {
-                        defaultOption = optionName;
+                    String referField = referConfigAnno.referField();
+                    if (StringUtil.isBlank(referField)) {
+                        referField = referName;
                         if (this.getIsArray()) {
-                            defaultOption = optionName + "s";
+                            referField = referName + "s";
                         }
                     }
-                    optionConfig.setDefaultOption(defaultOption);
+                    referConfig.setReferField(referField);
                 }
             } else if (getIsEnum()) {
-                optionConfig = new OptionConfigWrap();
+                referConfig = new ReferConfigWrap();
             }
         }
-        return optionConfig;
+        return referConfig;
     }
 
     public Boolean getIsSimple() {

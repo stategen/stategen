@@ -197,7 +197,8 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
     @Override
     public Boolean getGenForm() {
         if (genForm == null) {
-            genForm =AnnotationUtil.getAnnotationValueFormMembers(GenForm.class, GenForm::value,false, getClazz());
+            //只在标注genForm(false)才不会生成，否则都生成
+            genForm =AnnotationUtil.getAnnotationValueFormMembers(GenForm.class, GenForm::value,true, getClazz());
         }
         return genForm;
     }

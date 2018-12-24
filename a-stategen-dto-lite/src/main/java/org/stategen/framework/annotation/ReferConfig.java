@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
 
 /***
  * <pre>
+ * 除了枚举标注，
+ * 其它，如何数据是此用其它字段，需要加上该标准
  * 推导api,如getCityOptions
  * 当api不为空时，直接获取 api
  * 如果api为空
@@ -22,10 +24,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface OptionConfig {
+public @interface ReferConfig {
     
     Class<?> bean() default Void.class;
     String api() default "";
     String none() default "";
-    String defaultOption() default "";
+    String referField() default "";
 }

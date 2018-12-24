@@ -2,11 +2,11 @@ package org.stategen.framework.progen.wrap;
 
 import org.stategen.framework.util.StringUtil;
 
-public class OptionConfigWrap {
+public class ReferConfigWrap {
     private String api;
     private String none ;
     private String changeBy ;
-    private String defaultOption;
+    private String referField;
 
     public String getNone() {
         return none;
@@ -40,14 +40,14 @@ public class OptionConfigWrap {
         this.changeBy = changeBy;
     }
     
-    public String getDefaultOption() {
-        return defaultOption;
+    public String getReferField() {
+        return referField;
     }
     
-    public void setDefaultOption(String defaultOption) {
-        if (StringUtil.isEmpty(defaultOption)){
+    public void setReferField(String referField) {
+        if (StringUtil.isEmpty(referField)){
             return;
         }
-        this.defaultOption = defaultOption;
+        this.referField = referField;
     }
 }
