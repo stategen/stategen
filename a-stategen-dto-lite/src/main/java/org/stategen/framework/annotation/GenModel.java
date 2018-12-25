@@ -23,38 +23,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.core.annotation.AliasFor;
-import org.springframework.stereotype.Controller;
-
-import io.swagger.annotations.Api;
-
 /**
- * The Interface ApiConfig.
+ * The Interface GenRoute.
  */
 @Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@Controller
-@GenRoute
-@GenModel
-@Api
-@Menu
-public @interface ApiConfig {
-
-    @AliasFor(annotation = Api.class, attribute = "value")
-    String name() default "";
-
-    @AliasFor(annotation = Menu.class,attribute="value")
-    boolean menu() default true;
-    
-    @AliasFor(annotation = Api.class)
-    boolean hidden() default false;
-    
-    @AliasFor(annotation = GenModel.class,attribute="value")
-    boolean genModel() default true;
-    
-    @AliasFor(annotation = GenRoute.class,attribute="value")
-    boolean genRoute() default true;
-
+public @interface GenModel {
+    boolean value() default true;
 }

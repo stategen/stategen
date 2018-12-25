@@ -33,7 +33,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.stategen.framework.annotation.Menu;
-import org.stategen.framework.annotation.Route;
+import org.stategen.framework.annotation.GenRoute;
 import org.stategen.framework.annotation.VisitCheck;
 import org.stategen.framework.lite.IMenu;
 import org.stategen.framework.lite.enums.MenuType;
@@ -57,9 +57,14 @@ public class ControllerHelpers {
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ControllerHelpers.class);
     public static final String CONTROLLER_SUBFIX = "Controller";
 
-    public static String getRoute(String controllerName, boolean isPath) {
-        String route = controllerName;
-        route = StringUtil.trimRight(route, CONTROLLER_SUBFIX);
+    public static String getRoute(Class<?> controllerClass,String controllerName, boolean isPath) {
+        GenRoute routeAnno = AnnotatedElementUtils.findMergedAnnotation(controllerClass, GenRoute.class);
+        
+        if (routeAnno == null || !routeAnno.value()) {
+            return null;
+        }
+        String route=StringUtil.trimRight(controllerName, CONTROLLER_SUBFIX);
+        
         route = StringUtil.uncapfirst(route);
         int size = route.length() + 8;
         StringBuffer sb = new StringBuffer(size);
@@ -119,7 +124,7 @@ public class ControllerHelpers {
      * @throws IllegalAccessException
      */
     public static <M extends IMenu<M>> List<M> genAllControllerMenus(Class<M> menuClz,
-                                                                  RequestMappingHandlerMapping requestMappingHandlerMapping) throws InstantiationException, IllegalAccessException {
+                                                                     RequestMappingHandlerMapping requestMappingHandlerMapping) throws InstantiationException, IllegalAccessException {
 
         Map<RequestMappingInfo, HandlerMethod> requestMappingMap = requestMappingHandlerMapping.getHandlerMethods();
         List<M> allControllerMenus = new ArrayList<M>();
@@ -161,7 +166,7 @@ public class ControllerHelpers {
         }
 
         scanControllerMenus(controllerClassSet, menuClz, allControllerMenus);
-        allControllerMenus=genControllerMenuRelations(menuClz,allControllerMenus);
+        allControllerMenus = genControllerMenuRelations(menuClz, allControllerMenus);
 
         return allControllerMenus;
 
@@ -174,49 +179,49 @@ public class ControllerHelpers {
      * @throws IllegalAccessException 
      * @throws IllegalArgumentException 
      */
-    private static <M extends IMenu<M>> List<M> genControllerMenuRelations(Class<M> menuClass,List<M> allControllerMenus) throws IllegalArgumentException, IllegalAccessException {
+    private static <M extends IMenu<M>> List<M> genControllerMenuRelations(Class<M> menuClass,
+                                                                           List<M> allControllerMenus) throws IllegalArgumentException, IllegalAccessException {
 
-        Map<String, M> simpleNameMap =new LinkedCaseInsensitiveMap<M>(allControllerMenus.size());
+        Map<String, M> simpleNameMap = new LinkedCaseInsensitiveMap<M>(allControllerMenus.size());
         CollectionUtil.toMap(simpleNameMap, allControllerMenus, M::getControllerName);
         List<String> simpleControllerNames = new ArrayList<String>(simpleNameMap.keySet());
-        
 
         for (String simpleControllerName : simpleControllerNames) {
-            String currentMenuName =simpleControllerName;
+            String currentMenuName = simpleControllerName;
             int lastIdx = currentMenuName.lastIndexOf(StringUtil.UNDERLINE);
-            while (lastIdx>0) {
-                M currentMenu =simpleNameMap.get(currentMenuName);
-                
+            while (lastIdx > 0) {
+                M currentMenu = simpleNameMap.get(currentMenuName);
+
                 String menuParentControllerName = currentMenuName.substring(0, lastIdx);
                 M menuParent = simpleNameMap.get(menuParentControllerName);
-                
-                if (menuParent==null){
-                    String menuName =StringUtil.trimLeftTo(menuParentControllerName, StringUtil.UNDERLINE);
-                    MenuType menuType =getMenuTypeByControllerName(menuParentControllerName, true);
-                    menuParent=IMenu.createMenu(menuClass, menuParentControllerName, null, null, menuName, null, menuType, VisitCheckType.NONE);
+
+                if (menuParent == null) {
+                    String menuName = StringUtil.trimLeftTo(menuParentControllerName, StringUtil.UNDERLINE);
+                    MenuType menuType = getMenuTypeByControllerName(menuParentControllerName, true);
+                    menuParent = IMenu.createMenu(menuClass, menuParentControllerName, null, null, menuName, null, menuType, VisitCheckType.NONE);
                     simpleNameMap.put(menuParentControllerName, menuParent);
                 }
                 menuParent.addChild(currentMenu);
-                
-                currentMenuName =menuParentControllerName;
+
+                currentMenuName = menuParentControllerName;
                 lastIdx = currentMenuName.lastIndexOf(StringUtil.UNDERLINE);
-            } 
+            }
         }
-        
-        ArrayList<M> result =new ArrayList<M>();
+
+        ArrayList<M> result = new ArrayList<M>();
         for (M m : allControllerMenus) {
-            if (m.getParent()==null){
+            if (m.getParent() == null) {
                 result.add(m);
             }
         }
         return result;
     }
-    
-    private static MenuType getMenuTypeByControllerName(String controllerName,boolean isMenu){
-        if (!isMenu){
-            return MenuType.NONE; 
+
+    private static MenuType getMenuTypeByControllerName(String controllerName, boolean isMenu) {
+        if (!isMenu) {
+            return MenuType.NONE;
         }
-        return controllerName.contains(StringUtil.$)?MenuType.DYNAMIC:MenuType.MENU;
+        return controllerName.contains(StringUtil.$) ? MenuType.DYNAMIC : MenuType.MENU;
     }
 
     private static <M extends IMenu<M>> void scanControllerMenus(Set<Class<?>> controllerClassSet, Class<M> menuClz,
@@ -227,19 +232,13 @@ public class ControllerHelpers {
             Api apiAnno = AnnotatedElementUtils.findMergedAnnotation(controllerClass, Api.class);
             Menu menuAnno = AnnotatedElementUtils.findMergedAnnotation(controllerClass, Menu.class);
             VisitCheck controllerVisitCheckAnno = AnnotatedElementUtils.findMergedAnnotation(controllerClass, VisitCheck.class);
-            Route routeAnno = AnnotatedElementUtils.findMergedAnnotation(controllerClass, Route.class);
-
             final String controllerName = StringUtil.trimRight(controllerClass.getSimpleName(), CONTROLLER_SUBFIX);
-
-            String route = null;
-            if (routeAnno != null && routeAnno.value()) {
-                route = ControllerHelpers.getRoute(controllerName, false);
-                route = StringUtil.startWithSlash(route);
-            }
-
-            boolean isMenu = menuAnno != null && menuAnno.value();
             
-            MenuType controllerVisitType = getMenuTypeByControllerName(controllerName,isMenu);
+            String route = ControllerHelpers.getRoute(controllerClass,controllerName, false);
+            route = StringUtil.startWithSlash(route);
+            
+            boolean isMenu = menuAnno != null && menuAnno.value();
+            MenuType controllerVisitType = getMenuTypeByControllerName(controllerName, isMenu);
             VisitCheckType controllerVisitCheckType = VisitCheckType.getCheckType(controllerVisitCheckAnno != null);
 
             String apiName = apiAnno != null ? apiAnno.value() : null;

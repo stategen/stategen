@@ -68,7 +68,7 @@ public class FacadeGenerator {
 
                 try {
                     ApiWrap controllerWrap = new ApiWrap(clz, apiName);
-                    if (controllerWrap.getIsApi()) {
+                    if (controllerWrap.isApi()) {
                         apiWrapMap.put(clz, controllerWrap);
                     }
                 } catch (Exception e) {

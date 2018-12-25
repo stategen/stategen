@@ -24,6 +24,8 @@ import java.util.TreeMap;
 
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.ReflectionUtils.MethodCallback;
+import org.stategen.framework.annotation.GenModel;
+import org.stategen.framework.annotation.GenRoute;
 import org.stategen.framework.generator.util.ControllerHelpers;
 import org.stategen.framework.progen.ApiMethodFilter;
 import org.stategen.framework.util.AnnotationUtil;
@@ -45,8 +47,10 @@ public class ApiWrap extends BaseHasImportsWrap implements CanbeImportWrap {
 
     String description;
 
-    private Boolean isApi = null;
-    private Boolean hidden = null;
+    private Boolean hidden;
+    private Boolean genApi;
+    private Boolean genModel;
+    private Boolean genRoute;
 
     private String route = null;
 
@@ -68,12 +72,8 @@ public class ApiWrap extends BaseHasImportsWrap implements CanbeImportWrap {
         return AnnotatedElementUtils.findMergedAnnotation(getClazz(), Api.class);
     }
 
-    public Boolean getIsApi() {
-        if (isApi == null) {
-            isApi = getApiAnno() != null;
-        }
-
-        return isApi;
+    public boolean isApi() {
+        return getApiAnno() != null;
     }
 
     public Boolean getHidden() {
@@ -81,8 +81,28 @@ public class ApiWrap extends BaseHasImportsWrap implements CanbeImportWrap {
             Api apiAnno = getApiAnno();
             hidden = apiAnno == null || apiAnno.hidden();
         }
-
         return hidden;
+    }
+
+    public Boolean getGenApi() {
+        if (genApi == null) {
+            genApi = !getHidden();
+        }
+        return genApi;
+    }
+
+    public Boolean getGenModel() {
+        if (genModel == null) {
+            genModel = getGenApi() && AnnotationUtil.getAnnotationValueFormMembers(GenModel.class, GenModel::value, false, getClazz());
+        }
+        return genModel;
+    }
+
+    public Boolean getGenRoute() {
+        if (genRoute == null) {
+            genRoute = getGenModel() && AnnotationUtil.getAnnotationValueFormMembers(GenRoute.class, GenRoute::value, false, getClazz());
+        }
+        return genRoute;
     }
 
     public List<BaseWrap> getAreas() {
@@ -91,7 +111,7 @@ public class ApiWrap extends BaseHasImportsWrap implements CanbeImportWrap {
 
     public void addArea(BaseWrap area) {
         Class<?> clazz = area.getClazz();
-        String className=clazz.getName();
+        String className = clazz.getName();
         if (!areas.containsKey(className)) {
             areas.put(className, area);
         }
@@ -143,7 +163,10 @@ public class ApiWrap extends BaseHasImportsWrap implements CanbeImportWrap {
 
     public String getRoute() {
         if (route == null) {
-            route = ControllerHelpers.getRoute(getClassName(), true);
+            route = ControllerHelpers.getRoute(this.getClazz(), getClassName(), true);
+            if (StringUtil.isBlank(route)) {
+                route = "";
+            }
         }
         return route;
     }
