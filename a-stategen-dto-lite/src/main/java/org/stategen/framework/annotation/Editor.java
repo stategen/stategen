@@ -20,5 +20,5 @@ import org.stategen.framework.lite.enums.EditorType;
 public @interface Editor {
     Class<? extends EditorType> value() default EditorType.Input.class;
     String props() default "";
-
+    String nullLable() default "选择";
 }

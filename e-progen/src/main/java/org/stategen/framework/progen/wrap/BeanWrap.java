@@ -31,7 +31,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.stategen.framework.annotation.GenForm;
+import org.stategen.framework.annotation.GenBean;
 import org.stategen.framework.progen.GenContext;
 import org.stategen.framework.progen.GenericTypeResolver;
 import org.stategen.framework.progen.WrapContainer;
@@ -57,7 +57,7 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
     private Map<String, FieldWrap> fieldMap = new LinkedHashMap<String, FieldWrap>();
     private Map<String, FieldWrap> allFieldMap = new LinkedHashMap<String, FieldWrap>();
 
-    private Boolean genForm;
+    private Boolean genBean;
 
     @Override
     public String getImportPath() {
@@ -194,13 +194,12 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
         return idKeyName;
     }
 
-    @Override
-    public Boolean getGenForm() {
-        if (genForm == null) {
+    public Boolean getGenBean() {
+        if (genBean == null) {
             //只在标注genForm(false)才不会生成，否则都生成
-            genForm =AnnotationUtil.getAnnotationValueFormMembers(GenForm.class, GenForm::value,true, getClazz());
+            genBean =AnnotationUtil.getAnnotationValueFormMembers(GenBean.class, GenBean::value,true, getClazz());
         }
-        return genForm;
+        return genBean;
     }
 
 }

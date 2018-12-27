@@ -68,6 +68,8 @@ public class NamedWrap extends MemberWrap {
 
     private String props;
     
+    private String nullLablel;
+    
     private Set<Class<? extends Annotation>> _excludeAnnos;
 
     public List<FieldRule> getRules() {
@@ -135,6 +137,13 @@ public class NamedWrap extends MemberWrap {
             }
         }
         return editorType;
+    }
+    
+    public String getNullLablel() {
+        if (nullLablel == null) {
+            nullLablel = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::nullLable,"", getMembers());
+        }
+        return nullLablel;
     }
 
     public String getProps() {
