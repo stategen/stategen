@@ -93,7 +93,7 @@ public class MethodWrap {
 
     public Boolean getGenForm() {
         if (genForm == null) {
-            genForm = AnnotationUtil.getAnnotationValueFormMembers(GenForm.class, GenForm::value,false, methodFun);
+            genForm = AnnotationUtil.getAnnotationValueFormMembers(GenForm.class, GenForm::value, false, methodFun);
         }
         return genForm;
     }
@@ -116,10 +116,9 @@ public class MethodWrap {
         Boolean isSetted = false;
         Boolean genEffect = true;
         Boolean genReducer = true;
-        Boolean initCheck =true;
-        BaseWrap areaTemp = null; 
-        Boolean genRefresh =false;
-        
+        Boolean initCheck = true;
+        BaseWrap areaTemp = null;
+        Boolean genRefresh = false;
 
         StateWrap stateWrap = new StateWrap();
         this.setState(stateWrap);
@@ -128,17 +127,17 @@ public class MethodWrap {
 
         Set<StateExtraProp> stateExtraPropAnnos = AnnotatedElementUtils.getMergedRepeatableAnnotations(methodFun, StateExtraProp.class);
         stateExtraProps = CollectionUtil.toSet(stateExtraPropAnnos, StateExtraProp::value);
-        
-        genEffect = AnnotationUtil.getAnnotationValueFormMembers(GenEffect.class, GenEffect::value,false, methodFun);
-        genReducer = AnnotationUtil.getAnnotationValueFormMembers(GenReducer.class, GenReducer::value,false, methodFun);
-        genRefresh = AnnotationUtil.getAnnotationValueFormMembers(GenRefresh.class, GenRefresh::value,false, methodFun);
+
+        genEffect = AnnotationUtil.getAnnotationValueFormMembers(GenEffect.class, GenEffect::value, false, methodFun);
+        genReducer = AnnotationUtil.getAnnotationValueFormMembers(GenReducer.class, GenReducer::value, false, methodFun);
+        genRefresh = AnnotationUtil.getAnnotationValueFormMembers(GenRefresh.class, GenRefresh::value, false, methodFun);
 
         State stateAnno = AnnotatedElementUtils.getMergedAnnotation(methodFun, State.class);
         if (stateAnno != null) {
             init = stateAnno.init();
             dataOpt = stateAnno.dataOpt();
             isSetted = true;
-            initCheck=stateAnno.initCheck();
+            initCheck = stateAnno.initCheck();
             Class<?> stateAreaClass = stateAnno.area();
             if (stateAreaClass != Object.class) {
                 if (stateAreaClass != returnClz) {
@@ -148,13 +147,22 @@ public class MethodWrap {
             }
         }
 
-        if (!stateFieldAdded && area == null) {
+        if (!stateFieldAdded && area == null ) {
+            if (returnClz!=Object.class && GenContext.wrapContainer.checkIsOrgSimpleOrEnum(returnClz) && ((ApiWrap)apiWrap).getGenModel()) {
+                String classPath =this.methodFun.getDeclaringClass().getPackage().getName()+'.'+this.methodFun.getDeclaringClass().getSimpleName()+'.'+this.methodFun.getName();
+                String errMessage=String.format("未指定area,如 @State(area=User.class),只有返回值是非基本类型、SimpleResponse、Object可以不指定area\n at "+classPath+"("+ this.methodFun.getDeclaringClass().getSimpleName()+".java:%s)", 0);
+                AssertUtil.throwException(errMessage);
+            }
             areaTemp = GenContext.wrapContainer.add(returnClz, false);
         }
 
         if (areaTemp != null && !SimpleResponse.class.isAssignableFrom(areaTemp.getClazz())) {
             apiWrap.addArea(areaTemp);
-            this.area =areaTemp;
+            this.area = areaTemp;
+        }
+
+        if (areaTemp == null) {
+
         }
 
         stateWrap.setInit(init);
@@ -173,10 +181,9 @@ public class MethodWrap {
     }
 
     protected void genParams() {
-        
-        Set<Class<? extends Annotation>> methodExcludeBeanRules =findExcludeAnnoClasses(this.methodFun);
-        
-        
+
+        Set<Class<? extends Annotation>> methodExcludeBeanRules = findExcludeAnnoClasses(this.methodFun);
+
         Parameter[] parameters = methodFun.getParameters();
         DefaultParameterNameDiscoverer defaultParameterNameDiscoverer = new DefaultParameterNameDiscoverer();
         String[] parameterNames = defaultParameterNameDiscoverer.getParameterNames(methodFun);
@@ -198,16 +205,16 @@ public class MethodWrap {
                 continue;
             }
 
-            String paramName  = AnnotationUtil.getAnnotationValueFormMembers(PathVariable.class, PathVariable::value,"", parameter);
+            String paramName = AnnotationUtil.getAnnotationValueFormMembers(PathVariable.class, PathVariable::value, "", parameter);
 
             if (StringUtil.isBlank(paramName)) {
-                paramName = AnnotationUtil.getAnnotationValueFormMembers(RequestParam.class, RequestParam::value,"", parameter);
-                if (StringUtil.isNotBlank(paramName)){
-                  paramName =StringUtil.trimRight(paramName, "[]");
+                paramName = AnnotationUtil.getAnnotationValueFormMembers(RequestParam.class, RequestParam::value, "", parameter);
+                if (StringUtil.isNotBlank(paramName)) {
+                    paramName = StringUtil.trimRight(paramName, "[]");
                 }
             }
 
-            String orgName =parameterNames[i];
+            String orgName = parameterNames[i];
             if (StringUtil.isBlank(paramName)) {
                 paramName = orgName;
             }
@@ -225,32 +232,32 @@ public class MethodWrap {
             paramWrap.setMember(parameter);
             paramWrap.setOrgName(orgName);
             params.add(paramWrap);
-            
+
             Set<Class<? extends Annotation>> parameterExcludeBeanRules = findExcludeAnnoClasses(parameter);
             parameterExcludeBeanRules.addAll(methodExcludeBeanRules);
             paramWrap.set_excludeAnnos(parameterExcludeBeanRules);
-            
+
             if (isJson) {
                 this.json = paramWrap;
             }
-            
+
             boolean isOrgOrEnum = GenContext.wrapContainer.checkIsOrgSimpleOrEnum(paramRawType);
             if (isOrgOrEnum) {
                 orgParamWraps.add(paramWrap);
             } else {
                 noneOrigParameters.add(paramRawType);
             }
-            
+
         }
 
-        Map<String , Method> getterMethodMap =new HashMap<String, Method>();
-        Map<String , Field> fieldMaps =new HashMap<String, Field>();
-        
+        Map<String, Method> getterMethodMap = new HashMap<String, Method>();
+        Map<String, Field> fieldMaps = new HashMap<String, Field>();
+
         //TODO set方法是查找??
         for (Class<?> noneOrgClz : noneOrigParameters) {
             Map<String, Field> fieldNameFieldMap = ReflectionUtil.getFieldNameFieldMap(noneOrgClz);
             Map<String, Method> getterNameMethods = ReflectionUtil.getGetterNameMethods(noneOrgClz);
-            
+
             getterMethodMap.putAll(getterNameMethods);
             fieldMaps.putAll(fieldNameFieldMap);
         }
@@ -259,16 +266,14 @@ public class MethodWrap {
             String orgName = paramWrap.getOrgName();
             Method getterMethod = getterMethodMap.get(orgName);
             Field field = fieldMaps.get(orgName);
-            paramWrap.addMembers(getterMethod,field);
+            paramWrap.addMembers(getterMethod, field);
         }
-
-
 
     }
 
     private Set<Class<? extends Annotation>> findExcludeAnnoClasses(AnnotatedElement member) {
-        Set<ExcludeBeanRule> memberExcludeBeanRuleAnnos= AnnotatedElementUtils.findMergedRepeatableAnnotations(member, ExcludeBeanRule.class);
-        Set<Class<? extends Annotation>> result =new HashSet<Class<? extends Annotation>>(5);
+        Set<ExcludeBeanRule> memberExcludeBeanRuleAnnos = AnnotatedElementUtils.findMergedRepeatableAnnotations(member, ExcludeBeanRule.class);
+        Set<Class<? extends Annotation>> result = new HashSet<Class<? extends Annotation>>(5);
         for (ExcludeBeanRule excludeBeanRule : memberExcludeBeanRuleAnnos) {
             Class<? extends Annotation>[] annoClasses = excludeBeanRule.value();
             for (Class<? extends Annotation> annoClass : annoClasses) {
@@ -335,7 +340,7 @@ public class MethodWrap {
 
     public String getDescription() {
         if (description == null) {
-            description = AnnotationUtil.getAnnotationValueFormMembers(ApiOperation.class, ApiOperation::value,"", methodFun);
+            description = AnnotationUtil.getAnnotationValueFormMembers(ApiOperation.class, ApiOperation::value, "", methodFun);
         }
         return description;
     }
