@@ -47,12 +47,19 @@ public class CopyUtil {
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CopyUtil.class);
     
     public static <T> T copy(Object source,Class<T> targetCls, String... ignoreProperties) {
+        if(targetCls == null){
+            return null;
+        }
+        T instance = BeanUtils.instantiate(targetCls);
+        return copy(source, instance, ignoreProperties);
+    }
+    
+    public static <T> T copy(Object source,T instance, String... ignoreProperties) {
         if(source == null){
             return null;
         }
-        T targetObj = BeanUtils.instantiate(targetCls);
-        BeanUtils.copyProperties(source,targetObj,ignoreProperties);
-        return targetObj;
+        BeanUtils.copyProperties(source,instance,ignoreProperties);
+        return instance;
     }
 
     public static <T> List<T> copy(List<?> sourceList, Class<T> targetCls, String... ignoreProperties) {

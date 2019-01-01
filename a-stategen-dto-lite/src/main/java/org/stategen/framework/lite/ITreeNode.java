@@ -4,5 +4,9 @@ public interface ITreeNode<T extends ITreeNode<T>> {
     public T getParent();
     
     public void addChild(T child) ;
+    
+    public void cleanChildren() ;
+    
+    public T getRoot();
 
 }

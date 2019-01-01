@@ -1,6 +1,9 @@
 package org.stategen.framework.lite.enums;
 
 public abstract class EditorType {
+    public boolean needReferConfig() {
+        return false;
+    }
 
     public static abstract class Password extends EditorType {
 
@@ -18,15 +21,6 @@ public abstract class EditorType {
 
     }
 
-    
-    public static abstract class RadioGroup extends EditorType {
-
-    }
-
-    public static abstract class CheckboxGroup extends EditorType {
-
-    }
-
     public static abstract class Number extends EditorType {
 
     }
@@ -39,19 +33,54 @@ public abstract class EditorType {
 
     }
 
-    public static abstract class Checkbox extends EditorType {
-
-    }
-
     public static abstract class Rate extends EditorType {
 
     }
 
-    public static abstract class Upload extends EditorType {
+    public static abstract class TimeStamp extends EditorType {
 
     }
 
-    public static abstract class Image extends EditorType {
+    public static abstract class TimePicker extends EditorType {
+
+    }
+
+    public static abstract class DatePicker extends EditorType {
+
+    }
+
+    private static class HasReferFieldEditorType extends EditorType {
+        @Override
+        public boolean needReferConfig() {
+            return true;
+        }
+    }
+
+    public static class Checkbox extends HasReferFieldEditorType {
+
+    }
+
+    public static class Select extends HasReferFieldEditorType {
+
+    }
+
+    public static class Cascader extends HasReferFieldEditorType {
+
+    }
+
+    public static class RadioGroup extends HasReferFieldEditorType {
+
+    }
+
+    public static class CheckboxGroup extends HasReferFieldEditorType {
+
+    }
+
+    public static class Upload extends HasReferFieldEditorType {
+
+    }
+
+    public static class Image extends HasReferFieldEditorType {
 
     }
 

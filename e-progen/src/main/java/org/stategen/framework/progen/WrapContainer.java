@@ -146,12 +146,12 @@ public class WrapContainer {
         return baseWrap;
     }
 
-    public <T extends MemberWrap> T genMemberWrap(ApiWrap apiWrap, Class<?> rawClass, Type genericType, Class<T> memberWrapClz,
+    public <T extends MemberWrap> T genMemberWrap(ApiWrap apiWrap, Class<?> rawClass, Type genericType, T memberWrap,
                                                   AnnotatedElement annotatedElement) {
         rawClass = ClassHelpers.getClazzIfCollection(rawClass);
         BaseWrap ownClazzWrap = add(rawClass, false);
 
-        T memberWrap = CopyUtil.copy(ownClazzWrap, memberWrapClz);
+        memberWrap = CopyUtil.copy(ownClazzWrap, memberWrap);
         memberWrap.setOwnClazzWrap(ownClazzWrap);
         memberWrap.setApiWap(apiWrap);
 

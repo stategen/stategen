@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.stategen.framework.annotation.GenBean;
 import org.stategen.framework.progen.GenContext;
 import org.stategen.framework.progen.GenericTypeResolver;
+import org.stategen.framework.progen.NamedContext;
 import org.stategen.framework.progen.WrapContainer;
 import org.stategen.framework.util.AnnotationUtil;
 import org.stategen.framework.util.CollectionUtil;
@@ -102,7 +104,9 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
         }
 
         getterNameMethodsSorted.putAll(getterNameMethods);
+        Map<String, Parameter> fieldNameParameterMap =CollectionUtil.newEmptyMap();
 
+        
         for (Entry<String, Method> entry : getterNameMethodsSorted.entrySet()) {
 
             Method getterMethod = entry.getValue();
@@ -118,8 +122,8 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
 
             Class<?> returnType = getterMethod.getReturnType();
             Type genericReturnType = getterMethod.getGenericReturnType();
-
-            FieldWrap fieldWrap = GenContext.wrapContainer.genMemberWrap(null, returnType, genericReturnType, FieldWrap.class, getterMethod);
+            NamedContext context =new NamedContext(fieldNameParameterMap, fieldNameFieldMap, getterNameMethodsSorted);
+            FieldWrap fieldWrap = GenContext.wrapContainer.genMemberWrap(null, returnType, genericReturnType, new FieldWrap(context), getterMethod);
 
             fieldWrap.setMember(getterMethod);
             fieldWrap.setField(field);
@@ -158,6 +162,10 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
     public void addFieldWrap(String fieldName, FieldWrap fieldWrap) {
         this.fieldMap.put(fieldName, fieldWrap);
         this.allFieldMap.put(fieldName, fieldWrap);
+    }
+    
+    public FieldWrap get(String fieldName) {
+        return allFieldMap.get(fieldName);
     }
 
     public List<FieldWrap> getFields() {

@@ -50,6 +50,7 @@ import org.stategen.framework.generator.util.ControllerHelpers;
 import org.stategen.framework.generator.util.RequestMethodWrap;
 import org.stategen.framework.lite.SimpleResponse;
 import org.stategen.framework.progen.GenContext;
+import org.stategen.framework.progen.NamedContext;
 import org.stategen.framework.progen.UrlPart;
 import org.stategen.framework.util.AnnotationUtil;
 import org.stategen.framework.util.AssertUtil;
@@ -101,7 +102,7 @@ public class MethodWrap {
     protected void genReturn() {
         Class<?> rawReturnClass = methodFun.getReturnType();
         Type genericReturnType = methodFun.getGenericReturnType();
-        returnWrap = GenContext.wrapContainer.genMemberWrap(apiWrap, rawReturnClass, genericReturnType, ReturnWrap.class, methodFun);
+        returnWrap = GenContext.wrapContainer.genMemberWrap(apiWrap, rawReturnClass, genericReturnType, new ReturnWrap(), methodFun);
         returnWrap.setMember(methodFun);
     }
 
@@ -147,10 +148,10 @@ public class MethodWrap {
             }
         }
 
-        if (!stateFieldAdded && area == null ) {
-            if (returnClz!=Object.class && GenContext.wrapContainer.checkIsOrgSimpleOrEnum(returnClz) && ((ApiWrap)apiWrap).getGenModel()) {
-                String classPath =this.methodFun.getDeclaringClass().getPackage().getName()+'.'+this.methodFun.getDeclaringClass().getSimpleName()+'.'+this.methodFun.getName();
-                String errMessage=String.format("未指定area,如 @State(area=User.class),只有返回值是非基本类型、SimpleResponse、Object可以不指定area\n at "+classPath+"("+ this.methodFun.getDeclaringClass().getSimpleName()+".java:%s)", 0);
+        if (!stateFieldAdded && area == null) {
+            if (returnClz != Object.class && GenContext.wrapContainer.checkIsOrgSimpleOrEnum(returnClz) && ((ApiWrap) apiWrap).getGenModel()) {
+                String errMessage = "未指定area,如 @State(area=User.class),只有返回值是非基本类型、SimpleResponse、Object可以不指定area"
+                                    + ReflectionUtil.getJavaConsoleLink(methodFun);
                 AssertUtil.throwException(errMessage);
             }
             areaTemp = GenContext.wrapContainer.add(returnClz, false);
@@ -190,6 +191,9 @@ public class MethodWrap {
         Set<Class<?>> noneOrigParameters = new HashSet<Class<?>>();
 
         List<ParamWrap> orgParamWraps = new ArrayList<ParamWrap>();
+        Map<String, Parameter> fieldNameParameterMap = new HashMap<String, Parameter>();
+        Map<String, Field> fieldNameFieldMap = new HashMap<String, Field>();
+        Map<String, Method> getterNameMethods = new HashMap<String, Method>();
 
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
@@ -225,8 +229,10 @@ public class MethodWrap {
             }
 
             Type parameterizedType = parameter.getParameterizedType();
+            fieldNameParameterMap.put(orgName, parameter);
 
-            ParamWrap paramWrap = GenContext.wrapContainer.genMemberWrap(apiWrap, paramRawType, parameterizedType, ParamWrap.class, parameter);
+            NamedContext context = new NamedContext(fieldNameParameterMap, fieldNameFieldMap, getterNameMethods);
+            ParamWrap paramWrap = GenContext.wrapContainer.genMemberWrap(apiWrap, paramRawType, parameterizedType, new ParamWrap(context), parameter);
 
             paramWrap.setName(paramName);
             paramWrap.setMember(parameter);
@@ -250,22 +256,21 @@ public class MethodWrap {
 
         }
 
-        Map<String, Method> getterMethodMap = new HashMap<String, Method>();
-        Map<String, Field> fieldMaps = new HashMap<String, Field>();
-
         //TODO set方法是查找??
         for (Class<?> noneOrgClz : noneOrigParameters) {
-            Map<String, Field> fieldNameFieldMap = ReflectionUtil.getFieldNameFieldMap(noneOrgClz);
-            Map<String, Method> getterNameMethods = ReflectionUtil.getGetterNameMethods(noneOrgClz);
+            Map<String, Field> fieldNameFieldMapInBean = ReflectionUtil.getFieldNameFieldMap(noneOrgClz);
+            Map<String, Method> getterNameMethodsInBean = ReflectionUtil.getGetterNameMethods(noneOrgClz);
 
-            getterMethodMap.putAll(getterNameMethods);
-            fieldMaps.putAll(fieldNameFieldMap);
+            getterNameMethods.putAll(getterNameMethodsInBean);
+            fieldNameFieldMap.putAll(fieldNameFieldMapInBean);
         }
 
         for (ParamWrap paramWrap : orgParamWraps) {
             String orgName = paramWrap.getOrgName();
-            Method getterMethod = getterMethodMap.get(orgName);
-            Field field = fieldMaps.get(orgName);
+
+            Method getterMethod = getterNameMethods.get(orgName);
+            Field field = fieldNameFieldMap.get(orgName);
+
             paramWrap.addMembers(getterMethod, field);
         }
 

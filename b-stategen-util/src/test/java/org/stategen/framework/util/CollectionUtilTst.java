@@ -9,8 +9,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.junit.Test;
-import org.stategen.framework.util.CollectionUtil;
-import org.stategen.framework.util.OptionalUtil;
 
 public class CollectionUtilTst {
 
@@ -48,7 +46,7 @@ public class CollectionUtilTst {
         Teacher teacher2 =new Teacher(3L, "李七");
         
         List<Teacher> teachers =Arrays.asList(teacher1,teacher2);
-        Map<Long, Teacher> teacherMap = CollectionUtil.toMap(Teacher::getTeacherId,teachers);
+        Map<Long, Teacher> teacherMap = CollectionUtil.toMap(teachers,Teacher::getTeacherId);
         
 //        Function<? super Teacher, String> getRealName =Teacher::getRealName;
 //        Function<? super User, Long> getUserId=User::getUserId;

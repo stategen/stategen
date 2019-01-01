@@ -119,7 +119,7 @@ public class Table implements java.io.Serializable,Cloneable {
     public void setColumns(LinkedHashSet<Column> columns) {
         this.columns.setColumns(columns);
         this._columnMap.clear();
-        CollectionUtil.toMap(_columnMap, Column::getColumnName, columns);
+        CollectionUtil.toMap(_columnMap, columns,Column::getColumnName);
     }
     public String getOwnerSynonymName() {
         return ownerSynonymName;

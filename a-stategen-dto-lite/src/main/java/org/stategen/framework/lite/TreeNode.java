@@ -12,6 +12,8 @@ public abstract class TreeNode<T extends TreeNode<T>> implements ITreeNode<T> {
     protected transient String _uuid = UUID.randomUUID().toString();
 
     protected LinkedHashMap<String, T> _children;
+    
+    protected transient T root;
 
     public T getParent() {
         return parent;
@@ -45,5 +47,26 @@ public abstract class TreeNode<T extends TreeNode<T>> implements ITreeNode<T> {
             this._children.put(child._uuid, child);
         }
     }
-
+    
+    @Override
+    public void cleanChildren() {
+        this._children=null;
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public T getRoot() {
+        T root = (T) this;
+        while (true) {
+            T parentOfParent =root.getParent();  
+            if (parentOfParent!=null){
+                root=parentOfParent; 
+            } else {
+                break;
+            }
+            
+        }
+        return root;
+    }
+    
 }

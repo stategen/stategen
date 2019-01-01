@@ -134,6 +134,10 @@ public class ApiWrap extends BaseHasImportsWrap implements CanbeImportWrap {
     public List<MethodWrap> getFunctions() {
         return new ArrayList<MethodWrap>(functions.values());
     }
+    
+    public MethodWrap getFunction(String functionName){
+        return functions.get(functionName);
+    }
 
     public String getClassName() {
         return className;

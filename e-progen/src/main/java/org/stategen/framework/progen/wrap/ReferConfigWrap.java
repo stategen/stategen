@@ -4,13 +4,10 @@ import org.stategen.framework.util.StringUtil;
 
 public class ReferConfigWrap {
     private String api;
-    private String none ;
     private String changeBy ;
     private String referField;
+    private OptionConvertorWrap optionConvertor;
 
-    public String getNone() {
-        return none;
-    }
 
 
     public String getApi() {
@@ -19,14 +16,6 @@ public class ReferConfigWrap {
     
     public void setApi(String api) {
         this.api = api;
-    }
-    
-    
-    public void setNone(String none) {
-        if (StringUtil.isEmpty(none)){
-            return;
-        }
-        this.none = none;
     }
 
     public String getChangeBy() {
@@ -49,5 +38,13 @@ public class ReferConfigWrap {
             return;
         }
         this.referField = referField;
+    }
+    
+    public OptionConvertorWrap getOptionConvertor() {
+        return optionConvertor;
+    }
+    
+    public void setOptionConvertor(OptionConvertorWrap optionConvertor) {
+        this.optionConvertor = optionConvertor;
     }
 }

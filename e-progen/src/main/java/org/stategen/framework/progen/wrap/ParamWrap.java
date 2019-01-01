@@ -21,6 +21,7 @@ import java.lang.reflect.AnnotatedElement;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.stategen.framework.progen.NamedContext;
 import org.stategen.framework.util.AnnotationUtil;
 import org.stategen.framework.util.StringUtil;
 
@@ -30,6 +31,10 @@ import io.swagger.annotations.ApiParam;
  * The Class ParamWrap.
  */
 public class ParamWrap extends NamedWrap {
+    public ParamWrap(NamedContext context) {
+        super(context);
+    }
+
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ParamWrap.class);
 
     private String orgName;

@@ -19,10 +19,16 @@ package org.stategen.framework.progen.wrap;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 
+import org.stategen.framework.progen.NamedContext;
+
 /**
  * The Class FieldWrap.
  */
 public class FieldWrap extends NamedWrap {
+    public FieldWrap(NamedContext context) {
+        super(context);
+    }
+
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FieldWrap.class);
 
     /***一些annotations从field上找，其它从 getMethod上长*/

@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.stategen.framework.progen.wrap.ApiWrap;
+
 /**
  * The Class GenContext.
  */
@@ -43,6 +45,7 @@ public class GenContext {
     public static List<String> tempDirs;
     public static String outDir;
     public static String outConfigDir;
+    public static ApiWrap appWrap;
 
     private GenContext() {
         super();

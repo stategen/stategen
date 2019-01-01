@@ -17,7 +17,9 @@
 package org.stategen.framework.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -523,5 +525,24 @@ public class ReflectionUtil {
         return fieldNameFieldMap;
     }
     
-    
+    public static String getJavaConsoleLink(AccessibleObject accessibleObject){
+        String errMessage =null;
+        if (accessibleObject instanceof Executable) {
+            Executable executable = (Executable) accessibleObject;
+            String classPath =executable.getDeclaringClass().getPackage().getName()+'.'+executable.getDeclaringClass().getSimpleName();
+            if (!(executable instanceof Constructor)){      
+                classPath+="."+executable.getName();
+            } else{
+                classPath+="."+executable.getDeclaringClass().getSimpleName();
+            }
+            errMessage="\n★★★★★ at "+classPath+"("+ executable.getDeclaringClass().getSimpleName()+".java:0)";
+        } else {
+           Field field =(Field) accessibleObject;
+           String classPath =field.getDeclaringClass().getPackage().getName()+'.'+field.getDeclaringClass().getSimpleName();
+           classPath+="."+field.getDeclaringClass().getSimpleName();
+           errMessage="\n★★★★★ at "+classPath+"("+ field.getDeclaringClass().getSimpleName()+".java:0)";
+        }
+
+        return errMessage;
+    }
 }

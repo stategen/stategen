@@ -70,6 +70,9 @@ public class FacadeGenerator {
                     ApiWrap controllerWrap = new ApiWrap(clz, apiName);
                     if (controllerWrap.isApi()) {
                         apiWrapMap.put(clz, controllerWrap);
+                        if ("App".equals(controllerWrap.toString())){
+                            GenContext.appWrap=controllerWrap;
+                        }
                     }
                 } catch (Exception e) {
                     logger.error(new StringBuffer("在运行时产生错误信息,此错误信息表示该相应方法已将相关错误catch了，请尽快修复!\n以下是具体错误产生的原因:").append(e.getMessage()).append(apiName)
@@ -78,6 +81,8 @@ public class FacadeGenerator {
                 }
             }
         }
+        AssertUtil.mustNotNull(GenContext.appWrap,"缺少AppController,必须有一个Controller为AppController,而且上面的标注@ApiConfig(menu = false),\n"
+                + "因为一些ajax Options的方法是统一从这个Controller中拿取");
 
         GenContext.wrapContainer.scanBeanRelationShipAndMakeFeilds();
         List<String> tempDirs = GenContext.tempDirs;

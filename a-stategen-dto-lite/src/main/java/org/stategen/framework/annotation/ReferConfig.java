@@ -7,27 +7,26 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.stategen.framework.lite.enums.EditorType;
+
 /***
  * <pre>
- * 除了枚举标注，
- * 其它，如何数据是此用其它字段，需要加上该标准
- * 推导api,如getCityOptions
- * 当api不为空时，直接获取 api
- * 如果api为空
- *   当 bean=Province.class,将获取 getProinceOptions
- *   当 bean 为空时，该field或名parameter 的名称 name，去掉结尾 Id ,Ids,ID,IDs 
- *   get+name(首字母大写)+Options 
- *   如cityId,cityIds =>getCityOptions
+ * 除了枚举，
+ * 其它如不指定 referField ，根据参数或field名称推导：cityId=>city ,cityIds => citys，但是否后如果不含有Id、Ids,将根据api推导
+ * 如不指定 api,
+ *   1,如不配置optionClass 根据参数或field名称推导： cityId,cityIds=> api=getCityOptions
+ *   2,如配置optionClass=City.class,无论参数或field，都推导 =>getCityOptions
+ * 
  * </pre>
  *  *  */
 @Target({ ElementType.TYPE,ElementType.FIELD,ElementType.METHOD,ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
+@Editor(EditorType.Select.class)
 public @interface ReferConfig {
     
-    Class<?> bean() default Void.class;
+    Class<?> optionClass() default Void.class;
     String api() default "";
-    String none() default "";
     String referField() default "";
 }
