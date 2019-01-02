@@ -28,17 +28,29 @@ import java.util.function.Function;
 public class TreeUtil {
 
     public static <T, K> List<T> makeTree(List<T> source, Function<? super T, K> idGetMethod, Function<? super T, K> pidGetMethod,
-                                   BiConsumer<T, T> setParentMethod) {
-        if (CollectionUtil.isNotEmpty(source) && idGetMethod != null && pidGetMethod != null) {
+                                   BiConsumer<T, T> addChildMethod) {
+        if (CollectionUtil.isNotEmpty(source)) {
             Map<K, T> idMap = CollectionUtil.toMap(source,idGetMethod);
+            List<T> tree = makeTree(idMap, idGetMethod, pidGetMethod, addChildMethod);
+            if (tree==null){
+                return source;
+            }
+            return tree;
+        }
+        return source;
+    }
+    
+    public static <T, K> List<T> makeTree(Map<K,T> source, Function<? super T, K> idGetMethod, Function<? super T, K> pidGetMethod,
+                                          BiConsumer<T, T> addChildMethod) {
+        if (CollectionUtil.isNotEmpty(source) && idGetMethod != null && pidGetMethod != null && addChildMethod!=null) {
             List<T> result = new ArrayList<T>();
-            for (T t : source) {
+            for (T t : source.values()) {
                 K pid = pidGetMethod.apply(t);
                 T parent = null;
                 if (pid != null) {
-                    parent = idMap.get(pid);
+                    parent = source.get(pid);
                     if (parent != null) {
-                        setParentMethod.accept(t, parent);
+                        addChildMethod.accept(parent,t);
                         continue;
                     }
                 }
@@ -46,8 +58,9 @@ public class TreeUtil {
             }
             return result;
         }
-        return source;
+        return null;
     }
+    
     
     public static <T> T getRoot(T dest, Function<? super T, T> parentGetMethod){
         if (dest==null){
@@ -91,5 +104,7 @@ public class TreeUtil {
         Map<K, T> map = CollectionUtil.toMap(sources, getIdMethod);
         return getWithParent(map, id, getParentIdMethod);
     }
+    
+    
 
 }
