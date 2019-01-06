@@ -656,6 +656,18 @@ public class StringUtil {
         }
         return dest;
     }
+    
+    public static String trimePrefixIgnoreCase(String dest, String indexStr){
+        if (StringUtil.isEmpty(dest) || StringUtil.isEmpty(indexStr)) {
+            return dest;
+        }
+        
+        if (startsWithIgnoreCase(dest, indexStr)){
+            dest = dest.substring(indexStr.length()); 
+        }
+
+        return dest;
+    }
 
     public static boolean containsIgnoreCase(String dest, String subStr) {
         if (isEmpty(dest) || isEmpty(subStr)) {

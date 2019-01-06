@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.stategen.framework.progen.wrap.ApiWrap;
@@ -46,6 +47,7 @@ public class GenContext {
     public static String outDir;
     public static String outConfigDir;
     public static ApiWrap appWrap;
+    public static Properties Properties =new Properties();
 
     private GenContext() {
         super();

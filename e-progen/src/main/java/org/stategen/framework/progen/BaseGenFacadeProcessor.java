@@ -138,6 +138,7 @@ public class BaseGenFacadeProcessor {
         
         Object projectName = appProperties.get("project.name");
         root.put("projectName", projectName);
+        root.putAll(GenContext.Properties);
         
         GenContext.tempRootPath=dir_templates_root;
         GenContext.projectRootPath=projectRootPath;
