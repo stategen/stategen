@@ -102,7 +102,8 @@ public class MethodWrap {
     protected void genReturn() {
         Class<?> rawReturnClass = methodFun.getReturnType();
         Type genericReturnType = methodFun.getGenericReturnType();
-        returnWrap = GenContext.wrapContainer.genMemberWrap(apiWrap, rawReturnClass, genericReturnType, new ReturnWrap(), methodFun);
+        returnWrap= new ReturnWrap();
+        GenContext.wrapContainer.genMemberWrap(apiWrap, rawReturnClass, genericReturnType, returnWrap, methodFun);
         returnWrap.setMember(methodFun);
     }
 
@@ -232,7 +233,8 @@ public class MethodWrap {
             fieldNameParameterMap.put(orgName, parameter);
 
             NamedContext context = new NamedContext(fieldNameParameterMap, fieldNameFieldMap, getterNameMethods);
-            ParamWrap paramWrap = GenContext.wrapContainer.genMemberWrap(apiWrap, paramRawType, parameterizedType, new ParamWrap(context), parameter);
+            ParamWrap paramWrap =new ParamWrap(context);
+            GenContext.wrapContainer.genMemberWrap(apiWrap, paramRawType, parameterizedType, paramWrap, parameter);
 
             paramWrap.setName(paramName);
             paramWrap.setMember(parameter);
@@ -269,9 +271,22 @@ public class MethodWrap {
             String orgName = paramWrap.getOrgName();
 
             Method getterMethod = getterNameMethods.get(orgName);
+            if (getterMethod != null) {
+                paramWrap.addMembers(getterMethod);
+                Class<?> declaringClass = getterMethod.getDeclaringClass();
+                BaseWrap baseWrap = GenContext.wrapContainer.get(declaringClass);
+                if (baseWrap instanceof BeanWrap) {
+                    BeanWrap beanWrap = (BeanWrap) baseWrap;
+                    FieldWrap fieldWrap = beanWrap.get(orgName);
+                    paramWrap.setField(fieldWrap);
+                }
+            }
+            
             Field field = fieldNameFieldMap.get(orgName);
+            if (field != null) {
+                paramWrap.addMembers(field);
+            }
 
-            paramWrap.addMembers(getterMethod, field);
         }
 
     }

@@ -42,8 +42,6 @@ import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.ReflectionUtil;
 import org.stategen.framework.util.StringUtil;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 /**
  * The Class BeanWrap.
  */
@@ -71,15 +69,12 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
         return CollectionUtil.isNotEmpty(genericFieldMap);
     }
 
-    private static boolean canSerialize(AnnotatedElement annotatedElement) {
+    private static boolean isTransient(AnnotatedElement annotatedElement) {
         int modifiers = ((Member) annotatedElement).getModifiers();
-        if (!Modifier.isTransient(modifiers)) {
-            JSONField jsonFieldAnno = AnnotationUtil.getAnnotation(annotatedElement, JSONField.class);
-            if (jsonFieldAnno != null) {
-                return jsonFieldAnno.serialize();
-            }
+        if (Modifier.isTransient(modifiers)) {
             return true;
         }
+        
         return false;
     }
 
@@ -110,20 +105,22 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
         for (Entry<String, Method> entry : getterNameMethodsSorted.entrySet()) {
 
             Method getterMethod = entry.getValue();
-            if (!canSerialize(getterMethod)) {
+            if (isTransient(getterMethod)) {
                 continue;
             }
 
             String fieldName = entry.getKey();
             Field field = fieldNameFieldMap.get(fieldName);
-            if (field != null && !canSerialize(field)) {
+            if (field != null && isTransient(field)) {
                 continue;
             }
 
             Class<?> returnType = getterMethod.getReturnType();
             Type genericReturnType = getterMethod.getGenericReturnType();
             NamedContext context =new NamedContext(fieldNameParameterMap, fieldNameFieldMap, getterNameMethodsSorted);
-            FieldWrap fieldWrap = GenContext.wrapContainer.genMemberWrap(null, returnType, genericReturnType, new FieldWrap(context), getterMethod);
+            FieldWrap fieldWrap =new FieldWrap(context);
+            GenContext.wrapContainer.genMemberWrap(null, returnType, genericReturnType, fieldWrap , getterMethod);
+            fieldWrap.setOwner(this);
 
             fieldWrap.setMember(getterMethod);
             fieldWrap.setField(field);
@@ -209,5 +206,8 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
         }
         return genBean;
     }
-
+    
+    public Boolean getIsBean(){
+        return true;
+    }
 }

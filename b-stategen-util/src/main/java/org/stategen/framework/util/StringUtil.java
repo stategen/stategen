@@ -50,6 +50,16 @@ public class StringUtil {
     public static boolean equals(String source, String dest) {
         return (source != null) && (source.equals(dest));
     }
+    
+    public static boolean equ(Object source ,Object dest){
+        if (source==null && dest==null){
+            return true;
+        }
+        if (source==null){
+            return false;
+        }
+        return source.equals(dest);
+    }
 
     /**
      * Not equals.
@@ -697,4 +707,8 @@ public class StringUtil {
         String lines[] = destLines.split("\\r?\\n");
         return Arrays.asList(lines);
     }
+    
+
+    
+
 }

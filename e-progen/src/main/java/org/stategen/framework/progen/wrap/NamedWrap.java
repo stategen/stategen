@@ -48,6 +48,8 @@ import org.stategen.framework.util.AssertUtil;
 import org.stategen.framework.util.ReflectionUtil;
 import org.stategen.framework.util.StringUtil;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -88,6 +90,18 @@ public abstract class NamedWrap extends MemberWrap {
     private Set<Class<? extends Annotation>> _excludeAnnos;
 
     private boolean asserted = false;
+    
+    private NamedWrap field;
+    
+    private Boolean noJson;
+    
+    public void setField(NamedWrap field) {
+        this.field = field;
+    }
+    
+    public NamedWrap getField() {
+        return field;
+    }
 
     public NamedWrap(NamedContext context) {
         this.context = context;
@@ -398,4 +412,21 @@ public abstract class NamedWrap extends MemberWrap {
         return isSimple;
     }
 
+    public Boolean getNoJson(){
+        if (this.noJson==null){
+            AnnotatedElement[] members = getMembers();
+            for (AnnotatedElement annotatedElement:members){
+                if (annotatedElement instanceof Field) {
+                    Field field = (Field) annotatedElement;
+                    if (Modifier.isTransient(field.getModifiers())){
+                        noJson=true;
+                        return noJson;
+                    }
+                }
+            }
+            Boolean serialize = AnnotationUtil.getAnnotationValueFormMembers(JSONField.class, JSONField::serialize, true, members);
+            noJson=!serialize;
+        }
+        return noJson;
+    }
 }

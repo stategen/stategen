@@ -1,11 +1,9 @@
-package org.stategen.framework.spring.util;
+package org.stategen.framework.util;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-
-import org.stategen.framework.util.StringUtil;
 
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;

@@ -146,17 +146,17 @@ public class WrapContainer {
         return baseWrap;
     }
 
-    public <T extends MemberWrap> T genMemberWrap(ApiWrap apiWrap, Class<?> rawClass, Type genericType, T memberWrap,
+    public <T extends MemberWrap> void genMemberWrap(ApiWrap apiWrap, Class<?> rawClass, Type genericType, T memberWrap,
                                                   AnnotatedElement annotatedElement) {
         rawClass = ClassHelpers.getClazzIfCollection(rawClass);
         BaseWrap ownClazzWrap = add(rawClass, false);
 
         memberWrap = CopyUtil.copy(ownClazzWrap, memberWrap);
-        memberWrap.setOwnClazzWrap(ownClazzWrap);
+        memberWrap.setOrgWrap(ownClazzWrap);
         memberWrap.setApiWap(apiWrap);
 
         if (ownClazzWrap.getIsMap()) {
-            return memberWrap;
+            return ;
         }
 
 
@@ -171,8 +171,6 @@ public class WrapContainer {
                 AssertUtil.throwException("请给泛型参数或返回值配上具体的类型!" + annotatedElement);
             }
         }
-
-        return memberWrap;
     }
 
     public void scanBeanRelationShipAndMakeFeilds() {

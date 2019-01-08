@@ -37,12 +37,22 @@ public abstract class MemberWrap extends BaseWrap {
 
     private BaseWrap generic;
 
-    private BaseWrap ownClazzWrap;
+    private BaseWrap orgWrap;
 
     private AnnotatedElement[] members;
     
     private String genericName;
-
+    
+    private BaseWrap owner;
+    
+    public BaseWrap getOwner() {
+        return owner;
+    }
+    
+    public void setOwner(BaseWrap owner) {
+        this.owner = owner;
+    }
+    
     public AnnotatedElement[] getMembers() {
         return members;
     }
@@ -53,7 +63,7 @@ public abstract class MemberWrap extends BaseWrap {
 
     @Override
     public Boolean getIsGeneric() {
-        return ownClazzWrap.getIsGeneric() || StringUtil.isNotEmpty(genericName) || getGeneric() != null ;
+        return orgWrap.getIsGeneric() || StringUtil.isNotEmpty(genericName) || getGeneric() != null ;
     }
 
     public void setApiWap(ApiWrap apiWrap) {
@@ -62,8 +72,8 @@ public abstract class MemberWrap extends BaseWrap {
         addRealWrapClazzToApi();
     }
 
-    public void setOwnClazzWrap(BaseWrap ownClazzWrap) {
-        this.ownClazzWrap = ownClazzWrap;
+    public void setOrgWrap(BaseWrap ownClazzWrap) {
+        this.orgWrap = ownClazzWrap;
         addBeanOrEnumWrapClazzToApi();
     }
 
@@ -76,13 +86,13 @@ public abstract class MemberWrap extends BaseWrap {
         return generic;
     }
 
-    public BaseWrap getBeanOrEnumWrap() {
-        return ownClazzWrap;
+    public BaseWrap getOrgWrap() {
+        return orgWrap;
     }
 
     private void addBeanOrEnumWrapClazzToApi() {
-        if (apiWrap != null && ownClazzWrap != null) {
-            apiWrap.addImport(ownClazzWrap);
+        if (apiWrap != null && orgWrap != null) {
+            apiWrap.addImport(orgWrap);
         }
     }
 
@@ -96,8 +106,8 @@ public abstract class MemberWrap extends BaseWrap {
     public Boolean getIsSimple() {
         if (generic != null) {
             return generic.getIsSimple();
-        } else if (ownClazzWrap != null) {
-            return ownClazzWrap.getIsSimple();
+        } else if (orgWrap != null) {
+            return orgWrap.getIsSimple();
         } else {
             return super.getIsSimple();
         }

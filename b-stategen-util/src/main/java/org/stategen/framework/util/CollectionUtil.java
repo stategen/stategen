@@ -260,12 +260,12 @@ public class CollectionUtil {
         }
         return null;
     }
-    
-    public static <T> T getLast(List<T> sources){
-        if (CollectionUtil.isEmpty(sources)){
+
+    public static <T> T getLast(List<T> sources) {
+        if (CollectionUtil.isEmpty(sources)) {
             return null;
         }
-        return sources.get(sources.size()-1);
+        return sources.get(sources.size() - 1);
     }
 
     public static <K, V> boolean hasValue(Map<K, V> map, Object key, Object value) {
@@ -311,7 +311,7 @@ public class CollectionUtil {
         NewKey calculateKey(T t);
     }
 
-    public static <K, T> Map<K, T> toMap(Map<K, T> dest,Collection<T> items, Function<? super T, K> getMethod) {
+    public static <K, T> Map<K, T> toMap(Map<K, T> dest, Collection<T> items, Function<? super T, K> getMethod) {
         if (CollectionUtil.isNotEmpty(items)) {
             Map<K, T> source = items.stream().filter(e -> {
                 return e != null;
@@ -332,39 +332,39 @@ public class CollectionUtil {
         return new HashMap<K, T>(0);
     }
 
-    public static <K, T> Map<K, T> toMap(Collection<T> items,Function<? super T, K> getMethod) {
-        return toMap(null, items,getMethod);
+    public static <K, T> Map<K, T> toMap(Collection<T> items, Function<? super T, K> getMethod) {
+        return toMap(null, items, getMethod);
     }
 
-//    @SafeVarargs
-//    public static <T> Map<String, T> toMap(Map<String, T> dest, Collection<T> items, Function<? super T, ?>... getMethods) {
-//        if (CollectionUtil.isNotEmpty(items)) {
-//            Map<String, T> result = dest != null ? dest : new HashMap<String, T>(items.size());
-//            for (T t : items) {
-//                if (t != null) {
-//                    StringBuffer sb = new StringBuffer();
-//                    boolean append =false;
-//                    for (Function<? super T, ?> function : getMethods) {
-//                        if (append){
-//                            sb.append('.') ;
-//                        }
-//                        Object key = function.apply(t);
-//                        sb.append(key);
-//                        append=append || true;
-//                    }
-//                    result.put(sb.toString(), t);
-//                }
-//            }
-//            return result;
-//        }
-//
-//        if (dest != null) {
-//            return dest;
-//        }
-//        return new HashMap<String, T>(0);
-//    }
+    //    @SafeVarargs
+    //    public static <T> Map<String, T> toMap(Map<String, T> dest, Collection<T> items, Function<? super T, ?>... getMethods) {
+    //        if (CollectionUtil.isNotEmpty(items)) {
+    //            Map<String, T> result = dest != null ? dest : new HashMap<String, T>(items.size());
+    //            for (T t : items) {
+    //                if (t != null) {
+    //                    StringBuffer sb = new StringBuffer();
+    //                    boolean append =false;
+    //                    for (Function<? super T, ?> function : getMethods) {
+    //                        if (append){
+    //                            sb.append('.') ;
+    //                        }
+    //                        Object key = function.apply(t);
+    //                        sb.append(key);
+    //                        append=append || true;
+    //                    }
+    //                    result.put(sb.toString(), t);
+    //                }
+    //            }
+    //            return result;
+    //        }
+    //
+    //        if (dest != null) {
+    //            return dest;
+    //        }
+    //        return new HashMap<String, T>(0);
+    //    }
 
-    public static <K, V, T> Map<K, V> toMap(Map<K, V> dest,  Collection<T> items,Function<? super T, K> keyGetMethod,
+    public static <K, V, T> Map<K, V> toMap(Map<K, V> dest, Collection<T> items, Function<? super T, K> keyGetMethod,
                                             Function<? super T, V> valueGetMethod) {
         if (CollectionUtil.isNotEmpty(items)) {
             Map<K, V> result = dest != null ? dest : new HashMap<K, V>(items.size());
@@ -386,16 +386,16 @@ public class CollectionUtil {
         return new HashMap<K, V>(0);
     }
 
-    public static <K, V, T> Map<K, V> toMap(Collection<T> items,Function<? super T, K> keyGetMethod, Function<? super T, V> valueGetMethod) {
-        return toMap(null, items,keyGetMethod, valueGetMethod);
+    public static <K, V, T> Map<K, V> toMap(Collection<T> items, Function<? super T, K> keyGetMethod, Function<? super T, V> valueGetMethod) {
+        return toMap(null, items, keyGetMethod, valueGetMethod);
     }
 
-//    @SafeVarargs
-//    public static <T> Map<String, T> toMap(Collection<T> items, Function<? super T, ?>... getMethods) {
-//        return toMap(null, items, getMethods);
-//    }
+    //    @SafeVarargs
+    //    public static <T> Map<String, T> toMap(Collection<T> items, Function<? super T, ?>... getMethods) {
+    //        return toMap(null, items, getMethods);
+    //    }
 
-    public static <NewKey, K, T> Map<NewKey, T> toMap(Map<NewKey, T> dest, Collection<T> items, KeyCalculator<NewKey, T> keyCalculator) {
+    public static <NewKey, K, T> Map<NewKey, T> toMap(Map<NewKey, T> dest, KeyCalculator<NewKey, T> keyCalculator, Collection<T> items) {
         if (CollectionUtil.isNotEmpty(items)) {
             Map<NewKey, T> result = dest != null ? dest : new HashMap<NewKey, T>(items.size());
             for (T t : items) {
@@ -413,8 +413,8 @@ public class CollectionUtil {
         return new HashMap<NewKey, T>(0);
     }
 
-    public static <NewKey, K, T> Map<NewKey, T> toMap(Collection<T> items, KeyCalculator<NewKey, T> keyCalculator) {
-        return toMap(null, items, keyCalculator);
+    public static <NewKey, K, T> Map<NewKey, T> toMap(KeyCalculator<NewKey, T> keyCalculator, Collection<T> items) {
+        return toMap(null, keyCalculator, items);
     }
 
     @SafeVarargs
@@ -570,7 +570,7 @@ public class CollectionUtil {
 
     public static <D, K, S> void setModelByList(Collection<D> dests, Collection<S> sources, Function<? super D, K> destGetMethod,
                                                 BiConsumer<D, S> destSetMethod, Function<? super S, K> sourceGetMethod) {
-        Map<K, S> sourceMap = CollectionUtil.toMap(sources,sourceGetMethod);
+        Map<K, S> sourceMap = CollectionUtil.toMap(sources, sourceGetMethod);
         CollectionUtil.setModelByMap(dests, sourceMap, destGetMethod, destSetMethod);
     }
 
@@ -614,6 +614,30 @@ public class CollectionUtil {
                                                BiConsumer<D, List<S>> destSetMethod, Function<? super S, K> sourceGetMethod) {
         Map<K, List<S>> sourceListMap = toGroup(sources, sourceGetMethod);
         setListByMap(dests, sourceListMap, destGetMethod, destSetMethod);
+    }
+
+    public static <D, K, S> void setListByValues(List<D> dests, List<S> sources, Function<? super D, List<K>> destGetMethod,
+                                                 BiConsumer<D, List<S>> destSetMethod, Function<? super S, K> sourceGetMethod) {
+        if (CollectionUtil.isNotEmpty(dests) && CollectionUtil.isNotEmpty(sources)) {
+            Map<K, S> sourcesMap = CollectionUtil.toMap(sources, sourceGetMethod);
+            for (D d : dests) {
+                if (d != null) {
+                    List<K> ks = destGetMethod.apply(d);
+                    if (CollectionUtil.isNotEmpty(ks)) {
+                        List<s> filtered = new ArrayList<S>();
+                        for (K k : ks) {
+                            if (k != null) {
+                                S s = sourcesMap.get(k);
+                                if (s != null) {
+                                    filtered.add(s);
+                                }
+                            }
+                        }
+                        destSetMethod.accept(d, filtered);
+                    }
+                }
+            }
+        }
     }
 
     /*** 把 sources 中 某个值 按 id分组 ，变成List,设置到 dests中一个字段*/
@@ -697,7 +721,7 @@ public class CollectionUtil {
         Map<ID, List<T>> idTListMap = CollectionUtil.toGroup(sources, idGetMethod);
         Map<ID, Map<SUBID, T>> idSubIdSetMap = new HashMap<ID, Map<SUBID, T>>(idTListMap.size());
         for (Entry<ID, List<T>> entry : idTListMap.entrySet()) {
-            Map<SUBID, T> itemIdSet = CollectionUtil.toMap(entry.getValue(),subIdGetMethod);
+            Map<SUBID, T> itemIdSet = CollectionUtil.toMap(entry.getValue(), subIdGetMethod);
             idSubIdSetMap.put(entry.getKey(), itemIdSet);
         }
         return idSubIdSetMap;
