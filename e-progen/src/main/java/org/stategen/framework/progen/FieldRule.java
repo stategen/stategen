@@ -16,11 +16,14 @@
  */
 package org.stategen.framework.progen;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.validation.constraints.Email;
@@ -31,7 +34,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.stategen.framework.util.AnnotationUtil;
+import org.stategen.framework.util.AssertUtil;
 import org.stategen.framework.util.CollectionUtil;
+import org.stategen.framework.util.StringUtil;
 
 /**
  * The Class FieldRule.
@@ -50,7 +55,42 @@ public class FieldRule {
 
     private String pattern;
 
+    static Properties messageProppties;
+
+    public static Properties getMessageProppties() {
+        if (messageProppties == null) {
+            messageProppties = new Properties();
+
+
+            try {
+                InputStream ips = FieldRule.class.getResourceAsStream("ValidationMessages_zh_CN.xml");
+//                InputStream ips = HibernateValidator.class.getResourceAsStream("ValidationMessages_zh_CN.properties");
+                InputStream in = new BufferedInputStream(ips);
+                messageProppties.loadFromXML(in);
+//                messageProppties.load(in);
+//                for (Entry<Object, Object> entry :messageProppties.entrySet()){
+//                    System.out.println(MessageFormat.format("<entry key=\"{0}\">{1}</entry>", entry.getKey(),entry.getValue()));
+//                }
+                return messageProppties;
+            } catch (Exception e) {
+                AssertUtil.throwException(e.getMessage(), e);
+            }
+        }
+        return messageProppties;
+    }
+    
+    private static String convertMessage(String message){
+        if (StringUtil.isNotEmpty(message) && message.startsWith("{") && message.endsWith("}")){
+            message =message.substring(1,message.length()-1);
+            Properties messageProppties = getMessageProppties();
+            message= messageProppties.getProperty(message);
+        }
+        return message;
+        
+    }
+
     public static List<FieldRule> checkRules(Set<Class<? extends Annotation>> excludeAnnos, AnnotatedElement... members) {
+        
 
         if (CollectionUtil.isNotEmpty(members)) {
             List<FieldRule> result = new ArrayList<FieldRule>();
@@ -71,7 +111,7 @@ public class FieldRule {
             if (notNull != null) {
                 FieldRule rule = new FieldRule();
                 rule.required = notNull != null;
-                rule.message = notNull.message();
+                rule.message = convertMessage(notNull.message());
                 result.add(rule);
             }
 
@@ -80,7 +120,7 @@ public class FieldRule {
                 Long max = maxAnno != null ? maxAnno.value() : null;
                 FieldRule rule = new FieldRule();
                 rule.max = max;
-                rule.message = maxAnno.message();
+                rule.message = convertMessage(maxAnno.message());
                 result.add(rule);
             }
 
@@ -89,7 +129,7 @@ public class FieldRule {
                 Long min = minAnno != null ? minAnno.value() : null;
                 FieldRule rule = new FieldRule();
                 rule.min = min;
-                rule.message = minAnno.message();
+                rule.message = convertMessage(minAnno.message());
                 result.add(rule);
             }
 
@@ -98,20 +138,20 @@ public class FieldRule {
             if (notBlank != null) {
                 FieldRule rule = new FieldRule();
                 rule.whitespace = true;
-                rule.message = notBlank.message();
+                rule.message = convertMessage(notBlank.message());
                 result.add(rule);
             }
 
             Email email = AnnotationUtil.getAnnotationFormMembers(Email.class,
                 excludeAnnos.contains(Email.class) ? paramsAnnotatedElements : members);
             if (email != null) {
-                createRegRule(result, email.regexp(), email.message());
+                createRegRule(result, email.regexp(), convertMessage(email.message()));
             }
 
             Pattern pattern = AnnotationUtil.getAnnotationFormMembers(Pattern.class,
                 excludeAnnos.contains(Pattern.class) ? paramsAnnotatedElements : members);
             if (pattern != null) {
-                createRegRule(result, pattern.regexp(), pattern.message());
+                createRegRule(result, pattern.regexp(), convertMessage(pattern.message()));
             }
 
             return result;

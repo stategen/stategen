@@ -16,6 +16,10 @@ public class AssertUtil {
         throw new IllegalArgumentException(elseMessage);
     }
     
+    public static void throwException(String elseMessage,Throwable cause){
+        throw new IllegalArgumentException(elseMessage,cause);
+    }
+    
 
     public static void mustTrue(boolean expression, String elseMessage) {
         if (!expression) {

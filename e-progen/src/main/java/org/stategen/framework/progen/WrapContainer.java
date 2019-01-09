@@ -183,17 +183,23 @@ public class WrapContainer {
         for (CanbeImportWrap baseBeanWrap : wrapMap.values()) {
             BeanWrap beanWrap = (BeanWrap) baseBeanWrap;
             Class<?> currentType = beanWrap.getClazz();
-            Map<String, FieldWrap> fieldWrapMap = beanWrap.getFieldWrapMap();
+            Map<String, FieldWrap> fieldWrapMap = beanWrap.getAllFieldMap();
 
             for (FieldWrap fieldWrap : fieldWrapMap.values()) {
-                if (fieldWrap.getIsArray()) {
-                    continue;
-                }
-
                 Class<?> fieldRealType = fieldWrap.getClazz();
+                
                 if (currentType != fieldRealType && needAddImports(fieldRealType)) {
                     BaseWrap fieldTypeWrap = this.get(fieldRealType);
                     beanWrap.addImport(fieldTypeWrap);
+                }
+                
+                BaseWrap generic = fieldWrap.getGeneric();
+                if (generic!=null){
+                    fieldRealType=generic.getClazz();
+                    if (currentType != fieldRealType && needAddImports(fieldRealType)) {
+                        BaseWrap fieldTypeWrap = this.get(fieldRealType);
+                        beanWrap.addImport(fieldTypeWrap);
+                    }
                 }
             }
         }

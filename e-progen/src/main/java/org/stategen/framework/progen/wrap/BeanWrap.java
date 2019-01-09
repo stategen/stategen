@@ -155,6 +155,10 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
     public Map<String, FieldWrap> getFieldWrapMap() {
         return fieldMap;
     }
+    
+    public Map<String, FieldWrap> getAllFieldMap() {
+        return allFieldMap;
+    }
 
     public void addFieldWrap(String fieldName, FieldWrap fieldWrap) {
         this.fieldMap.put(fieldName, fieldWrap);
