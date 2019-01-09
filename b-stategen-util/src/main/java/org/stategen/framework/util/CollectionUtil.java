@@ -624,7 +624,7 @@ public class CollectionUtil {
                 if (d != null) {
                     List<K> ks = destGetMethod.apply(d);
                     if (CollectionUtil.isNotEmpty(ks)) {
-                        List<s> filtered = new ArrayList<S>();
+                        List<S> filtered = new ArrayList<S>();
                         for (K k : ks) {
                             if (k != null) {
                                 S s = sourcesMap.get(k);
