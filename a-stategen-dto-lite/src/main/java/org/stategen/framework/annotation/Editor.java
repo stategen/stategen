@@ -20,5 +20,7 @@ import org.stategen.framework.lite.enums.EditorType;
 public @interface Editor {
     Class<? extends EditorType> value() default EditorType.Input.class;
     String props() default "";
-    String falseTitle() default "选择";
+    String nullTitle() default "请选择";
+    String falseTitle() default "";
+    String trueTitle() default "";
 }

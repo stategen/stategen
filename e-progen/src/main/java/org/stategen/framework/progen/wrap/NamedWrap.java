@@ -83,7 +83,11 @@ public abstract class NamedWrap extends MemberWrap {
 
     private String props;
 
+    private String nullTitle;
+    
     private String falseTitle;
+    
+    private String trueTitle;
 
     private NamedContext context;
 
@@ -283,6 +287,20 @@ public abstract class NamedWrap extends MemberWrap {
             falseTitle = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::falseTitle, "", getMembers());
         }
         return falseTitle;
+    }
+    
+    public String getNullTitle() {
+        if (nullTitle == null) {
+            nullTitle = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::nullTitle, "", getMembers());
+        }
+        return nullTitle;
+    }
+    
+    public String getTrueTitle() {
+        if (trueTitle == null) {
+            trueTitle = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::trueTitle, "", getMembers());
+        }
+        return trueTitle;
     }
 
     public String getProps() {
