@@ -22,16 +22,19 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.stategen.framework.lite.CaseInsensitiveHashMap;
 import org.stategen.framework.util.CollectionUtil;
+import org.stategen.framework.util.StringUtil;
 
 import cn.org.rapid_framework.generator.util.GLogger;
 
@@ -41,7 +44,6 @@ import com.github.javaparser.Position;
 import com.github.javaparser.Range;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
-import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
@@ -49,6 +51,8 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.comments.Comment;
+import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -163,7 +167,7 @@ class ASTHelper {
         for (T bodyDeclaration : bodyDeclarations) {
             if (bodyDeclaration instanceof FieldDeclaration) {
                 FieldDeclaration fieldDeclaration = (FieldDeclaration) bodyDeclaration;
-                VariableDeclarator variableDeclaratorId = getOneNodesByType(bodyDeclaration, VariableDeclarator.class);
+                VariableDeclarator variableDeclaratorId = getOneNodesByType(fieldDeclaration, VariableDeclarator.class);
                 bodyMap.put(variableDeclaratorId.getName().toString(), bodyDeclaration);
             } else if (bodyDeclaration instanceof MethodDeclaration) {
                 MethodDeclaration methodDeclaration = (MethodDeclaration) bodyDeclaration;
@@ -191,70 +195,170 @@ class ASTHelper {
         return fieldmap;
     }
 
+    private static boolean checkAnnoInComments(String comments, String annoName) {
+        if (StringUtil.isNotEmpty(comments)) {
+            Pattern commentPt = Pattern.compile("//\\s*@"+annoName,   Pattern.DOTALL);
+            if (commentPt.matcher(comments).find()){
+                return true;
+            }
+            Pattern notPit = Pattern.compile("!@"+annoName,   Pattern.DOTALL);
+            if (notPit.matcher(comments).find()){
+                return true;
+            }
+            
+        }
+        return false;
+    }
+
     /**
      * Adds the annotaion declare.
      *
      * @param oldAnnotationExprs the last annotation exprs
-     * @param bodyDeclaration the body declaration
+     * @param newDeclaration the body declaration
      * @return true, if successful
      * @throws InstantiationException the instantiation exception
      * @throws IllegalAccessException the illegal access exception
      */
-    static boolean addAnnotationExprsToBody(NodeList<AnnotationExpr> oldAnnotationExprs, BodyDeclaration bodyDeclaration,
+    static boolean addAnnotationExprsToBody(BodyDeclaration oldDeclaration, BodyDeclaration newDeclaration,
                                             boolean replace) throws InstantiationException, IllegalAccessException {
-        if (CollectionUtil.isNotEmpty(oldAnnotationExprs)) {
+        boolean modified = false;
+        Set<String> disabledAnnoNames = new LinkedHashSet<String>();
 
-            //            List<AnnotationExpr> newAnnotationExprs = new LinkedList<AnnotationExpr>(
-            //                bodyDeclaration.getAnnotations());
-            //            bodyDeclaration.getChildrenNodes().removeAll(newAnnotationExprs);
-            //            newAnnotationExprs.addAll(oldAnnotationExprs);
-            //            System.out.println(newAnnotationExprs);
-            NodeList<AnnotationExpr> annotations = bodyDeclaration.getAnnotations();
-            if (annotations == null) {
-                bodyDeclaration.setAnnotations(oldAnnotationExprs);
-                return true;
+        String oldCommentText = getAllCommentsText(oldDeclaration);
+        NodeList<AnnotationExpr> newAnnotations = newDeclaration.getAnnotations();
+        if (newAnnotations != null) {
+            for (int i = newAnnotations.size() - 1; i >= 0; i--) {
+                AnnotationExpr annotationExpr = newAnnotations.get(i);
+                String annoName = annotationExpr.getNameAsString();
+                boolean checkAnnoInComments = checkAnnoInComments(oldCommentText, annoName);
+                if (checkAnnoInComments) {
+                    newAnnotations.remove(i);
+                    disabledAnnoNames.add(annoName);
+                    modified = true;
+                }
             }
+        }
 
+        NodeList<AnnotationExpr> oldAnnotationExprs = oldDeclaration.getAnnotations();
+        if (CollectionUtil.isNotEmpty(oldAnnotationExprs)) {
             //TODO List怎么处理?
-            Map<String, AnnotationExpr> tempMap = CollectionUtil.toMap(annotations, AnnotationExpr::getNameAsString);
-            for (AnnotationExpr oldAnnotationExpr : oldAnnotationExprs) {
-                String nameAsString = oldAnnotationExpr.getNameAsString();
-                if (!tempMap.containsKey(nameAsString)) {
-                    annotations.add(oldAnnotationExpr);
+            Map<String, AnnotationExpr> tempMap = CollectionUtil.toMap(newAnnotations, AnnotationExpr::getNameAsString);
+            for (int i = oldAnnotationExprs.size() - 1; i >= 0; i--) {
+                AnnotationExpr oldAnnotationExpr = oldAnnotationExprs.get(i);
+                String annoName = oldAnnotationExpr.getNameAsString();
+                if (checkAnnoInComments(oldCommentText, annoName)) {
+                    oldAnnotationExprs.remove(i);
+                    disabledAnnoNames.add(annoName);
+                    continue;
+                }
+
+                if (newAnnotations == null) {
+                    continue;
+                }
+
+                String oldAnnoName = annoName;
+                if (!tempMap.containsKey(oldAnnoName)) {
+                    newAnnotations.add(oldAnnotationExpr);
                 } else {
                     //使用旧的标注
                     if (replace) {
-                        
-                        if (bodyDeclaration instanceof FieldDeclaration) {
-                            FieldDeclaration fieldDeclaration = (FieldDeclaration) bodyDeclaration;
-                            EnumSet<Modifier> modifiers = fieldDeclaration.getModifiers();
-                            //不是自定义查询字段，使用数据库中的设置优先
-                            if (!modifiers.contains(Modifier.TRANSIENT)) {
-                                continue;
-                            }
-                            
+                        if (newDeclaration instanceof FieldDeclaration) {
+                            FieldDeclaration fieldDeclaration = (FieldDeclaration) newDeclaration;
+
                             String elementType = fieldDeclaration.getElementType().toString();
-                            if (!elementType.equals("String") || !elementType.equals("java.lang.String")){
-                                if (nameAsString.equals("Max") || nameAsString.equals("Min")){
+                            if (!elementType.equals("String") || !elementType.equals("java.lang.String")) {
+                                if (oldAnnoName.equals("Max") || oldAnnoName.equals("Min")) {
                                     continue;
                                 }
                             }
+
+                            //把之前没有title的，如果数据库更换后，换成数据库的title,之后就不能自动换了
+                            if (oldAnnoName.equals("ApiModelProperty")) {
+                                VariableDeclarator variableDeclaratorId = getOneNodesByType(fieldDeclaration, VariableDeclarator.class);
+                                String fieldName = variableDeclaratorId.getName().asString();
+                                List<Node> oldChildNodes = oldAnnotationExpr.getChildNodes();
+                                boolean findValueAsFieldName = false;
+                                if (CollectionUtil.isNotEmpty(oldChildNodes)) {
+                                    for (Node oldNode : oldChildNodes) {
+                                        String oldNodeValue = oldNode.toString();
+                                        if (oldNodeValue.startsWith("\"") && oldNodeValue.endsWith("\"")) {
+                                            oldNodeValue = oldNodeValue.substring(1, oldNodeValue.length() - 1).replaceAll(" ", "");
+                                        }
+                                        if (oldNodeValue.equals(fieldName)) {
+                                            findValueAsFieldName = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (findValueAsFieldName) {
+                                    continue;
+                                }
+                            }
+
                         }
 
-                        AnnotationExpr annotationExpr = tempMap.get(nameAsString);
+                        AnnotationExpr annotationExpr = tempMap.get(oldAnnoName);
                         if (annotationExpr != null) {
-                            int indexOf = annotations.indexOf(annotationExpr);
-                            annotations.remove(indexOf);
-                            tempMap.remove(nameAsString);
-                            annotations.add(indexOf, oldAnnotationExpr);
+                            //TODO,如果备注中不需要那个标准，就不加进来，同时移除现有的标注
+                            int indexOf = newAnnotations.indexOf(annotationExpr);
+                            newAnnotations.remove(indexOf);
+                            tempMap.remove(oldAnnoName);
+                            newAnnotations.add(indexOf, oldAnnotationExpr);
+                            modified = true;
                         }
                     }
                 }
             }
 
-            return true;
+            if (newAnnotations == null && oldAnnotationExprs.size() > 0) {
+                newDeclaration.setAnnotations(oldAnnotationExprs);
+                modified = true;
+            }
         }
-        return false;
+
+        if (CollectionUtil.isNotEmpty(disabledAnnoNames)) {
+            Optional<Comment> comment = newDeclaration.getComment();
+            String oldBlockCommentText = "";
+            if (comment.isPresent()) {
+                oldBlockCommentText = comment.get().getContent();
+                for (String annoName : disabledAnnoNames) {
+                    if (checkAnnoInComments(oldBlockCommentText, annoName)) {
+                        disabledAnnoNames.remove(annoName);
+                    }
+                }
+            }
+
+            if (CollectionUtil.isNotEmpty(disabledAnnoNames)) {
+                StringBuffer sb = new StringBuffer(oldBlockCommentText);
+                for (String annoName : disabledAnnoNames) {
+                    sb.append(" ").append("!@").append(annoName);
+                }
+                newDeclaration.setComment(new JavadocComment(sb.toString()));
+                modified = true;
+            }
+
+        }
+        return modified;
+    }
+
+    private static String getAllCommentsText(BodyDeclaration declaration) {
+        List<Comment> allContainedComments = declaration.getAllContainedComments();
+        StringBuffer sb = new StringBuffer();
+        boolean append =false;
+        Optional<Comment> commentOp = declaration.getComment();
+        if (commentOp.isPresent()){
+            sb.append(commentOp.get().getContent()) ;
+            append=true;
+        }
+        for (Comment comment : allContainedComments) {
+            if (append){
+                sb.append(" ");
+            }
+            sb.append(comment.toString());
+            append=true;
+        }
+        String oldCommentText = sb.toString();
+        return oldCommentText;
     }
 
     /**
@@ -435,7 +539,7 @@ class ASTHelper {
 
                     //将之前java类 标注加入 ,不再处理controller ,service,serviceImpl
                     if (JavaType.isEntry == javaType) {
-                        if (addAnnotationExprsToBody(oldClassDeclaration.getAnnotations(), nowClassDeclaration, true)) {
+                        if (addAnnotationExprsToBody(oldClassDeclaration, nowClassDeclaration, true)) {
                             replaced = true;
                         }
                     }
@@ -471,9 +575,10 @@ class ASTHelper {
                                 continue;
                             }
 
-                            if (addAnnotationExprsToBody(oldFieldDeclaration.getAnnotations(), nowFieldDeclaration, true)) {
+                            if (addAnnotationExprsToBody(oldFieldDeclaration, nowFieldDeclaration, true)) {
                                 replaced = true;
                             }
+
                             //把Modifile加进来
                             if (oldFieldDeclaration.getModifiers() != null) {
                                 nowFieldDeclaration.getModifiers().addAll(oldFieldDeclaration.getModifiers());
@@ -481,6 +586,7 @@ class ASTHelper {
 
                             //oldFieldDeclarationMap.remove(fieldName);
                         }
+
                     }
 
                     //把之前的方法加进来

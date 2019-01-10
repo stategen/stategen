@@ -57,7 +57,7 @@ public class PatternTest {
         }
     }
 
-    @Test
+//    @Test
     public void testJavaClazz() {
         StringBuffer sb = new StringBuffer();
 //        String clzz = "java.util.Map<java.lang.String, java.util.List<java.lang.String>>";
@@ -78,5 +78,30 @@ public class PatternTest {
             }
         }
         System.out.println(sb.toString());
+    }
+    @Test
+    public void testMax(){
+        String maxAnno="abc//    @Id\r\n" + 
+                " cde //    @Max(64)\r\n" + 
+                "efg!@Max\r\n" + 
+                "abc !@Id\r\n" +
+                "";
+                
+        Pattern compile = Pattern.compile("//\\s*@Max",   Pattern.DOTALL);
+        Matcher matcher = compile.matcher(maxAnno);
+        System.out.println("matcher.end()<===========>:" + matcher.find());
+        
+        compile = Pattern.compile("//\\s*@Id",   Pattern.DOTALL);
+        matcher = compile.matcher(maxAnno);
+        System.out.println("matcher.end()<===========>:" + matcher.find());
+        
+        compile = Pattern.compile("!@Id",   Pattern.DOTALL);
+        matcher = compile.matcher(maxAnno);
+        System.out.println("matcher.end()<===========>:" + matcher.find());
+        
+        compile = Pattern.compile("!@Max",   Pattern.DOTALL);
+        matcher = compile.matcher(maxAnno);
+        System.out.println("matcher.end()<===========>:" + matcher.find());
+        
     }
 }
