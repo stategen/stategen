@@ -106,6 +106,7 @@ public class FacadeGenerator {
             String outWholePath = FileHelpers.getFile(reletiveOutWholePath).getAbsolutePath();
             FreeMarkerTempFileContext beanFltContext = new FreeMarkerTempFileContext(tempWholePaths);
             Configuration conf = beanFltContext.getConf();
+            conf.setDefaultEncoding(StringUtil.UTF_8);
             List<String> availableAutoInclude = TemplateHelpers.getAvailableAutoInclude(conf, Arrays.asList("macro.include.ftl"));
             conf.setAutoIncludes(availableAutoInclude);
 
@@ -131,7 +132,9 @@ public class FacadeGenerator {
         String outWholePath = FileHelpers.getFile(reletiveOutWholePath).getAbsolutePath();
         
         Configuration conf = beanFltContext.getConf();
+        conf.setDefaultEncoding(StringUtil.UTF_8);
         List<String> availableAutoInclude = TemplateHelpers.getAvailableAutoInclude(conf, Arrays.asList("macro.include.ftl"));
+        
         conf.setAutoIncludes(availableAutoInclude);
         root.putAll(canbeImportWrapMap);
 

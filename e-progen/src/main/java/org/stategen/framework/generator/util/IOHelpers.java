@@ -17,6 +17,7 @@
 package org.stategen.framework.generator.util;
 
 import java.io.BufferedReader;
+import java.io.CharArrayWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -202,9 +203,15 @@ public class IOHelpers {
     public static void saveFile(File file, String content, String encoding, boolean append) {
         try {
             FileOutputStream output = new FileOutputStream(file, append);
+            CharArrayWriter charArrayWriter =new CharArrayWriter(content.length());
             Writer writer = StringUtil.isBlank(encoding) ? new OutputStreamWriter(output) : new OutputStreamWriter(output, encoding);
-            writer.write(content);
+            charArrayWriter.write(content);
+            charArrayWriter.writeTo(writer);
+            charArrayWriter.close();
             writer.close();
+            output.close();
+//            writer.write(content);
+//            writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

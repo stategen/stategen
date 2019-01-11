@@ -7,21 +7,21 @@
      -->
 
     <!-- ==================================== appenders==================================== -->
-    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender" level="DEBUG">
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender" level="INFO">
         <encoder charset="UTF-8"> <!-- encoder 可以指定字符集，对于中文输出有意义 -->
-            <pattern><![CDATA[%d{HH:mm:ss.SSS} [%thread] %-5level %logger%n%msg%n%caller{10}]]></pattern>
+            <pattern><![CDATA[%d{HH:mm:ss.SSS} [%thread] %-5level %logger%n%msg%n%caller{10}]]></pattern>  
         </encoder>
     </appender>
 
 
     <!-- ==================================== loggers==================================== -->
     <!-- 输出到控制台和文件，可定义更多的 Appender -->
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="stdout" />
     </root>
 
     <!-- 下面配置一些第三方包的日志过滤级别，用于避免刷屏 -->
-    <logger name="stdout" level="DEBUG">
+    <logger name="stdout" level="INFO">
         <appender-ref ref="stdout" />
     </logger>   
     
