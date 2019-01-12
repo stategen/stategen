@@ -575,7 +575,7 @@ public class CollectionUtil {
     }
 
     public static <D, K, S, V> void setFeildToFieldByMap(Collection<D> dests, Map<K, S> sourceMap, Function<? super D, K> destGetMethod,
-                                                         Function<? super S, V> sourceGetMethod, BiConsumer<D, V> destSetMethod) {
+                                                         BiConsumer<D, V> destSetMethod,Function<? super S, V> sourceGetMethod) {
         if (isNotEmpty(dests)) {
             for (D d : dests) {
                 if (d != null) {

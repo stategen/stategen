@@ -1,9 +1,8 @@
 package org.stategen.framework.lite.enums;
 
+import org.stategen.framework.annotation.ReferConfig;
+
 public abstract class EditorType {
-    public boolean needReferConfig() {
-        return false;
-    }
 
     public static abstract class Password extends EditorType {
 
@@ -49,38 +48,36 @@ public abstract class EditorType {
 
     }
 
-    private static class HasReferFieldEditorType extends EditorType {
-        @Override
-        public boolean needReferConfig() {
-            return true;
-        }
+    //以下类指定 @ReferConfig
+    @ReferConfig
+    private static abstract class HasReferFieldEditorType extends EditorType {
     }
 
-    public static class Checkbox extends HasReferFieldEditorType {
-
-    }
-
-    public static class Select extends HasReferFieldEditorType {
+    public static abstract class Checkbox extends HasReferFieldEditorType {
 
     }
 
-    public static class Cascader extends HasReferFieldEditorType {
+    public static abstract class Select extends HasReferFieldEditorType {
 
     }
 
-    public static class RadioGroup extends HasReferFieldEditorType {
+    public static abstract class Cascader extends HasReferFieldEditorType {
 
     }
 
-    public static class CheckboxGroup extends HasReferFieldEditorType {
+    public static abstract class RadioGroup extends HasReferFieldEditorType {
 
     }
 
-    public static class Upload extends HasReferFieldEditorType {
+    public static abstract class CheckboxGroup extends HasReferFieldEditorType {
 
     }
 
-    public static class Image extends HasReferFieldEditorType {
+    public static abstract class Upload extends HasReferFieldEditorType {
+
+    }
+
+    public static abstract class Image extends HasReferFieldEditorType {
 
     }
 

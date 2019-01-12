@@ -32,13 +32,13 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.springframework.beans.BeanUtils;
 import org.stategen.framework.annotation.ChangeBy;
 import org.stategen.framework.annotation.Editor;
 import org.stategen.framework.annotation.OptionConvertor;
 import org.stategen.framework.annotation.ReferConfig;
 import org.stategen.framework.generator.util.ClassHelpers;
 import org.stategen.framework.lite.enums.EditorType;
+import org.stategen.framework.lite.enums.EditorType.Input;
 import org.stategen.framework.progen.FieldRule;
 import org.stategen.framework.progen.GenContext;
 import org.stategen.framework.progen.GenericTypeResolver;
@@ -84,9 +84,9 @@ public abstract class NamedWrap extends MemberWrap {
     private String props;
 
     private String nullTitle;
-    
+
     private String falseTitle;
-    
+
     private String trueTitle;
 
     private NamedContext context;
@@ -94,15 +94,15 @@ public abstract class NamedWrap extends MemberWrap {
     private Set<Class<? extends Annotation>> _excludeAnnos;
 
     private boolean asserted = false;
-    
+
     private NamedWrap field;
-    
+
     private Boolean noJson;
-    
+
     public void setField(NamedWrap field) {
         this.field = field;
     }
-    
+
     public NamedWrap getField() {
         return field;
     }
@@ -199,85 +199,84 @@ public abstract class NamedWrap extends MemberWrap {
 
     private void assertReferConfig(Class<? extends EditorType> editorTypeClz) {
         if (!asserted) {
-            if (!Modifier.isAbstract(editorTypeClz.getModifiers())) {
-                EditorType ins = BeanUtils.instantiate(editorTypeClz);
-                if (ins.needReferConfig()) {
-                    ReferConfigWrap referConfig = this.getReferConfig();
-                    AccessibleObject accessibleObject = getFirstAccessibleObject();
+            //检查EditorType是否支持 指向 
+            ReferConfig referConfigAnno = AnnotationUtil.getAnnotationFormMembers(ReferConfig.class, editorTypeClz);
+            if (referConfigAnno != null) {
+                ReferConfigWrap referConfig = this.getReferConfig();
+                AccessibleObject accessibleObject = getFirstAccessibleObject();
 
-                    String javaConsoleLink = ReflectionUtil.getJavaConsoleLink(accessibleObject);
-                    if (referConfig == null) {
-                        AssertUtil.throwException("参数:" + getName() + " 在引用的类上必须指定@ReferConfig" + javaConsoleLink);
-                    }
+                String javaConsoleLink = ReflectionUtil.getJavaConsoleLink(accessibleObject);
+                if (referConfig == null) {
+                    AssertUtil.throwException("参数:" + getName() + " 在引用的类上必须指定@ReferConfig" + javaConsoleLink);
+                }
 
-                    String referField = referConfig.getReferField();
-                    Field field = context.getFieldNameFieldMap().get(referField);
-                    Method method = context.getGetterNameMethods().get(referField);
-                    if (!getIsEnum() && !getIsArray() && field == null && method == null) {
-                        AssertUtil.throwException("参数:" + getName() + " @ReferConfig 中获得不了referField:" + referField + " 字段" + javaConsoleLink);
-                    }
+                String referField = referConfig.getReferField();
+                Field field = context.getFieldNameFieldMap().get(referField);
+                Method method = context.getGetterNameMethods().get(referField);
+                if (!getIsEnum() && !getIsArray() && field == null && method == null) {
+                    AssertUtil.throwException("参数:" + getName() + " @ReferConfig 中获得不了referField:" + referField + " 字段" + javaConsoleLink);
+                }
 
-                    if (!getIsEnum()) {
-                        OptionConvertor optionConvertorAnno = AnnotationUtil.getAnnotationFormMembers(OptionConvertor.class, getMembers());
-                        Class<?> beanClz = null;
-                        if (method != null) {
-                            beanClz = ClassHelpers.getClazzIfCollection(method.getReturnType());
-                            if (ClassHelpers.isArrayOrMap(beanClz)) {
-                                Type genericReturnType = method.getGenericReturnType();
-                                beanClz = GenericTypeResolver.getClass(genericReturnType, 0);
-                                beanClz = ClassHelpers.getClazzIfCollection(beanClz);
-                            }
-                            if (optionConvertorAnno == null && !ClassHelpers.isArrayOrMap(beanClz)) {
-                                optionConvertorAnno = AnnotationUtil.getAnnotationFormMembers(OptionConvertor.class, beanClz);
-                            }
+                if (!getIsEnum()) {
+                    OptionConvertor optionConvertorAnno = AnnotationUtil.getAnnotationFormMembers(OptionConvertor.class, getMembers());
+                    Class<?> beanClz = null;
+                    if (method != null) {
+                        beanClz = ClassHelpers.getClazzIfCollection(method.getReturnType());
+                        if (ClassHelpers.isArrayOrMap(beanClz)) {
+                            Type genericReturnType = method.getGenericReturnType();
+                            beanClz = GenericTypeResolver.getClass(genericReturnType, 0);
+                            beanClz = ClassHelpers.getClazzIfCollection(beanClz);
                         }
+                        if (optionConvertorAnno == null && !ClassHelpers.isArrayOrMap(beanClz)) {
+                            optionConvertorAnno = AnnotationUtil.getAnnotationFormMembers(OptionConvertor.class, beanClz);
+                        }
+                    }
 
-                        if (optionConvertorAnno != null) {
-                            String value = optionConvertorAnno.value();
-                            String title = optionConvertorAnno.title();
-                            String parentId = optionConvertorAnno.parentId();
-                            String url = optionConvertorAnno.url();
-                            String label = optionConvertorAnno.label();
+                    if (optionConvertorAnno != null) {
+                        String value = optionConvertorAnno.value();
+                        String title = optionConvertorAnno.title();
+                        String parentId = optionConvertorAnno.parentId();
+                        String url = optionConvertorAnno.url();
+                        String label = optionConvertorAnno.label();
 
-                            if (beanClz != null) {
-                                BaseWrap baseWrap = GenContext.wrapContainer.get(beanClz);
-                                if (baseWrap instanceof BeanWrap) {
-                                    BeanWrap beanWrap = (BeanWrap) baseWrap;
-                                    String message = "在类 " + beanClz.getSimpleName() + "设置的 @OptionConvertor {0}:{1}不存在"
-                                                     + ReflectionUtil.getJavaConsoleLink(beanClz.getConstructors()[0]);
+                        if (beanClz != null) {
+                            BaseWrap baseWrap = GenContext.wrapContainer.get(beanClz);
+                            if (baseWrap instanceof BeanWrap) {
+                                BeanWrap beanWrap = (BeanWrap) baseWrap;
+                                String message = "在类 " + beanClz.getSimpleName() + "设置的 @OptionConvertor {0}:{1}不存在"
+                                                 + ReflectionUtil.getJavaConsoleLink(beanClz.getConstructors()[0]);
 
-                                    if (StringUtil.isNotBlank(value)) {
-                                        AssertUtil.mustNotNull(beanWrap.get(value), String.format(message, "value", value));
-                                    }
-                                    if (StringUtil.isNotBlank(title)) {
-                                        AssertUtil.mustNotNull(beanWrap.get(title), String.format(message, "title", title));
-                                    }
-                                    if (StringUtil.isNotBlank(parentId)) {
-                                        AssertUtil.mustNotNull(beanWrap.get(parentId), "在类 " + String.format(message, "parentId", parentId));
-                                    }
-                                    if (StringUtil.isNotBlank(url)) {
-                                        AssertUtil.mustNotNull(beanWrap.get(url), "在类 " + String.format(message, "url", url));
-                                    }
-                                    if (StringUtil.isNotBlank(label)) {
-                                        AssertUtil.mustNotNull(beanWrap.get(label), "在类 " + String.format(message, "label", label));
-                                    }
+                                if (StringUtil.isNotBlank(value)) {
+                                    AssertUtil.mustNotNull(beanWrap.get(value), String.format(message, "value", value));
+                                }
+                                if (StringUtil.isNotBlank(title)) {
+                                    AssertUtil.mustNotNull(beanWrap.get(title), String.format(message, "title", title));
+                                }
+                                if (StringUtil.isNotBlank(parentId)) {
+                                    AssertUtil.mustNotNull(beanWrap.get(parentId), "在类 " + String.format(message, "parentId", parentId));
+                                }
+                                if (StringUtil.isNotBlank(url)) {
+                                    AssertUtil.mustNotNull(beanWrap.get(url), "在类 " + String.format(message, "url", url));
+                                }
+                                if (StringUtil.isNotBlank(label)) {
+                                    AssertUtil.mustNotNull(beanWrap.get(label), "在类 " + String.format(message, "label", label));
                                 }
                             }
-
-                            OptionConvertorWrap optionConvertor = new OptionConvertorWrap(value, title,label, parentId, url);
-                            referConfig.setOptionConvertor(optionConvertor);
                         }
-                    }
 
-                    if (!getIsEnum() && !getIsImage()) {
-                        String api = referConfig.getApi();
-                        AssertUtil.mustNotNull(context.getAppWrap()
-                            .getFunction(api), "参数:" + getName() + "在AppController中 找不到对应的方法:" + api + " 无法 通过ajax请求检查" + javaConsoleLink
-                                               + ReflectionUtil.getJavaConsoleLink(context.getAppWrap().getClazz().getConstructors()[0]));
+                        OptionConvertorWrap optionConvertor = new OptionConvertorWrap(value, title, label, parentId, url);
+                        referConfig.setOptionConvertor(optionConvertor);
                     }
                 }
 
+                if (!getIsEnum() && !getIsImage()) {
+                    String api = referConfig.getApi();
+                    AssertUtil.mustNotNull(context.getAppWrap()
+                        .getFunction(api), "参数:" + getName() + "在AppController中 找不到对应的方法:" + api + " 无法 通过ajax请求检查" + javaConsoleLink
+                                           + ReflectionUtil.getJavaConsoleLink(context.getAppWrap().getClazz().getConstructors()[0]));
+                }
             }
+
             asserted = true;
         }
     }
@@ -288,14 +287,14 @@ public abstract class NamedWrap extends MemberWrap {
         }
         return falseTitle;
     }
-    
+
     public String getNullTitle() {
         if (nullTitle == null) {
             nullTitle = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::nullTitle, "", getMembers());
         }
         return nullTitle;
     }
-    
+
     public String getTrueTitle() {
         if (trueTitle == null) {
             trueTitle = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::trueTitle, "", getMembers());
@@ -363,6 +362,20 @@ public abstract class NamedWrap extends MemberWrap {
                 referConfig = new ReferConfigWrap();
             } else {
                 ReferConfig referConfigAnno = AnnotationUtil.getAnnotationFormMembers(ReferConfig.class, getMembers());
+                //TODO,处理editorType上的referConfig
+                if (referConfigAnno == null) {
+                    Class<? extends Object> editorType = AnnotationUtil.getAnnotationValueFormMembers(Editor.class, Editor::value, Input.class,
+                        getMembers());
+                    if (editorType != Input.class) {
+                        referConfigAnno = AnnotationUtil.getAnnotationFormMembers(ReferConfig.class, editorType);
+                        if (referConfigAnno != null) {
+                            if (logger.isInfoEnabled()) {
+                                logger.info(new StringBuffer("输出info信息: editorType:").append(editorType).toString());
+                            }
+                        }
+                    }
+                }
+
                 if (referConfigAnno != null) {
                     referConfig = new ReferConfigWrap();
                     String referField = referConfigAnno.referField();
@@ -395,6 +408,18 @@ public abstract class NamedWrap extends MemberWrap {
                             if (StringUtil.isBlank(defaultReferField)) {
                                 defaultReferField = defaultOptionBean;
                             }
+                        } else {
+                            Method method = context.getGetterNameMethods().get(defaultReferField);
+                            if (method != null) {
+                                Type genericReturnType = method.getGenericReturnType();
+                                Class<?> genericClazz = GenericTypeResolver.getClass(genericReturnType, 0);
+                                genericClazz = ClassHelpers.getClazzIfCollection(genericClazz);
+                                if (genericClazz != null && genericClazz != Void.class) {
+                                    defaultOptionBean = StringUtil.uncapfirst(genericClazz.getSimpleName());
+                                }
+                            }
+
+                            //TODO,处理editorType上的referConfig 
                         }
 
                         //city=>getCityOptions
@@ -430,20 +455,20 @@ public abstract class NamedWrap extends MemberWrap {
         return isSimple;
     }
 
-    public Boolean getNoJson(){
-        if (this.noJson==null){
+    public Boolean getNoJson() {
+        if (this.noJson == null) {
             AnnotatedElement[] members = getMembers();
-            for (AnnotatedElement annotatedElement:members){
+            for (AnnotatedElement annotatedElement : members) {
                 if (annotatedElement instanceof Field) {
                     Field field = (Field) annotatedElement;
-                    if (Modifier.isTransient(field.getModifiers())){
-                        noJson=true;
+                    if (Modifier.isTransient(field.getModifiers())) {
+                        noJson = true;
                         return noJson;
                     }
                 }
             }
             Boolean serialize = AnnotationUtil.getAnnotationValueFormMembers(JSONField.class, JSONField::serialize, true, members);
-            noJson=!serialize;
+            noJson = !serialize;
         }
         return noJson;
     }
