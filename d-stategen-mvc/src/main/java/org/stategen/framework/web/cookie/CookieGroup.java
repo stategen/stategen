@@ -35,22 +35,22 @@ import configs.Configration;
 /**
  * The Class CookieGroup.
  */
-public class CookieGroup extends ResponseStatusTypeHandler {
+public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CookieGroup.class);
-    
+
     //iCookieGroup与CookieGroupValidator的对应关系
-    private static Map<ICookieType, CookieGroup> COOKIE_GROUP_MAP = new ConcurrentHashMap<ICookieType, CookieGroup>();
-    
+    private static Map<Class<? extends ICookieType>, CookieGroup<?>> COOKIE_GROUP_MAP = new ConcurrentHashMap<Class<? extends ICookieType>, CookieGroup<?>>(2);
+
     private String _cookieNamePrefix = null;
     //校验的cookie名称
     private static String TOKEN_COOKIE_NAME = "_token_";
-    
+
     //最后生成tocken的cookieName,值为：_cookieNamePrefix+_tokenCookieName
     private String _tokenCookieName = null;
 
     //cookie的生命
     private Integer secondsOfCookieAge = Configration.COOKIE_DEFAULT_AGE;
-    
+
     //该项校验对的组别
     private Class<? extends ICookieType> cookieTypeClz;
 
@@ -59,26 +59,20 @@ public class CookieGroup extends ResponseStatusTypeHandler {
 
     //当cookie没通过后，是否强制拦截
     private boolean strong = true;
-    
-    //生成cookie是否是服务端cookie,如果是，则客户端脚本不能读取，该项设置为true,可防止XSS
-    private boolean httpOnly =true;
 
-    public static Map<ICookieType, CookieGroup> getCookieGroupMap() {
+    //生成cookie是否是服务端cookie,如果是，则客户端脚本不能读取，该项设置为true,可防止XSS
+    private boolean httpOnly = true;
+
+    public static  Map<Class<? extends ICookieType>, CookieGroup<?>> getCookieGroupMap() {
         return COOKIE_GROUP_MAP;
     }
 
-    public static CookieGroup getCookieGroup(Class<? extends ICookieType> cookieTypeClz) {
-        ICookieType cookieGroup = getCookieTypeByClz(cookieTypeClz);
-        return COOKIE_GROUP_MAP.get(cookieGroup);
-    }
-
-    public static ICookieType getCookieTypeByClz(Class<? extends ICookieType> cookieTypeClz) {
-        ICookieType cookieGroup = ICookieType.getCookieType(cookieTypeClz);
-        return cookieGroup;
+    public static CookieGroup<?> getCookieGroup(Class<? extends ICookieType> cookieTypeClz) {
+        return COOKIE_GROUP_MAP.get(cookieTypeClz);
     }
 
     public ICookieType getCookieType() {
-        return getCookieTypeByClz(cookieTypeClz);
+        return ICookieType.getCookieType(cookieTypeClz);
     }
 
     public String getCookieNamePrefix() {
@@ -101,7 +95,7 @@ public class CookieGroup extends ResponseStatusTypeHandler {
             CookiesHolder.class);
 
         CookiesHolder cookiesHolder = getOrCreateWrap.getValue();
-        if (getOrCreateWrap.isNew()){
+        if (getOrCreateWrap.isNew()) {
             cookiesHolder.setHttpOnly(httpOnly);
         }
         return cookiesHolder;
@@ -190,9 +184,6 @@ public class CookieGroup extends ResponseStatusTypeHandler {
         return result;
     }
 
-
-
-
     private String getWholeCookieName(String name) {
         return new StringBuffer(getCookieNamePrefix()).append(name).toString();
     }
@@ -215,8 +206,16 @@ public class CookieGroup extends ResponseStatusTypeHandler {
         return internalAddCookie(name, value, this.secondsOfCookieAge);
     }
 
+    public Cookie addCookie(E nameName, Object value) {
+        return addCookie(nameName.name(), value);
+    }
+
     public Cookie deleteCookie(String name) {
         return internalAddCookie(name, null, -1);
+    }
+
+    public Cookie deleteCookie(E nameName) {
+        return deleteCookie(nameName.name());
     }
 
     /**
@@ -244,6 +243,10 @@ public class CookieGroup extends ResponseStatusTypeHandler {
         return cookiesHolder.readAndDecodeCookieValue(getWholeCookieName(name));
     }
 
+    public String getCookieValue(E enumName) {
+        return getCookieValue(enumName.name());
+    }
+
     public void expireAllCookies() {
         if (checkCookieFake) {
             CookiesHolder cookiesHolder = this.getCookiesHolder();
@@ -263,6 +266,10 @@ public class CookieGroup extends ResponseStatusTypeHandler {
         String valiCookieName = this.getWholeCookieName(cookieName);
         CookiesHolder cookiesHolder = this.getCookiesHolder();
         return cookiesHolder.getValiCookie(valiCookieName);
+    }
+
+    public Cookie getCookie(E enunName) {
+        return getCookie(enunName.name());
     }
 
     /**
@@ -293,23 +300,33 @@ public class CookieGroup extends ResponseStatusTypeHandler {
         this.cookieTypeClz = cookieGroupClz;
     }
 
-    public void setResponseStatusClzOfTokenError(Class<? extends IResponseStatus> responseStatusClzOfTokenError) {
-        super.setResponseStatusClz(responseStatusClzOfTokenError);
-    }
-    
+
     public void setHttpOnly(boolean httpOnly) {
         this.httpOnly = httpOnly;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        AssertUtil.mustNotNull(cookieTypeClz,"cookieTypeClz can not be null");
+        
+        ICookieType cookieType = ICookieType.getCookieType(cookieTypeClz);
+        
+        AssertUtil.mustNotNull(cookieType, "no enum instance of :"+cookieTypeClz);
+        
+        CookieGroup<?> cookieGroup = COOKIE_GROUP_MAP.get(cookieTypeClz);
+        AssertUtil.mustNull(cookieGroup,"cookieGroup has bean register:"+cookieTypeClz);
+        
+        setResponseStatusClz(cookieType.getResponseStatusClzOfTokenError());
+        String cookiePrefixName = cookieType.getCookiePrefixName();
+        for (CookieGroup<?> cg:COOKIE_GROUP_MAP.values()){
+            ICookieType ct = cg.getCookieType();
+            AssertUtil.mustFalse(cookiePrefixName.equals(ct.getCookiePrefixName()),"prefix cookieType has bean used:"+cookiePrefixName);
+        }
+        
+        COOKIE_GROUP_MAP.put(cookieTypeClz, this);
+        _tokenCookieName = new StringBuffer(cookiePrefixName).append(TOKEN_COOKIE_NAME).toString();
+        
         super.afterPropertiesSet();
-        AssertUtil.mustNotNull(cookieTypeClz);
-        ICookieType cookieGroup = getCookieTypeByClz(cookieTypeClz);
-        CookieGroup cookieGroupValidator = COOKIE_GROUP_MAP.get(cookieGroup);
-        AssertUtil.mustNull(cookieGroupValidator);
-        COOKIE_GROUP_MAP.put(cookieGroup, this);
-        _tokenCookieName = new StringBuffer(cookieGroup.getCookiePrefixName()).append(TOKEN_COOKIE_NAME).toString();
     }
 
 }

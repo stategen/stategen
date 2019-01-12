@@ -37,11 +37,11 @@ import org.stategen.framework.lite.IResponseStatus;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Repeatable(value=List.class)
-public @interface CookieCheck {
+public @interface  CookieCheck {
     /***cookieGroupClzs与cookieNames长度相等*/
     Class<? extends ICookieType>  cookieTypeClz() ;
     Class<? extends IResponseStatus> responseStatusClzOfCheckFail();
-    String cookieName();
+    String cookieName() ;
     
     /**
      * The Interface List.

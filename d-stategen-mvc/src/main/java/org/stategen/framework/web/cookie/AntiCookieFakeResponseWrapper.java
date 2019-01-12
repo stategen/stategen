@@ -54,18 +54,18 @@ public class AntiCookieFakeResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public void filterRequestCookies() {
-        Map<ICookieType, CookieGroup> cookieValidatorMap = CookieGroup.getCookieGroupMap();
-        if (CollectionUtil.isEmpty(cookieValidatorMap)){
+         Map<Class<? extends ICookieType>, CookieGroup<?>> cookieGroupMap = CookieGroup.getCookieGroupMap();
+        if (CollectionUtil.isEmpty(cookieGroupMap)){
             return;
         }
         
         HttpServletRequest request = ServletContextUtil.getHttpServletRequest();
         Cookie[] cookies = request.getCookies();
         if (CollectionUtil.isNotEmpty(cookies)){
-            Collection<CookieGroup> cookieGroupValidators = cookieValidatorMap.values();
+            Collection<CookieGroup<?>> cookieGroups = cookieGroupMap.values();
             for (Cookie cookie : cookies) {
-                for (CookieGroup cookieGroupValidator : cookieGroupValidators) {
-                    if (cookieGroupValidator.filterRequestCookie(cookie)){
+                for (CookieGroup<?> cookieGroup : cookieGroups) {
+                    if (cookieGroup.filterRequestCookie(cookie)){
                         break;
                     }
                 }
@@ -74,14 +74,14 @@ public class AntiCookieFakeResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public boolean checkTokens() {
-        Map<ICookieType, CookieGroup> cookieValidatorMap = CookieGroup.getCookieGroupMap();
-        if (CollectionUtil.isEmpty(cookieValidatorMap)){
+        Map<Class<? extends ICookieType>, CookieGroup<?>> cookieGroupMap = CookieGroup.getCookieGroupMap();
+        if (CollectionUtil.isEmpty(cookieGroupMap)){
             return true;
         }
         
-        Collection<CookieGroup> cookieGroups = cookieValidatorMap.values();
-        for (CookieGroup cookieGroupValidator : cookieGroups) {
-            boolean passed= cookieGroupValidator.checkTokenIfNotWritResponse();
+        Collection<CookieGroup<?>> cookieGroups = cookieGroupMap.values();
+        for (CookieGroup<?> cookieGroup : cookieGroups) {
+            boolean passed= cookieGroup.checkTokenIfNotWritResponse();
             if (!passed){
                 return false;
             }

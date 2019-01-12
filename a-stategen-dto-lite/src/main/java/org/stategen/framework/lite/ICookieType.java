@@ -29,16 +29,20 @@ public interface ICookieType {
 
     static Map<Class<? extends ICookieType>, ICookieType> CookieTypeCacheMap = new HashMap<Class<? extends ICookieType>, ICookieType>();
 
-    public String getCookiePrefixName();
+    String getCookiePrefixName();
 
-    public Class<? extends ICookieType> _getCookieTypeClz();
+    Class<? extends ICookieType> _getCookieTypeClz();
+    
+    Class<? extends IResponseStatus> getResponseStatusClzOfTokenError();
 
-    public default void regist() {
+    public default void register() {
         CookieTypeCacheMap.put(this._getCookieTypeClz(), this);
     }
     
     public static ICookieType getCookieType(Class<? extends ICookieType> cookieTypeClz){
         return CookieTypeCacheMap.get(cookieTypeClz);
     }
+
+    
 
 }
