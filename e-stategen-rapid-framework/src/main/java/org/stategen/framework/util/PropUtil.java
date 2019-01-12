@@ -20,15 +20,12 @@ import static org.stategen.framework.util.Consts.base_name_suffix;
 import static org.stategen.framework.util.Consts.controller_name_suffix;
 import static org.stategen.framework.util.Consts.dao_name_suffix;
 import static org.stategen.framework.util.Consts.dto_name_suffix;
-import static org.stategen.framework.util.Consts.facade_service_suffix;
 import static org.stategen.framework.util.Consts.impl_name_suffix;
 import static org.stategen.framework.util.Consts.internal_service_suffix;
 import static org.stategen.framework.util.Consts.javaFile;
 import static org.stategen.framework.util.Consts.service_name_suffix;
 
 import java.util.Properties;
-
-import org.stategen.framework.util.StringUtil;
 
 import cn.org.rapid_framework.generator.GeneratorProperties;
 
@@ -65,7 +62,7 @@ public class PropUtil {
     }    
     
     public static String getServiceSuffixJava(){
-        return get(service_name_suffix)+get(facade_service_suffix)+javaFile;
+        return get(service_name_suffix)+get("projectName")+javaFile;
     }
 
 

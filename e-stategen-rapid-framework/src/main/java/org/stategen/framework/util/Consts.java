@@ -28,7 +28,6 @@ public class Consts {
     public final static String impl_name_suffix       = "impl_name_suffix";
     public final static String service_name_suffix    = "service_name_suffix";
     public final static String internal_service_suffix = "internal_service_suffix";
-    public final static String facade_service_suffix = "facade_service_suffix";
     public final static String controller_name_suffix = "controller_name_suffix";
     public final static String base_name_suffix    = "base_name_suffix";
     
