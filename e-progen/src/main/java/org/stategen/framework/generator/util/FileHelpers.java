@@ -295,7 +295,7 @@ public class FileHelpers {
         File file = new File(fileName);
         if (file.exists() && file.isFile()) {
             String fileText = IOHelpers.readFile(file, StringUtil.UTF_8);
-            if (newText.endsWith(fileText)) {
+            if (newText.equals(fileText)) {
                 return true;
             } else {
                System.out.println(newText.length()+"   "+fileText.length());  
