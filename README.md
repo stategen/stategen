@@ -1,9 +1,7 @@
-![Image](
-        https://github.com/stategen/images/blob/master/stategenAppSnapshort.png
-      )
-![Image](
-        https://github.com/stategen/images/blob/master/stategenWebSnapShort1.png
-      )
+![Image](https://github.com/stategen/images/blob/master/stategenAppSnapshort.png)
+mobile端
+![Image](https://github.com/stategen/images/blob/master/stategenWebSnapShort1.png)
+web端
 ## Stategen 
   ***后端做业务，前端做美工，其它交给stategen来做***   
   ***整合技术不创造技术***
