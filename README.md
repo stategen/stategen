@@ -1,3 +1,9 @@
+![Image](
+        https://github.com/stategen/images/blob/master/stategenAppSnapshort.png
+      )
+![Image](
+        https://github.com/stategen/images/blob/master/stategenWebSnapShort1.png
+      )
 ## Stategen 
   ***后端做业务，前端做美工，其它交给stategen来做***   
   ***整合技术不创造技术***
@@ -10,6 +16,7 @@
   -&gt;前端实现界面美化-&gt;运维编译-&gt;发布->ssr（这个比前端写mockjs快，工作不重复） 
   
 ### 开始准备和demo
+
   * 准备工具(windows上:Gow(.sh脚本用到了linux一些命令,不想为相似的代码写2遍) ,git bash)
   * hosts 中添加 如:   
               192.168.112.127 gitlab  
