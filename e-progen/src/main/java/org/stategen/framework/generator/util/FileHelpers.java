@@ -40,6 +40,7 @@ import org.stategen.framework.util.StringUtil;
 public class FileHelpers {
     final static Logger logger = LoggerFactory.getLogger(FileHelpers.class);
     final static String unOverrideFolderFlag ="@"+StringUtil.SLASH;
+    final static String unOverrideFolderFlag_Back ="@"+StringUtil.BACK_SLASH;
 
     public static File getFile(String file) {
         if (StringUtil.isBlank(file)) {
@@ -220,7 +221,7 @@ public class FileHelpers {
     }
     
     public static boolean isUnOverridePath(String fileName){
-        return fileName.indexOf(unOverrideFolderFlag)>0;
+        return fileName.indexOf(unOverrideFolderFlag)>0 || fileName.indexOf(unOverrideFolderFlag_Back)>0;
     }
     
     public static String replaceUnOverridePath(String fileName){

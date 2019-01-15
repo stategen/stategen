@@ -70,8 +70,8 @@ public class FacadeGenerator {
                     ApiWrap controllerWrap = new ApiWrap(clz, apiName);
                     if (controllerWrap.isApi()) {
                         apiWrapMap.put(clz, controllerWrap);
-                        if ("App".equals(controllerWrap.toString())){
-                            GenContext.appWrap=controllerWrap;
+                        if ("App".equals(controllerWrap.toString())) {
+                            GenContext.appWrap = controllerWrap;
                         }
                     }
                 } catch (Exception e) {
@@ -81,8 +81,8 @@ public class FacadeGenerator {
                 }
             }
         }
-        AssertUtil.mustNotNull(GenContext.appWrap,"缺少AppController,必须有一个Controller为AppController,而且上面的标注@ApiConfig(menu = false),\n"
-                + "因为一些ajax Options的方法是统一从这个Controller中拿取");
+        AssertUtil.mustNotNull(GenContext.appWrap,
+            "缺少AppController,必须有一个Controller为AppController,而且上面的标注@ApiConfig(menu = false),\n" + "因为一些ajax Options的方法是统一从这个Controller中拿取");
 
         GenContext.wrapContainer.scanBeanRelationShipAndMakeFeilds();
         List<String> tempDirs = GenContext.tempDirs;
@@ -99,9 +99,9 @@ public class FacadeGenerator {
         for (Entry<PathType, String> entry : GenContext.pathMap.entrySet()) {
             PathType pathType = entry.getKey();
             String importPath = entry.getValue();
-            
-            List<String> tempWholePaths=getTempPaths(tempDirs, tempRootPath, importPath, "dal");
-            
+
+            List<String> tempWholePaths = getTempPaths(tempDirs, tempRootPath, importPath, "dal");
+
             String reletiveOutWholePath = StringUtil.joinSLash(projectRootPath, outDir, importPath);
             String outWholePath = FileHelpers.getFile(reletiveOutWholePath).getAbsolutePath();
             FreeMarkerTempFileContext beanFltContext = new FreeMarkerTempFileContext(tempWholePaths);
@@ -125,16 +125,16 @@ public class FacadeGenerator {
                 root.remove(wrapName);
             }
         }
-        List<String> tempWholePaths=getTempPaths(tempDirs, tempRootPath, "", "set");
+        List<String> tempWholePaths = getTempPaths(tempDirs, tempRootPath, "", "set");
         FreeMarkerTempFileContext beanFltContext = new FreeMarkerTempFileContext(tempWholePaths);
-        
+
         String reletiveOutWholePath = StringUtil.joinSLash(projectRootPath, outDir, outConfigDir);
         String outWholePath = FileHelpers.getFile(reletiveOutWholePath).getAbsolutePath();
-        
+
         Configuration conf = beanFltContext.getConf();
         conf.setDefaultEncoding(StringUtil.UTF_8);
         List<String> availableAutoInclude = TemplateHelpers.getAvailableAutoInclude(conf, Arrays.asList("macro.include.ftl"));
-        
+
         conf.setAutoIncludes(availableAutoInclude);
         root.putAll(canbeImportWrapMap);
 
@@ -146,13 +146,13 @@ public class FacadeGenerator {
         }
     }
 
-    private List<String> getTempPaths(List<String> tempDirs, String tempRootPath, String importPath,String subName) throws IOException {
-        List<String> tempWholePaths =new ArrayList<String>(tempDirs.size()*2);
-        
+    private List<String> getTempPaths(List<String> tempDirs, String tempRootPath, String importPath, String subName) throws IOException {
+        List<String> tempWholePaths = new ArrayList<String>(tempDirs.size() * 2);
+
         for (String tempDir : tempDirs) {
             String tempPath = StringUtil.joinSLash(tempDir, subName);
-            if (StringUtil.isNotEmpty(importPath)){
-                tempPath=StringUtil.joinSLash(tempPath,importPath);
+            if (StringUtil.isNotEmpty(importPath)) {
+                tempPath = StringUtil.joinSLash(tempPath, importPath);
             }
             String tempWholePath = StringUtil.joinSLash(tempRootPath, tempPath);
             tempWholePaths.add(tempWholePath);
@@ -162,16 +162,16 @@ public class FacadeGenerator {
         return tempWholePaths;
     }
 
-    public static void processTemplate(File tempFile,Configuration conf, Properties root, String outputDir,
+    public static void processTemplate(File tempFile, Configuration conf, Properties root, String outputDir,
                                        String relativeFileName) throws TemplateException, IOException {
 
         final String blobExt = "@blob";
         final String tempExt = "@temp";
-        
-        
+        final String at = "@";
+
         String targetFileName = TemplateHelpers.processString(root, relativeFileName);
-        if (StringUtil.isEmpty(targetFileName)){
-            targetFileName=StringUtil.SLASH; 
+        if (StringUtil.isEmpty(targetFileName)) {
+            targetFileName = StringUtil.SLASH;
         }
 
         String notOverrideTargetFilenName = null;
@@ -180,10 +180,10 @@ public class FacadeGenerator {
             notOverrideTargetFilenName = targetFileName;
             targetFileName = StringUtil.trimRight(targetFileName, tempExt);
             notOverrideTargetFilenName = FileHelpers.getCanonicalPath(outputDir, notOverrideTargetFilenName);
-            notOverrideTargetFilenName =FileHelpers.replaceUnOverridePath(notOverrideTargetFilenName);
-        } else if (targetFileName.endsWith("@")) {
+            notOverrideTargetFilenName = FileHelpers.replaceUnOverridePath(notOverrideTargetFilenName);
+        } else if (targetFileName.endsWith(at)) {
             doOverride = false;
-            targetFileName = StringUtil.trimRight(targetFileName, "@");
+            targetFileName = StringUtil.trimRight(targetFileName, at);
         }
 
         boolean isBlob = false;
@@ -193,24 +193,26 @@ public class FacadeGenerator {
         }
 
         CharArrayWriter writer = new CharArrayWriter(1024 * 1024);
-        
-        String fullTargetFileName = FileHelpers.getCanonicalPath(outputDir, targetFileName);
-        
-        if (FileHelpers.isUnOverridePath(fullTargetFileName)){
-            fullTargetFileName =FileHelpers.replaceUnOverridePath(fullTargetFileName);
-            doOverride =false;
+        //这一步就要判断，因为getCanonicalPath可能就不再含有@/
+
+        if (FileHelpers.isUnOverridePath(tempFile.getParent())) {
+            doOverride = false;
         }
 
+        String fullTargetFileName = FileHelpers.getCanonicalPath(outputDir, targetFileName);
+
+        fullTargetFileName = FileHelpers.replaceUnOverridePath(fullTargetFileName);
+        
         File fullTargetFile = FileHelpers.parentMkdir(fullTargetFileName);
         boolean isDirectory = fullTargetFile.isDirectory();
         if (!isDirectory && (isBlob || FileHelpers.isBinaryFile(fullTargetFileName))) {
-            if (fullTargetFile.exists()){
+            if (fullTargetFile.exists()) {
                 if (logger.isInfoEnabled()) {
                     logger.info(new StringBuffer("二进制文件已存在，忽略写入:").append(fullTargetFile).toString());
                 }
-                return ;
+                return;
             }
-            
+
             if (logger.isInfoEnabled()) {
                 logger.info(new StringBuffer("写入二进制文件").append(fullTargetFile).toString());
             }
@@ -223,8 +225,6 @@ public class FacadeGenerator {
                 processFileString(root, writer, template, targetFileName);
             }
         }
-        
-
 
         String newTargetFileName = fullTargetFileName;
         String newText = writer.toString();
@@ -233,10 +233,10 @@ public class FacadeGenerator {
         if (!isDirectory) {
             if (fullTargetFile.exists() && fullTargetFile.isFile()) {
                 if (!doOverride) {
-                    logger.info(new StringBuffer("模版文件或文件夹以@或@.ftl结尾，当目标文件存在时，忽略写入:" + fullTargetFileName).append('\n'+newText).toString());
+                    logger.info(new StringBuffer("模版文件或文件夹以@或@.ftl结尾，当目标文件存在时，忽略写入:" + fullTargetFileName).append('\n' + newText).toString());
                     return;
                 }
-                
+
                 if (FileHelpers.isSameFileText(fullTargetFileName, newText)) {
                     logger.info("文件比较结果:相同，忽略写入:" + fullTargetFileName);
                     return;
@@ -253,11 +253,10 @@ public class FacadeGenerator {
                 }
             }
 
-
             File newTargetFile = new File(newTargetFileName);
             IOHelpers.saveFile(newTargetFile, newText, StringUtil.UTF_8);
             logger.info("写入文件===========>:" + newTargetFileName);
-        } 
+        }
     }
 
     private static String processFileString(Properties root, CharArrayWriter writer, Template template,
