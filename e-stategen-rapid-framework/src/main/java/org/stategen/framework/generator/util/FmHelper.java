@@ -320,7 +320,7 @@ public class FmHelper {
     public static String processTemplateString(String templateString, Map model, Configuration conf) {
         StringWriter out = new StringWriter();
         try {
-            Template template = new Template("templateString...", new StringReader(templateString),
+            Template template = new Template(templateString, new StringReader(templateString),
                 conf);
             template.process(model, out);
             return out.toString();

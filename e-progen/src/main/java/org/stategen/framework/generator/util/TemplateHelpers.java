@@ -84,7 +84,7 @@ public class TemplateHelpers {
 
     public static String processString(Map<Object, Object> root, String dest) throws IOException, TemplateException {
         Configuration conf =new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
-        final String stringTemplate = " ___stringTemplate";
+        final String stringTemplate = dest;
         dest=dest.replace(StringUtil.BACK_SLASH, StringUtil.SLASH);
         dest=dest.replace("[", "<");
         dest=dest.replace("]", ">");

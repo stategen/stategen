@@ -127,16 +127,22 @@ public class BaseProgen {
         Properties configs = PropertiesHelpers.load(configFile);
         root.putAll(configs);
         root.putAll(StringHelper.getDirValuesMap(root));
+        Boolean hasClient =false;
+        String webType = System.getProperty("type");
+        if (StringUtil.isNotBlank(webType) && !"-e".equals(webType)) {
+            hasClient=true;
+        } 
+        root.put("hasClient", hasClient);
 
         String projectsPath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/project@/");
 
         String projectName = processTempleteFiles(root, projectsPath);
-        String webType = System.getProperty("type");
 
-        if (!"none".equals(webType)) {
+        if (hasClient) {
             String webTypePath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/" + webType + "/");
             processTempleteFiles(root, webTypePath);
-        }
+        } 
+        
         cmdPath = System.getProperty("cmdPath");
         String pomXmlFilename = StringUtil.concatPath(cmdPath, "pom.xml");
         //dom4j格式化输出把换行等全部去掉，因此这里采用text输出
