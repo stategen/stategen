@@ -41,6 +41,10 @@ public class BaseProgen {
     final static Logger logger = LoggerFactory.getLogger(BaseProgen.class);
     String dir_templates_root = null;
     String cmdPath = null;
+    String dalgenPath = null;
+    String systemName = null;
+    String packageName = null;
+    String projectName = null;
 
     public BaseProgen(Object global) {
 
@@ -59,7 +63,7 @@ public class BaseProgen {
         root.put("tableNameSingularize", "true");
 
         //加载默认配置文件
-        String dalgenPath = System.getProperty("dalgenPath");
+        dalgenPath = System.getProperty("dalgenPath");
         String genFileName = FileHelpers.getCanonicalPath(dalgenPath + "/gen.xml");
 
         root.putAll(PropertiesHelpers.load(genFileName));
@@ -67,12 +71,12 @@ public class BaseProgen {
         //加载项目配置文件，如果相同，覆盖默认配置
         root.put("dalgenPath", dalgenPath);
 
-        String systemName = System.getProperty("systemName");
+        systemName = System.getProperty("systemName");
         if (StringUtil.isNotBlank(systemName)) {
             root.put("systemName", systemName);
         }
 
-        String packageName = System.getProperty("packageName");
+        packageName = System.getProperty("packageName");
         if (StringUtil.isNotBlank(packageName)) {
             root.put("packageName", packageName);
         }
@@ -119,19 +123,27 @@ public class BaseProgen {
         processTempleteFiles(root, systemPath);
     }
 
-    public void project() throws IOException, TemplateException, DocumentException {
+    private Properties loadRootAndProjectProperties() throws IOException {
         Properties root = getRootProperties();
-        root.put("projectName", System.getProperty("projectName"));
+        projectName = System.getProperty("projectName");
+        root.put("projectName", projectName);
 
         String configFile = System.getProperty("generatorConfigFile");
         Properties configs = PropertiesHelpers.load(configFile);
         root.putAll(configs);
         root.putAll(StringHelper.getDirValuesMap(root));
-        Boolean hasClient =false;
-        String webType = System.getProperty("type");
+        return root;
+    }
+
+    public void project() throws IOException, TemplateException, DocumentException {
+        Properties root = loadRootAndProjectProperties();
+        Boolean hasClient = false;
+
+        String webType = null;
+        webType = System.getProperty("type");
         if (StringUtil.isNotBlank(webType) && !"-e".equals(webType)) {
-            hasClient=true;
-        } 
+            hasClient = true;
+        }
         root.put("hasClient", hasClient);
 
         String projectsPath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/project@/");
@@ -141,18 +153,39 @@ public class BaseProgen {
         if (hasClient) {
             String webTypePath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/" + webType + "/");
             processTempleteFiles(root, webTypePath);
-        } 
+        }
+
         
-        cmdPath = System.getProperty("cmdPath");
         String pomXmlFilename = StringUtil.concatPath(cmdPath, "pom.xml");
         //dom4j格式化输出把换行等全部去掉，因此这里采用text输出
         String pomXmlText = XmlUtil.appendToNode(pomXmlFilename, "module", projectName);
-        if (StringUtil.isNotEmpty(pomXmlText)){
+        if (StringUtil.isNotEmpty(pomXmlText)) {
             IOHelpers.saveFile(new File(pomXmlFilename), pomXmlText, StringUtil.UTF_8);
             if (logger.isInfoEnabled()) {
                 logger.info(new StringBuffer("修改pom成功:").append(pomXmlFilename).toString());
             }
         }
+    }
+
+    public void api() throws IOException, TemplateException, DocumentException {
+        Properties root = loadRootAndProjectProperties();
+        String controllerProjectName ="7-"+systemName+"-web-"+projectName;
+        String controllerPath =cmdPath+"/"+controllerProjectName;
+        String controllerGenConfigPath=controllerPath+"/gen_config.xml";
+        Properties controllerGenConfig = PropertiesHelpers.load(controllerGenConfigPath);
+        String webType = controllerGenConfig.getProperty("webType");
+        if (StringUtil.isBlank(webType)){
+            if (logger.isInfoEnabled()) {
+                logger.info(new StringBuffer(controllerGenConfigPath).append("中的 webType:为空，不需要生成controller").toString());
+                return;
+            }
+        }
+        
+        String controllerTempPath= FileHelpers.getCanonicalPath(dir_templates_root + "/java/api@/"+webType+"/dal");
+        
+        processTempleteFiles(root, controllerTempPath);
+        
+        
     }
 
 }

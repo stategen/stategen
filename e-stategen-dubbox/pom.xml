@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.stategen.framework</groupId>
         <artifactId>stategen-parent</artifactId>
-        <version>2.0.2.stategen.RELEASE</version>
+        <version>2.0.3.stategen.RELEASE</version>
     </parent>
 
     <artifactId>aa-stategen-dubbox</artifactId>
