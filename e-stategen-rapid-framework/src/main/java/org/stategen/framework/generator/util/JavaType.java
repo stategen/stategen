@@ -16,44 +16,49 @@
  */
 package org.stategen.framework.generator.util;
 
-
 /**
  * The Enum JavaType.
  */
+/**
+ * 
+ * @author XiaZhengsheng
+ * @version $Id: JavaType.java, v 0.1 2019年3月15日 上午5:18:39 XiaZhengsheng Exp $
+ */
 public enum JavaType {
-   
-   /**
+
+    /**
     *  <pre>  * The is entry.  </pre>
     */
-   isEntry,
-   
-   /**
+    isEntry,
+
+    /**
     *  <pre>  * The is dao.  </pre>
     */
-   isDao,
-   
-   /**
+    isDao,
+
+    /**
     *  <pre>  * The is dao impl.  </pre>
     */
-   isDaoImpl,
-   
-   /**
+    isDaoImpl,
+
+    /**
     *  <pre>  * The is service.  </pre>
     */
-   isService,
-   
-   isServiceInternal,
-   /**
+    isService,
+
+    isServiceInternal,
+    /**
     *  <pre>  * The is service impl.  </pre>
     */
-   isServiceImpl,
-   /**
+    isServiceImpl,
+    /**
     *  <pre>  * The is controller.  </pre>
     */
-   
-   isControllerBase,
-   
-   isController;
-   
-   
+
+    isControllerBase,
+
+    isController,
+    isApi,
+    ;
+
 }

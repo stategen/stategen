@@ -169,7 +169,7 @@ public class FacadeGenerator {
         final String tempExt = "@temp";
         final String at = "@";
 
-        String targetFileName = TemplateHelpers.processString(root, relativeFileName);
+        String targetFileName = TemplateHelpers.processTemplitePath(root, relativeFileName);
         if (StringUtil.isEmpty(targetFileName)) {
             targetFileName = StringUtil.SLASH;
         }

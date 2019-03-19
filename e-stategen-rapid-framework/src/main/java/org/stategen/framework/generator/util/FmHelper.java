@@ -101,7 +101,11 @@ public class FmHelper {
 
         if (Consts.controller.equals(Setting.current_gen_name) && outFileName.endsWith(PropUtil.getControllerSuffixBaseJava())) {
             return JavaType.isControllerBase;
-        }        
+        }  
+        
+        if (Consts.api.equals(Setting.current_gen_name)){
+            return JavaType.isApi; 
+        }
 
         if (Consts.pojo.equals(Setting.current_gen_name)){
             return JavaType.isEntry;
@@ -172,7 +176,7 @@ public class FmHelper {
      * @throws ParseException 
      */
     public static void processTemplate(Template template, Map model, File outputFile,
-                                       String encoding,boolean isTable) throws IOException, TemplateException,
+                                       String encoding,boolean isTable,boolean hasAtNotRelace) throws IOException, TemplateException,
                                                        InstantiationException,
                                                        IllegalAccessException, ParseException {
 
@@ -189,8 +193,8 @@ public class FmHelper {
                 .toString(), e1);
             throw e1;
         }
-        boolean notReplacefile = "false".equals(GeneratorProperties.getProperties().get(
-            "replace_file"));
+        boolean notReplacefile = "false".equals(GeneratorProperties.getProperties().get("replace_file"));
+        notReplacefile =notReplacefile || hasAtNotRelace;
         boolean isFileExits=false;
         if (canonicalFile != null && canonicalFile.exists() && canonicalFile.isFile()) {
             isFileExits=true;
@@ -259,7 +263,8 @@ public class FmHelper {
                     }
                 }
             }
-        }
+        } 
+        
 
         try {
             //如果是java文件,将与原来的java文件对比，如果有旧的方法及属性将保留

@@ -82,7 +82,7 @@ public class TemplateHelpers {
         return conf;
     }
 
-    public static String processString(Map<Object, Object> root, String dest) throws IOException, TemplateException {
+    public static String processTemplitePath(Map<Object, Object> root, String dest) throws IOException, TemplateException {
         Configuration conf =new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
         final String stringTemplate = dest;
         dest=dest.replace(StringUtil.BACK_SLASH, StringUtil.SLASH);

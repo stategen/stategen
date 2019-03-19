@@ -422,22 +422,22 @@ public class Generator {
             String outputFilePath = templateFile;
 
             //TODO 删除兼容性的@testExpression
-            int testExpressionIndex = -1;
-            if ((testExpressionIndex = templateFile.indexOf('@')) != -1) {
-                outputFilePath = templateFile.substring(0, testExpressionIndex);
-                String testExpressionKey = templateFile.substring(testExpressionIndex + 1);
-                Object expressionValue = filePathModel.get(testExpressionKey);
-                if (expressionValue == null) {
-                    System.err.println("[not-generate] WARN: test expression is null by key:["
-                            + testExpressionKey + "] on template:[" + templateFile + "]");
-                    return null;
-                }
-                if (!"true".equals(String.valueOf(expressionValue))) {
-                    GLogger.println("[not-generate]\t test expression '@" + testExpressionKey
-                            + "' is false,template:" + templateFile);
-                    return null;
-                }
-            }
+//            int testExpressionIndex = -1;
+//            if ((testExpressionIndex = templateFile.indexOf('@')) != -1) {
+//                outputFilePath = templateFile.substring(0, testExpressionIndex);
+//                String testExpressionKey = templateFile.substring(testExpressionIndex + 1);
+//                Object expressionValue = filePathModel.get(testExpressionKey);
+//                if (expressionValue == null) {
+//                    System.err.println("[not-generate] WARN: test expression is null by key:["
+//                            + testExpressionKey + "] on template:[" + templateFile + "]");
+//                    return null;
+//                }
+//                if (!"true".equals(String.valueOf(expressionValue))) {
+//                    GLogger.println("[not-generate]\t test expression '@" + testExpressionKey
+//                            + "' is false,template:" + templateFile);
+//                    return null;
+//                }
+//            }
 
             for (String removeExtension : removeExtensions.split(",")) {
                 if (outputFilePath.endsWith(removeExtension)) {
@@ -461,17 +461,23 @@ public class Generator {
                     templateName).getTemplate(templateName);
         }
 
-        private void generateNewFileOrInsertIntoFile(String templateFile, String outputFilepath,
+        private void generateNewFileOrInsertIntoFile(String templateFile, String outputFilePath,
                                                      Map templateModel,boolean isTable) throws Exception {
             Template template = getFreeMarkerTemplate(templateFile);
             template.setOutputEncoding(gg.getOutputEncoding());
-
-            File absoluteOutputFilePath = FileHelper.parentMkdir(outputFilepath);
+            boolean hasAtNotRelace = false;
+            if (outputFilePath.contains("@")){
+                outputFilePath =outputFilePath.replaceAll("@", "");
+                hasAtNotRelace =true;
+            }
+            
+            File absoluteOutputFilePath = FileHelper.parentMkdir(outputFilePath);
+            
             if (absoluteOutputFilePath.exists()) {
                 StringWriter newFileContentCollector = new StringWriter();
                 if (GeneratorHelper.isFoundInsertLocation(gg, template, templateModel,
                         absoluteOutputFilePath, newFileContentCollector)) {
-                    GLogger.println("[insert]\t generate content into:" + outputFilepath);
+                    GLogger.println("[insert]\t generate content into:" + outputFilePath);
                     IOHelper.saveFile(absoluteOutputFilePath, newFileContentCollector.toString(),
                             gg.getOutputEncoding());
                     return;
@@ -480,17 +486,17 @@ public class Generator {
 
             if (absoluteOutputFilePath.exists() && !gg.isOverride()) {
                 GLogger.println("[not generate]\t by gg.isOverride()=false and outputFile exist:"
-                        + outputFilepath);
+                        + outputFilePath);
                 return;
             }
 
             if (absoluteOutputFilePath.exists()) {
-                GLogger.println("[override] template:\n" + templateFile + "\n===> " + outputFilepath);
+                GLogger.println("[override] template:\n" + templateFile + "\n===> " + outputFilePath);
             } else {
-                GLogger.println("[generate] template:\n" + templateFile + "\n===> " + outputFilepath);
+                GLogger.println("[generate] template:\n" + templateFile + "\n===> " + outputFilePath);
             }
             FmHelper.processTemplate(template, templateModel, absoluteOutputFilePath,
-                    gg.getOutputEncoding(),isTable);
+                    gg.getOutputEncoding(),isTable, hasAtNotRelace);
         }
     }
 

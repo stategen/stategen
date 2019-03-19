@@ -1,16 +1,16 @@
 /*
  * Copyright (C) 2018  niaoge<78493244@qq.com>
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -41,10 +41,6 @@ public class BaseProgen {
     final static Logger logger = LoggerFactory.getLogger(BaseProgen.class);
     String dir_templates_root = null;
     String cmdPath = null;
-    String dalgenPath = null;
-    String systemName = null;
-    String packageName = null;
-    String projectName = null;
 
     public BaseProgen(Object global) {
 
@@ -63,7 +59,7 @@ public class BaseProgen {
         root.put("tableNameSingularize", "true");
 
         //加载默认配置文件
-        dalgenPath = System.getProperty("dalgenPath");
+        String dalgenPath = System.getProperty("dalgenPath");
         String genFileName = FileHelpers.getCanonicalPath(dalgenPath + "/gen.xml");
 
         root.putAll(PropertiesHelpers.load(genFileName));
@@ -71,12 +67,12 @@ public class BaseProgen {
         //加载项目配置文件，如果相同，覆盖默认配置
         root.put("dalgenPath", dalgenPath);
 
-        systemName = System.getProperty("systemName");
+        String systemName = System.getProperty("systemName");
         if (StringUtil.isNotBlank(systemName)) {
             root.put("systemName", systemName);
         }
 
-        packageName = System.getProperty("packageName");
+        String packageName = System.getProperty("packageName");
         if (StringUtil.isNotBlank(packageName)) {
             root.put("packageName", packageName);
         }
@@ -101,7 +97,7 @@ public class BaseProgen {
             if (ftlFile.isFile()) {
                 FacadeGenerator.processTemplate(ftlFile, conf, root, cmdPath, relativeFileName);
             } else {
-                String targetFileName = TemplateHelpers.processString(root, relativeFileName);
+                String targetFileName = TemplateHelpers.processTemplitePath(root, relativeFileName);
                 String filePath = cmdPath + "/" + targetFileName + "/";
                 filePath = FileHelpers.replaceUnOverridePath(filePath);
                 FileHelpers.parentMkdir(filePath);
@@ -123,26 +119,18 @@ public class BaseProgen {
         processTempleteFiles(root, systemPath);
     }
 
-    private Properties loadRootAndProjectProperties() throws IOException {
+    public void project() throws IOException, TemplateException, DocumentException {
         Properties root = getRootProperties();
-        projectName = System.getProperty("projectName");
-        root.put("projectName", projectName);
+        root.put("projectName", System.getProperty("projectName"));
 
         String configFile = System.getProperty("generatorConfigFile");
         Properties configs = PropertiesHelpers.load(configFile);
         root.putAll(configs);
         root.putAll(StringHelper.getDirValuesMap(root));
-        return root;
-    }
-
-    public void project() throws IOException, TemplateException, DocumentException {
-        Properties root = loadRootAndProjectProperties();
-        Boolean hasClient = false;
-
-        String webType = null;
-        webType = System.getProperty("type");
+        Boolean hasClient =false;
+        String webType = System.getProperty("type");
         if (StringUtil.isNotBlank(webType) && !"-e".equals(webType)) {
-            hasClient = true;
+            hasClient=true;
         }
         root.put("hasClient", hasClient);
 
@@ -155,37 +143,16 @@ public class BaseProgen {
             processTempleteFiles(root, webTypePath);
         }
 
-        
+        cmdPath = System.getProperty("cmdPath");
         String pomXmlFilename = StringUtil.concatPath(cmdPath, "pom.xml");
         //dom4j格式化输出把换行等全部去掉，因此这里采用text输出
         String pomXmlText = XmlUtil.appendToNode(pomXmlFilename, "module", projectName);
-        if (StringUtil.isNotEmpty(pomXmlText)) {
+        if (StringUtil.isNotEmpty(pomXmlText)){
             IOHelpers.saveFile(new File(pomXmlFilename), pomXmlText, StringUtil.UTF_8);
             if (logger.isInfoEnabled()) {
                 logger.info(new StringBuffer("修改pom成功:").append(pomXmlFilename).toString());
             }
         }
-    }
-
-    public void api() throws IOException, TemplateException, DocumentException {
-        Properties root = loadRootAndProjectProperties();
-        String controllerProjectName ="7-"+systemName+"-web-"+projectName;
-        String controllerPath =cmdPath+"/"+controllerProjectName;
-        String controllerGenConfigPath=controllerPath+"/gen_config.xml";
-        Properties controllerGenConfig = PropertiesHelpers.load(controllerGenConfigPath);
-        String webType = controllerGenConfig.getProperty("webType");
-        if (StringUtil.isBlank(webType)){
-            if (logger.isInfoEnabled()) {
-                logger.info(new StringBuffer(controllerGenConfigPath).append("中的 webType:为空，不需要生成controller").toString());
-                return;
-            }
-        }
-        
-        String controllerTempPath= FileHelpers.getCanonicalPath(dir_templates_root + "/java/api@/"+webType+"/dal");
-        
-        processTempleteFiles(root, controllerTempPath);
-        
-        
     }
 
 }

@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.stategen.framework.generator.util.FileHelpers;
+import org.stategen.framework.generator.util.PropertiesHelpers;
 import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.Consts;
 import org.stategen.framework.util.Setting;
@@ -139,6 +141,39 @@ public class BaseTargets extends HashMap<String, Object> {
     public void table() throws Exception {
         Setting.current_gen_name=Consts.table;
         GenUtils.genByTable(Helper.createGeneratorFacade(tablesPath,dir_templates_root+"/java/table/init",dir_tmpl_share),genInputCmd);
+    }
+
+    public void api() throws  Exception {
+        File tablesDirFile=new File(tablesPath);
+        TableConfigSet tableConfigSet = new TableConfigXmlBuilder().parseFromXML(tablesDirFile,packageName,Helper.getTableConfigFiles(tablesDirFile));
+
+        GLogger.info("pojo_module_name<===========>:" +"api");
+        Properties pts = GeneratorProperties.getProperties();
+        String systemName = pts.getProperty("systemName");
+        String projectName = System.getProperty("projectName");
+        pts.put("projectName",projectName);
+
+
+        String controllerProjectName ="7-"+systemName+"-web-"+projectName;
+        String controllerPath =cmdPath+"/"+controllerProjectName;
+
+        String controllerGenConfigPath=controllerPath+"/gen_config.xml";
+        Properties controllerGenConfig = PropertiesHelpers.load(controllerGenConfigPath);
+        String webType = controllerGenConfig.getProperty("webType");
+        if (StringUtil.isBlank(webType)){
+                GLogger.info(new StringBuffer(controllerGenConfigPath).append("中的 webType:为空，不需要生成controller").toString());
+                return;
+        }
+
+        String controllerTempPath= FileHelpers.getCanonicalPath(dir_templates_root + "/java/api/"+webType+"/dal");
+        GLogger.info(controllerTempPath);
+
+        //api ，这个必须在最前面，并且执行
+        Setting.current_gen_name=Consts.api;
+        GLogger.info(controllerPath);
+        GLogger.info(controllerTempPath);
+        GLogger.info(dir_tmpl_share);
+        GenUtils.genByTableConfig(Helper.createGeneratorFacade(controllerPath,controllerTempPath,dir_tmpl_share),tableConfigSet,genInputCmd);
     }
 
     public void seq() throws Exception {
