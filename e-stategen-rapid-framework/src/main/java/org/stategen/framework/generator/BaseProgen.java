@@ -131,6 +131,9 @@ public class BaseProgen {
         String webType = System.getProperty("type");
         if (StringUtil.isNotBlank(webType) && !"-e".equals(webType)) {
             hasClient=true;
+            root.put("webType", webType);
+        } else {
+            root.put("webType", "");
         }
         root.put("hasClient", hasClient);
 
