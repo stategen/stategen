@@ -100,8 +100,9 @@ public class BaseGenFacadeProcessor {
     public void scanControllerAndGenFacade() throws InvalidPropertiesFormatException, IOException, TemplateException {
         
         Map<String, String> environments = System.getenv();
-        String dalgenHome = environments.get("DALGENX_HOME");
-        BusinessAssert.mustNotBlank(dalgenHome, "DALGENX_HOME 环境变量没有设!");
+        String DALGENX_HOME="DALGENX_HOME";
+        String dalgenHome = environments.get(DALGENX_HOME);
+        BusinessAssert.mustNotBlank(dalgenHome, DALGENX_HOME+" 环境变量没有设!");
         
             
         String genXml = dalgenHome + "/gen.xml";

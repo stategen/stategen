@@ -66,7 +66,7 @@ web端
       ├────cms-frontend  #这是一个 git submodue,在当前目录下执行 ./git_add_to_parent_as_sub.sh 也可手动添加至trade-git中,如需发布让服端单独开发 需置gitlab地址,只前端开始直接拉这个git地址就可以
 * 开发前，把dalgenx中2个xml模版配到eclipse或idea中，更于开发
   ```
-    ....\gen.schemas-1.0.dtd System Id http://sources.alipay.net/svn/dtd/table-config-1.0.dtd
+    ....\gen.schemas-1.0.dtd System Id https://github.com/stategen/dalgenx/blob/master/gen.schemas-1.0.dtd
     ... \dubbo.xsd Namespaces Name http://code.alibabatech.com/schema/dubbo/dubbo.xsd
   
 * 每执行一次生成一个项目如
@@ -79,7 +79,7 @@ web端
      ├── 7-trade-web-app
      ├────app-frontend
   ``` 
- * 把项目中的 中的 trade.sql（和系统名对应，系统叫什么，它就叫什么） 拖到mysql服务器上运行,并创建一个用户，stategen,密码也是 stategen，当然这些可以改为你现有的用户名和密码，  
+ * 把项目中的 中的 trade.sql（和系统名对应，系统叫什么，它就叫什么） 拖到mysql服务器上运行,并创建一个用户，DALGEN,密码也是 DALGEN，当然这些可以改为你现有的用户名和密码，  
     /opt/config/stategen/stategenX.xml指的运行环境中的配置，类似于sofa中antX.xml ,    
     gen_config.xml指的是程序员开发中dalgenX运行需要的配置
  * 将 trade下的 opt目录复制到java容器的根目录下,配一些sql,zookeeper,redis,dubbo 地址，开发服务器配开发地址，测试服务器配测试地址，生产配生产，系统运行需要读取这些信息，
