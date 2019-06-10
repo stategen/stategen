@@ -22,25 +22,25 @@ E.	nodejs8+yarn
 git clone https://github.com/dangdangdotcom/dubbox.git
 mvn install –Dmaven.test.skip=true -e
 ```
->1.	Install stategen/或者发布stategen至公司的私有仓库
+>2.	Install stategen/或者发布stategen至公司的私有仓库
 ```
 git clone --recursive https://github.com/stategen/stategen
 mvn install –Dmaven.test.skip=true -e
 ```
 (上面2步在有公司的私有maven仓库的情况下，只要发布一次就可以)
-#### 配置 dalgenX
+>3. 配置 dalgenX
 ```
 1.	git clone https://github.com/stategen/dalgenx.git
 ```
-2.	DALGENX_HOME
-3.	PATH
+2.	设置 DALGENX_HOME 环境变量为 dalgenx所在目录  
+3.	将 %DALGENX_HOME% 添加至 PATH 中  
 #### Ide中配置（eclipse\idea）
->1.	{path}\gen.schemas-1.0.dtd  
-name system Id  
-key:https://github.com/stategen/dalgenx/blob/master/gen.schemas-1.0.dtd
->2.	{path}\dubbo.xsd    
-name: namespaces Name   
-key:http://code.alibabatech.com/schema/dubbo/dubbo.xsd  
+>1.	location: {DALGENX_HOME}\gen.schemas-1.0.dtd  
+key type: system Id  
+key: https://github.com/stategen/dalgenx/blob/master/gen.schemas-1.0.dtd
+>2.	location: {DALGENX_HOME}\dubbo.xsd    
+key type: namespaces Name   
+key: http://code.alibabatech.com/schema/dubbo/dubbo.xsd  
 
 
 #### 用命令初始化系统及项目
