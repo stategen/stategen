@@ -44,23 +44,37 @@ key: http://code.alibabatech.com/schema/dubbo/dubbo.xsd
 
 
 #### 用命令初始化系统及项目
+>1.创建系统
+```
+gen.sh system com.mycompany.biz trade -e  
+```
+>>com.mycompany.biz 为包名   
+>>trade 系统名 /数据库名 dubbox 系统名    
 
->1.	gen.sh system com.mycompany.biz trade -e
->>A.	com.mycompany.biz 包名  
->>B.	trade 系统名 /数据库名 dubbox 系统名  
->2.	gen.sh project cms web –e
->>A.	cms 项目名称  
->>B.	web 以web(模版所在的文件夹生成前端) ，不要这个参数，即没有前端  
->3.	gen.sh project app app –e
->>A.	gen.sh project schedule –e  
->>B.	gitbash 中 运行  xxx-frontend/git_add_to_parent_as_sub.sh   
->>C.	sourceTree查看文件并提交  
->4.	环境及表
->>A.	创建trade数据库并运行 运行 trade.sql，,city hoppy region province user_hoppy topic*都是演示表  
->>B.	把opt复制到同盘根目录下  
->>C.	修改gen_config.xml中的数据库配置  
->>D.	先后在 gitbatsh中运行 tablebatch.sh 和 dalbatch.sh 批量生成缺失的文件  
->>E.	sourceTree查看文件并提交  
+>2.创建cms项目	
+```
+gen.sh project cms web –e  
+```
+>>cms 项目名称
+>>web 以web(模版所在的文件夹生成前端) ，不要这个参数，即没有前端
+	
+>3.创建app项目	
+```
+gen.sh project app app –e  
+```
+>4.创建shedule项目,不带前端	
+```
+gen.sh project schedule –e  
+```
+
+>5.gitbash 中 运行  xxx-frontend/git_add_to_parent_as_sub.sh   
+>6.sourceTree查看文件并提交  
+>7.	环境及表  
+	创建trade数据库并运行 运行 trade.sql，,city hoppy region province user_hoppy topic*都是演示表  
+	把opt复制到同盘根目录下  
+	修改gen_config.xml中的数据库配置  
+	先后在 gitbatsh中运行 tablebatch.sh 和 dalbatch.sh 批量生成缺失的文件  
+	sourceTree查看文件并提交  
 
 #### 一个典型Stategen 系统 结构图
 ![Image](https://github.com/stategen/docs/blob/master/stg-fm-bbr.png) 
