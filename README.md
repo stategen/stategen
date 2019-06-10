@@ -3,9 +3,9 @@ mobile端
 ![Image](https://github.com/stategen/docs/blob/master/stategenWebSnapShort1.png)
 web端
 
-###Stategen快速调试运行
+### Stategen快速调试运行
 
-####运行环境
+#### 运行环境
 >1.	服务端/windows
 >>A.	java 1.8  
 B.	maven 3  
@@ -16,7 +16,7 @@ E.	nodejs8+yarn
 >>A.	nodejs8+yarn
   stg工程是git管理的， 客户端是一个整个git项目管理的子项目
 
-####开发环境安装
+#### 开发环境安装
 >1.	Install dubbox/或者发布dubbox至公司的私有仓库  
 ```
 git clone https://github.com/dangdangdotcom/dubbox.git
@@ -28,13 +28,13 @@ git clone --recursive https://github.com/stategen/stategen
 mvn install –Dmaven.test.skip=true -e
 ```
 (上面2步在有公司的私有maven仓库的情况下，只要发布一次就可以)
-####配置 dalgenX
+#### 配置 dalgenX
 ```
 1.	git clone https://github.com/stategen/dalgenx.git
 ```
 2.	DALGENX_HOME
 3.	PATH
-####Ide中配置（eclipse\idea）
+#### Ide中配置（eclipse\idea）
 >1.	{path}\gen.schemas-1.0.dtd  
 name system Id  
 key:https://github.com/stategen/dalgenx/blob/master/gen.schemas-1.0.dtd
@@ -43,7 +43,7 @@ name: namespaces Name
 key:http://code.alibabatech.com/schema/dubbo/dubbo.xsd  
 
 
-####用命令初始化系统及项目
+#### 用命令初始化系统及项目
 
 >1.	gen.sh system com.mycompany.biz trade -e
 >>A.	com.mycompany.biz 包名  
@@ -62,11 +62,11 @@ key:http://code.alibabatech.com/schema/dubbo/dubbo.xsd
 >>D.	先后在 gitbatsh中运行 tablebatch.sh 和 dalbatch.sh 批量生成缺失的文件  
 >>E.	sourceTree查看文件并提交  
 
-####一个典型Stategen 系统 结构图
+#### 一个典型Stategen 系统 结构图
 ![Image](https://github.com/stategen/docs/blob/master/stg-fm-bbr.png) 
 
 
-####演示Teacher需求开发
+#### 演示Teacher需求开发
 ```
 DROP TABLE IF EXISTS `teacher`;
 CREATE TABLE `teacher` (
@@ -117,7 +117,7 @@ gen.sh api teacher cms|app
 >5.	eclipse打开查看是否有代码错误
 
 
-####生成前端代码，开发前端
+#### 生成前端代码，开发前端
 >1.	运行test/UmiFacadeProcessor.java   
 >2.	webstorm打开前端代码 ，配置webpack解读代码  
 >3.	yarn 下载前端依赖  
@@ -141,13 +141,13 @@ gen.sh api teacher cms|app
 >6.	yarn run dev  
 
 
-####打包 前后端
+#### 打包 前后端
 ```
 mvn package 
 ```
 
-###其它
-####开启 dubbox, 
+### 其它
+#### 开启 dubbox, 
 >反注释 dubbo-provider-spring.xml 中的
 ```
     <!-- <import resource="classpath*:context/dubbo-provider-auto-*.xml" /> -->
@@ -156,7 +156,7 @@ mvn package
 
 
           
-  ## 鸣谢
+### 鸣谢
    [react] https://github.com/facebook/react，   
    [ant-design] https://github.com/ant-design/ant-design   
    [dva] https://github.com/dvajs/dva   
