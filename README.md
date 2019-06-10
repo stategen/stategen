@@ -2,7 +2,7 @@
 mobile端
 ![Image](https://github.com/stategen/docs/blob/master/stategenWebSnapShort1.png)
 web端
-## [本说明视频演示请移步(https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)]
+## [本说明视频演示请移步](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)
 
 ### Stategen快速调试运行
 
