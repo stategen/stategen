@@ -3,7 +3,13 @@ mobile端
 ![Image](https://github.com/stategen/docs/blob/master/stategenWebSnapShort1.png)
 web端  
 本说明视频演示请移步[Stategen快速调试开发运行精简教程](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)  
-视频中的相关文档，请见 https://github.com/stategen/docs  
+视频中的相关文档，请见 https://github.com/stategen/docs    
+>stategen不是创造技术，而是对现有常用j2ee技术的框架级开放式整合，   
+>开放式意思是和别的技术做兼容，而不是使用stategen后限定使用其它技术  
+>无论使用哪种整合，必不可少的是基本代码的开发，通过dalgenX代码生成器可以减少前后端50-90%的工作量  
+>dalgenX不同于常用代码生成器，它是可迭代、开放式代码生成器，可以在现有代码的基础上随迭代再次生成,再不是覆盖生成，保留之前的开发成果  
+>**最好的沟通是避免沟通**,stategen可以避免大量后端、分布式、前后端文档编写，减少相互扯皮
+
 ### Stategen快速调试运行
 
 #### 运行环境
@@ -14,8 +20,8 @@ C.	mysql5.7
 D.	gitbash(安装git2.0 自带)  
 E.	nodejs8+yarn  
 >2.	单纯的前端/客户端开发  
->>A.	nodejs8+yarn
-  stg工程是git管理的， 因为前端是一个整个git项目的子项目
+>>A.	nodejs8+yarn  
+  因为stg工程是git管理的， 前端是一个整个git项目的子项目
 
 #### 开发环境安装
 >1.	Install dubbox/或者发布dubbox至公司的私有仓库  
@@ -28,7 +34,7 @@ mvn install –Dmaven.test.skip=true -e
 git clone --recursive https://github.com/stategen/stategen
 mvn install –Dmaven.test.skip=true -e
 ```
-(上面2步在有公司的私有maven仓库的情况下，只要发布一次就可以)
+(上面2步在有公司的私有maven仓库的情况下，只要发布一次就可以,并不是每台开发机上都要配置)
 >3. 配置 dalgenX
 ```
 git clone https://github.com/stategen/dalgenx.git
@@ -57,7 +63,7 @@ gen.sh system com.mycompany.biz trade -e
 gen.sh project cms web –e  
 ```
 >>cms 项目名称
->>web 以web(模版所在的文件夹生成前端) ，不要这个参数，即没有前端
+>>web 以web(模版所在的文件夹生成前端) ，目前提供2个模版web|app，不要这个参数，即没有前端
 	
 >3.创建app项目	
 ```
