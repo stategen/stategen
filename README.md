@@ -1,4 +1,4 @@
-##最好的沟通是避免沟通
+##最好的沟通是避免沟通  
 ![Image](https://github.com/stategen/docs/blob/master/stategenAppSnapshort.png)  
 mobile端  
 ![Image](https://github.com/stategen/docs/blob/master/stategenWebSnapShort1.png)  
