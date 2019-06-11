@@ -33,8 +33,8 @@ mvn install –Dmaven.test.skip=true -e
 ```
 git clone https://github.com/stategen/dalgenx.git
 ```
->>2.	设置 DALGENX_HOME 环境变量为 dalgenx所在目录  
->>3.	将 %DALGENX_HOME% 添加至 PATH 中  
+>>设置 DALGENX_HOME 环境变量为 dalgenx所在目录  
+>>将 %DALGENX_HOME% 添加至 PATH 中  
 #### Ide中配置（eclipse\idea）
 >1.	location: {DALGENX_HOME}\gen.schemas-1.0.dtd  
 key type: system Id  
@@ -44,7 +44,7 @@ key type: namespaces Name
 key: http://code.alibabatech.com/schema/dubbo/dubbo.xsd  
 
 
-#### 用命令初始化系统及项目
+#### 用命令初始化系统及项目/范例
 >1.创建系统
 ```
 gen.sh system com.mycompany.biz trade -e  
@@ -68,14 +68,14 @@ gen.sh project app app –e
 gen.sh project schedule –e  
 ```
 
->5.gitbash 中 运行  xxx-frontend/git_add_to_parent_as_sub.sh   
+>5.gitbash 中 运行  xxx-frontend目录下git_add_to_parent_as_sub.sh，变为git项目和子项目   
 >6.sourceTree查看文件并提交  
 >7.	环境及表  
-	创建trade数据库并运行 运行 trade.sql，,city hoppy region province user_hoppy topic*都是演示表  
-	把opt复制到同盘根目录下  
-	修改gen_config.xml中的数据库配置  
-	先后在 gitbatsh中运行 tablebatch.sh 和 dalbatch.sh 批量生成缺失的文件  
-	sourceTree查看文件并提交  
+>> 创建trade数据库并运行 运行 trade.sql，,city hoppy region province user_hoppy topic*都是演示表  
+>>把opt复制到同盘根目录下  
+>>修改gen_config.xml中的数据库配置  
+>>先后在 gitbatsh中运行 tablebatch.sh 和 dalbatch.sh 批量生成缺失的文件  
+>8.sourceTree查看文件并提交  
 
 #### 一个典型Stategen 系统 结构图
 ![Image](https://github.com/stategen/docs/blob/master/stg-fm-bbr.png) 
