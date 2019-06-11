@@ -13,9 +13,9 @@ B.	maven 3
 C.	mysql5.7  
 D.	gitbash(安装git2.0 自带)  
 E.	nodejs8+yarn  
->2.	单纯的客户端开发  
+>2.	单纯的前端/客户端开发  
 >>A.	nodejs8+yarn
-  stg工程是git管理的， 客户端是一个整个git项目管理的子项目
+  stg工程是git管理的， 因为前端是一个整个git项目的子项目
 
 #### 开发环境安装
 >1.	Install dubbox/或者发布dubbox至公司的私有仓库  
@@ -31,10 +31,10 @@ mvn install –Dmaven.test.skip=true -e
 (上面2步在有公司的私有maven仓库的情况下，只要发布一次就可以)
 >3. 配置 dalgenX
 ```
-1.	git clone https://github.com/stategen/dalgenx.git
+git clone https://github.com/stategen/dalgenx.git
 ```
-2.	设置 DALGENX_HOME 环境变量为 dalgenx所在目录  
-3.	将 %DALGENX_HOME% 添加至 PATH 中  
+>>2.	设置 DALGENX_HOME 环境变量为 dalgenx所在目录  
+>>3.	将 %DALGENX_HOME% 添加至 PATH 中  
 #### Ide中配置（eclipse\idea）
 >1.	location: {DALGENX_HOME}\gen.schemas-1.0.dtd  
 key type: system Id  
