@@ -3,6 +3,7 @@
 mobile端  
 ![Image](https://github.com/stategen/docs/blob/master/stategenWebSnapShort1.png)  
 web端  
+**上面2张图，按通常的开发量需要上千行代码，现在只需要开发10多行代码**  
 本说明视频演示请移步[Stategen快速调试开发运行精简教程](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)  
 视频中的相关文档，请见 https://github.com/stategen/docs    
 >**stategen不是创造技术，而是对现有常用j2ee技术的框架级开放式整合**   
