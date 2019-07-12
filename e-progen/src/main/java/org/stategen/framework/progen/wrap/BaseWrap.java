@@ -106,4 +106,8 @@ public abstract class BaseWrap {
         return false;
     }
     
+    public Boolean getIsObjectClass(){
+        return this.clazz==Object.class;
+    }
+    
 }

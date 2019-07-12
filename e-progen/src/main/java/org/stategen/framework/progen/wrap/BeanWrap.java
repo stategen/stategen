@@ -56,8 +56,13 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
 
     private Map<String, FieldWrap> fieldMap = new LinkedHashMap<String, FieldWrap>();
     private Map<String, FieldWrap> allFieldMap = new LinkedHashMap<String, FieldWrap>();
+    private Map<String, FieldWrap> superFieldMap = new LinkedHashMap<String, FieldWrap>();
 
     private Boolean genBean;
+
+    private Boolean isGeneric;
+    
+    private FieldWrap generic;
 
     @Override
     public String getImportPath() {
@@ -74,7 +79,7 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
         if (Modifier.isTransient(modifiers)) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -99,9 +104,8 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
         }
 
         getterNameMethodsSorted.putAll(getterNameMethods);
-        Map<String, Parameter> fieldNameParameterMap =CollectionUtil.newEmptyMap();
+        Map<String, Parameter> fieldNameParameterMap = CollectionUtil.newEmptyMap();
 
-        
         for (Entry<String, Method> entry : getterNameMethodsSorted.entrySet()) {
 
             Method getterMethod = entry.getValue();
@@ -117,9 +121,9 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
 
             Class<?> returnType = getterMethod.getReturnType();
             Type genericReturnType = getterMethod.getGenericReturnType();
-            NamedContext context =new NamedContext(fieldNameParameterMap, fieldNameFieldMap, getterNameMethodsSorted);
-            FieldWrap fieldWrap =new FieldWrap(context);
-            GenContext.wrapContainer.genMemberWrap(null, returnType, genericReturnType, fieldWrap , getterMethod);
+            NamedContext context = new NamedContext(fieldNameParameterMap, fieldNameFieldMap, getterNameMethodsSorted);
+            FieldWrap fieldWrap = new FieldWrap(context);
+            GenContext.wrapContainer.genMemberWrap(null, returnType, genericReturnType, fieldWrap, getterMethod);
             fieldWrap.setOwner(this);
 
             fieldWrap.setMember(getterMethod);
@@ -145,6 +149,36 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
         return null;
     }
 
+    public FieldWrap getGeneric() {
+        if (this.getClazz().getSimpleName().equals("AntdPageList")){
+            if (logger.isInfoEnabled()) {
+                logger.info(new StringBuffer("输出info信息: allFieldMap:").append(allFieldMap).toString());
+            }
+        }
+        if (isGeneric == null) {
+            if (CollectionUtil.isNotEmpty(genericFieldMap)) {
+                for (FieldWrap fieldWrap : genericFieldMap.values()) {
+                    if (fieldWrap.getGeneric()!=null && fieldWrap.getGeneric().getIsObjectClass()) {
+                        isGeneric = true;
+                        this.generic =fieldWrap;
+                        break;
+                    }
+                }
+            }
+            if (isGeneric == null) {
+                isGeneric = false;
+            }
+        }
+        return this.generic;
+    }
+    
+    public Boolean isGeneric() {
+        getGeneric();
+        return isGeneric;
+    }
+    
+    
+
     private void addGenericFieldWrap(String genericName, FieldWrap fieldWrap) {
         if (this.genericFieldMap == null) {
             this.genericFieldMap = new LinkedHashMap<String, FieldWrap>();
@@ -155,7 +189,7 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
     public Map<String, FieldWrap> getFieldWrapMap() {
         return fieldMap;
     }
-    
+
     public Map<String, FieldWrap> getAllFieldMap() {
         return allFieldMap;
     }
@@ -164,7 +198,7 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
         this.fieldMap.put(fieldName, fieldWrap);
         this.allFieldMap.put(fieldName, fieldWrap);
     }
-    
+
     public FieldWrap get(String fieldName) {
         return allFieldMap.get(fieldName);
     }
@@ -177,6 +211,10 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
         return new ArrayList<FieldWrap>(allFieldMap.values());
     }
 
+    public List<FieldWrap> getSuperFields() {
+        return new ArrayList<FieldWrap>(superFieldMap.values());
+    }
+
     public void setParentBean(BeanWrap parentBean) {
         this.parentBean = parentBean;
         if (parentBean != null) {
@@ -186,7 +224,9 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
             Map<String, FieldWrap> parentFieldWrapMap = parentBean.getFieldWrapMap();
             Set<String> parentFieldNams = parentFieldWrapMap.keySet();
             for (String parentFieldName : parentFieldNams) {
-                fieldMap.remove(parentFieldName);
+                FieldWrap parentField = fieldMap.remove(parentFieldName);
+                parentField.setIsSuper(true);
+                superFieldMap.put(parentFieldName, parentField);
             }
         }
     }
@@ -206,12 +246,12 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
     public Boolean getGenBean() {
         if (genBean == null) {
             //只在标注genForm(false)才不会生成，否则都生成
-            genBean =AnnotationUtil.getAnnotationValueFormMembers(GenBean.class, GenBean::value,true, getClazz());
+            genBean = AnnotationUtil.getAnnotationValueFormMembers(GenBean.class, GenBean::value, true, getClazz());
         }
         return genBean;
     }
-    
-    public Boolean getIsBean(){
+
+    public Boolean getIsBean() {
         return true;
     }
 }

@@ -446,8 +446,13 @@ public abstract class NamedWrap extends MemberWrap {
         }
         return referConfig;
     }
-
+    
+    @Override
     public Boolean getIsSimple() {
+        if (this.getGeneric()!=null){
+            return this.getGeneric().getIsSimple();
+        }
+        
         if (isSimple == null) {
             SimpleWrap simpleWrap = GenContext.wrapContainer.checkAndGetFromSimple(this.getClazz());
             isSimple = simpleWrap != null;
@@ -472,4 +477,13 @@ public abstract class NamedWrap extends MemberWrap {
         }
         return noJson;
     }
+    
+    @Override
+    public String getType() {
+        if (this.getGeneric()!=null){
+            return this.getGeneric().getType();
+        }
+        return super.getType();
+    }
+    
 }

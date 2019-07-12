@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
@@ -33,5 +34,9 @@ public class JSONUtil {
         String jsonString =readAll(reader);
         JSONObject dataJson =JSONObject.parseObject(jsonString);
         return dataJson;
+    }
+    
+    public static String toJSONString(Object object){
+        return JSON.toJSONString(object);
     }
 }

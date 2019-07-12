@@ -142,7 +142,7 @@ public class BaseProgen {
         String projectName = processTempleteFiles(root, projectsPath);
 
         if (hasClient) {
-            String webTypePath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/" + webType + "/");
+            String webTypePath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/frontend/" + webType + "/");
             processTempleteFiles(root, webTypePath);
         }
 

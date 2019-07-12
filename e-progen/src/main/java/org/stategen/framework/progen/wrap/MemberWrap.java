@@ -89,6 +89,10 @@ public abstract class MemberWrap extends BaseWrap {
     public BaseWrap getOrgWrap() {
         return orgWrap;
     }
+    
+    public BaseWrap getOrg(){
+        return getOrgWrap();
+    }
 
     private void addBeanOrEnumWrapClazzToApi() {
         if (apiWrap != null && orgWrap != null) {

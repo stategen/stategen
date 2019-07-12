@@ -25,17 +25,20 @@ import org.stategen.framework.progen.NamedContext;
  * The Class FieldWrap.
  */
 public class FieldWrap extends NamedWrap {
-    public FieldWrap(NamedContext context) {
-        super(context);
-    }
-
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FieldWrap.class);
 
     /***一些annotations从field上找，其它从 getMethod上长*/
     private Field field;
 
     AnnotatedElement[] members;
-    
+
+    /**是否是父类中的字段*/
+    private Boolean isSuper = false;
+
+    public FieldWrap(NamedContext context) {
+        super(context);
+    }
+
     @Override
     public AnnotatedElement[] getMembers() {
         if (members == null) {
@@ -48,10 +51,17 @@ public class FieldWrap extends NamedWrap {
         }
         return members;
     }
-    
+
     public void setField(Field field) {
         this.field = field;
     }
-    
+
+    public Boolean getIsSuper() {
+        return isSuper;
+    }
+
+    public void setIsSuper(Boolean isSuper) {
+        this.isSuper = isSuper;
+    }
 
 }
