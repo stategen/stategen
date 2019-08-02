@@ -18,6 +18,7 @@ package org.stategen.framework.progen;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,9 +46,11 @@ public class GenContext {
     public static Set<Class<?>> staticUtils = new HashSet<Class<?>>();
     public static List<String> tempDirs;
     public static String outDir;
-    public static String outConfigDir;
+//    public static String outConfigDir;
     public static ApiWrap appWrap;
     public static Properties Properties =new Properties();
+    public static Map<String, Object> customVirables = new HashMap<String, Object>();
+    
 
     private GenContext() {
         super();
@@ -116,6 +119,10 @@ public class GenContext {
 
     public static void put(PathType pathType, String importPath) {
         pathMap.put(pathType, importPath);
+    }
+    
+    public static void putCustomVirable(String key,Object value){
+        customVirables.put(key, value);
     }
 
 

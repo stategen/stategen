@@ -88,13 +88,15 @@ public class FacadeGenerator {
         List<String> tempDirs = GenContext.tempDirs;
 
         String outDir = GenContext.outDir;
-        String outConfigDir = GenContext.outConfigDir;
-        root.put("configDir", outConfigDir);
 
         String tempRootPath = GenContext.tempRootPath;
         String projectRootPath = GenContext.projectRootPath;
 
         Map<String, List<CanbeImportWrap>> canbeImportWrapMap = new HashMap<String, List<CanbeImportWrap>>();
+
+        //统计生成的Files
+        List<String> outWholeFiles =new ArrayList<String>();
+        String outPath = FileHelpers.getFile( StringUtil.joinSLash(projectRootPath, outDir)).getAbsolutePath().replace("\\", "/");
 
         for (Entry<PathType, String> entry : GenContext.pathMap.entrySet()) {
             PathType pathType = entry.getKey();
@@ -104,6 +106,7 @@ public class FacadeGenerator {
 
             String reletiveOutWholePath = StringUtil.joinSLash(projectRootPath, outDir, importPath);
             String outWholePath = FileHelpers.getFile(reletiveOutWholePath).getAbsolutePath();
+            
             FreeMarkerTempFileContext beanFltContext = new FreeMarkerTempFileContext(tempWholePaths);
             Configuration conf = beanFltContext.getConf();
             conf.setDefaultEncoding(StringUtil.UTF_8);
@@ -120,15 +123,24 @@ public class FacadeGenerator {
                     File tempPathFile = ftlFile.getTempPathFile();
                     File tempFile = ftlFile.getTempFile();
                     String relativeFileName = FileHelpers.getRelativeFileName(tempPathFile, tempFile);
-                    processTemplate(tempFile, conf, root, outWholePath, relativeFileName);
+                    processTemplate(tempFile, conf, root, outWholePath, relativeFileName,outWholeFiles);
                 }
                 root.remove(wrapName);
             }
         }
+        
+        //以下处理set文件夹模版循环问题
+        //获取 生成的代码文件
+        List<String> interFiles =new ArrayList<String>();
+        List<String> pageFiles =new ArrayList<String>();
+        filterOutFiles(outWholeFiles, outPath, interFiles, pageFiles);
+        root.put("interFiles", interFiles);
+        root.put("pageFiles", pageFiles);
+        
         List<String> tempWholePaths = getTempPaths(tempDirs, tempRootPath, "", "set");
         FreeMarkerTempFileContext beanFltContext = new FreeMarkerTempFileContext(tempWholePaths);
 
-        String reletiveOutWholePath = StringUtil.joinSLash(projectRootPath, outDir, outConfigDir);
+        String reletiveOutWholePath = StringUtil.joinSLash(projectRootPath, outDir);
         String outWholePath = FileHelpers.getFile(reletiveOutWholePath).getAbsolutePath();
 
         Configuration conf = beanFltContext.getConf();
@@ -137,12 +149,25 @@ public class FacadeGenerator {
 
         conf.setAutoIncludes(availableAutoInclude);
         root.putAll(canbeImportWrapMap);
-
+        
+        List<String> setOutFiles =new ArrayList<String>();
         for (FtlFile ftlFile : beanFltContext.getFtlFiles()) {
             File tempPathFile = ftlFile.getTempPathFile();
             File tempFile = ftlFile.getTempFile();
             String relativeFileName = FileHelpers.getRelativeFileName(tempPathFile, tempFile);
-            processTemplate(tempFile, conf, root, outWholePath, relativeFileName);
+            processTemplate(tempFile, conf, root, outWholePath, relativeFileName,setOutFiles);
+        }
+    }
+
+    private void filterOutFiles(List<String> outWholeFiles, String outPath, List<String> interFiles, List<String> pageFiles) {
+        for (String wholeFile : outWholeFiles) {
+            if (wholeFile.startsWith(outPath)){
+                String outFile =wholeFile.substring(outPath.length());
+                interFiles.add(outFile);
+            } else {
+                String relativePath = FileHelpers.getRelativePath(outPath, wholeFile);
+                pageFiles.add(relativePath);
+            }
         }
     }
 
@@ -163,7 +188,7 @@ public class FacadeGenerator {
     }
 
     public static void processTemplate(File tempFile, Configuration conf, Properties root, String outputDir,
-                                       String relativeFileName) throws TemplateException, IOException {
+                                       String relativeFileName, List<String> outFiles) throws TemplateException, IOException {
 
         final String blobExt = "@blob";
         final String tempExt = "@temp";
@@ -198,12 +223,11 @@ public class FacadeGenerator {
         if (FileHelpers.isUnOverridePath(tempFile.getParent())) {
             doOverride = false;
         }
-
-        String fullTargetFileName = FileHelpers.getCanonicalPath(outputDir, targetFileName);
-
-        fullTargetFileName = FileHelpers.replaceUnOverridePath(fullTargetFileName);
         
+        String fullTargetFileName = FileHelpers.getCanonicalPath(outputDir, targetFileName);
+        fullTargetFileName = FileHelpers.replaceUnOverridePath(fullTargetFileName);
         File fullTargetFile = FileHelpers.parentMkdir(fullTargetFileName);
+        
         boolean isDirectory = fullTargetFile.isDirectory();
         if (!isDirectory && (isBlob || FileHelpers.isBinaryFile(fullTargetFileName))) {
             if (fullTargetFile.exists()) {
@@ -223,6 +247,7 @@ public class FacadeGenerator {
             if (!isDirectory) {
                 Template template = conf.getTemplate(relativeFileName, Locale.getDefault(), StringUtil.UTF_8);
                 processFileString(root, writer, template, targetFileName);
+                outFiles.add(fullTargetFileName);
             }
         }
 

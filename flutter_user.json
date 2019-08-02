@@ -1,0 +1,110 @@
+{
+  "province": {
+    "provinceId": "shs_2",
+    "name": "上海市",
+    "pycode": "shs",
+    "deleteFlag": "0",
+    "value": "shs_2",
+    "title": "上海市"
+  },
+  "city": {
+    "cityId": "021_201800_jd_12",
+    "name": "嘉定",
+    "pycode": "jd",
+    "provinceId": "shs_2",
+    "postcode": "201800",
+    "areacode": "021",
+    "deleteFlag": "0",
+    "value": "021_201800_jd_12",
+    "title": "嘉定"
+  },
+  "cascaderPostAddresss": [
+    {
+      "isLeaf": false,
+      "regionId": "1",
+      "parentRegionId": "0",
+      "regionType": "STATES",
+      "name": "亚洲",
+      "nameEn": "Asia",
+      "namePinyin": "yazhou",
+      "value": "1",
+      "title": "亚洲"
+    },
+    {
+      "isLeaf": false,
+      "regionId": "10",
+      "parentRegionId": "1",
+      "regionType": "COUNTRY",
+      "name": "阿富汗",
+      "nameEn": "Afghanistan",
+      "namePinyin": "afuhan",
+      "code": "AFG",
+      "value": "10",
+      "title": "阿富汗"
+    },
+    {
+      "isLeaf": true,
+      "regionId": "436",
+      "parentRegionId": "10",
+      "regionType": "PROVINCE",
+      "name": "喀布尔",
+      "nameEn": "Kabul",
+      "namePinyin": "kabuer",
+      "code": "KBL",
+      "value": "436",
+      "title": "喀布尔"
+    }
+  ],
+  "hoppys": [
+    {
+      "hoppyId": "2",
+      "hoppyName": "睡觉觉",
+      "value": "2",
+      "title": "睡觉觉"
+    },
+    {
+      "hoppyId": "1",
+      "hoppyName": "吃饭饭",
+      "value": "1",
+      "title": "吃饭饭"
+    }
+  ],
+  "hoppyIds": [
+    "2",
+    "1"
+  ],
+  "avatarImg": {
+    "fileId": "rc-upload-1545781054997-27",
+    "url": "https://avatars0.githubusercontent.com/u/12741755?v=4&s=120",
+    "size": "1248968",
+    "name": "20150524134618_K3QAe.jpeg",
+    "type": "image/jpeg",
+    "createTime": "1545781856035",
+    "updateTime": "1545781856035",
+    "deleteFlag": "0",
+    "uid": "rc-upload-1545781054997-27"
+  },
+  "userId": "2018111306343099304690546571",
+  "username": "admin",
+  "roleType": "ADMIN",
+  "name": "niaoge",
+  "nickName": "niaoge",
+  "avatarImgId": "rc-upload-1545781054997-27",
+  "email": "78493244@qq.com",
+  "birthdayDate": "1545408000000",
+  "workTime": "-19187000",
+  "provinceId": "shs_2",
+  "cityId": "021_201800_jd_12",
+  "status": "PENDING",
+  "grade": "3",
+  "sex": false,
+  "postAddressId": "436",
+  "createTime": "1542584761000",
+  "updateTime": "1547024641354",
+  "deleteFlag": "0",
+  "cascaderPostAddressIds": [
+    "1",
+    "10",
+    "436"
+  ]
+}

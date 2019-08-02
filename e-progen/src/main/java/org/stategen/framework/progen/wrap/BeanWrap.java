@@ -61,7 +61,7 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
     private Boolean genBean;
 
     private Boolean isGeneric;
-    
+
     private FieldWrap generic;
 
     @Override
@@ -150,17 +150,18 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
     }
 
     public FieldWrap getGeneric() {
-        if (this.getClazz().getSimpleName().equals("AntdPageList")){
-            if (logger.isInfoEnabled()) {
-                logger.info(new StringBuffer("输出info信息: allFieldMap:").append(allFieldMap).toString());
-            }
-        }
         if (isGeneric == null) {
             if (CollectionUtil.isNotEmpty(genericFieldMap)) {
                 for (FieldWrap fieldWrap : genericFieldMap.values()) {
-                    if (fieldWrap.getGeneric()!=null && fieldWrap.getGeneric().getIsObjectClass()) {
+                    BaseWrap generic = null;
+                    if (fieldWrap.getIsGeneric()) {
+                        generic = fieldWrap;
+                    } else {
+                        generic = fieldWrap.getGeneric();
+                    }
+                    if (generic != null && generic.getIsObjectClass()) {
                         isGeneric = true;
-                        this.generic =fieldWrap;
+                        this.generic = fieldWrap;
                         break;
                     }
                 }
@@ -171,13 +172,11 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
         }
         return this.generic;
     }
-    
+
     public Boolean isGeneric() {
         getGeneric();
         return isGeneric;
     }
-    
-    
 
     private void addGenericFieldWrap(String genericName, FieldWrap fieldWrap) {
         if (this.genericFieldMap == null) {

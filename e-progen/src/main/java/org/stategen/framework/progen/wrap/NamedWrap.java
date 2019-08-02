@@ -78,6 +78,8 @@ public abstract class NamedWrap extends MemberWrap {
     private ReferConfigWrap referConfig;
 
     private Boolean isSimple;
+    
+    private Boolean isObjectClass;
 
     private String changeBy;
 
@@ -458,6 +460,21 @@ public abstract class NamedWrap extends MemberWrap {
             isSimple = simpleWrap != null;
         }
         return isSimple;
+    }
+    
+    @Override
+    public Boolean getIsObjectClass() {
+        if (this.getGeneric()!=null){
+            return this.getGeneric().getIsObjectClass();
+        }
+        
+        if (isObjectClass == null) {
+            SimpleWrap simpleWrap = GenContext.wrapContainer.checkAndGetFromSimple(this.getClazz());
+            isObjectClass = simpleWrap.getIsObjectClass();
+        } else {
+            isObjectClass =false;
+        }
+        return isObjectClass;
     }
 
     public Boolean getNoJson() {

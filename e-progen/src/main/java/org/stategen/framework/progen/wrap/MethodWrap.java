@@ -108,6 +108,7 @@ public class MethodWrap {
     }
 
     private void genState() {
+        //todo 如查泛型没定义，应该报一个异常
         Class<?> returnClz = returnWrap.getIsGeneric() ? returnWrap.getGeneric().getClazz() : returnWrap.getClazz();
         boolean stateFieldAdded = false;
 
@@ -324,6 +325,10 @@ public class MethodWrap {
 
     public String getUrl() {
         return url;
+    }
+    
+    public String getPath(){
+        return getUrl();
     }
 
     public List<UrlPart> getUrlParts() {

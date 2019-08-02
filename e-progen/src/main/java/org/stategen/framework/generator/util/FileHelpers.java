@@ -202,6 +202,59 @@ public class FileHelpers {
 
         return absolutePath.substring(baseDir.getAbsolutePath().length() + 1);
     }
+    
+    
+    /**
+     * https://blog.csdn.net/u013309993/article/details/84099290
+     * 获得targetPath相对于sourcePath的相对路径
+     * @param sourcePath    : 原文件路径
+     * @param targetPath    : 目标文件路径
+     * @return
+     */
+    public static String getRelativePath(String sourcePath, String targetPath) {
+        StringBuffer pathSB = new StringBuffer();
+            
+        if (targetPath.indexOf(sourcePath) == 0){
+            pathSB.append(targetPath.replace(sourcePath, ""));
+        }else {
+            String[] sourcePathArray = sourcePath.split("/");
+            String[] targetPathArray = targetPath.split("/");
+            if (targetPathArray.length >= sourcePathArray.length){
+                for (int i = 0; i < targetPathArray.length; i++){
+                    if (sourcePathArray.length > i && targetPathArray[i].equals(sourcePathArray[i])){
+                        continue;
+                    }else {
+                        for (int j = i; j < sourcePathArray.length; j++){
+                                pathSB.append("../");
+                        }
+                        for (;i < targetPathArray.length; i++){
+                            pathSB.append(targetPathArray[i] + "/");
+                        }
+                        break;
+                    }
+                }
+            }else {
+                for (int i = 0; i < sourcePathArray.length; i++){
+                    if (targetPathArray.length > i && targetPathArray[i].equals(sourcePathArray[i])){
+                        continue;
+                    }else {
+                        for (int j = i; j < sourcePathArray.length; j++){
+                            pathSB.append("../");
+                        }
+                        break;
+                    }
+                }
+            }
+                
+        }
+        
+        String result =pathSB.toString();
+        if (!targetPath.endsWith("/") && result.endsWith("/")){
+            result =result.substring(0,result.length()-1);
+        }
+        
+        return result;
+    }
 
     public static File parentMkdir(String fileName) {
         File result = new File(fileName);
@@ -299,7 +352,7 @@ public class FileHelpers {
             if (newText.equals(fileText)) {
                 return true;
             } else {
-               System.out.println(newText.length()+"   "+fileText.length());  
+               //System.out.println(newText.length()+"   "+fileText.length());
             }
         }
         return false;

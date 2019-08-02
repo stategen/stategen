@@ -93,6 +93,10 @@ public class BaseGenFacadeProcessor {
         GenContext.tempRootPath=dir_templates_root;
         GenContext.projectRootPath=projectRootPath;
         
+        if (CollectionUtil.isNotEmpty(GenContext.customVirables)){
+            root.putAll(GenContext.customVirables); 
+        }
+        
         List<Class<?>> classes = ClassHelpers.getClasses(pkgName);
         if (CollectionUtil.isNotEmpty(GenContext.staticUtils)){
             for (Class<?> utilClazz : GenContext.staticUtils) {
