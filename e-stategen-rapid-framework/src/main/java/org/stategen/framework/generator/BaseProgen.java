@@ -18,6 +18,7 @@ package org.stategen.framework.generator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -92,10 +93,11 @@ public class BaseProgen {
         List<File> allFiles = FileHelpers.searchAllNotIgnoreFile(tempFolderFile);
         String projectName = null;
         int folderCount = 0;
+        List<String> outFiles =new ArrayList<String>();
         for (File ftlFile : allFiles) {
             String relativeFileName = FileHelpers.getRelativeFileName(tempFolderFile, ftlFile);
             if (ftlFile.isFile()) {
-                FacadeGenerator.processTemplate(ftlFile, conf, root, cmdPath, relativeFileName);
+                FacadeGenerator.processTemplate(ftlFile, conf, root, cmdPath, relativeFileName, outFiles);
             } else {
                 String targetFileName = TemplateHelpers.processTemplitePath(root, relativeFileName);
                 String filePath = cmdPath + "/" + targetFileName + "/";
