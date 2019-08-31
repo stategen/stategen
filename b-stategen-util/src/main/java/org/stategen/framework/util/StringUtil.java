@@ -619,8 +619,9 @@ public class StringUtil {
         if (StringUtil.isEmpty(dest) || StringUtil.isEmpty(indexStr)) {
             return dest;
         }
+        
         if (dest.endsWith(indexStr)) {
-            dest = dest.substring(0, dest.length() - indexStr.length());
+            dest = dest.substring(0, dest.length()- indexStr.length());
         }
         return dest;
     }
@@ -632,7 +633,7 @@ public class StringUtil {
      * @param indexStr
      * @return
      */
-    public static String trimLeftTo(String dest, String indexStr) {
+    public static String trimLeftFormRightTo(String dest, String indexStr) {
         if (StringUtil.isEmpty(dest) || StringUtil.isEmpty(indexStr)) {
             return dest;
         }

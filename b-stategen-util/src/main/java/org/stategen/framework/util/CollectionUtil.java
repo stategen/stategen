@@ -596,7 +596,7 @@ public class CollectionUtil {
         }
     }
 
-    public static <D, K, S> void setListByMap(List<D> dests, Map<K, List<S>> sourceListMap, Function<? super D, K> destGetMethod,
+    public static <D, K, S> void setListByMap(Collection<D> dests, Map<K, List<S>> sourceListMap, Function<? super D, K> destGetMethod,
                                               BiConsumer<D, List<S>> destSetMethod) {
         for (D d : dests) {
             if (d != null) {
@@ -610,13 +610,13 @@ public class CollectionUtil {
     }
 
     /*** 把 sources  按 id分组 ，变成List,设置到 dests中一个字段*/
-    public static <D, K, S> void setListByList(List<D> dests, List<S> sources, Function<? super D, K> destGetMethod,
+    public static <D, K, S> void setListByList(Collection<D> dests, List<S> sources, Function<? super D, K> destGetMethod,
                                                BiConsumer<D, List<S>> destSetMethod, Function<? super S, K> sourceGetMethod) {
         Map<K, List<S>> sourceListMap = toGroup(sources, sourceGetMethod);
         setListByMap(dests, sourceListMap, destGetMethod, destSetMethod);
     }
 
-    public static <D, K, S> void setListByValues(List<D> dests, List<S> sources, Function<? super D, List<K>> destGetMethod,
+    public static <D, K, S> void setListByValues(Collection<D> dests, List<S> sources, Function<? super D, List<K>> destGetMethod,
                                                  BiConsumer<D, List<S>> destSetMethod, Function<? super S, K> sourceGetMethod) {
         if (CollectionUtil.isNotEmpty(dests) && CollectionUtil.isNotEmpty(sources)) {
             Map<K, S> sourcesMap = CollectionUtil.toMap(sources, sourceGetMethod);

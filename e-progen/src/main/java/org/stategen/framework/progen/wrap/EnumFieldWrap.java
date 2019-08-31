@@ -73,7 +73,7 @@ public class EnumFieldWrap<T extends Enum<T>> {
     public String getTitle() throws NoSuchFieldException, SecurityException {
         if (title == null) {
             String description = this.getDescription();
-            title = StringUtil.trimLeftTo(description, " ");
+            title = StringUtil.trimLeftFormRightTo(description, " ");
         }
         return title;
     }

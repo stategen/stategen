@@ -21,7 +21,7 @@ public class MultiPathResourceResolver extends PathResourceResolver {
     @Override
     protected Resource getResource(String resourcePath, Resource location) throws IOException {
         if (StringUtil.isNotBlank(trimTo)){
-            resourcePath=StringUtil.trimLeftTo(resourcePath, trimTo);
+            resourcePath=StringUtil.trimLeftFormRightTo(resourcePath, trimTo);
         }
         return super.getResource(resourcePath, location);
     }

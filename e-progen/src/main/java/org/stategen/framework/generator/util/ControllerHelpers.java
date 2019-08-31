@@ -32,8 +32,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.stategen.framework.annotation.Menu;
 import org.stategen.framework.annotation.GenRoute;
+import org.stategen.framework.annotation.Menu;
 import org.stategen.framework.annotation.VisitCheck;
 import org.stategen.framework.lite.IMenu;
 import org.stategen.framework.lite.enums.MenuType;
@@ -196,7 +196,7 @@ public class ControllerHelpers {
                 M menuParent = simpleNameMap.get(menuParentControllerName);
 
                 if (menuParent == null) {
-                    String menuName = StringUtil.trimLeftTo(menuParentControllerName, StringUtil.UNDERLINE);
+                    String menuName = StringUtil.trimLeftFormRightTo(menuParentControllerName, StringUtil.UNDERLINE);
                     MenuType menuType = getMenuTypeByControllerName(menuParentControllerName, true);
                     menuParent = IMenu.createMenu(menuClass, menuParentControllerName, null, null, menuName, null, menuType, VisitCheckType.NONE);
                     simpleNameMap.put(menuParentControllerName, menuParent);
@@ -243,7 +243,7 @@ public class ControllerHelpers {
 
             String apiName = apiAnno != null ? apiAnno.value() : null;
             if (StringUtil.isBlank(apiName)) {
-                apiName = StringUtil.trimLeftTo(controllerName, StringUtil.UNDERLINE);
+                apiName = StringUtil.trimLeftFormRightTo(controllerName, StringUtil.UNDERLINE);
             }
 
             AssertUtil.mustNotContainsAndAdd(controllerApiNames, apiName, "菜单名称不能相同：" + apiName);
