@@ -20,6 +20,9 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 
 import org.stategen.framework.progen.NamedContext;
+import org.stategen.framework.util.AnnotationUtil;
+
+import com.alibaba.fastjson.annotation.JSONField;
 
 /**
  * The Class FieldWrap.
@@ -34,6 +37,9 @@ public class FieldWrap extends NamedWrap {
 
     /**是否是父类中的字段*/
     private Boolean isSuper = false;
+
+    private Boolean serialize;
+    private Boolean deserialize;
 
     public FieldWrap(NamedContext context) {
         super(context);
@@ -62,6 +68,20 @@ public class FieldWrap extends NamedWrap {
 
     public void setIsSuper(Boolean isSuper) {
         this.isSuper = isSuper;
+    }
+
+    public Boolean getSerialize() {
+        if (serialize == null) {
+            serialize = AnnotationUtil.getAnnotationValueFormMembers(JSONField.class, JSONField::serialize, true, getMembers());
+        }
+        return serialize;
+    }
+
+    public Boolean getDeserialize() {
+        if (deserialize == null) {
+            deserialize = AnnotationUtil.getAnnotationValueFormMembers(JSONField.class, JSONField::deserialize, true, getMembers());
+        }
+        return deserialize;
     }
 
 }
