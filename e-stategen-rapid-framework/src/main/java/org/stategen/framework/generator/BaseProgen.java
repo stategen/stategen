@@ -174,6 +174,9 @@ public class BaseProgen {
         File webTypeFile = new File(webTypePath);
         AssertUtil.mustTrue(webTypeFile.exists(),webType+" 类型不存在 ,请输入 gen.sh -h 查看具体类型");
         String currentProjectPath = StringUtil.concatPath(projectsPath, projectFolderName);
+        
+        String frontendName =projectName+"_frontend_"+webType;
+        root.put("frontendName", frontendName);
 
         String pomToReplaceFileName = StringUtil.concatPath(currentProjectPath,projectName+"-frontend-"+webType, "pom");
         File pomToReplaceFile = new File(pomToReplaceFileName);
