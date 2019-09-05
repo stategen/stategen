@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.stategen.framework.generator.util.FileHelpers;
-import org.stategen.framework.generator.util.PropertiesHelpers;
+import org.stategen.framework.util.AssertUtil;
 import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.Consts;
 import org.stategen.framework.util.Setting;
@@ -51,19 +51,20 @@ public class BaseTargets extends HashMap<String, Object> {
     private String genInputCmd =pts.getProperty(Consts.genInputCmd);
     private String cmdPath =pts.getProperty(Consts.cmdPath);
     
-    private String tablesPath=cmdPath+"/"+dir_table_configs;
+    private String projectsPath =System.getProperty(Consts.projectsPath);
+    private String tablesPath=projectsPath+"/"+dir_table_configs;
     
-    private String pojo_module_name =genDir(cmdPath,pts,Consts.pojo_module_name);
-    private String dto_module_name =genDir(cmdPath,pts,Consts.dto_module_name);
-    private String dao_module_name =genDir(cmdPath,pts,Consts.dao_module_name);
-    private String facade_module_name =genDir(cmdPath,pts,Consts.facade_module_name);
-    private String service_module_name =genDir(cmdPath,pts,Consts.service_module_name);
-    private String controller_module_name =genDir(cmdPath,pts,Consts.controller_module_name);
+    private String pojo_module_name =genDir(projectsPath,pts,Consts.pojo_module_name);
+    private String dto_module_name =genDir(projectsPath,pts,Consts.dto_module_name);
+    private String dao_module_name =genDir(projectsPath,pts,Consts.dao_module_name);
+    private String facade_module_name =genDir(projectsPath,pts,Consts.facade_module_name);
+    private String service_module_name =genDir(projectsPath,pts,Consts.service_module_name);
+    private String controller_module_name =genDir(projectsPath,pts,Consts.controller_module_name);
     
-    private String dir_dal_output_root =dao_module_name;//cmdPath+"/"+pts.getProperty(Const.dir_dal_output_root);
+    private String dir_dal_output_root =dao_module_name;//projectsPath+"/"+pts.getProperty(Const.dir_dal_output_root);
     private String dir_tmpl_share=dir_templates_root+"/java/share/dal";
     
-    private static String genDir(String cmdPath,Properties pts,String key){
+    private static String genDir(String projectsPath,Properties pts,String key){
         String value =pts.getProperty(key);
         if (StringUtil.isBlank(value)){
             return null;
@@ -71,7 +72,7 @@ public class BaseTargets extends HashMap<String, Object> {
         if (value.equals(".")){
             value="";
         }
-        return cmdPath+"/"+value;
+        return projectsPath+"/"+value;
     }
     
     public BaseTargets(Object global){
@@ -145,35 +146,24 @@ public class BaseTargets extends HashMap<String, Object> {
 
     public void api() throws  Exception {
         File tablesDirFile=new File(tablesPath);
+        
         TableConfigSet tableConfigSet = new TableConfigXmlBuilder().parseFromXML(tablesDirFile,packageName,Helper.getTableConfigFiles(tablesDirFile));
 
         GLogger.info("pojo_module_name<===========>:" +"api");
         Properties pts = GeneratorProperties.getProperties();
         String systemName = pts.getProperty("systemName");
-        String projectName = System.getProperty("projectName");
-        pts.put("projectName",projectName);
 
+        String projectFolderName=StringUtil.trimLeftFormRightTo(cmdPath, StringUtil.SLASH);
+        AssertUtil.mustTrue(projectFolderName.startsWith("7-"+systemName+"-web-"), "api 命令必须在"+"7-"+systemName+"-web-xxx 执行");
 
-        String controllerProjectName ="7-"+systemName+"-web-"+projectName;
-        String controllerPath =cmdPath+"/"+controllerProjectName;
-
-        String controllerGenConfigPath=controllerPath+"/gen_config.xml";
-        Properties controllerGenConfig = PropertiesHelpers.load(controllerGenConfigPath);
-        String webType = controllerGenConfig.getProperty("webType");
-        if (StringUtil.isBlank(webType)){
-                GLogger.info(new StringBuffer(controllerGenConfigPath).append("中的 webType:为空，不需要生成controller").toString());
-                return;
-        }
-
-        String controllerTempPath= FileHelpers.getCanonicalPath(dir_templates_root + "/java/api/"+webType+"/dal");
+        String controllerTempPath= FileHelpers.getCanonicalPath(dir_templates_root + "/java/api/dal");
         GLogger.info(controllerTempPath);
 
         //api ，这个必须在最前面，并且执行
         Setting.current_gen_name=Consts.api;
-        GLogger.info(controllerPath);
         GLogger.info(controllerTempPath);
         GLogger.info(dir_tmpl_share);
-        GenUtils.genByTableConfig(Helper.createGeneratorFacade(controllerPath,controllerTempPath,dir_tmpl_share),tableConfigSet,genInputCmd);
+        GenUtils.genByTableConfig(Helper.createGeneratorFacade(cmdPath,controllerTempPath,dir_tmpl_share),tableConfigSet,genInputCmd);
     }
 
     public void seq() throws Exception {
@@ -191,8 +181,6 @@ public class BaseTargets extends HashMap<String, Object> {
             dir_templates_root+"/table/web_struts2");
         GenUtils.genByTable(gf,genInputCmd);
     }
-    
-    
     
     protected Properties getRootProperties() throws IOException{
         Properties root =new Properties();
@@ -223,9 +211,7 @@ public class BaseTargets extends HashMap<String, Object> {
         if (StringUtil.isNotBlank(packageName)){
             root.put("packageName",packageName);
         }
-        
-        cmdPath =System.getProperty("cmdPath");
-        
+
         dir_templates_root=dalgenPath+"/templates/"+root.getProperty("dao_type");
         
         return root;

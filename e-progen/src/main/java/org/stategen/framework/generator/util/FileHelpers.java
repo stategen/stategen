@@ -41,6 +41,7 @@ public class FileHelpers {
     final static Logger logger = LoggerFactory.getLogger(FileHelpers.class);
     final static String unOverrideFolderFlag ="@"+StringUtil.SLASH;
     final static String unOverrideFolderFlag_Back ="@"+StringUtil.BACK_SLASH;
+    
 
     public static File getFile(String file) {
         if (StringUtil.isBlank(file)) {
@@ -325,6 +326,7 @@ public class FileHelpers {
         }
     }
 
+
     public static String getCanonicalPath(String outputDir, String targetFileName) throws IOException {
         File targetFile = new File(outputDir, targetFileName);
         return processCononicalPath(targetFile, targetFileName);
@@ -341,7 +343,7 @@ public class FileHelpers {
         if (StringUtil.isFolderEnd(targetFileName)) {
             canonicalPath = StringUtil.endWithSlash(canonicalPath);
         }
-        canonicalPath =canonicalPath.replace(StringUtil.BACK_SLASH, StringUtil.SLASH);
+        canonicalPath = StringUtil.replaceBackSlash(canonicalPath);
         return canonicalPath;
     }
 

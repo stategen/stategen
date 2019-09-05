@@ -37,6 +37,7 @@ public class Consts {
     public final static String packageName = "packageName";
     public final static String genInputCmd = "genInputCmd";
     public final static String cmdPath = "cmdPath";
+    public final static String projectsPath = "projectsPath";
     public final static String dir_dal_output_root = "dir_dal_output_root";
     public final static String dto_module_name = "dto_module_name";
     public final static String pojo_module_name = "pojo_module_name";

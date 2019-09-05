@@ -39,6 +39,7 @@ import org.stategen.framework.generator.util.TemplateHelpers;
 import org.stategen.framework.progen.wrap.ApiWrap;
 import org.stategen.framework.progen.wrap.CanbeImportWrap;
 import org.stategen.framework.util.AssertUtil;
+import org.stategen.framework.util.CommonComparetor;
 import org.stategen.framework.util.StringUtil;
 
 import freemarker.template.Configuration;
@@ -134,6 +135,10 @@ public class FacadeGenerator {
         List<String> interFiles =new ArrayList<String>();
         List<String> pageFiles =new ArrayList<String>();
         filterOutFiles(outWholeFiles, outPath, interFiles, pageFiles);
+        
+        interFiles.sort(new CommonComparetor());
+        pageFiles.sort(new CommonComparetor());
+        
         root.put("interFiles", interFiles);
         root.put("pageFiles", pageFiles);
         

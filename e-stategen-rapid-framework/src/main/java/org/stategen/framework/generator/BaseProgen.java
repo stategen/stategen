@@ -30,6 +30,7 @@ import org.stategen.framework.generator.util.IOHelpers;
 import org.stategen.framework.generator.util.PropertiesHelpers;
 import org.stategen.framework.generator.util.TemplateHelpers;
 import org.stategen.framework.progen.FacadeGenerator;
+import org.stategen.framework.util.AssertUtil;
 import org.stategen.framework.util.StringUtil;
 import org.stategen.framework.util.XmlUtil;
 
@@ -41,7 +42,14 @@ import freemarker.template.TemplateException;
 public class BaseProgen {
     final static Logger logger = LoggerFactory.getLogger(BaseProgen.class);
     String dir_templates_root = null;
+    String projectsPath = null;
+    String systemName = null;
+    String projectName = null;
+    String packageName = null;
+
     String cmdPath = null;
+
+    static String APPEND_TAG_DO_NOT_CHANGE = "<!--APPEND_TAG_DO_NOT_CHANGE-->";
 
     public BaseProgen(Object global) {
 
@@ -68,17 +76,18 @@ public class BaseProgen {
         //加载项目配置文件，如果相同，覆盖默认配置
         root.put("dalgenPath", dalgenPath);
 
-        String systemName = System.getProperty("systemName");
+        systemName = System.getProperty("systemName");
         if (StringUtil.isNotBlank(systemName)) {
             root.put("systemName", systemName);
         }
 
-        String packageName = System.getProperty("packageName");
+        packageName = System.getProperty("packageName");
         if (StringUtil.isNotBlank(packageName)) {
             root.put("packageName", packageName);
         }
 
         cmdPath = System.getProperty("cmdPath");
+        projectsPath = System.getProperty("projectsPath");
 
         dir_templates_root = dalgenPath + "/templates/" + root.getProperty("dao_type");
 
@@ -93,14 +102,14 @@ public class BaseProgen {
         List<File> allFiles = FileHelpers.searchAllNotIgnoreFile(tempFolderFile);
         String projectName = null;
         int folderCount = 0;
-        List<String> outFiles =new ArrayList<String>();
+        List<String> outFiles = new ArrayList<String>();
         for (File ftlFile : allFiles) {
             String relativeFileName = FileHelpers.getRelativeFileName(tempFolderFile, ftlFile);
             if (ftlFile.isFile()) {
-                FacadeGenerator.processTemplate(ftlFile, conf, root, cmdPath, relativeFileName, outFiles);
+                FacadeGenerator.processTemplate(ftlFile, conf, root, projectsPath, relativeFileName, outFiles);
             } else {
                 String targetFileName = TemplateHelpers.processTemplitePath(root, relativeFileName);
-                String filePath = cmdPath + "/" + targetFileName + "/";
+                String filePath = StringUtil.concatPath(projectsPath, targetFileName) + "/";
                 filePath = FileHelpers.replaceUnOverridePath(filePath);
                 FileHelpers.parentMkdir(filePath);
                 folderCount++;
@@ -117,46 +126,101 @@ public class BaseProgen {
         root.putAll(StringHelper.getDirValuesMap(root));
 
         //system 映射到 system
-        String systemPath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/system@/");
-        processTempleteFiles(root, systemPath);
+        String projectsTempPath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/system@/");
+        processTempleteFiles(root, projectsTempPath);
     }
 
     public void project() throws IOException, TemplateException, DocumentException {
         Properties root = getRootProperties();
-        root.put("projectName", System.getProperty("projectName"));
+        projectName = System.getProperty("projectName");
+        root.put("projectName", projectName);
 
         String configFile = System.getProperty("generatorConfigFile");
         Properties configs = PropertiesHelpers.load(configFile);
         root.putAll(configs);
         root.putAll(StringHelper.getDirValuesMap(root));
-        Boolean hasClient =false;
-        String webType = System.getProperty("type");
+
+        Boolean hasClient = false;
+        String webType = System.getProperty("webType");
         if (StringUtil.isNotBlank(webType) && !"-e".equals(webType)) {
-            hasClient=true;
+            hasClient = true;
             root.put("webType", webType);
         } else {
             root.put("webType", "");
         }
         root.put("hasClient", hasClient);
 
-        String projectsPath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/project@/");
+        String projectTempPath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/project@/");
+        String projectFolderName = processTempleteFiles(root, projectTempPath);
 
-        String projectName = processTempleteFiles(root, projectsPath);
-
+        String projectsPomXmlFilename = StringUtil.concatPath(projectsPath, "pom.xml");
+        //dom4j格式化输出把换行等全部去掉，因此这里采用text输出
+        String pomXmlText = XmlUtil.appendToNode(projectsPomXmlFilename, "module", projectFolderName);
+        if (StringUtil.isNotEmpty(pomXmlText)) {
+            IOHelpers.saveFile(new File(projectsPomXmlFilename), pomXmlText, StringUtil.UTF_8);
+            if (logger.isInfoEnabled()) {
+                logger.info(new StringBuffer("修改pom成功:").append(projectsPomXmlFilename).toString());
+            }
+        }
         if (hasClient) {
-            String webTypePath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/frontend/" + webType + "/");
-            processTempleteFiles(root, webTypePath);
+            processClient(root, hasClient, webType, projectFolderName);
         }
 
-        cmdPath = System.getProperty("cmdPath");
-        String pomXmlFilename = StringUtil.concatPath(cmdPath, "pom.xml");
-        //dom4j格式化输出把换行等全部去掉，因此这里采用text输出
-        String pomXmlText = XmlUtil.appendToNode(pomXmlFilename, "module", projectName);
-        if (StringUtil.isNotEmpty(pomXmlText)){
-            IOHelpers.saveFile(new File(pomXmlFilename), pomXmlText, StringUtil.UTF_8);
-            if (logger.isInfoEnabled()) {
-                logger.info(new StringBuffer("修改pom成功:").append(pomXmlFilename).toString());
-            }
+    }
+
+    private void processClient(Properties root, Boolean hasClient, String webType,
+                               String projectFolderName) throws IOException, TemplateException, DocumentException {
+        String webTypePath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/frontend/" + webType + "/");
+        File webTypeFile = new File(webTypePath);
+        AssertUtil.mustTrue(webTypeFile.exists(),webType+" 类型不存在 ,请输入 gen.sh -h 查看具体类型");
+        String currentProjectPath = StringUtil.concatPath(projectsPath, projectFolderName);
+
+        String pomToReplaceFileName = StringUtil.concatPath(currentProjectPath,projectName+"-frontend-"+webType, "pom");
+        File pomToReplaceFile = new File(pomToReplaceFileName);
+        boolean pomToReplaceFileExists = pomToReplaceFile.exists() && pomToReplaceFile.isFile();
+        processTempleteFiles(root, webTypePath);
+
+        if (!pomToReplaceFileExists) {
+            String mavenPluginExcutionText = IOHelpers.readFile(new File(pomToReplaceFileName), StringUtil.UTF_8);
+            mavenPluginExcutionText += "\n                    " + APPEND_TAG_DO_NOT_CHANGE;
+
+            String projectPomXml = StringUtil.concatPath(currentProjectPath, "pom.xml");
+            String projectPomText = IOHelpers.readFile(new File(projectPomXml), StringUtil.UTF_8);
+            projectPomText = projectPomText.replace(APPEND_TAG_DO_NOT_CHANGE, mavenPluginExcutionText);
+
+            IOHelpers.saveFile(new File(projectPomXml), projectPomText, StringUtil.UTF_8);
+        }
+    }
+
+    public void client() throws IOException, TemplateException, DocumentException {
+        Properties root = getRootProperties();
+        String configFile = System.getProperty("generatorConfigFile");
+        Properties configs = PropertiesHelpers.load(configFile);
+        root.putAll(configs);
+        root.putAll(StringHelper.getDirValuesMap(root));
+
+        systemName = root.getProperty("systemName");
+
+        String projectFolderName = StringUtil.trimLeftFormRightTo(cmdPath, StringUtil.SLASH);
+
+        String projectFrefix = "7-" + systemName + "-web-";
+        AssertUtil.mustTrue(projectFolderName.startsWith(projectFrefix), "client 命令必须在" + "7-" + systemName + "-web-xxx 执行");
+
+        projectName = StringUtil.trimePrefixIgnoreCase(projectFolderName, projectFrefix);
+        root.put("projectName", projectName);
+
+        Boolean hasClient = false;
+        String webType = System.getProperty("webType");
+        if (StringUtil.isNotBlank(webType) && !"-e".equals(webType)) {
+            hasClient = true;
+            root.put("webType", webType);
+        } else {
+            root.put("webType", "");
+        }
+        root.put("hasClient", hasClient);
+
+        if (hasClient) {
+            processClient(root, hasClient, webType, projectFolderName);
         }
     }
 

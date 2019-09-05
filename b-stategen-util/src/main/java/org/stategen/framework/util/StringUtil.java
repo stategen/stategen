@@ -482,15 +482,17 @@ public class StringUtil {
         }
         return sb.toString();
     }
-
+    public static String replaceBackSlash(String dest){
+        return dest.replace(StringUtil.BACK_SLASH, StringUtil.SLASH);
+    }
+    
     public static String concatPath(String... subPaths) {
         if (CollectionUtil.isNotEmpty(subPaths)) {
             StringBuffer sb = new StringBuffer();
-            boolean endsWithForward = false;
             for (int i = 0; i < subPaths.length; i++) {
                 String subPath = subPaths[i];
                 if (isNotEmpty(subPath)) {
-                    subPath = subPath.replace(StringUtil.BACK_SLASH, StringUtil.SLASH);
+                    subPath =StringUtil.replaceBackSlash(subPath);
                     subPath = endWithSlash(subPath);
                     sb.append(subPath);
                 }
