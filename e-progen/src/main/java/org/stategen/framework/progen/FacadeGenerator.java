@@ -18,6 +18,7 @@ package org.stategen.framework.progen;
 
 import java.io.CharArrayWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ import org.stategen.framework.progen.wrap.CanbeImportWrap;
 import org.stategen.framework.util.AssertUtil;
 import org.stategen.framework.util.CommonComparetor;
 import org.stategen.framework.util.StringUtil;
+import org.yaml.snakeyaml.Yaml;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -98,6 +100,16 @@ public class FacadeGenerator {
         //统计生成的Files
         List<String> outWholeFiles =new ArrayList<String>();
         String outPath = FileHelpers.getFile( StringUtil.joinSLash(projectRootPath, outDir)).getAbsolutePath().replace("\\", "/");
+        
+        //读取yaml文件，放置frontendPagckageName，flutter不支持本包下绝对路径有点愚蠢
+        String yamlFileName =StringUtil.concatPath(new File(outPath+"/../../").getCanonicalPath(),"pubspec.yaml");
+        File yamlFile = new File(yamlFileName);
+        if (yamlFile.exists() && yamlFile.isFile()){
+            Yaml yaml = new Yaml();
+            Map<String,String> map =yaml.load(new FileInputStream(yamlFile));
+            String frontendPagckageName =map.get("name");
+            root.put("frontendPagckageName", "package:"+frontendPagckageName);
+        }
 
         for (Entry<PathType, String> entry : GenContext.pathMap.entrySet()) {
             PathType pathType = entry.getKey();
