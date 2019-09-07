@@ -27,7 +27,13 @@ public class Pagination implements IPagination {
     private int pageSize = 5;
     
     public Pagination() {
-
+    }
+    
+    public int getPageNum() {
+        return page;
+    }
+    public void setPageNum(int pageNum) {
+        this.page = pageNum;
     }
     
     public Pagination(PageList<?> pageList) {
