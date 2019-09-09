@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,7 +59,7 @@ public class WrapContainer {
     public WrapContainer() {
         PathType[] PathTypes = PathType.values();
         for (PathType pathType : PathTypes) {
-            wrapMaps.put(pathType, new HashMap<Class<?>, CanbeImportWrap>());
+            wrapMaps.put(pathType, new LinkedHashMap<Class<?>, CanbeImportWrap>());
         }
     }
 

@@ -58,9 +58,8 @@ public class FacadeGenerator {
 
         String controlleSuffix = root.getProperty("controller_name_suffix");
 
-        Map<Class<?>, CanbeImportWrap> apiWrapMap = GenContext.wrapContainer.getCanbeImportWrapMapByPathType(PathType.API);
-
         Set<String> apis = new HashSet<String>();
+        Map<String, CanbeImportWrap> destApiWrapMap = new HashMap<String, CanbeImportWrap>();
 
         for (Class<?> clz : classes) {
             if (AnnotatedElementUtils.findMergedAnnotation(clz, Controller.class) != null) {
@@ -72,7 +71,7 @@ public class FacadeGenerator {
                 try {
                     ApiWrap controllerWrap = new ApiWrap(clz, apiName);
                     if (controllerWrap.isApi()) {
-                        apiWrapMap.put(clz, controllerWrap);
+                        destApiWrapMap.put(apiName, controllerWrap);
                         if ("App".equals(controllerWrap.toString())) {
                             GenContext.appWrap = controllerWrap;
                         }
@@ -84,6 +83,16 @@ public class FacadeGenerator {
                 }
             }
         }
+
+        //api 排序后再装入
+        List<String> apiNames = new ArrayList<String>(destApiWrapMap.keySet());
+        apiNames.sort(new CommonComparetor());
+        Map<Class<?>, CanbeImportWrap> apiWrapMap = GenContext.wrapContainer.getCanbeImportWrapMapByPathType(PathType.API);
+        for (String apiName : apiNames) {
+            CanbeImportWrap apiWrap = destApiWrapMap.get(apiName);
+            apiWrapMap.put(apiWrap.getClazz(), apiWrap);
+        }
+
         AssertUtil.mustNotNull(GenContext.appWrap,
             "缺少AppController,必须有一个Controller为AppController,而且上面的标注@ApiConfig(menu = false),\n" + "因为一些ajax Options的方法是统一从这个Controller中拿取");
 
@@ -98,17 +107,17 @@ public class FacadeGenerator {
         Map<String, List<CanbeImportWrap>> canbeImportWrapMap = new HashMap<String, List<CanbeImportWrap>>();
 
         //统计生成的Files
-        List<String> outWholeFiles =new ArrayList<String>();
-        String outPath = FileHelpers.getFile( StringUtil.joinSLash(projectRootPath, outDir)).getAbsolutePath().replace("\\", "/");
-        
+        List<String> outWholeFiles = new ArrayList<String>();
+        String outPath = FileHelpers.getFile(StringUtil.joinSLash(projectRootPath, outDir)).getAbsolutePath().replace("\\", "/");
+
         //读取yaml文件，放置frontendPagckageName，flutter不支持本包下绝对路径有点愚蠢
-        String yamlFileName =StringUtil.concatPath(new File(outPath+"/../../").getCanonicalPath(),"pubspec.yaml");
+        String yamlFileName = StringUtil.concatPath(new File(outPath + "/../../").getCanonicalPath(), "pubspec.yaml");
         File yamlFile = new File(yamlFileName);
-        if (yamlFile.exists() && yamlFile.isFile()){
+        if (yamlFile.exists() && yamlFile.isFile()) {
             Yaml yaml = new Yaml();
-            Map<String,String> map =yaml.load(new FileInputStream(yamlFile));
-            String frontendPagckageName =map.get("name");
-            root.put("frontendPagckageName", "package:"+frontendPagckageName);
+            Map<String, String> map = yaml.load(new FileInputStream(yamlFile));
+            String frontendPagckageName = map.get("name");
+            root.put("frontendPagckageName", "package:" + frontendPagckageName);
         }
 
         for (Entry<PathType, String> entry : GenContext.pathMap.entrySet()) {
@@ -119,7 +128,7 @@ public class FacadeGenerator {
 
             String reletiveOutWholePath = StringUtil.joinSLash(projectRootPath, outDir, importPath);
             String outWholePath = FileHelpers.getFile(reletiveOutWholePath).getAbsolutePath();
-            
+
             FreeMarkerTempFileContext beanFltContext = new FreeMarkerTempFileContext(tempWholePaths);
             Configuration conf = beanFltContext.getConf();
             conf.setDefaultEncoding(StringUtil.UTF_8);
@@ -136,24 +145,24 @@ public class FacadeGenerator {
                     File tempPathFile = ftlFile.getTempPathFile();
                     File tempFile = ftlFile.getTempFile();
                     String relativeFileName = FileHelpers.getRelativeFileName(tempPathFile, tempFile);
-                    processTemplate(tempFile, conf, root, outWholePath, relativeFileName,outWholeFiles);
+                    processTemplate(tempFile, conf, root, outWholePath, relativeFileName, outWholeFiles);
                 }
                 root.remove(wrapName);
             }
         }
-        
+
         //以下处理set文件夹模版循环问题
         //获取 生成的代码文件
-        List<String> interFiles =new ArrayList<String>();
-        List<String> pageFiles =new ArrayList<String>();
+        List<String> interFiles = new ArrayList<String>();
+        List<String> pageFiles = new ArrayList<String>();
         filterOutFiles(outWholeFiles, outPath, interFiles, pageFiles);
-        
+
         interFiles.sort(new CommonComparetor());
         pageFiles.sort(new CommonComparetor());
-        
+
         root.put("interFiles", interFiles);
         root.put("pageFiles", pageFiles);
-        
+
         List<String> tempWholePaths = getTempPaths(tempDirs, tempRootPath, "", "set");
         FreeMarkerTempFileContext beanFltContext = new FreeMarkerTempFileContext(tempWholePaths);
 
@@ -166,20 +175,20 @@ public class FacadeGenerator {
 
         conf.setAutoIncludes(availableAutoInclude);
         root.putAll(canbeImportWrapMap);
-        
-        List<String> setOutFiles =new ArrayList<String>();
+
+        List<String> setOutFiles = new ArrayList<String>();
         for (FtlFile ftlFile : beanFltContext.getFtlFiles()) {
             File tempPathFile = ftlFile.getTempPathFile();
             File tempFile = ftlFile.getTempFile();
             String relativeFileName = FileHelpers.getRelativeFileName(tempPathFile, tempFile);
-            processTemplate(tempFile, conf, root, outWholePath, relativeFileName,setOutFiles);
+            processTemplate(tempFile, conf, root, outWholePath, relativeFileName, setOutFiles);
         }
     }
 
     private void filterOutFiles(List<String> outWholeFiles, String outPath, List<String> interFiles, List<String> pageFiles) {
         for (String wholeFile : outWholeFiles) {
-            if (wholeFile.startsWith(outPath)){
-                String outFile =wholeFile.substring(outPath.length());
+            if (wholeFile.startsWith(outPath)) {
+                String outFile = wholeFile.substring(outPath.length());
                 interFiles.add(outFile);
             } else {
                 String relativePath = FileHelpers.getRelativePath(outPath, wholeFile);
@@ -204,8 +213,8 @@ public class FacadeGenerator {
         return tempWholePaths;
     }
 
-    public static void processTemplate(File tempFile, Configuration conf, Properties root, String outputDir,
-                                       String relativeFileName, List<String> outFiles) throws TemplateException, IOException {
+    public static void processTemplate(File tempFile, Configuration conf, Properties root, String outputDir, String relativeFileName,
+                                       List<String> outFiles) throws TemplateException, IOException {
 
         final String blobExt = "@blob";
         final String tempExt = "@temp";
@@ -237,14 +246,14 @@ public class FacadeGenerator {
         CharArrayWriter writer = new CharArrayWriter(1024 * 1024);
         //这一步就要判断，因为getCanonicalPath可能就不再含有@/
 
-        if (FileHelpers.isUnOverridePath(tempFile.getParent())) {
+        if (FileHelpers.isUnOverridePath(tempFile.getCanonicalPath())) {
             doOverride = false;
         }
-        
+
         String fullTargetFileName = FileHelpers.getCanonicalPath(outputDir, targetFileName);
         fullTargetFileName = FileHelpers.replaceUnOverridePath(fullTargetFileName);
         File fullTargetFile = FileHelpers.parentMkdir(fullTargetFileName);
-        
+
         boolean isDirectory = fullTargetFile.isDirectory();
         if (!isDirectory && (isBlob || FileHelpers.isBinaryFile(fullTargetFileName))) {
             if (fullTargetFile.exists()) {
@@ -275,7 +284,7 @@ public class FacadeGenerator {
         if (!isDirectory) {
             if (fullTargetFile.exists() && fullTargetFile.isFile()) {
                 if (!doOverride) {
-                    logger.info(new StringBuffer("模版文件或文件夹以@或@.ftl结尾，当目标文件存在时，忽略写入:" + fullTargetFileName).append('\n' + newText).toString());
+                    logger.info(new StringBuffer("模版文件或文件夹以@或@.ftl结尾，当目标文件存在时，忽略写入:" + fullTargetFileName).append('\n').append(newText).toString());
                     return;
                 }
 
