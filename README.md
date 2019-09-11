@@ -1,3 +1,25 @@
+## StateGen原理:
+   ### 对于前端
+   >1.  对于后端一个任意给定的api,其对应的前端代码基本都是相同或相似的，这其中包括 网络调用、持久化、交互,  
+   >2.  经过分析,调用2次api（相同或不同的）之间的数据之间的关系只有3种:
+   >>a.  重新加载 
+   >>b.  按主键增加或更新  
+   >>c.  按主键删除  
+   >3.  数据隔离  
+     A.  按后端返回值类型隔离,同一个controller，以下都是按 userArea 隔离  
+       User,  
+       List<User>   
+       PageList<User>,  
+       @State(area=User.class) public String delete()  
+     B. 不同的Controller数据已经隔离    
+     
+   ### 后端
+   >1. 对于任意一个sql,其配置、对应的java代码，参数个数，类型，返回值类型、字段都是确定的，这些以前都是手工或关手工操作
+   >2. 业务逻辑都是由调用一个或多个sql组成的
+   >3. 市面上代码生成器都覆盖式生成代码,其生成的代码无法预先指定继承、实现接口、类型指定,无法保护已有业务代码成果,StateGen采用解析已有java
+       代码的方式解决上述问题
+     
+# StateGen已经支持flutter 
 ##  最好的沟通是避免沟通   
 ![Image](https://github.com/stategen/docs/blob/master/stategenAppSnapshort.png)  
 mobile端  
