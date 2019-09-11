@@ -24,6 +24,11 @@
      
 # StateGen已经支持flutter 
 ##  最好的沟通是避免沟通   
+![Image](https://github.com/stategen/docs/blob/master/category.png)  
+![Image](https://github.com/stategen/docs/blob/master/homeApis.png)  
+![Image](https://github.com/stategen/docs/blob/master/category_json.png)  
+![Image](https://github.com/stategen/docs/blob/master/dva_react_model.png)  
+![Image](https://github.com/stategen/docs/blob/master/flutter_goods_provider.png)  
 ![Image](https://github.com/stategen/docs/blob/master/stategenAppSnapshort.png)  
 mobile端  
 ![Image](https://github.com/stategen/docs/blob/master/stategenWebSnapShort1.png)  
