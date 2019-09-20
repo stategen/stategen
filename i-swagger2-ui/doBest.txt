@@ -1,0 +1,18 @@
+开发即测试
+失血模式的模型代替功能单一，维护复杂的DTO
+唯一支持迭代的代码生成器
+  domain可以继承自其它类，实现任意接口,下次生成时，类上信息不会丢失
+  domain可以增加方法，不会丢
+  domain 中import不会丢
+serive>=facadeService, (service implement facadeService) ,facadeService方法0->serive
+ 分布式和本地结合，优先从本地内存中调用service
+ 分布式可为0
+dao中import下去生成不会丢失，
+service只做增加模式，其它import,method,都不会丢和替换
+环境变量与包无关
+
+前端代码生成器为依赖倒置
+
+
+
+

@@ -26,7 +26,8 @@
        代码的方式解决上述问题
    ### 代码生成器难以解决的是问题迭代和增量开发,但是实际的项目开发都是不断地迭代和新功能叠加，而stategen非常适合迭代开发    
      
-# StateGen已经支持flutter 
+# StateGen已经支持flutter   
+  采用google 2019 i/o大会上推荐的provider
 ##  最好的沟通是避免沟通   
 ![Image](https://github.com/stategen/docs/blob/master/category.png)  
 ![Image](https://github.com/stategen/docs/blob/master/homeApis.png)  
