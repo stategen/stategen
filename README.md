@@ -229,7 +229,7 @@ mvn package
 </bean>
 ```
 
-#### @Wrap 对controller中requestbody 反回值按指定的类再包装
+#### @Wrap 对Spring Controller中@Requestbody 反回值按指定的类再包装,便于前端兼容
 比如:
 ```
     <bean id="response" class="com.mycompany.biz.domain.Response" scope="prototype">
