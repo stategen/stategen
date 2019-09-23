@@ -18,7 +18,7 @@ package org.stategen.framework.cache;
 
 import org.stategen.framework.util.AssertUtil;
 /****
- * spring从/data/config/dalgenX.xml读取数据后放入该config中
+ * spring从/opt/config/stategen.xml读取数据后放入该config中
  * 
  * @author XiaZhengsheng
  */
@@ -27,7 +27,7 @@ public class LocalCacheZkConfig {
     
     protected static String                               zkConnectString     = null;
     protected static Integer                              zkConnectionTimeout = 10000;
-    protected static String                               rootPath            = "/dalgenX/resourceCache";
+    protected static String                               rootPath            = "/stategen/resourceCache";
     
     public void setRootPath(String rootPath) {
         AssertUtil.mustNotBlank(rootPath, "rootPath can not be empty");

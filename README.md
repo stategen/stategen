@@ -212,7 +212,7 @@ mvn package
     <!-- <import resource="classpath*:context/dubbo-provider-auto-*.xml" /> -->
     <!-- <import resource="classpath*:context/dubbo-provider-manual-*.xml" /> -->
 ```  
-##Stategen中 spring bean都是显示配置的 
+### Stategen中 spring bean都是显示配置的 
 ### StategenMvc框架几处用法,可以避免在业务中频繁地写与业务无关的代码，这些用法是自定义配置的
 #### MultiFilter.java 配置在web.xml，它对客户端的请求CookieGroup检测是否伪造,CookieGroup可以配置多个,便于业务分组.每个CookieGroup下的所有cookie都有一个离伪造的token签名，
 ```
@@ -257,6 +257,9 @@ data:xxxx
     <bean class="com.mycompany.biz.checker.VisitChecker" />
     <bean class="com.mycompany.biz.checker.LoginChecker" />
 ```
+
+####@ApiRequestMappingAutoWithMethodName
+在SpringMvc,以方法名作为路径，避免写路径硬编码，
 
 [Stategen快速调试开发运行精简教程](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)  
 ### 详细视频 共6小时
