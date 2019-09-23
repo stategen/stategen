@@ -211,7 +211,51 @@ mvn package
 ```
     <!-- <import resource="classpath*:context/dubbo-provider-auto-*.xml" /> -->
     <!-- <import resource="classpath*:context/dubbo-provider-manual-*.xml" /> -->
-```    
+```   
+### StategenMvc框架几处用法:
+#### MultiFilter.java ,web.xml按以下配置，它对客户端的请求CookieGroup检测是否伪造,CookieGroup可以配置多个,便于业务分组.
+```
+<filter>
+    <filter-name>frameworkMultiFilter</filter-name>
+    <filter-class>org.stategen.framework.spring.mvc.MultiFilter</filter-class>
+</filter>
+```
+```
+<!-- 验证cookie分组 ,该类可以多个，配置不同的分组 -->
+<bean id="loginCookieGroup" class="org.stategen.framework.web.cookie.CookieGroup">
+    <property name="cookieTypeClz" value="com.mycompany.biz.enums.CookieType.LOGIN" />
+    <property name="httpOnly" value="${loginCookieGroupHttpOnly}"/>
+</bean>
+```
+
+#### @Wrap 对controller中requestbody 反回值按指定的类再包装
+比如:
+```
+    <bean id="response" class="com.mycompany.biz.domain.Response" scope="prototype">
+    </bean>
+```
+包装后的
+```
+{
+message:'成功'
+success:true,
+data:xxxx
+...
+}
+```
+
+#### CollectExceptionJsonHandler.java 对业务异常，运行异常统一处理
+```
+    <bean class="org.stategen.framework.spring.mvc.CollectExceptionJsonHandler">
+        <property name="responseStatusClzOfException" value="com.mycompany.biz.enums.ResponseStatus.ERROR" />
+    </bean>
+```
+
+####各种自定义的标注如 @LoginCheck .... 按指定的方式检查权限
+```
+    <bean class="com.mycompany.biz.checker.VisitChecker" />
+    <bean class="com.mycompany.biz.checker.LoginChecker" />
+```
 
 [Stategen快速调试开发运行精简教程](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)  
 ### 详细视频 共6小时
