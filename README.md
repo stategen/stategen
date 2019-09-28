@@ -1,10 +1,10 @@
 ### 增加一篇论文介绍原理:[利用java反射和java-parser制作可以迭代、分布式、全栈代码生成器的研究](https://github.com/stategen/stategen/blob/master/%E5%88%A9%E7%94%A8java%E5%8F%8D%E5%B0%84%E5%92%8Cjava-parser%E5%88%B6%E4%BD%9C%E5%8F%AF%E4%BB%A5%E8%BF%AD%E4%BB%A3%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E3%80%81%E5%85%A8%E6%A0%88%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E7%A0%94%E7%A9%B6.md)
 #### 代码生成器目前的就这三种  
-1. 一次性脚手架式:一次性生成/覆盖目标代码,用在项目初始化,如：maven初始化项目、各种网页配置生成。  
-2. 持续脚手架式:多次分布生成/覆盖目标代码,如：MyBatis/Ibatis/Hibernate/ generator、dalgen,各种网页配置生成。  
-3. 在已编辑的目标代码上再次生成。 如StateGen(全网目前唯一?).
-目前市面上的代码生成器都是前2种，而StateGen开发生成器属于第3种,前面2种不用多说，经常挖坑，  
-为了不挖坑,要么只能做比较基本生成，要么集成当时市面上所有时髦的技术，增加学习成本不说，很快这些时髦都成为不时髦而且甩不掉的累赘，形成更大的坑。  
+1. 一次性脚手架式：一次性生成/覆盖目标代码,用在项目初始化,如：maven初始化项目、各种网页配置生成。  
+2. 持续脚手架式：分步生成/覆盖目标代码,如：MyBatis/Ibatis/Hibernate/ generator、dalgen,各种网页配置生成。  
+3. 在已编辑的目标代码上再次生成。 如：StateGen(全网目前唯一?).
+目前市面上的代码生成器都是前2种，而StateGen三种都有，但开发生成器属于第3种,如果生成器只有前面2种，那是经常挖坑，  
+而为了不挖坑,要么只能做比较基本的生成，要么集成当时市面上所有时髦的技术，增加学习成本不说，很快这些时髦都成为不时髦而且甩不掉的累赘，形成更大的坑。  
 Stategen采用第三种生成方式可以豪无限制地兼容其它技术，所以无需扯一些不需要的技术当噱头、还把挖坑还当卖点。  
 #### 关于分布式  
 1. 市面上的分布式架构都是黑白分明的分布式，要布分布式，要么本地。   
@@ -12,10 +12,10 @@ Stategen采用第三种生成方式可以豪无限制地兼容其它技术，所
    而StateGen是这样直接: http请求->本地服务->http出口   
 3. 为什么StateGen能按照最快的走法,诀窍就是：java继承。就这么个简单，其它架构做不到那只是其它架构的事.  
 #### 关于为什么暂时不用springboot    
-1.spring中xml配置是spring的根本，springboot开发目的是用java代码代替xml配置，递归读取Annotation加载beans，这是用java反射形成树状beans管理，计算机处理这种结构无所谓，  
+1.  spring中xml配置是spring的根本，springboot开发目的是用java代码代替xml配置，递归读取Annotation加载beans，这是用java反射形成树状beans管理，计算机处理这种结构无所谓，  
 但人工从树的root找到某个leaf非常难，需翻阅大量的java代码，所以springboot项目非常不适合项目owner管理,甚至过一段时间，连开发人员自己不能确切地知道有哪些bean。    
-2. spring项目转换成springboot项目,只要加入Application.java和在maven中增加对springboot的引用，但是一个已成型和开发过一段时间springboot项目再想变回spring项目比登天还难.  
-3. 理由我说了，而且国内大型电商的招聘里一般更多地还要考察tomcat,jboos能力，这是为了把项目放到容器里调优。如果想变为springboot,自己手工修改即可，完全兼容,这暂时留给有兴趣的同学探索。  
+2.  spring项目转换成springboot项目,只要加入Application.java和在maven中增加对springboot的引用，但是一个已成型和开发过一段时间springboot项目再想变回spring项目比登天还难.  
+3.  理由我说了，而且国内大型电商的招聘里一般更多地还要考察tomcat,jboos能力，这是为了把项目放到容器里调优。如果想变为springboot,自己手工修改即可，完全兼容,这暂时留给有兴趣的同学探索。  
 
 ## StateGen原理:
    ### 关于前端
@@ -31,7 +31,7 @@ Stategen采用第三种生成方式可以豪无限制地兼容其它技术，所
        List\<User\>   
        PageList\<User\>,  
        @State(area=User.class) public String delete(){}  
-     B. 不同的Controller数据已经按model/provider隔离    
+     B.  不同的Controller数据已经按model/provider隔离    
    >4. 以前生成代码方式有2种，配置和伪代码:这两种方式增加学习成本，看似节约时间，实际上要花费更多的时间在坑里维护代码，任何基于json或者配置做前端都是太菜了，stategen不这样做.
      StateGen直接通过java反射硬解析后端java代码来生成前端代码，没有任何多余工作环节或学习,不改变开发流程.当然也不存在挖坑  
     
