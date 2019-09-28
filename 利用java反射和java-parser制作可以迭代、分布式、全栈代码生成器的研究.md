@@ -112,7 +112,7 @@ b) 本地系统引用了本地对外的服务导致bean name重名，系统不�
 
 解决方法：只需要在applicationContext.xml中用正则表达式配置排除引入本地系统即可，如本地系统叫trade
 
-<import resource="classpath*:META-INF/facade/facade-:{?!.*(trade)}*.xml"/>
+`<import resource="classpath*:META-INF/facade/facade-:{?!.*(trade)}*.xml"/>`
 
 1.3.2 Service接口、特别是Service的实现部分impl是业务代码的核心，既能生成代码，也能保留之前的开发成果，在其上持迭代生成才能减少后端工作量。用java-parser处理已有的代码可以很好地解决这些问题，但是处理方法与domain处理相反，方法如下：
 
