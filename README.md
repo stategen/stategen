@@ -15,7 +15,7 @@ Stategen采用第三种生成方式可以豪无限制地兼容其它技术，所
 1.  spring中xml配置是spring的根本，springboot开发目的是用java代码代替xml配置，递归读取Annotation加载beans，这是用java反射形成树状beans管理，计算机处理这种结构无所谓，  
 但人工从树的root找到某个leaf非常难，需翻阅大量的java代码，所以springboot项目非常不适合项目owner管理,甚至过一段时间，连开发人员自己不能确切地知道有哪些bean。    
 2.  spring项目转换成springboot项目,只要加入Application.java和在maven中增加对springboot的引用，但是一个已成型和开发过一段时间springboot项目再想变回spring项目比登天还难.  
-3.  理由我说了，而且国内大型电商的招聘里一般更多地还要考察tomcat,jboos能力，这是为了把项目放到容器里调优。如果想变为springboot,自己手工修改即可，完全兼容,这暂时留给有兴趣的同学探索。  
+3.  理由我说了，而且国内大型电商的招聘里一般更多地还要考察tomcat,jboos能力，这是为了把项目放到容器里调优。如果自己想加入springboot技术,手工修改已生成的项目即可，完全兼容,这暂时留给有兴趣的同学探索。  
 
 ## StateGen原理:
    ### 关于前端
