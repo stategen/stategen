@@ -18,7 +18,7 @@ Stategen采用第三种生成方式可以豪无限制地兼容其它技术，所
 2.  spring项目转换成springboot项目,只要加入Application.java和在maven中增加对springboot的引用，但是一个已成型和开发过一段时间springboot项目再想变回spring项目比登天还难.  
 3.  理由我说了，而且国内大型电商的招聘里一般更多地还要考察tomcat,jboss能力，这是为了把项目放到容器里调优。如果自己想加入springboot技术,手工修改已生成的项目即可，完全兼容,
 这暂时留给有兴趣的同学探索。
-4.  本架构的目的是为了制作高并发、易管理、易交付、易维护，易重构的前、后端项目。更迎合那些想把项目管理达到BAT水准的人群项目owner和开发者。
+4.  本架构的目的是为了制作**高并发、易管理、易交付、易维护，易重构**的前、后端项目。更迎合那些想把项目管理达到BAT水准的人群项目owner和开发者。
 5.  至于部署，本架构服务端支持测试通过后由jenkins直接部署到生产，无需再改配置编译,避免人工疏忽.
 #### 关于Ibatis or MyBatis or hibernate 和dalgenX
 1.  SSH架构火了10年，其中hibernate支持自动生成sql的优势功不可没，但是再牛逼程序也不能满足复杂的sql自动生成,于是hibernate允许在java代码里掺杂hql和sql.
