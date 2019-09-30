@@ -17,7 +17,7 @@ Stategen采用第三种生成方式可以豪无限制地兼容其它技术，所
 但人工从树的root找到某个leaf非常难，需翻阅大量的java代码，所以springboot项目非常不适合项目owner管理,甚至过一段时间，连开发人员自己不能确切地知道有哪些bean。    
 2.  spring项目转换成springboot项目,只要加入Application.java和在maven中增加对springboot的引用，但是一个已成型和开发过一段时间springboot项目再想变回spring项目比登天还难.  
 3.  理由我说了，而且国内大型电商的招聘里一般更多地还要考察tomcat,jboos能力，这是为了把项目放到容器里调优。如果自己想加入springboot技术,手工修改已生成的项目即可，完全兼容,这暂时留给有兴趣的同学探索。  
-#### 关于Ibatis or MyBatis or hibernate
+#### 关于Ibatis or MyBatis or hibernate 和dalgenX
 1.  SSH架构火了10年，其中hibernate支持自动生成sql的优势功不可没，但是再牛逼程序也不能满足复杂的sql自动生成,于是hibernate允许在java代码里掺杂hql和sql.
 1.  上面的本意是给编程带来方便,但是一旦这个大门打开，就不能阻止开发人员进入，当java代码中混入大量的sql或hql后，项目离死也就不远了，除了难以维护，DBA也无法参与后期优化.
 1.  当年，同期发展的ibatis被hibernate打得措手不及，由apache的顶级项目变成弃儿.但是正是ibatis的缺点：手写sql,解决了hibernate的先天不足，由是很多人在web2.0时代又重新转向了SSI架构。
