@@ -39,8 +39,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.stategen.framework.annotation.Wrap;
 import org.stategen.framework.lite.IResponseStatus;
@@ -176,11 +174,11 @@ public class ResponseBodyAdviceWrapper extends ResponseStatusTypeHandler impleme
     @Override
     public void afterPropertiesSet() throws Exception {
         super.afterPropertiesSet();
-        WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-        Map<String, ResponseBodyAdviceWrapper> beansOfType = webApplicationContext.getBeansOfType(ResponseBodyAdviceWrapper.class);
-        if (CollectionUtil.isNotEmpty(beansOfType)) {
-            throw new Exception("ResponseBodyAdviceWrapper can not been defined than once!");
-        }
+//        WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+//        Map<String, ResponseBodyAdviceWrapper> beansOfType = webApplicationContext.getBeansOfType(ResponseBodyAdviceWrapper.class);
+//        if (CollectionUtil.isNotEmpty(beansOfType)) {
+//            throw new Exception("ResponseBodyAdviceWrapper can not been defined than once!");
+//        }
 
         if (CollectionUtil.isEmpty(packages) && CollectionUtil.isEmpty(annotations)) {
             throw new Exception("packages or annotations must been set at least!");

@@ -22,7 +22,7 @@ import java.util.Currency;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
+import org.stategen.framework.util.StringUtil;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 import com.ibatis.sqlmap.client.extensions.ResultGetter;
@@ -55,7 +55,7 @@ public class CurrencyHandlerCallback  implements TypeHandlerCallback{
         Object value =getter.getObject();
         if (value!=null) {
             String currStr =getter.getString();
-            if (StringUtils.hasText(currStr)){
+            if (StringUtil.isNotBlank(currStr)){
                 Currency currency =getCurrency(currStr);
                 return currency;
             }

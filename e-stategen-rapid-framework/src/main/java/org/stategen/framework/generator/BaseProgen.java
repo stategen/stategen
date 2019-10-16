@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import cn.org.rapid_framework.generator.util.StringHelper;
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +37,6 @@ import org.stategen.framework.util.AssertUtil;
 import org.stategen.framework.util.StringUtil;
 import org.stategen.framework.util.XmlUtil;
 
-import cn.org.rapid_framework.generator.util.StringHelper;
-
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
-
 public class BaseProgen {
     final static Logger logger = LoggerFactory.getLogger(BaseProgen.class);
     String dir_templates_root = null;
@@ -50,6 +48,13 @@ public class BaseProgen {
     String cmdPath = null;
 
     static String APPEND_TAG_DO_NOT_CHANGE = "<!--APPEND_TAG_DO_NOT_CHANGE-->";
+    static String[] springbootForReplaces = {"springboot_import", "springboot_dependencies", "springboot_plugin"};
+
+
+    static String springboot_import = "<!-- springboot_import -->";
+    static String springboot_dependencies = "<!-- springboot_dependencies -->";
+    static String springboot_plugin = "<!-- springboot_plugin --> ";
+
 
     public BaseProgen(Object global) {
 
@@ -172,27 +177,72 @@ public class BaseProgen {
                                String projectFolderName) throws IOException, TemplateException, DocumentException {
         String webTypePath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/frontend/" + webType + "/");
         File webTypeFile = new File(webTypePath);
-        AssertUtil.mustTrue(webTypeFile.exists(),webType+" 类型不存在 ,请输入 gen.sh -h 查看具体类型");
+        AssertUtil.mustTrue(webTypeFile.exists(), webType + " 类型不存在 ,请输入 gen.sh -h 查看具体类型");
         String currentProjectPath = StringUtil.concatPath(projectsPath, projectFolderName);
-        
-        String frontendName =projectName+"_frontend_"+webType;
+
+        String frontendName = projectName + "_frontend_" + webType;
         root.put("frontendName", frontendName);
 
-        String pomToReplaceFileName = StringUtil.concatPath(currentProjectPath,projectName+"-frontend-"+webType, "pom");
+        String pomToReplaceFileName = StringUtil.concatPath(currentProjectPath, projectName + "-frontend-" + webType, "pom");
         File pomToReplaceFile = new File(pomToReplaceFileName);
-        boolean pomToReplaceFileExists = pomToReplaceFile.exists() && pomToReplaceFile.isFile();
+        boolean pomToReplaceFileOldExists = pomToReplaceFile.exists() && pomToReplaceFile.isFile();
         processTempleteFiles(root, webTypePath);
 
-        if (!pomToReplaceFileExists) {
+        if (!pomToReplaceFileOldExists) {
             String mavenPluginExcutionText = IOHelpers.readFile(new File(pomToReplaceFileName), StringUtil.UTF_8);
             mavenPluginExcutionText += "\n                    " + APPEND_TAG_DO_NOT_CHANGE;
 
             String projectPomXml = StringUtil.concatPath(currentProjectPath, "pom.xml");
             String projectPomText = IOHelpers.readFile(new File(projectPomXml), StringUtil.UTF_8);
             projectPomText = projectPomText.replace(APPEND_TAG_DO_NOT_CHANGE, mavenPluginExcutionText);
-
             IOHelpers.saveFile(new File(projectPomXml), projectPomText, StringUtil.UTF_8);
         }
+    }
+
+    public void root() throws IOException, TemplateException {
+        Properties root = getRootProperties();
+        String configFile = System.getProperty("generatorConfigFile");
+        Properties configs = PropertiesHelpers.load(configFile);
+        root.putAll(configs);
+        root.putAll(StringHelper.getDirValuesMap(root));
+
+        systemName = root.getProperty("systemName");
+
+        String projectFolderName = StringUtil.trimLeftFormRightTo(cmdPath, StringUtil.SLASH);
+
+        String projectFrefix = "7-" + systemName + "-web-";
+        AssertUtil.mustTrue(projectFolderName.startsWith(projectFrefix), "client 命令必须在" + "7-" + systemName + "-web-xxx 执行");
+
+        projectName = StringUtil.trimePrefixIgnoreCase(projectFolderName, projectFrefix);
+        root.put("projectName", projectName);
+
+        String springRootTempPath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/spring-root@/");
+        String currentProjectPath = StringUtil.concatPath(projectsPath, projectFolderName);
+        processTempleteFiles(root, springRootTempPath);
+
+        String projectPomXml = StringUtil.concatPath(currentProjectPath, "pom.xml");
+        String projectPomText = IOHelpers.readFile(new File(projectPomXml), StringUtil.UTF_8);
+        for (String springBootForReplace : springbootForReplaces) {
+            String spingBootReplaceFileName = StringUtil.concatPath(currentProjectPath, "src/main/java/config/", springBootForReplace);
+            String spingBootReplaceText = IOHelpers.readFile(new File(spingBootReplaceFileName), StringUtil.UTF_8);
+
+            projectPomText = projectPomText.replace("<!--" + springBootForReplace + "-->", spingBootReplaceText);
+        }
+        IOHelpers.saveFile(new File(projectPomXml), projectPomText, StringUtil.UTF_8);
+
+//        Boolean hasClient = false;
+//        String webType = System.getProperty("webType");
+//        if (StringUtil.isNotBlank(webType) && !"-e".equals(webType)) {
+//            hasClient = true;
+//            root.put("webType", webType);
+//        } else {
+//            root.put("webType", "");
+//        }
+//        root.put("hasClient", hasClient);
+//
+//        if (hasClient) {
+//            processClient(root, hasClient, webType, projectFolderName);
+//        }
     }
 
     public void client() throws IOException, TemplateException, DocumentException {
@@ -226,5 +276,6 @@ public class BaseProgen {
             processClient(root, hasClient, webType, projectFolderName);
         }
     }
+
 
 }

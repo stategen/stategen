@@ -23,47 +23,51 @@ package org.stategen.framework.util;
  * @author XiaZhengsheng
  */
 public class OSUtil {
-    public static  final String filePrefix = "file:";
-    private static  final String windows_lower = "windows";
-    private static  final String os_name = "os.name";
-    
+    final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OSUtil.class);
+    public static final String filePrefix = "file:";
+    private static final String windows_lower = "windows";
+    private static final String os_name = "os.name";
+
     /**
      * The Class OsPath.
      *
      * @version $Id: CompatibilityPathUtil.java, v 0.1 2016-3-16 14:17:36 xiazhengsheng Exp $
      */
     public static class OsPath {
-        
+
         /**
          * *  The is windows.
          */
-        boolean isWindows      = false;
-        
+        boolean isWindows = false;
+
         /**
          * *  The disk path.
          */
-        String  diskPath       = null;
-        
+        String diskPath = null;
+
         /**
          * *  The web context path.
          */
-        String  webContextPath = null;
+        String webContextPath = null;
     }
 
     public static OsPath getOsPath() {
         OsPath result = new OsPath();
 
-        
         String osName = System.getProperties().getProperty(os_name);
-        if (osName!=null && !osName.isEmpty()) {
+        if (StringUtil.isNotEmpty(osName)) {
             osName = osName.toLowerCase();
             result.isWindows = osName.indexOf(windows_lower) > -1;
         }
 
         if (result.isWindows) {
-            result.webContextPath = Thread.currentThread().getContextClassLoader().getResource("")
-                .getPath();
+
+//            String threadPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+            String jarPath = JarUtil.getPath(null);
+
+            result.webContextPath = jarPath;
             int idx = result.webContextPath.indexOf(':');
+
             if (idx > -1) {
                 result.diskPath = filePrefix + result.webContextPath.substring(0, idx + 1);
                 result.webContextPath = filePrefix + result.webContextPath;
@@ -72,22 +76,21 @@ public class OSUtil {
 
         return result;
     }
-    
-    public static String getRealUriPathByOs(String fileName ,OsPath osPath){
-        if (osPath.isWindows && osPath.diskPath!=null && !osPath.diskPath.isEmpty() && fileName.startsWith(filePrefix)
-                && !fileName.startsWith(osPath.webContextPath) && !fileName.startsWith(osPath.diskPath)) {
-               //file:
-                fileName = fileName.substring(filePrefix.length());
-                fileName = new StringBuffer(fileName.length() + osPath.diskPath.length())
-                    .append(osPath.diskPath).append(fileName).toString();
-                
+
+    public static String getRealUriPathByOs(String fileName, OsPath osPath) {
+        if (osPath.isWindows && StringUtil.isNotEmpty(osPath.diskPath) && fileName.startsWith(filePrefix)
+            && !fileName.startsWith(osPath.webContextPath) && !fileName.startsWith(osPath.diskPath)) {
+            //file:
+            fileName = fileName.substring(filePrefix.length());
+            fileName = new StringBuffer(fileName.length() + osPath.diskPath.length()).append(osPath.diskPath)
+                .append(fileName).toString();
+
         }
         return fileName;
     }
-    
-    
-    public static String getRealUriPathByOs(String fileName ){
-        OsPath osPath =getOsPath();
+
+    public static String getRealUriPathByOs(String fileName) {
+        OsPath osPath = getOsPath();
         return getRealUriPathByOs(fileName, osPath);
     }
 }

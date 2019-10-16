@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.stategen.framework</groupId>
         <artifactId>stategen-parent</artifactId>
-        <version>2.0.5.stategen.RELEASE</version>
+        <version>2.0.6.stategen.RELEASE</version>
         <relativePath>../</relativePath>
     </parent>
     <artifactId>aa-stategen-ibatis-util</artifactId>
@@ -17,7 +17,7 @@
             <artifactId>stategen-dto-lite</artifactId>
             <version>${stategen-version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.stategen.framework</groupId>
             <artifactId>stategen-util</artifactId>
@@ -32,10 +32,17 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework</groupId>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-2-spring</artifactId>
+            <version>1.0.1</version>        
+<!--             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
-            <version>${spring-orm-version}</version>
+            <version>${spring-orm-version}</version> -->
             <exclusions>
+                <exclusion>
+                    <artifactId>spring-orm</artifactId>
+                    <groupId>org.springframework</groupId>
+                </exclusion>
                 <exclusion>
                     <groupId>org.hibernate</groupId>
                     <artifactId>hibernate-core</artifactId>
@@ -64,12 +71,14 @@
             <version>1.7.13</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+        
+          <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
             <scope>provided</scope>
         </dependency>
+
 
     </dependencies>
 
@@ -104,6 +113,39 @@
                         <goals>
                             <goal>jar-no-fork</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <createSourcesJar>true</createSourcesJar>
+                            <shadeSourcesContent>true</shadeSourcesContent>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.springframework:spring-orm</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>org.springframework:spring-orm</artifact>
+                                    <includes>
+                                        <include>org/springframework/orm/ibatis/**</include>
+                                        <include>META-INF/license.txt</include>
+                                        <include>META-INF/notice.txt</include>
+                                    </includes>
+                                </filter>
+                            </filters>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
