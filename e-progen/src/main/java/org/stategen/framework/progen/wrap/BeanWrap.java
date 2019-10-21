@@ -24,6 +24,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ import org.stategen.framework.progen.NamedContext;
 import org.stategen.framework.progen.WrapContainer;
 import org.stategen.framework.util.AnnotationUtil;
 import org.stategen.framework.util.CollectionUtil;
+import org.stategen.framework.util.CommonComparetor;
 import org.stategen.framework.util.ReflectionUtil;
 import org.stategen.framework.util.StringUtil;
 
@@ -54,9 +56,15 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
 
     private Map<String, FieldWrap> genericFieldMap;
 
-    private Map<String, FieldWrap> fieldMap = new LinkedHashMap<String, FieldWrap>();
-    private Map<String, FieldWrap> allFieldMap = new LinkedHashMap<String, FieldWrap>();
-    private Map<String, FieldWrap> superFieldMap = new LinkedHashMap<String, FieldWrap>();
+    private Map<String, FieldWrap> fieldMap = new HashMap<String, FieldWrap>();
+    private List<FieldWrap> fields ;
+    
+    private Map<String, FieldWrap> allFieldMap = new HashMap<String, FieldWrap>();
+    private List<FieldWrap> allFields;
+    
+    private Map<String, FieldWrap> superFieldMap = new HashMap<String, FieldWrap>();
+    
+    private List<FieldWrap> superFields;
 
     private Boolean genBean;
 
@@ -203,17 +211,36 @@ public class BeanWrap extends BaseHasImportsWrap implements CanbeImportWrap {
     }
 
     public List<FieldWrap> getFields() {
-        return new ArrayList<FieldWrap>(fieldMap.values());
+        if (fields ==null){
+            fields =createSortedFieldWraps(fieldMap);
+        }
+        return fields;
     }
 
     public List<FieldWrap> getAllFields() {
-        return new ArrayList<FieldWrap>(allFieldMap.values());
+        if (allFields ==null){
+            allFields = createSortedFieldWraps(allFieldMap);
+        }
+        return allFields;
     }
 
     public List<FieldWrap> getSuperFields() {
-        return new ArrayList<FieldWrap>(superFieldMap.values());
+        if (superFields ==null){
+            superFields =createSortedFieldWraps(superFieldMap);
+        }
+        return superFields;
     }
-
+    
+    private List<FieldWrap> createSortedFieldWraps(Map<String, FieldWrap> theFieldMap) {
+        ArrayList<String> fieldNames = new ArrayList<String>(theFieldMap.keySet());
+        fieldNames.sort(new CommonComparetor());
+        List<FieldWrap> theFieldWraps =new ArrayList<FieldWrap>();
+        for (String fieldName : fieldNames) {
+            theFieldWraps.add(theFieldMap.get(fieldName));
+        }
+        return theFieldWraps;
+    }
+    
     public void setParentBean(BeanWrap parentBean) {
         this.parentBean = parentBean;
         if (parentBean != null) {
