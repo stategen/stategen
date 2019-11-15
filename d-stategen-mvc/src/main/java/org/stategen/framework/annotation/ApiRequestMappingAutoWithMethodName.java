@@ -83,6 +83,9 @@ public @interface ApiRequestMappingAutoWithMethodName {
     @AliasFor(annotation = ApiOperation.class,attribute="value")
     String name() default "";
     
+    @AliasFor(attribute="name")
+    String value() default "";
+    
 
     @AliasFor(annotation = ApiOperation.class)
     String notes() default "";

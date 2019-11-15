@@ -85,6 +85,8 @@ public class OSUtil {
             fileName = new StringBuffer(fileName.length() + osPath.diskPath.length()).append(osPath.diskPath)
                 .append(fileName).toString();
 
+        } else if (!osPath.isWindows && fileName.startsWith(filePrefix+"//") &&  !fileName.startsWith(filePrefix+"///")){
+            fileName =new StringBuffer(filePrefix+"///").append(fileName.substring(filePrefix.length()+2)).toString();
         }
         return fileName;
     }
