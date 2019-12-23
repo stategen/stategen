@@ -71,8 +71,9 @@ public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler imple
                 BaseResponse<?> errorResponse = ResponseUtil.buildResponse(null, errorResponseStatus);
                 errorResponse.setExeptionClass(ex.getClass().getSimpleName());
                 errorResponse.setMessage(failMessage);
-                httpServletResponse.setStatus(HttpStatus.OK.value());
-                ResponseUtil.writhResponse(errorResponse);
+                httpServletResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                boolean supportMethod = ResponseBodyAdviceWrapper.supportMethod(method);
+                ResponseUtil.writhResponse(supportMethod,errorResponse);
                 
             } else {
                 String redirect =errorResponseStatus.isRedirect()?"redirect:":null;

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.stategen.framework.web.cookie;
+package org.stategen.framework.spring.util;
 
 import java.util.Locale;
 
@@ -26,6 +26,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.stategen.framework.util.StringUtil;
+import org.stategen.framework.web.cookie.ServletContextUtil;
 
 /**
  * The Class RequestUtil.

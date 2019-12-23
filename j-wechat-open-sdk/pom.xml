@@ -6,9 +6,40 @@
         <version>2.0.8.stategen.RELEASE</version>
         <relativePath>../</relativePath>
     </parent>
-    <artifactId>stategen-dto-lite</artifactId>
+    <artifactId>wechat-open-sdk</artifactId>
     <version>${stategen-version}</version>
-    <name>a-stategen-dto-lite</name>
+    <name>j-wechat-open-sdk</name>
+
+
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-pay</artifactId>
+            <version>3.6.0</version>
+            <scope>provided</scope>
+        </dependency>
+                
+        <dependency>
+            <groupId>org.stategen.framework</groupId>
+            <artifactId>stategen-util</artifactId>
+            <version>${stategen-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream -->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.11</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
 
     <build>
         <plugins>
@@ -31,7 +62,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
         </plugins>
     </build>
 </project>

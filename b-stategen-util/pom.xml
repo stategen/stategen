@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.stategen.framework</groupId>
         <artifactId>stategen-parent</artifactId>
-        <version>2.0.7.stategen.RELEASE</version>
+        <version>2.0.8.stategen.RELEASE</version>
         <relativePath>../</relativePath>
     </parent>
     <artifactId>stategen-util</artifactId>
@@ -54,13 +54,11 @@
             <version>1.6.1</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>${fastjson-version}</version>
-            <scope>provided</scope>
-        </dependency>        
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -96,6 +94,21 @@
         </dependency>
 
         <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.10.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.4</version>
+            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.esotericsoftware.kryo</groupId>
             <artifactId>kryo</artifactId>
             <version>2.16</version>
@@ -109,6 +122,32 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.5.1</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.1</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.2</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

@@ -22,6 +22,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.stategen.framework.spring.util.RequestUtil;
+
 /**
  * *
  * ServletContext工具类，目前该类只有2个 ThreadLocal 分别装载  HttpServletRequest HttpServletResponse

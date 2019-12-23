@@ -28,9 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.GenericFilterBean;
+import org.stategen.framework.spring.util.RequestUtil;
 import org.stategen.framework.util.NumberUtil;
 import org.stategen.framework.web.cookie.AntiCookieFakeResponseWrapper;
-import org.stategen.framework.web.cookie.RequestUtil;
 import org.stategen.framework.web.cookie.ServletContextUtil;
 
 import configs.Configration;

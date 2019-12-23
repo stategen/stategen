@@ -54,14 +54,14 @@ import freemarker.template.TemplateException;
 public class FacadeGenerator {
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FacadeGenerator.class);
 
-    public void genFacades(List<Class<?>> classes, Properties root) throws IOException, TemplateException {
+    public void genFacades(Set<Class<?>> allcClasses, Properties root) throws IOException, TemplateException {
 
         String controlleSuffix = root.getProperty("controller_name_suffix");
 
         Set<String> apis = new HashSet<String>();
         Map<String, CanbeImportWrap> destApiWrapMap = new HashMap<String, CanbeImportWrap>();
 
-        for (Class<?> clz : classes) {
+        for (Class<?> clz : allcClasses) {
             if (AnnotatedElementUtils.findMergedAnnotation(clz, Controller.class) != null) {
                 String controllerName = clz.getSimpleName();
                 String apiName = StringUtil.trimRight(controllerName, controlleSuffix);
@@ -77,7 +77,7 @@ public class FacadeGenerator {
                         }
                     }
                 } catch (Exception e) {
-                    logger.error(new StringBuffer("在运行时产生错误信息,此错误信息表示该相应方法已将相关错误catch了，请尽快修复!\n以下是具体错误产生的原因:").append(e.getMessage()).append(apiName)
+                    logger.error(new StringBuffer("在运行时产生错误信息,此错误信息表示该相应方法已将相关错误catch了，请尽快修复!\n以下是具体错误产生的原因:\n").append(e.getMessage()).append(apiName)
                         .append(" \n").toString(), e);
                     throw e;
                 }

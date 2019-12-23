@@ -47,19 +47,18 @@ import org.stategen.framework.response.ResponseUtil;
 import org.stategen.framework.util.AnnotationUtil;
 import org.stategen.framework.util.CollectionUtil;
 
-import configs.Configration;
-
 /**
  * 该类将返回结果包装成response.
  */
 @ControllerAdvice(annotations = { Controller.class, RestController.class })
 public class ResponseBodyAdviceWrapper extends ResponseStatusTypeHandler implements ResponseBodyAdvice<Object>, InitializingBean {
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ResponseBodyAdviceWrapper.class);
-    private Map<Method, Boolean> needWrapMethodsCache = new ConcurrentHashMap<Method, Boolean>();
+    private static Map<Method, Boolean> needWrapMethodsCache = new ConcurrentHashMap<Method, Boolean>();
 
-    private Set<String> packages = null;
+    //如果不设置，会把所有controller都包装，显示一些jar包中的controller有自己的返回值
+    public static Set<String> packages = null;
 
-    private Set<Class<? extends Annotation>> annotations = null;
+    public static Set<Class<? extends Annotation>> annotations = null;
 
     @Autowired
     private ServletContext servletContext;
@@ -72,7 +71,7 @@ public class ResponseBodyAdviceWrapper extends ResponseStatusTypeHandler impleme
         }
     }
 
-    protected boolean checkMethodPath(Method method) {
+    protected static boolean checkMethodPath(Method method) {
         if (CollectionUtil.isNotEmpty(packages)) {
             Class<?> declaringClass = method.getDeclaringClass();
             Package pkg = declaringClass.getPackage();
@@ -95,11 +94,11 @@ public class ResponseBodyAdviceWrapper extends ResponseStatusTypeHandler impleme
 
     @Override
     public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> converterType) {
-        if (!Configration.WRAPPER_REPONSE) {
-            return false;
-        }
-
         final Method method = methodParameter.getMethod();
+        return supportMethod(method);
+    }
+
+    public static boolean supportMethod(Method method) {
         Boolean needWrapFlag;
         needWrapFlag = needWrapMethodsCache.get(method);
         if (needWrapFlag != null) {
@@ -121,11 +120,18 @@ public class ResponseBodyAdviceWrapper extends ResponseStatusTypeHandler impleme
             if (responseBodyAnno == null) {
                 return needWrapFlag;
             }
-
-            boolean exclude = AnnotationUtil.getAnnotationValueFormMembers(Wrap.class, Wrap::exclude,false, method);
+            
+           
+            Wrap wrapAnno = AnnotationUtil.getMethodOrOwnerAnnotation(method, Wrap.class);
+            if (wrapAnno==null){
+                return needWrapFlag;
+            }
+            
+            boolean exclude = wrapAnno.exclude();
             if (exclude){
                 return needWrapFlag;
             }
+            
             needWrapFlag = true;
             return needWrapFlag;
         } finally {

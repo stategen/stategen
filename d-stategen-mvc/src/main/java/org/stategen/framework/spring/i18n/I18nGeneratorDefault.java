@@ -21,9 +21,9 @@ import java.util.Locale;
 import org.springframework.context.MessageSource;
 import org.stategen.framework.lite.I18nGenerator;
 import org.stategen.framework.lite.I18nUtil;
+import org.stategen.framework.spring.util.RequestUtil;
 import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.StringUtil;
-import org.stategen.framework.web.cookie.RequestUtil;
 
 /**
  * *

@@ -1,5 +1,4 @@
-package org.stategen.framework.spring.util;
-
+package org.stategen.framework.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,17 +33,14 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.util.EntityUtils; 
+import org.apache.http.util.EntityUtils;
 
-
- 
 public class HttpsUtil {
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(HttpsUtil.class);
-    private static PoolingHttpClientConnectionManager   connMgr;
-    private static RequestConfig                requestConfig;
-    private static final int                MAX_TIMEOUT = 7000;
- 
- 
+    private static PoolingHttpClientConnectionManager connMgr;
+    private static RequestConfig requestConfig;
+    private static final int MAX_TIMEOUT = 7000;
+
     static {
         // 设置连接池
         connMgr = new PoolingHttpClientConnectionManager();
@@ -60,10 +56,10 @@ public class HttpsUtil {
         configBuilder.setSocketTimeout(MAX_TIMEOUT);
         // 设置从连接池获取连接实例的超时
         configBuilder.setConnectionRequestTimeout(MAX_TIMEOUT);
- 
+
         requestConfig = configBuilder.build();
     }
- 
+
     /**
      * 发送 GET 请求（HTTP），不带输入数据
      * 
@@ -72,10 +68,10 @@ public class HttpsUtil {
      * @throws IOException 
      * @throws GeneralSecurityException 
      */
-    public static String doGet(String url) throws IOException, GeneralSecurityException {
+    public static String doGet(String url) {
         return doGet(url, new HashMap<String, Object>());
     }
- 
+
     /**
      * 发送 GET 请求（HTTP），K-V形式
      * 
@@ -85,7 +81,7 @@ public class HttpsUtil {
      * @throws IOException 
      * @throws GeneralSecurityException 
      */
-    public static String doGet(String url, Map<String, Object> params) throws IOException, GeneralSecurityException {
+    public static String doGet(String url, Map<String, Object> params) {
         String apiUrl = url;
         StringBuffer param = new StringBuffer();
         int i = 0;
@@ -100,13 +96,14 @@ public class HttpsUtil {
         apiUrl += param;
         String result = null;
         HttpClient httpClient = null;
-        if (apiUrl.startsWith("https")) {
-            httpClient = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory())
-                    .setConnectionManager(connMgr).setDefaultRequestConfig(requestConfig).build();
-        } else {
-            httpClient = HttpClients.createDefault();
-        }
         try {
+            if (apiUrl.startsWith("https")) {
+                httpClient = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory())
+                    .setConnectionManager(connMgr).setDefaultRequestConfig(requestConfig).build();
+            } else {
+                httpClient = HttpClients.createDefault();
+            }
+
             HttpGet httpGet = new HttpGet(apiUrl);
             HttpResponse response = httpClient.execute(httpGet);
             HttpEntity entity = response.getEntity();
@@ -114,13 +111,13 @@ public class HttpsUtil {
                 InputStream instream = entity.getContent();
                 result = IOUtils.toString(instream, "UTF-8");
             }
-        } catch (IOException e) {
-            logger.error(e.getMessage(),e);
-            throw e;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage());
         }
         return result;
     }
- 
+
     /**
      * 发送 POST 请求（HTTP），不带输入数据
      * 
@@ -129,10 +126,10 @@ public class HttpsUtil {
      * @throws IOException 
      * @throws GeneralSecurityException 
      */
-    public static String doPost(String apiUrl) throws IOException, GeneralSecurityException {
+    public static String doPost(String apiUrl) {
         return doPost(apiUrl, new HashMap<String, Object>());
     }
- 
+
     /**
      * 发送 POST 请求，K-V形式
      * 
@@ -144,19 +141,20 @@ public class HttpsUtil {
      * @throws IOException 
      * @throws GeneralSecurityException 
      */
-    public static String doPost(String apiUrl, Map<String, Object> params) throws IOException, GeneralSecurityException {
+    public static String doPost(String apiUrl, Map<String, Object> params) {
         CloseableHttpClient httpClient = null;
-        if (apiUrl.startsWith("https")) {
-            httpClient = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory())
-                    .setConnectionManager(connMgr).setDefaultRequestConfig(requestConfig).build();
-        } else {
-            httpClient = HttpClients.createDefault();
-        }
-        String httpStr = null;
-        HttpPost httpPost = new HttpPost(apiUrl);
         CloseableHttpResponse response = null;
- 
+        String httpStr = null;
         try {
+            if (apiUrl.startsWith("https")) {
+                httpClient = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory())
+                    .setConnectionManager(connMgr).setDefaultRequestConfig(requestConfig).build();
+            } else {
+                httpClient = HttpClients.createDefault();
+            }
+
+            HttpPost httpPost = new HttpPost(apiUrl);
+
             httpPost.setConfig(requestConfig);
             List<NameValuePair> pairList = new ArrayList<>(params.size());
             for (Map.Entry<String, Object> entry : params.entrySet()) {
@@ -167,22 +165,22 @@ public class HttpsUtil {
             response = httpClient.execute(httpPost);
             HttpEntity entity = response.getEntity();
             httpStr = EntityUtils.toString(entity, "UTF-8");
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw e;
+            throw new RuntimeException(e.getMessage());
         } finally {
             if (response != null) {
                 try {
                     EntityUtils.consume(response.getEntity());
-                } catch (IOException e) {
+                } catch (Exception e) {
                     logger.error(e.getMessage(), e);
-                    throw e;
+                    throw new RuntimeException(e.getMessage());
                 }
             }
         }
         return httpStr;
     }
- 
+
     /**
      * 发送 POST 请求，JSON形式
      * 
@@ -193,19 +191,21 @@ public class HttpsUtil {
      * @throws IOException 
      * @throws GeneralSecurityException 
      */
-    public static String doPost(String apiUrl, Object json) throws IOException, GeneralSecurityException {
+    public static String doPost(String apiUrl, Object json) {
         CloseableHttpClient httpClient = null;
-        if (apiUrl.startsWith("https")) {
-            httpClient = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory())
-                    .setConnectionManager(connMgr).setDefaultRequestConfig(requestConfig).build();
-        } else {
-            httpClient = HttpClients.createDefault();
-        }
-        String httpStr = null;
-        HttpPost httpPost = new HttpPost(apiUrl);
         CloseableHttpResponse response = null;
- 
+        String httpStr = null;
+
         try {
+            if (apiUrl.startsWith("https")) {
+                httpClient = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory())
+                    .setConnectionManager(connMgr).setDefaultRequestConfig(requestConfig).build();
+            } else {
+                httpClient = HttpClients.createDefault();
+            }
+
+            HttpPost httpPost = new HttpPost(apiUrl);
+
             httpPost.setConfig(requestConfig);
             StringEntity stringEntity = new StringEntity(json.toString(), "UTF-8");// 解决中文乱码问题
             stringEntity.setContentEncoding("UTF-8");
@@ -214,22 +214,23 @@ public class HttpsUtil {
             response = httpClient.execute(httpPost);
             HttpEntity entity = response.getEntity();
             httpStr = EntityUtils.toString(entity, "UTF-8");
-        } catch (IOException e) {
+            
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw e;
+            throw new RuntimeException(e.getMessage());
         } finally {
             if (response != null) {
                 try {
                     EntityUtils.consume(response.getEntity());
                 } catch (IOException e) {
                     logger.error(e.getMessage(), e);
-                    throw e;
+                    throw new RuntimeException(e.getMessage());
                 }
             }
         }
         return httpStr;
     }
- 
+
     /**
      * 创建SSL安全连接
      * 
@@ -240,13 +241,13 @@ public class HttpsUtil {
         SSLConnectionSocketFactory sslsf = null;
         try {
             SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
- 
+
                 public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
                     return true;
                 }
             }).build();
             sslsf = new SSLConnectionSocketFactory(sslContext, new HostnameVerifier() {
- 
+
                 @Override
                 public boolean verify(String arg0, SSLSession arg1) {
                     return true;

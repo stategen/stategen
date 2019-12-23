@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.HandlerMethod;
@@ -73,7 +74,7 @@ public class AuthCheckerHandlerInterceptor extends ResponseStatusTypeHandler imp
         TagArrayList<Annotation> checkAnnos = getOrCreateCheckAnnoCache(method);
         if (CollectionUtil.isNotEmpty(checkAnnos)) {
 
-            ResponseBody responseBody = AnnotationUtil.getMethodOrOwnerAnnotation(method, ResponseBody.class);
+            ResponseBody responseBodyAnno = AnnotationUtil.getMethodOrOwnerAnnotation(method, ResponseBody.class);
 
             for (Annotation checkAnno : checkAnnos) {
                 Class<? extends Annotation> checkAnnoClz = checkAnno.annotationType();
@@ -81,9 +82,10 @@ public class AuthCheckerHandlerInterceptor extends ResponseStatusTypeHandler imp
                 AssertUtil.mustNotNull(abstractMethodChecker, new StringBuffer("标注:").append(checkAnnoClz).append(" 没有找到相应的校验器").toString());
                 Class<? extends IResponseStatus> responseStatusClzOfCheckFailDefault = this.getResponseStatusClz();
                 IResponseStatus errorResponseStatus = abstractMethodChecker.doCheck(method, checkAnno, responseStatusClzOfCheckFailDefault);
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 if (errorResponseStatus != null) {
-                    if (responseBody != null) {
-                        ResponseUtil.writhResponse(null, errorResponseStatus);
+                    if (responseBodyAnno != null) {
+                        ResponseUtil.writhResponse(true,null, errorResponseStatus);
                         if (logger.isInfoEnabled()) {
                             logger.info(new StringBuffer("校验").append(checkAnnoClz).append(" 没有通过，方法执行被拦截!").toString());
                         }

@@ -13,25 +13,25 @@ import java.util.List;
  * @author badqiu
  * @param <E> the element type
  */
-public class PageList<E> implements IPageList ,Serializable {
+public class PageList<E> implements IPageList, Serializable {
 
     private static final long serialVersionUID = 1412759446332294209L;
 
     /** 分页大小 */
-    private long               pageSize;
+    private long pageSize;
     /** 页数  */
-    private long               pageNum;
+    private long pageNum;
     /** 总记录数 */
-    private long               totalCount;
+    private long totalCount;
     /** 总页数*/
-    private long               totalPages;
+    private long totalPages;
 
     private List<E> items;
-    
+
     private Pagination pagination;
 
     public PageList() {
-        items =new ArrayList<>(0);
+        items = new ArrayList<>(0);
     }
 
     public PageList(long pageNum, long pageSize, long totalCount) {
@@ -47,10 +47,10 @@ public class PageList<E> implements IPageList ,Serializable {
         this.setItems(items);
         calculteTotalPages();
     }
-    
-    private void calculteTotalPages(){
-        if (totalCount!=0 && pageSize!=0){
-            double c = totalCount /pageSize ;
+
+    private void calculteTotalPages() {
+        if (totalCount != 0 && pageSize != 0) {
+            double c = totalCount / pageSize;
             this.totalPages = ((long) Math.ceil(c));
         }
     }
@@ -79,11 +79,11 @@ public class PageList<E> implements IPageList ,Serializable {
         this.pageNum = pageNum;
     }
 
-    public List< E> getItems() {
+    public List<E> getItems() {
         return items;
     }
 
-    public void setItems(List< E> items) {
+    public void setItems(List<E> items) {
         this.items = items;
     }
 
@@ -94,9 +94,16 @@ public class PageList<E> implements IPageList ,Serializable {
     public void setTotalPages(long totalPages) {
         this.totalPages = totalPages;
     }
-    
+
     public Pagination getPagination() {
         return new Pagination(this);
+    }
+
+    public E first() {
+        if (items != null && items.size() > 0) {
+            return items.get(0);
+        }
+        return null;
     }
 
 }

@@ -44,6 +44,7 @@ public class GenContext {
     public static WrapContainer wrapContainer = new WrapContainer();
 
     public static Set<Class<?>> staticUtils = new HashSet<Class<?>>();
+    public static List<String> extPackageNames;
     public static List<String> tempDirs;
     public static String outDir;
 //    public static String outConfigDir;

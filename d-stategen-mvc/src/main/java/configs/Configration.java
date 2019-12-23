@@ -48,7 +48,7 @@ public class Configration {
 
 //    public static volatile Boolean     STRONG             = true;
     
-    public static volatile boolean     WRAPPER_REPONSE             = true;
+//    public static volatile boolean     WRAPPER_REPONSE             = true;
 
     public static volatile Integer     COOKIE_DEFAULT_AGE =3600 * 24 * 30;
 
@@ -115,8 +115,5 @@ public class Configration {
     public void setEnableSwagger(boolean enableSwagger) {
         Configration.enableSwagger = enableSwagger;
     }
-    
-    public void setWrapperResponse(boolean wrapperResponse){
-        WRAPPER_REPONSE =wrapperResponse;
-    }
+
 }

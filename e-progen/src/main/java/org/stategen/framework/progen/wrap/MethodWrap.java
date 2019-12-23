@@ -52,6 +52,7 @@ import org.stategen.framework.lite.SimpleResponse;
 import org.stategen.framework.progen.GenContext;
 import org.stategen.framework.progen.NamedContext;
 import org.stategen.framework.progen.UrlPart;
+import org.stategen.framework.spring.mvc.ResponseBodyAdviceWrapper;
 import org.stategen.framework.util.AnnotationUtil;
 import org.stategen.framework.util.AssertUtil;
 import org.stategen.framework.util.CollectionUtil;
@@ -81,6 +82,9 @@ public class MethodWrap {
 
     private BaseWrap area;
     private Boolean genForm = null;
+    
+    //是否通过 Response包装返回
+    private Boolean isWrap =null;
 
     public MethodWrap(ApiWrap apiWrap, Method method) {
         super();
@@ -90,6 +94,13 @@ public class MethodWrap {
         genParams();
         genUrlAndHttpMethod();
         genState();
+    }
+    
+    public Boolean getIsWrap() {
+        if (isWrap==null){
+            isWrap =ResponseBodyAdviceWrapper.supportMethod(methodFun);
+        }
+        return isWrap;
     }
 
     public Boolean getGenForm() {
@@ -150,7 +161,7 @@ public class MethodWrap {
             }
         }
 
-        if (!stateFieldAdded && area == null) {
+        if (stateAnno!=null && !stateFieldAdded && area == null) {
             if (returnClz != Object.class && GenContext.wrapContainer.checkIsOrgSimpleOrEnum(returnClz) && ((ApiWrap) apiWrap).getGenModel()) {
                 String errMessage = "未指定area,如 @State(area=User.class),只有返回值是非基本类型、SimpleResponse、Object可以不指定area"
                                     + ReflectionUtil.getJavaConsoleLink(methodFun);

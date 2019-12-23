@@ -26,6 +26,7 @@ import org.stategen.framework.lite.ICookieType;
 import org.stategen.framework.lite.IResponseStatus;
 import org.stategen.framework.response.ResponseStatusTypeHandler;
 import org.stategen.framework.response.ResponseUtil;
+import org.stategen.framework.spring.util.RequestUtil;
 import org.stategen.framework.util.AssertUtil;
 import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.GetOrCreateWrap;
@@ -150,7 +151,7 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
                 //验证没有通过，返回json对象
                 IResponseStatus responseStatusOfTokenError = IResponseStatus
                     .getResponseStatus(this.getResponseStatusClz());
-                ResponseUtil.writhResponse(null, responseStatusOfTokenError);
+                ResponseUtil.writhResponse(true,null, responseStatusOfTokenError);
                 return false;
             } else {
                 logger.warn(

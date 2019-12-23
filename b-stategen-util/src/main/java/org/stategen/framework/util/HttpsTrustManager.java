@@ -1,4 +1,4 @@
-package org.stategen.framework.spring.util;
+package org.stategen.framework.util;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

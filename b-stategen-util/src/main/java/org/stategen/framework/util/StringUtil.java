@@ -711,7 +711,14 @@ public class StringUtil {
         return Arrays.asList(lines);
     }
     
-
+    public static String trim(String str) {
+        return str == null ? null : str.trim();
+    }
+    
+    public static String trimToNull(String str) {
+        String ts = trim(str);
+        return isEmpty(ts) ? null : ts;
+    }
     
 
 }

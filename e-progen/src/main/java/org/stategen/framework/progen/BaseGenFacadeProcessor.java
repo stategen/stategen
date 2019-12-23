@@ -17,10 +17,13 @@
 package org.stategen.framework.progen;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +31,7 @@ import org.springframework.beans.BeanUtils;
 import org.stategen.framework.generator.util.ClassHelpers;
 import org.stategen.framework.generator.util.FileHelpers;
 import org.stategen.framework.generator.util.PropertiesHelpers;
+import org.stategen.framework.spring.mvc.ResponseBodyAdviceWrapper;
 import org.stategen.framework.util.BusinessAssert;
 import org.stategen.framework.util.CollectionUtil;
 
@@ -78,8 +82,7 @@ public class BaseGenFacadeProcessor {
         root.putAll(genConfigXmlProperties);
         
         String packageName = root.getProperty("packageName");
-        String pkgName = packageName;//+"."+controller_dir_name;
-        
+        packageName =packageName+".controller";
         
         String dir_templates_root = dalgenHome + "/templates/" + root.getProperty("dao_type");
         
@@ -97,13 +100,25 @@ public class BaseGenFacadeProcessor {
             root.putAll(GenContext.customVirables); 
         }
         
-        List<Class<?>> classes = ClassHelpers.getClasses(pkgName);
+        Set<String> packageNames =new HashSet<String>(Arrays.asList(packageName));
+        if (CollectionUtil.isNotEmpty(GenContext.extPackageNames)){
+            packageNames.addAll(GenContext.extPackageNames);
+        }
+        ResponseBodyAdviceWrapper.packages=packageNames;
+   
+          
+        Set<Class<?>> allcClasses =new HashSet<Class<?>>();
+        for (String pkgName : packageNames) {
+            List<Class<?>> classes = ClassHelpers.getClasses(pkgName);
+            allcClasses.addAll(classes);
+        }
+        
         if (CollectionUtil.isNotEmpty(GenContext.staticUtils)){
             for (Class<?> utilClazz : GenContext.staticUtils) {
                 root.put(utilClazz.getSimpleName(), BeanUtils.instantiate(utilClazz));
             }
         }
-        facadeGenerator.genFacades(classes, root);
+        facadeGenerator.genFacades(allcClasses, root);
     }
     
 

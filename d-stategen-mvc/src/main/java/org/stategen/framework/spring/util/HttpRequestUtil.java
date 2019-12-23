@@ -33,7 +33,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.stategen.framework.util.StringUtil;
-import org.stategen.framework.web.cookie.RequestUtil;
 
 /**
  *  

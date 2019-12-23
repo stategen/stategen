@@ -22,12 +22,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.stategen.framework.lite.IResponseStatus;
 import org.stategen.framework.lite.BaseResponse;
+import org.stategen.framework.lite.IResponseStatus;
 import org.stategen.framework.spring.mvc.SpringContextHolder;
 import org.stategen.framework.web.cookie.ServletContextUtil;
 
-import configs.Configration;
 import configs.Constant;
 
 /**
@@ -65,13 +64,13 @@ public class ResponseUtil {
         }
     }
     
-    public static <T> void writhResponse(T data, IResponseStatus responseStatus) {
+    public static <T> void writhResponse(Boolean supportMethod,T data, IResponseStatus responseStatus) {
         BaseResponse<Object> response = ResponseUtil.buildResponse(data, responseStatus);
-        writhResponse(response);
+        writhResponse(supportMethod,response);
     }
     
-    public static <T> void writhResponse(BaseResponse<T> response) {
-        if (Configration.WRAPPER_REPONSE){
+    public static <T> void writhResponse(Boolean supportMethod,BaseResponse<T> response) {
+        if (supportMethod){
             FastJsonResponseUtil.writeResponse(response);
         } else {
             if (response._getData()!=null){
