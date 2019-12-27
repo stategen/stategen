@@ -42,6 +42,8 @@ import cn.org.rapid_framework.generator.util.ClassHelper;
 import cn.org.rapid_framework.generator.util.GLogger;
 import cn.org.rapid_framework.generator.util.GeneratorException;
 
+import lombok.Cleanup;
+
 /**
  * 代码生成器的主要入口类,包装相关方法供外部生成代码使用 使用GeneratorFacade之前，需要设置Generator的相关属性
  * 
@@ -355,12 +357,15 @@ public class GeneratorFacade {
 
         private static void printExceptionsSumary(String msg, String outRoot,
                                                   List<Exception> exceptions)
-                throws FileNotFoundException {
+                throws FileNotFoundException ,IOException{
             File errorFile = new File(outRoot, "generator_error.log");
             if (exceptions != null && exceptions.size() > 0) {
                 System.err.println("[Generate Error Summary] : " + msg);
                 errorFile.getParentFile().mkdirs();
-                PrintStream output = new PrintStream(new FileOutputStream(errorFile));
+                @Cleanup
+                FileOutputStream fileOutputStream = new FileOutputStream(errorFile);
+                @Cleanup
+                PrintStream output = new PrintStream(fileOutputStream);
                 for (int i = 0; i < exceptions.size(); i++) {
                     Exception e = exceptions.get(i);
                     System.err.println("[GENERATE ERROR]:" + e);

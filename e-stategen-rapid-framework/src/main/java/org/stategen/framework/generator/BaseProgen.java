@@ -22,13 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import cn.org.rapid_framework.generator.util.StringHelper;
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
 import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.stategen.framework.generator.util.FileHelpers;
+import org.stategen.framework.generator.util.GenConst;
+import org.stategen.framework.generator.util.GenProperties;
 import org.stategen.framework.generator.util.IOHelpers;
 import org.stategen.framework.generator.util.PropertiesHelpers;
 import org.stategen.framework.generator.util.TemplateHelpers;
@@ -37,65 +36,33 @@ import org.stategen.framework.util.AssertUtil;
 import org.stategen.framework.util.StringUtil;
 import org.stategen.framework.util.XmlUtil;
 
+import cn.org.rapid_framework.generator.util.StringHelper;
+
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
+
 public class BaseProgen {
     final static Logger logger = LoggerFactory.getLogger(BaseProgen.class);
-    String dir_templates_root = null;
-    String projectsPath = null;
-    String systemName = null;
-    String projectName = null;
-    String packageName = null;
 
-    String cmdPath = null;
 
     static String APPEND_TAG_DO_NOT_CHANGE = "<!--APPEND_TAG_DO_NOT_CHANGE-->";
-    static String[] springbootForReplaces = {"springboot_import", "springboot_dependencies", "springboot_plugin"};
-
+    static String[] springbootForReplaces = { "springboot_import", "springboot_dependencies", "springboot_plugin" };
 
     static String springboot_import = "<!-- springboot_import -->";
     static String springboot_dependencies = "<!-- springboot_dependencies -->";
     static String springboot_plugin = "<!-- springboot_plugin --> ";
-
 
     public BaseProgen(Object global) {
 
     }
 
     protected Properties getRootProperties() throws IOException {
-        Properties root = new Properties();
+        Properties root = GenProperties.getAllMergedProps(GenProperties.getGenConfigXml());
         root.put("generator_tools_class", "org.stategen.framework.util.StringUtil");
-        root.put("gg_isOverride", "true");
 
-        root.put("generator_sourceEncoding", "UTF-8");
-        root.put("generator_outputEncoding", "UTF-8");
-        root.put("gg_isOverride", "true");
-
-        //将表名从复数转换为单数
-        root.put("tableNameSingularize", "true");
-
-        //加载默认配置文件
-        String dalgenPath = System.getProperty("dalgenPath");
-        String genFileName = FileHelpers.getCanonicalPath(dalgenPath + "/gen.xml");
-
-        root.putAll(PropertiesHelpers.load(genFileName));
-
-        //加载项目配置文件，如果相同，覆盖默认配置
-        root.put("dalgenPath", dalgenPath);
-
-        systemName = System.getProperty("systemName");
-        if (StringUtil.isNotBlank(systemName)) {
-            root.put("systemName", systemName);
-        }
-
-        packageName = System.getProperty("packageName");
-        if (StringUtil.isNotBlank(packageName)) {
-            root.put("packageName", packageName);
-        }
-
-        cmdPath = System.getProperty("cmdPath");
-        projectsPath = System.getProperty("projectsPath");
-
-        dir_templates_root = dalgenPath + "/templates/" + root.getProperty("dao_type");
-
+        GenProperties.systemName = System.getProperty("systemName");
+        GenProperties.packageName = System.getProperty("packageName");
+        GenProperties.cmdPath = System.getProperty("cmdPath");
         return root;
     }
 
@@ -111,10 +78,10 @@ public class BaseProgen {
         for (File ftlFile : allFiles) {
             String relativeFileName = FileHelpers.getRelativeFileName(tempFolderFile, ftlFile);
             if (ftlFile.isFile()) {
-                FacadeGenerator.processTemplate(ftlFile, conf, root, projectsPath, relativeFileName, outFiles);
+                FacadeGenerator.processTemplate(ftlFile, conf, root, GenProperties.projectsPath, relativeFileName, outFiles);
             } else {
                 String targetFileName = TemplateHelpers.processTemplitePath(root, relativeFileName);
-                String filePath = StringUtil.concatPath(projectsPath, targetFileName) + "/";
+                String filePath = StringUtil.concatPath(GenProperties.projectsPath, targetFileName) + "/";
                 filePath = FileHelpers.replaceUnOverridePath(filePath);
                 FileHelpers.parentMkdir(filePath);
                 folderCount++;
@@ -131,16 +98,15 @@ public class BaseProgen {
         root.putAll(StringHelper.getDirValuesMap(root));
 
         //system 映射到 system
-        String projectsTempPath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/system@/");
+        String projectsTempPath = FileHelpers.getCanonicalPath(GenProperties.dir_templates_root + "/java/system@/");
         processTempleteFiles(root, projectsTempPath);
     }
 
     public void project() throws IOException, TemplateException, DocumentException {
         Properties root = getRootProperties();
-        projectName = System.getProperty("projectName");
-        root.put("projectName", projectName);
+        GenProperties.projectName = System.getProperty("projectName");
 
-        String configFile = System.getProperty("generatorConfigFile");
+        String configFile = System.getProperty(GenConst.genConfigXml);
         Properties configs = PropertiesHelpers.load(configFile);
         root.putAll(configs);
         root.putAll(StringHelper.getDirValuesMap(root));
@@ -155,10 +121,10 @@ public class BaseProgen {
         }
         root.put("hasClient", hasClient);
 
-        String projectTempPath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/project@/");
+        String projectTempPath = FileHelpers.getCanonicalPath(GenProperties.dir_templates_root + "/java/project@/");
         String projectFolderName = processTempleteFiles(root, projectTempPath);
 
-        String projectsPomXmlFilename = StringUtil.concatPath(projectsPath, "pom.xml");
+        String projectsPomXmlFilename = StringUtil.concatPath(GenProperties.projectsPath, "pom.xml");
         //dom4j格式化输出把换行等全部去掉，因此这里采用text输出
         String pomXmlText = XmlUtil.appendToNode(projectsPomXmlFilename, "module", projectFolderName);
         if (StringUtil.isNotEmpty(pomXmlText)) {
@@ -175,15 +141,16 @@ public class BaseProgen {
 
     private void processClient(Properties root, Boolean hasClient, String webType,
                                String projectFolderName) throws IOException, TemplateException, DocumentException {
-        String webTypePath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/frontend/" + webType + "/");
+        String webTypePath = FileHelpers.getCanonicalPath(GenProperties.dir_templates_root + "/java/frontend/" + webType + "/");
         File webTypeFile = new File(webTypePath);
         AssertUtil.mustTrue(webTypeFile.exists(), webType + " 类型不存在 ,请输入 gen.sh -h 查看具体类型");
-        String currentProjectPath = StringUtil.concatPath(projectsPath, projectFolderName);
+        String currentProjectPath = StringUtil.concatPath(GenProperties.projectsPath, projectFolderName);
 
-        String frontendName = projectName + "_frontend_" + webType;
+        String frontendName = GenProperties.projectName + "_frontend_" + webType;
         root.put("frontendName", frontendName);
 
-        String pomToReplaceFileName = StringUtil.concatPath(currentProjectPath, projectName + "-frontend-" + webType, "pom");
+        String pomToReplaceFileName = StringUtil.concatPath(currentProjectPath, GenProperties.projectName + "-frontend-" + webType,
+            "pom");
         File pomToReplaceFile = new File(pomToReplaceFileName);
         boolean pomToReplaceFileOldExists = pomToReplaceFile.exists() && pomToReplaceFile.isFile();
         processTempleteFiles(root, webTypePath);
@@ -201,66 +168,60 @@ public class BaseProgen {
 
     public void root() throws IOException, TemplateException {
         Properties root = getRootProperties();
-        String configFile = System.getProperty("generatorConfigFile");
-        Properties configs = PropertiesHelpers.load(configFile);
-        root.putAll(configs);
         root.putAll(StringHelper.getDirValuesMap(root));
 
-        systemName = root.getProperty("systemName");
+        String projectFolderName = StringUtil.trimLeftFormRightTo(GenProperties.cmdPath, StringUtil.SLASH);
 
-        String projectFolderName = StringUtil.trimLeftFormRightTo(cmdPath, StringUtil.SLASH);
+        String projectFrefix = "7-" + GenProperties.systemName + "-web-";
+        AssertUtil.mustTrue(projectFolderName.startsWith(projectFrefix),
+            "client 命令必须在" + "7-" + GenProperties.systemName + "-web-xxx 执行");
 
-        String projectFrefix = "7-" + systemName + "-web-";
-        AssertUtil.mustTrue(projectFolderName.startsWith(projectFrefix), "client 命令必须在" + "7-" + systemName + "-web-xxx 执行");
+        GenProperties.projectName = StringUtil.trimePrefixIgnoreCase(projectFolderName, projectFrefix);
+        root.put("projectName", GenProperties.projectName);
 
-        projectName = StringUtil.trimePrefixIgnoreCase(projectFolderName, projectFrefix);
-        root.put("projectName", projectName);
-
-        String springRootTempPath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/spring-root@/");
-        String currentProjectPath = StringUtil.concatPath(projectsPath, projectFolderName);
+        String springRootTempPath = FileHelpers.getCanonicalPath(GenProperties.dir_templates_root + "/java/spring-root@/");
+        String currentProjectPath = StringUtil.concatPath(GenProperties.projectsPath, projectFolderName);
         processTempleteFiles(root, springRootTempPath);
 
         String projectPomXml = StringUtil.concatPath(currentProjectPath, "pom.xml");
         String projectPomText = IOHelpers.readFile(new File(projectPomXml), StringUtil.UTF_8);
         for (String springBootForReplace : springbootForReplaces) {
-            String spingBootReplaceFileName = StringUtil.concatPath(currentProjectPath, "src/main/java/config/", springBootForReplace);
+            String spingBootReplaceFileName = StringUtil.concatPath(currentProjectPath, "src/main/java/config/",
+                springBootForReplace);
             String spingBootReplaceText = IOHelpers.readFile(new File(spingBootReplaceFileName), StringUtil.UTF_8);
 
             projectPomText = projectPomText.replace("<!--" + springBootForReplace + "-->", spingBootReplaceText);
         }
         IOHelpers.saveFile(new File(projectPomXml), projectPomText, StringUtil.UTF_8);
 
-//        Boolean hasClient = false;
-//        String webType = System.getProperty("webType");
-//        if (StringUtil.isNotBlank(webType) && !"-e".equals(webType)) {
-//            hasClient = true;
-//            root.put("webType", webType);
-//        } else {
-//            root.put("webType", "");
-//        }
-//        root.put("hasClient", hasClient);
-//
-//        if (hasClient) {
-//            processClient(root, hasClient, webType, projectFolderName);
-//        }
+        //        Boolean hasClient = false;
+        //        String webType = System.getProperty("webType");
+        //        if (StringUtil.isNotBlank(webType) && !"-e".equals(webType)) {
+        //            hasClient = true;
+        //            root.put("webType", webType);
+        //        } else {
+        //            root.put("webType", "");
+        //        }
+        //        root.put("hasClient", hasClient);
+        //
+        //        if (hasClient) {
+        //            processClient(root, hasClient, webType, projectFolderName);
+        //        }
     }
 
     public void client() throws IOException, TemplateException, DocumentException {
         Properties root = getRootProperties();
-        String configFile = System.getProperty("generatorConfigFile");
-        Properties configs = PropertiesHelpers.load(configFile);
-        root.putAll(configs);
         root.putAll(StringHelper.getDirValuesMap(root));
 
-        systemName = root.getProperty("systemName");
 
-        String projectFolderName = StringUtil.trimLeftFormRightTo(cmdPath, StringUtil.SLASH);
+        String projectFolderName = StringUtil.trimLeftFormRightTo(GenProperties.cmdPath, StringUtil.SLASH);
 
-        String projectFrefix = "7-" + systemName + "-web-";
-        AssertUtil.mustTrue(projectFolderName.startsWith(projectFrefix), "client 命令必须在" + "7-" + systemName + "-web-xxx 执行");
+        String projectFrefix = "7-" + GenProperties.systemName + "-web-";
+        AssertUtil.mustTrue(projectFolderName.startsWith(projectFrefix),
+            "client 命令必须在" + "7-" + GenProperties.systemName + "-web-xxx 执行");
 
-        projectName = StringUtil.trimePrefixIgnoreCase(projectFolderName, projectFrefix);
-        root.put("projectName", projectName);
+        GenProperties.projectName = StringUtil.trimePrefixIgnoreCase(projectFolderName, projectFrefix);
+        root.put("projectName", GenProperties.projectName);
 
         Boolean hasClient = false;
         String webType = System.getProperty("webType");
@@ -276,6 +237,5 @@ public class BaseProgen {
             processClient(root, hasClient, webType, projectFolderName);
         }
     }
-
 
 }

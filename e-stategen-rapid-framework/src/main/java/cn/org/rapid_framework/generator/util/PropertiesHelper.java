@@ -2,7 +2,6 @@ package cn.org.rapid_framework.generator.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -11,11 +10,13 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import cn.org.rapid_framework.generator.util.PropertyPlaceholderHelper.PropertyPlaceholderConfigurerResolver;
+
+import lombok.Cleanup;
 
 public class PropertiesHelper {
 	boolean isSearchSystemProperty = false;
@@ -147,17 +148,14 @@ public class PropertiesHelper {
 		Properties properties = new Properties();
 		for(String f : files) {
 			File file = FileHelper.getFile(f);
+			@Cleanup
 			InputStream input = new FileInputStream(file);
-			try {
-				if(file.getPath().endsWith(".xml")){
-					properties.loadFromXML(input);
-				}else {
-					properties.load(input);
-				}
-				properties.putAll(properties);
-			}finally {
-				input.close();
+			if(file.getPath().endsWith(".xml")){
+				properties.loadFromXML(input);
+			}else {
+				properties.load(input);
 			}
+			properties.putAll(properties);
 		}
 		return properties;
 	}

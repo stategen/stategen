@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.orm.ibatis.SqlMapClientTemplate;
 import org.stategen.framework.lite.PageList;
 
 /**
@@ -27,9 +26,9 @@ public class PageQueryUtils {
      * @param parameterObject
      * @return
      */
-    public static PageList pageQuery(SqlMapClientTemplate sqlMapClientTemplate,
+    public static <T> PageList<T> pageQuery(SqlDaoSupport sqlMapClientTemplate,
                                      String statementName, PageQuery parameterObject) {
-        return pageQuery(sqlMapClientTemplate, statementName, statementName + ".count",
+        return pageQuery(sqlMapClientTemplate, statementName, statementName + "_count",
             parameterObject, parameterObject.getPage(), parameterObject.getPageSize());
     }
 
@@ -41,7 +40,7 @@ public class PageQueryUtils {
      * @param parameterObject
      * @return
      */
-    public static PageList pageQuery(SqlMapClientTemplate sqlMapClientTemplate,
+    public static <T> PageList<T> pageQuery(SqlDaoSupport sqlMapClientTemplate,
                                      String statementName, String countStatementName,
                                      PageQuery parameterObject) {
         return pageQuery(sqlMapClientTemplate, statementName, countStatementName, parameterObject,
@@ -52,10 +51,10 @@ public class PageQueryUtils {
      * 封装ibatis的分页查询
      * @return
      */
-    public static PageList pageQuery(SqlMapClientTemplate sqlMapClientTemplate,
+    public static <T> PageList<T> pageQuery(SqlDaoSupport sqlMapClientTemplate,
                                      String statementName, Object parameterObject, int page,
                                      int pageSize) {
-        return pageQuery(sqlMapClientTemplate, statementName, statementName + ".count",
+        return pageQuery(sqlMapClientTemplate, statementName, statementName + "_count",
             parameterObject, page, pageSize);
     }
 
@@ -63,11 +62,11 @@ public class PageQueryUtils {
      * 封装ibatis的分页查询
      * @return
      */
-    public static <T> PageList<T> pageQuery(SqlMapClientTemplate sqlMapClientTemplate,
+    protected static <T> PageList<T> pageQuery(SqlDaoSupport sqlMapClientTemplate,
                                      String statementName, String countStatementName,
                                      Object parameterObject, int page, int pageSize) {
 
-        Number totalCount = (Number) sqlMapClientTemplate.queryForObject(countStatementName,  parameterObject);
+        Number totalCount = (Number) sqlMapClientTemplate.selectOne(countStatementName,  parameterObject);
 
         if (totalCount != null && totalCount.intValue() > 0) {
             Paginator paginator = new Paginator(page, pageSize, totalCount.intValue());
@@ -78,8 +77,8 @@ public class PageQueryUtils {
             otherParams.put("endRow", paginator.getEndRow());
 
             MapAndObject mapAndObject = new MapAndObject(otherParams, parameterObject);
-            List list = sqlMapClientTemplate.queryForList(statementName, mapAndObject);
-            return new PageList(list,paginator.getPage(), paginator.getPageSize(), paginator.getTotalItems());
+            List<T> list = sqlMapClientTemplate.selectList(statementName, mapAndObject);
+            return new PageList<T>(list,paginator.getPage(), paginator.getPageSize(), paginator.getTotalItems());
         }
         return new PageList<T>(0, pageSize, 0);
     }

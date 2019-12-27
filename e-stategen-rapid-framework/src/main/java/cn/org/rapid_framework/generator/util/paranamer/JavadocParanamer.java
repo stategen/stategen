@@ -63,6 +63,8 @@ import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import lombok.Cleanup;
+
 /**
  * Implementation of {@link Paranamer} which can access Javadocs at runtime to extract
  * parameter names of methods. Works with:-
@@ -165,13 +167,10 @@ public class JavadocParanamer implements Paranamer {
 						+ dir.getAbsolutePath()
 						+ ". Not a valid Javadoc directory.");
 			// it appear to be a valid Javadoc directory
+			@Cleanup
 			FileInputStream input = new FileInputStream(packageList);
-			try {
-				String packageListString = streamToString(input);
-				parsePackageList(packageListString);
-			} finally {
-				input.close();
-			}
+			String packageListString = streamToString(input);
+			parsePackageList(packageListString);
 		} else if (archiveOrDirectory.isFile()) {
 			// is a file
 			isArchive = true;
@@ -330,6 +329,7 @@ public class JavadocParanamer implements Paranamer {
 			File file = new File(location.getPath() + "/" + path + ".html");
 			if (!file.isFile())
 				throw CLASS_NOT_SUPPORTED;
+			@Cleanup
 			FileInputStream input = new FileInputStream(file);
 			return getParameterNames2(input, constructorOrMethodName, types);
 		} else if (isURI) {

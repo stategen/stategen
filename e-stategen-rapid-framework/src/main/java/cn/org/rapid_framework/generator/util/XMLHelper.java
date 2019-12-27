@@ -31,6 +31,8 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import lombok.Cleanup;
+
 /**
  * 将xml解析成NodeData,NodeData主要是使用Map及List来装attribute
  * 
@@ -110,7 +112,11 @@ public class XMLHelper {
                         return is;
                     }
                 });
-                InputSource is = new InputSource(new BufferedInputStream(new FileInputStream(file)));
+                @Cleanup
+                FileInputStream fileInputStream = new FileInputStream(file);
+                @Cleanup
+                BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                InputSource is = new InputSource(bufferedInputStream);
                 return db.parse(is);
             } catch (ParserConfigurationException x) {
                 throw new Error(x);
@@ -267,14 +273,15 @@ public class XMLHelper {
     }
 
     public static String removeXmlns(File file) throws IOException {
+        @Cleanup
         InputStream forEncodingInput = new FileInputStream(file);
         String encoding = XMLHelper.getXMLEncoding(forEncodingInput);
         forEncodingInput.close();
         
+        @Cleanup
         InputStream input = new FileInputStream(file);
         String xml = IOHelper.toString(encoding,input);
         xml = XMLHelper.removeXmlns(xml);
-        input.close();
         return xml;
     }
     

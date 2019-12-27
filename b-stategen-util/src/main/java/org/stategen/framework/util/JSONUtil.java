@@ -9,6 +9,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
+import lombok.Cleanup;
+
 public class JSONUtil {
     public static String readAll(Reader reader) {
         StringBuilder buf = new StringBuilder();
@@ -30,7 +32,10 @@ public class JSONUtil {
     }
     
     public static JSONObject loadJson(String resourcePath) throws IOException {
-        InputStreamReader reader = new InputStreamReader(new FileInputStream(resourcePath), StringUtil.UTF_8);
+        @Cleanup
+        FileInputStream fileInputStream = new FileInputStream(resourcePath);
+        @Cleanup
+        InputStreamReader reader = new InputStreamReader(fileInputStream, StringUtil.UTF_8);
         String jsonString =readAll(reader);
         JSONObject dataJson =JSONObject.parseObject(jsonString);
         return dataJson;

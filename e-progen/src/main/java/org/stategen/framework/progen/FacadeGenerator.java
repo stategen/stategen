@@ -47,6 +47,7 @@ import org.yaml.snakeyaml.Yaml;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import lombok.Cleanup;
 
 /**
  * The Class FacadeGenerator.
@@ -101,7 +102,7 @@ public class FacadeGenerator {
 
         String outDir = GenContext.outDir;
 
-        String tempRootPath = GenContext.tempRootPath;
+        String tempRootPath = StringUtil.concatPath(GenContext.tempRootPath,"facade");
         String projectRootPath = GenContext.projectRootPath;
 
         Map<String, List<CanbeImportWrap>> canbeImportWrapMap = new HashMap<String, List<CanbeImportWrap>>();
@@ -115,7 +116,9 @@ public class FacadeGenerator {
         File yamlFile = new File(yamlFileName);
         if (yamlFile.exists() && yamlFile.isFile()) {
             Yaml yaml = new Yaml();
-            Map<String, String> map = yaml.load(new FileInputStream(yamlFile));
+            @Cleanup
+            FileInputStream yamlFileStream = new FileInputStream(yamlFile);
+            Map<String, String> map = yaml.load(yamlFileStream);
             String frontendPagckageName = map.get("name");
             root.put("frontendPagckageName", "package:" + frontendPagckageName);
         }

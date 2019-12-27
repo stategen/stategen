@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -29,10 +28,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.stategen.framework.generator.util.ClassHelpers;
-import org.stategen.framework.generator.util.FileHelpers;
+import org.stategen.framework.generator.util.GenProperties;
 import org.stategen.framework.generator.util.PropertiesHelpers;
 import org.stategen.framework.spring.mvc.ResponseBodyAdviceWrapper;
-import org.stategen.framework.util.BusinessAssert;
 import org.stategen.framework.util.CollectionUtil;
 
 import freemarker.template.TemplateException;
@@ -51,53 +49,27 @@ public class BaseGenFacadeProcessor {
     
     
     public void scanControllerAndGenFacade() throws InvalidPropertiesFormatException, IOException, TemplateException {
-        
-        Map<String, String> environments = System.getenv();
-        String DALGENX_HOME="DALGENX_HOME";
-        String dalgenHome = environments.get(DALGENX_HOME);
-        BusinessAssert.mustNotBlank(dalgenHome, DALGENX_HOME+" 环境变量没有设!");
-        
-            
-        String genXml = dalgenHome + "/gen.xml";
-        String testClassPath = BaseGenFacadeProcessor.class.getResource("/").toString();
-        logger.info("testClassPath<===========>:" + testClassPath + "../../");
-        
-        String projectRootPath = FileHelpers.getCanonicalPath(testClassPath + "../../");
 
-        logger.info("projectRootPath<===========>:" + projectRootPath);
+        Properties mergedPros = GenProperties.getAllMergedProps(GenProperties.getGenConfigXml());
         
-        String genConfigXml = FileHelpers.getCanonicalPath(projectRootPath + "/../gen_config.xml");
-        
-        Properties root = new Properties();
-        
-        root.putAll(environments);
-        
-        Properties systemProperties = System.getProperties();
-        root.putAll(systemProperties);
-        
-        Properties genXmlProperties = PropertiesHelpers.load(genXml);
-        root.putAll(genXmlProperties);
-        
-        Properties genConfigXmlProperties = PropertiesHelpers.load(genConfigXml);
-        root.putAll(genConfigXmlProperties);
-        
-        String packageName = root.getProperty("packageName");
+        String packageName = mergedPros.getProperty("packageName");
         packageName =packageName+".controller";
+
         
-        String dir_templates_root = dalgenHome + "/templates/" + root.getProperty("dao_type");
         
-        
-        Properties appProperties = PropertiesHelpers.load(projectRootPath+"/src/main/resources/application.properties");
+        Properties appProperties = PropertiesHelpers.load(GenProperties.projectPath+"/src/main/resources/application.properties");
         
         Object projectName = appProperties.get("project.name");
-        root.put("projectName", projectName);
-        root.putAll(GenContext.Properties);
+        mergedPros.put("projectName", projectName);
         
-        GenContext.tempRootPath=dir_templates_root;
-        GenContext.projectRootPath=projectRootPath;
+        mergedPros.putAll(GenContext.Properties);
+        
+        GenContext.tempRootPath=GenProperties.dir_templates_root;
+        
+        GenContext.projectRootPath=GenProperties.projectPath;
         
         if (CollectionUtil.isNotEmpty(GenContext.customVirables)){
-            root.putAll(GenContext.customVirables); 
+            mergedPros.putAll(GenContext.customVirables); 
         }
         
         Set<String> packageNames =new HashSet<String>(Arrays.asList(packageName));
@@ -115,10 +87,10 @@ public class BaseGenFacadeProcessor {
         
         if (CollectionUtil.isNotEmpty(GenContext.staticUtils)){
             for (Class<?> utilClazz : GenContext.staticUtils) {
-                root.put(utilClazz.getSimpleName(), BeanUtils.instantiate(utilClazz));
+                mergedPros.put(utilClazz.getSimpleName(), BeanUtils.instantiate(utilClazz));
             }
         }
-        facadeGenerator.genFacades(allcClasses, root);
+        facadeGenerator.genFacades(allcClasses, mergedPros);
     }
     
 

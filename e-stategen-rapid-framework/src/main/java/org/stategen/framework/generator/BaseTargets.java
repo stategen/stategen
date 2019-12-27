@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.stategen.framework.generator.util.DaoType;
 import org.stategen.framework.generator.util.FileHelpers;
+import org.stategen.framework.generator.util.GenProperties;
 import org.stategen.framework.util.AssertUtil;
 import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.Consts;
@@ -34,187 +36,200 @@ import cn.org.rapid_framework.generator.GeneratorProperties;
 import cn.org.rapid_framework.generator.Helper;
 import cn.org.rapid_framework.generator.ext.tableconfig.builder.TableConfigXmlBuilder;
 import cn.org.rapid_framework.generator.ext.tableconfig.model.TableConfigSet;
-import cn.org.rapid_framework.generator.util.FileHelper;
 import cn.org.rapid_framework.generator.util.GLogger;
-import cn.org.rapid_framework.generator.util.PropertiesHelper;
 
 public class BaseTargets extends HashMap<String, Object> {
-    
+
     private static final long serialVersionUID = 1L;
-    
-    private Properties pts= GeneratorProperties.getProperties();
-    
-    private String dalgen_dir =pts.getProperty(Consts.dalgen_dir);
-    private String dir_table_configs =pts.getProperty(Consts.dir_table_configs);
-    private String dir_templates_root =pts.getProperty(Consts.dir_templates_root);
-    private String packageName =pts.getProperty(Consts.packageName);
-    private String genInputCmd =pts.getProperty(Consts.genInputCmd);
-    private String cmdPath =pts.getProperty(Consts.cmdPath);
-    
-    private String projectsPath =System.getProperty(Consts.projectsPath);
-    private String tablesPath=projectsPath+"/"+dir_table_configs;
-    
-    private String pojo_module_name =genDir(projectsPath,pts,Consts.pojo_module_name);
-    private String dto_module_name =genDir(projectsPath,pts,Consts.dto_module_name);
-    private String dao_module_name =genDir(projectsPath,pts,Consts.dao_module_name);
-    private String facade_module_name =genDir(projectsPath,pts,Consts.facade_module_name);
-    private String service_module_name =genDir(projectsPath,pts,Consts.service_module_name);
-    private String controller_module_name =genDir(projectsPath,pts,Consts.controller_module_name);
-    
-    private String dir_dal_output_root =dao_module_name;//projectsPath+"/"+pts.getProperty(Const.dir_dal_output_root);
-    private String dir_tmpl_share=dir_templates_root+"/java/share/dal";
-    
-    private static String genDir(String projectsPath,Properties pts,String key){
-        String value =pts.getProperty(key);
-        if (StringUtil.isBlank(value)){
+
+    private String dir_table_configs;
+    private String dir_templates_root;
+    private String packageName;
+    private String cmdPath;
+
+    private String tablesPath;
+
+    private String pojo_module_name;
+    private String dto_module_name;
+    private String dao_module_name;
+    private String facade_module_name;
+    private String service_module_name;
+    private String controller_module_name;
+
+    private String dir_dal_output_root = dao_module_name;                       //projectsPath+"/"+pts.getProperty(Const.dir_dal_output_root);
+    private String dir_tmpl_share      = dir_templates_root + "/java/share/dal";
+
+    public void makeConst() {
+        Properties pts = GeneratorProperties.getProperties();
+        dir_table_configs  = pts.getProperty(Consts.dir_table_configs);
+        dir_templates_root = pts.getProperty(Consts.dir_templates_root);
+        packageName        = pts.getProperty(Consts.packageName);
+        cmdPath            = pts.getProperty(Consts.cmdPath);
+
+        tablesPath = GenProperties.projectsPath + "/" + dir_table_configs;
+
+        pojo_module_name       = genDir(GenProperties.projectsPath, pts, Consts.pojo_module_name);
+        dto_module_name        = genDir(GenProperties.projectsPath, pts, Consts.dto_module_name);
+        dao_module_name        = genDir(GenProperties.projectsPath, pts, Consts.dao_module_name);
+        facade_module_name     = genDir(GenProperties.projectsPath, pts, Consts.facade_module_name);
+        service_module_name    = genDir(GenProperties.projectsPath, pts, Consts.service_module_name);
+        controller_module_name = genDir(GenProperties.projectsPath, pts, Consts.controller_module_name);
+
+        dir_dal_output_root = dao_module_name;                       //projectsPath+"/"+pts.getProperty(Const.dir_dal_output_root);
+        dir_tmpl_share      = dir_templates_root + "/java/share/dal";
+    }
+
+    private static String genDir(String projectsPath, Properties pts, String key) {
+        String value = pts.getProperty(key);
+        if (StringUtil.isBlank(value)) {
             return null;
         }
-        if (value.equals(".")){
-            value="";
+        if (value.equals(".")) {
+            value = "";
         }
-        return projectsPath+"/"+value;
+        try {
+            return FileHelpers.getCanonicalPath(projectsPath , value);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-    
-    public BaseTargets(Object global){
+
+    public BaseTargets(Object global) {
         super();
-        Setting.date_long_field_to_date ="true".equals( pts.getProperty(Consts.date_long_field_to_date));
-        
-        Setting.gen_select_create_date_field ="true".equals( pts.getProperty(Consts.gen_select_create_date_field));
-        Setting.gen_select_update_date_field ="true".equals( pts.getProperty(Consts.gen_select_update_date_field));
-        Setting.gen_select_delete_flag_field ="true".equals( pts.getProperty(Consts.gen_select_delete_flag_field));
+        makeConst();
 
-        String updated_date_field =pts.getProperty(Consts.updated_date_field);
-        String created_date_field =pts.getProperty(Consts.created_date_field);
-        String soft_delete_field =pts.getProperty(Consts.soft_delete_field);
+        //groovy loadDefaultGeneratorProperties() 已經執行
 
-        Setting.updated_date_fields= CollectionUtil.toUpCaseMap(updated_date_field);
-        Setting.created_date_fields=CollectionUtil.toUpCaseMap(created_date_field);
-        Setting.soft_delete_fields=CollectionUtil.toUpCaseMap(soft_delete_field);
+        Properties pts = GeneratorProperties.getProperties();
+
+        String  dao_type = pts.getProperty("dao_type");
+        DaoType daoType  = DaoType.valueOf(dao_type);
+
+        GenProperties.daoType = daoType != null ? daoType : GenProperties.daoType;
+
+        Setting.date_long_field_to_date = "true".equals(pts.getProperty(Consts.date_long_field_to_date));
+
+        Setting.gen_select_create_date_field = "true".equals(pts.getProperty(Consts.gen_select_create_date_field));
+        Setting.gen_select_update_date_field = "true".equals(pts.getProperty(Consts.gen_select_update_date_field));
+        Setting.gen_select_delete_flag_field = "true".equals(pts.getProperty(Consts.gen_select_delete_flag_field));
+
+        String updated_date_field = pts.getProperty(Consts.updated_date_field);
+        String created_date_field = pts.getProperty(Consts.created_date_field);
+        String soft_delete_field  = pts.getProperty(Consts.soft_delete_field);
+
+        Setting.updated_date_fields = CollectionUtil.toUpCaseMap(updated_date_field);
+        Setting.created_date_fields = CollectionUtil.toUpCaseMap(created_date_field);
+        Setting.soft_delete_fields  = CollectionUtil.toUpCaseMap(soft_delete_field);
     }
 
     public void dal() throws Exception {
-        File tablesDirFile=new File(tablesPath);
-        TableConfigSet tableConfigSet = new TableConfigXmlBuilder().parseFromXML(tablesDirFile,packageName,Helper.getTableConfigFiles(tablesDirFile));
+        File           tablesDirFile  = new File(tablesPath);
+        TableConfigSet tableConfigSet = new TableConfigXmlBuilder().parseFromXML(tablesDirFile, packageName,
+            Helper.getTableConfigFiles(tablesDirFile));
 
-        GLogger.info("pojo_module_name<===========>:" +pojo_module_name);
-        
+        GLogger.info("pojo_module_name<===========>:" + pojo_module_name);
+
         //POJO ，这个必须在最前面，并且执行
-        if (StringUtil.isNotBlank(pojo_module_name)){
-            Setting.current_gen_name=Consts.pojo;
-            GenUtils.genByTableConfig(Helper.createGeneratorFacade(pojo_module_name,dir_templates_root+"/java/1-pojo/dal",dir_tmpl_share),tableConfigSet,genInputCmd);
+        if (StringUtil.isNotBlank(pojo_module_name)) {
+            Setting.current_gen_name = Consts.pojo;
+            GenUtils.genByTableConfig(
+                Helper.createGeneratorFacade(pojo_module_name, dir_templates_root + "/java/1-pojo/dal", dir_tmpl_share),
+                tableConfigSet, GenProperties.tableName);
         }
 
         //DTO
-        if (StringUtil.isNotBlank(dto_module_name)){
-            Setting.current_gen_name=Consts.dto;
-            GenUtils.genByTableConfig(Helper.createGeneratorFacade(dto_module_name,dir_templates_root+"/java/1-dto/dal",dir_tmpl_share),tableConfigSet,genInputCmd);
+        if (StringUtil.isNotBlank(dto_module_name)) {
+            Setting.current_gen_name = Consts.dto;
+            GenUtils.genByTableConfig(
+                Helper.createGeneratorFacade(dto_module_name, dir_templates_root + "/java/1-dto/dal", dir_tmpl_share),
+                tableConfigSet, GenProperties.tableName);
         }
-        
+
         //facade 
-        if (StringUtil.isNotBlank(facade_module_name)){
-            Setting.current_gen_name=Consts.service;
-            GenUtils.genByTableConfig(Helper.createGeneratorFacade(facade_module_name,dir_templates_root+"/java/2-facade/dal",dir_tmpl_share),tableConfigSet,genInputCmd);
-            GenUtils.genByTableConfigSet(Helper.createGeneratorFacade(facade_module_name,dir_templates_root+"/java/2-facade/set/",dir_tmpl_share),tableConfigSet);
+        if (StringUtil.isNotBlank(facade_module_name)) {
+            Setting.current_gen_name = Consts.service;
+            GenUtils.genByTableConfig(Helper.createGeneratorFacade(facade_module_name,
+                dir_templates_root + "/java/2-facade/dal", dir_tmpl_share), tableConfigSet, GenProperties.tableName);
+            GenUtils.genByTableConfigSet(Helper.createGeneratorFacade(facade_module_name,
+                dir_templates_root + "/java/2-facade/set/", dir_tmpl_share), tableConfigSet);
         }
-        
+
         //DAO
-        if (StringUtil.isNotBlank(dao_module_name)){
-            Setting.current_gen_name=Consts.dao;
-            GenUtils.genByTableConfig(Helper.createGeneratorFacade(dao_module_name,dir_templates_root+"/java/4-dao/dal/",dir_tmpl_share),tableConfigSet,genInputCmd);
-            GenUtils.genByTableConfigSet(Helper.createGeneratorFacade(dao_module_name,dir_templates_root+"/java/4-dao/set/",dir_tmpl_share),tableConfigSet);
-            Setting.current_gen_name=null;
+        if (StringUtil.isNotBlank(dao_module_name)) {
+            Setting.current_gen_name = Consts.dao;
+            GenUtils.genByTableConfig(
+                Helper.createGeneratorFacade(dao_module_name, dir_templates_root + "/java/4-dao/dal/", dir_tmpl_share),
+                tableConfigSet, GenProperties.tableName);
+            GenUtils.genByTableConfigSet(
+                Helper.createGeneratorFacade(dao_module_name, dir_templates_root + "/java/4-dao/set/", dir_tmpl_share),
+                tableConfigSet);
+            Setting.current_gen_name = null;
         }
-        
+
         //Service
-        if (StringUtil.isNotBlank(service_module_name)){
-            Setting.current_gen_name=Consts.service;
-            GenUtils.genByTableConfig(Helper.createGeneratorFacade(service_module_name,dir_templates_root+"/java/5-service/dal",dir_tmpl_share),tableConfigSet,genInputCmd);
-            GenUtils.genByTableConfigSet(Helper.createGeneratorFacade(service_module_name,dir_templates_root+"/java/5-service/set/",dir_tmpl_share),tableConfigSet);
+        if (StringUtil.isNotBlank(service_module_name)) {
+            Setting.current_gen_name = Consts.service;
+            GenUtils.genByTableConfig(Helper.createGeneratorFacade(service_module_name,
+                dir_templates_root + "/java/5-service/dal", dir_tmpl_share), tableConfigSet, GenProperties.tableName);
+            GenUtils.genByTableConfigSet(Helper.createGeneratorFacade(service_module_name,
+                dir_templates_root + "/java/5-service/set/", dir_tmpl_share), tableConfigSet);
         }
-        
+
         //controller 
-        if (StringUtil.isNotBlank(controller_module_name)){
-            Setting.current_gen_name=Consts.controller;
-            GenUtils.genByTableConfig(Helper.createGeneratorFacade(controller_module_name,dir_templates_root+"/java/6-controller/dal",dir_tmpl_share),tableConfigSet,genInputCmd);
+        if (StringUtil.isNotBlank(controller_module_name)) {
+            Setting.current_gen_name = Consts.controller;
+            GenUtils.genByTableConfig(Helper.createGeneratorFacade(controller_module_name,
+                dir_templates_root + "/java/6-controller/dal", dir_tmpl_share), tableConfigSet,
+                GenProperties.tableName);
         }
     }
 
     public void table() throws Exception {
-        Setting.current_gen_name=Consts.table;
-        GenUtils.genByTable(Helper.createGeneratorFacade(tablesPath,dir_templates_root+"/java/table/init",dir_tmpl_share),genInputCmd);
+        Setting.current_gen_name = Consts.table;
+        GenUtils.genByTable(
+            Helper.createGeneratorFacade(tablesPath, dir_templates_root + "/java/table/init", dir_tmpl_share),
+            GenProperties.tableName);
     }
 
-    public void api() throws  Exception {
-        File tablesDirFile=new File(tablesPath);
-        
-        TableConfigSet tableConfigSet = new TableConfigXmlBuilder().parseFromXML(tablesDirFile,packageName,Helper.getTableConfigFiles(tablesDirFile));
+    public void api() throws Exception {
+        File tablesDirFile = new File(tablesPath);
 
-        GLogger.info("pojo_module_name<===========>:" +"api");
-        Properties pts = GeneratorProperties.getProperties();
-        String systemName = pts.getProperty("systemName");
+        TableConfigSet tableConfigSet = new TableConfigXmlBuilder().parseFromXML(tablesDirFile, packageName,
+            Helper.getTableConfigFiles(tablesDirFile));
 
-        String projectFolderName=StringUtil.trimLeftFormRightTo(cmdPath, StringUtil.SLASH);
-        AssertUtil.mustTrue(projectFolderName.startsWith("7-"+systemName+"-web-"), "api 命令必须在"+"7-"+systemName+"-web-xxx 执行");
+        GLogger.info("pojo_module_name<===========>:" + "api");
+        Properties pts        = GeneratorProperties.getProperties();
+        String     systemName = pts.getProperty("systemName");
 
-        String controllerTempPath= FileHelpers.getCanonicalPath(dir_templates_root + "/java/api/dal");
+        String projectFolderName = StringUtil.trimLeftFormRightTo(cmdPath, StringUtil.SLASH);
+        AssertUtil.mustTrue(projectFolderName.startsWith("7-" + systemName + "-web-"),
+            "api 命令必须在" + "7-" + systemName + "-web-xxx 执行");
+
+        String controllerTempPath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/api/dal");
         GLogger.info(controllerTempPath);
 
         //api ，这个必须在最前面，并且执行
-        Setting.current_gen_name=Consts.api;
+        Setting.current_gen_name = Consts.api;
         GLogger.info(controllerTempPath);
         GLogger.info(dir_tmpl_share);
-        GenUtils.genByTableConfig(Helper.createGeneratorFacade(cmdPath,controllerTempPath,dir_tmpl_share),tableConfigSet,genInputCmd);
+        GenUtils.genByTableConfig(Helper.createGeneratorFacade(cmdPath, controllerTempPath, dir_tmpl_share),
+            tableConfigSet, GenProperties.tableName);
     }
 
     public void seq() throws Exception {
-        TableConfigSet tableConfigSet = new TableConfigXmlBuilder().parseFromXML(new File(dalgen_dir,dir_table_configs),packageName,Helper.getTableConfigFiles(new File(dalgen_dir,dir_table_configs)));
-        pts.put("basepackage",packageName);
-        GenUtils.genByTableConfigSet(Helper.createGeneratorFacade(dir_dal_output_root,dir_templates_root+"/java/table_config_set/sequence",dir_tmpl_share),tableConfigSet);
+        TableConfigSet tableConfigSet = new TableConfigXmlBuilder().parseFromXML(
+            new File(GenProperties.dalgenHome, dir_table_configs), packageName,
+            Helper.getTableConfigFiles(new File(GenProperties.dalgenHome, dir_table_configs)));
+        GeneratorProperties.getProperties().put("basepackage", packageName);
+        GenUtils.genByTableConfigSet(Helper.createGeneratorFacade(dir_dal_output_root,
+            dir_templates_root + "/java/table_config_set/sequence", dir_tmpl_share), tableConfigSet);
     }
 
     public void crud() throws Exception {
-        GeneratorFacade gf = Helper.createGeneratorFacade(dir_dal_output_root,
-            dir_templates_root+"/share/basic",
-            dir_templates_root+"/table/dao_hibernate",
-            dir_templates_root+"/table/dao_hibernate_annotation",
-            dir_templates_root+"/table/service_no_interface",
-            dir_templates_root+"/table/web_struts2");
-        GenUtils.genByTable(gf,genInputCmd);
+        GeneratorFacade gf = Helper.createGeneratorFacade(dir_dal_output_root, dir_templates_root + "/share/basic",
+            dir_templates_root + "/table/dao_hibernate", dir_templates_root + "/table/dao_hibernate_annotation",
+            dir_templates_root + "/table/service_no_interface", dir_templates_root + "/table/web_struts2");
+        GenUtils.genByTable(gf, GenProperties.tableName);
     }
-    
-    protected Properties getRootProperties() throws IOException{
-        Properties root =new Properties();
-        root.put("generator_tools_class","");
-        root.put("gg_isOverride","true");
 
-        root.put("generator_sourceEncoding","UTF-8");
-        root.put("generator_outputEncoding","UTF-8");
-        
-        //将表名从复数转换为单数
-        root.put("tableNameSingularize","true");
-        
-        //加载默认配置文件
-        String dalgenPath =System.getProperty("dalgenPath");
-        String genFileName = FileHelper.getCanonicalPath(dalgenPath+"/gen.xml");
-        
-        root.putAll(PropertiesHelper.load(genFileName)); 
-        
-        //加载项目配置文件，如果相同，覆盖默认配置
-        root.put("dalgenPath",dalgenPath);
-        
-        String sysName =System.getProperty("systemName");
-        if (StringUtil.isNotBlank(sysName)){
-            root.put("systemName",sysName);
-        }
-        
-        String packageName =System.getProperty("packageName");
-        if (StringUtil.isNotBlank(packageName)){
-            root.put("packageName",packageName);
-        }
-
-        dir_templates_root=dalgenPath+"/templates/"+root.getProperty("dao_type");
-        
-        return root;
-    }
-    
 }

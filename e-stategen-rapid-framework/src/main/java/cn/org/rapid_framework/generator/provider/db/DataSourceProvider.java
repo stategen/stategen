@@ -26,23 +26,24 @@ public class DataSourceProvider {
 	private static Connection connection;
 	private static DataSource dataSource;
 
-	public synchronized static Connection getNewConnection() {
-		try {
-			return getDataSource().getConnection();
-		}catch(SQLException e) {
-			throw new RuntimeException(e);
-		}
+	public synchronized static Connection getNewConnection() throws SQLException {
+		return getDataSource().getConnection();
 	}
 	
-	public synchronized static Connection getConnection() {
-		try {
-			if(connection == null || connection.isClosed()) {
-				connection = getDataSource().getConnection();
-			}
-			return connection;
-		}catch(SQLException e) {
-			throw new RuntimeException(e);
+	public synchronized static Connection getConnection() throws SQLException {
+		if(connection == null || connection.isClosed()) {
+			connection = getDataSource().getConnection();
 		}
+		return connection;
+	}
+	
+	
+	
+	public synchronized static Connection getOpenedConnection() throws SQLException {
+	    if(connection == null || connection.isClosed()) {
+	        return null; 
+        }
+	    return connection;
 	}
 	
 	public static void setDataSource(DataSource dataSource) {

@@ -48,4 +48,6 @@ public class Setting {
     public static Map<String, String> getSoft_delete_fields() {
         return soft_delete_fields;
     }
+    
+
 }

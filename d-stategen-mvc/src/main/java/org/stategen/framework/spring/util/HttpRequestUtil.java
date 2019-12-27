@@ -34,6 +34,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.stategen.framework.util.StringUtil;
 
+import lombok.Cleanup;
+
 /**
  *  
  * Http请求工具类 .
@@ -94,6 +96,7 @@ public class HttpRequestUtil {
         httpUrlConn.connect();
 
         // 将返回的输入流转换成字符串 
+        @Cleanup
         InputStream inputStream = httpUrlConn.getInputStream();
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StringUtil.UTF_8);
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
@@ -104,9 +107,6 @@ public class HttpRequestUtil {
         }
         bufferedReader.close();
         inputStreamReader.close();
-        // 释放资源 
-        inputStream.close();
-        inputStream = null;
         httpUrlConn.disconnect();
 
         return buffer.toString();
@@ -119,14 +119,13 @@ public class HttpRequestUtil {
      * @throws IOException 
      */
     public static InputStream httpRequestIO(String requestUrl) throws IOException {
-        InputStream inputStream = null;
         URL url = new URL(requestUrl);
         HttpURLConnection httpUrlConn = (HttpURLConnection) url.openConnection();
         httpUrlConn.setDoInput(true);
         httpUrlConn.setRequestMethod("GET");
         httpUrlConn.connect();
         // 获得返回的输入流 
-        inputStream = httpUrlConn.getInputStream();
+        InputStream inputStream = httpUrlConn.getInputStream();
         return inputStream;
     }
 

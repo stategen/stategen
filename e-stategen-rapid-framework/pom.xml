@@ -26,6 +26,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.10.7</version>
+        </dependency>
+    
+        <dependency>
             <groupId>org.stategen.framework</groupId>
             <artifactId>stategen-dto-lite</artifactId>
             <version>2.0.8.stategen.RELEASE</version>
@@ -121,11 +127,11 @@
             <version>10.2.0.2.0</version>
             </dependency> -->
         <!-- jdbc drivers end -->
-        <dependency>
+<!--         <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
             <version>1.8.2</version>
-        </dependency>
+        </dependency> -->
 
         <dependency>
             <groupId>dom4j</groupId>
@@ -148,6 +154,7 @@
                 <filtering>true</filtering>
                 <includes>
                     <include>**/*.txt</include>
+                    <include>**/*.xslt</include>
                 </includes>
             </resource>
         </resources>

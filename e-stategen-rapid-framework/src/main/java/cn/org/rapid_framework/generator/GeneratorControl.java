@@ -47,6 +47,7 @@ import cn.org.rapid_framework.generator.util.SystemHelper;
 import cn.org.rapid_framework.generator.util.XMLHelper;
 
 import freemarker.ext.dom.NodeModel;
+import lombok.Cleanup;
 /**
  * gg变量,生成器模板控制器,用于模板中可以控制生成器执行相关控制操作
  * 如: 是否覆盖目标文件
@@ -86,17 +87,18 @@ public class GeneratorControl {
     public NodeModel loadXml(String file,boolean removeXmlNamespace) {
         try {
             if(removeXmlNamespace) {
-                InputStream forEncodingInput = FileHelper.getInputStream(file);
+                @Cleanup
+                InputStream forEncodingInput = FileHelper.createInputStream(file);
                 String encoding = XMLHelper.getXMLEncoding(forEncodingInput);
-                forEncodingInput.close();
-                
-                InputStream input = FileHelper.getInputStream(file);
+                @Cleanup
+                InputStream input = FileHelper.createInputStream(file);
                 String xml = IOHelper.toString(encoding,input);
                 xml = XMLHelper.removeXmlns(xml);
-                input.close();
                 return NodeModel.parse(new InputSource(new StringReader(xml.trim())));
             }else {
-                return NodeModel.parse(new InputSource(FileHelper.getInputStream(file)));
+                @Cleanup
+                InputStream input =FileHelper.createInputStream(file);
+                return NodeModel.parse(new InputSource(input));
             }
         } catch (Exception e) {
             throw new IllegalArgumentException("loadXml error,file:"+file,e);
@@ -107,13 +109,13 @@ public class GeneratorControl {
     public Properties loadProperties(String file) {
         try {
             Properties p = new Properties();
-            InputStream in = FileHelper.getInputStream(file);
+            @Cleanup
+            InputStream in = FileHelper.createInputStream(file);
             if(file.endsWith(".xml")) {
                 p.loadFromXML(in);
             }else {
                 p.load(in);
             }
-            in.close();
             return p;
         } catch (Exception e) {
             throw new IllegalArgumentException("loadProperties error,file:"+file,e);

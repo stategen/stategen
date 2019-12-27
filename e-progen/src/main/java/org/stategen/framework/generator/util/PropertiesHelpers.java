@@ -23,25 +23,24 @@ import java.io.InputStream;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
+import lombok.Cleanup;
+
 /**
  * The Class PropertiesHelpers.
  */
 public class PropertiesHelpers {
-    public static Properties load(String...files) throws InvalidPropertiesFormatException, IOException {
+    public static Properties load(String... files) throws InvalidPropertiesFormatException, IOException {
         Properties properties = new Properties();
-        for(String f : files) {
-            File file = FileHelpers.getFile(f);
+        for (String f : files) {
+            File        file  = FileHelpers.getFile(f);
+            @Cleanup
             InputStream input = new FileInputStream(file);
-            try {
-                if(file.getPath().endsWith(".xml")){
-                    properties.loadFromXML(input);
-                }else {
-                    properties.load(input);
-                }
-                properties.putAll(properties);
-            }finally {
-                input.close();
+            if (file.getPath().endsWith(".xml")) {
+                properties.loadFromXML(input);
+            } else {
+                properties.load(input);
             }
+            properties.putAll(properties);
         }
         return properties;
     }

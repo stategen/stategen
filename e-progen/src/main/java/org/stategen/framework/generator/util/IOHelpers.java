@@ -35,6 +35,8 @@ import java.util.List;
 
 import org.stategen.framework.util.StringUtil;
 
+import lombok.Cleanup;
+
 /**
  * The Class IOHelpers.
  */
@@ -111,7 +113,9 @@ public class IOHelpers {
     
 
     public static String readFile(File file, String encoding, boolean writeLineNum) throws IOException {
+        @Cleanup
         InputStreamReader isr = new InputStreamReader(new FileInputStream(file), StringUtil.UTF_8);
+        @Cleanup
         BufferedReader read = new BufferedReader(isr);
 
         String line = null;
@@ -126,8 +130,6 @@ public class IOHelpers {
             String result = toString(read);
             sb.append(result);
         }
-        read.close();
-        isr.close();
         return sb.toString();
         //System.out.println(str);//此时str就保存了一行字符串
 
@@ -202,16 +204,14 @@ public class IOHelpers {
 
     public static void saveFile(File file, String content, String encoding, boolean append) {
         try {
+            @Cleanup
             FileOutputStream output = new FileOutputStream(file, append);
+            @Cleanup
             CharArrayWriter charArrayWriter =new CharArrayWriter(content.length());
+            @Cleanup
             Writer writer = StringUtil.isBlank(encoding) ? new OutputStreamWriter(output) : new OutputStreamWriter(output, encoding);
             charArrayWriter.write(content);
             charArrayWriter.writeTo(writer);
-            charArrayWriter.close();
-            writer.close();
-            output.close();
-//            writer.write(content);
-//            writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -219,9 +219,9 @@ public class IOHelpers {
 
     public static void saveFile(File file, InputStream in) {
         try {
+            @Cleanup
             FileOutputStream output = new FileOutputStream(file);
             copy(in, output);
-            output.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

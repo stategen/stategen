@@ -17,6 +17,7 @@ import java.util.Map;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import lombok.Cleanup;
 
 public class FreemarkerHelper {
 
@@ -35,9 +36,11 @@ public class FreemarkerHelper {
 	}
 	
 	public static void processTemplate(Template template, Map model, File outputFile,String encoding) throws IOException, TemplateException {
-		Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile),encoding));
+	    @Cleanup
+	    FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+	    @Cleanup
+	    Writer out = new BufferedWriter(new OutputStreamWriter(fileOutputStream,encoding));
 		template.process(model,out);
-		out.close();
 	}
 	
 	public static String processTemplateString(String templateString,Map model,Configuration conf) {

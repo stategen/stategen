@@ -30,6 +30,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+
+import lombok.Cleanup;
  
 public class HttpsTrustManager implements X509TrustManager {
     /*
@@ -70,9 +72,9 @@ public class HttpsTrustManager implements X509TrustManager {
             conn.connect();
             // 往服务器端的参数
             if (null != outputStr) {
+                @Cleanup
                 OutputStream os = conn.getOutputStream();
                 os.write(outputStr.getBytes("utf-8"));
-                os.close();
             }
             // 读取服务器端返回的内容
             InputStream is = conn.getInputStream();
@@ -123,6 +125,7 @@ public class HttpsTrustManager implements X509TrustManager {
  
  
         // 得到输入流
+        @Cleanup
         InputStream inputStream = conn.getInputStream();
         byte[] getData = readInputStream(inputStream);
         // 文件保存位置
@@ -132,14 +135,9 @@ public class HttpsTrustManager implements X509TrustManager {
         }
         //输出流
         File file = new File(saveDir + File.separator + fileName);
+        @Cleanup
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(getData);
-        if (fos != null) {
-            fos.close();
-        }
-        if (inputStream != null) {
-            inputStream.close();
-        }
     }
     public static void downloadHttpUrl(String urlStr, String fileName,String savePath) throws IOException {
 
@@ -226,6 +224,7 @@ public class HttpsTrustManager implements X509TrustManager {
         }
         
         // 得到输入流
+        @Cleanup
         InputStream inputStream = conn.getInputStream();
         byte[] getData = readInputStream(inputStream);
         // 文件保存位置
@@ -234,15 +233,9 @@ public class HttpsTrustManager implements X509TrustManager {
             saveDir.mkdirs();
         }
         // 输出流
-        
+        @Cleanup
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(getData);
-        if (fos != null) {
-            fos.close();
-        }
-        if (inputStream != null) {
-            inputStream.close();
-        }
         return true;
     }
  
@@ -258,11 +251,11 @@ public class HttpsTrustManager implements X509TrustManager {
             throws IOException {
         byte[] b = new byte[1024];
         int len = 0;
+        @Cleanup
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         while ((len = inputStream.read(b)) != -1) {
             bos.write(b, 0, len);
         }
-        bos.close();
         return bos.toByteArray();
     }
  

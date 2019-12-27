@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.stategen.framework.generator.util.FmHelper;
+import org.stategen.framework.generator.util.GenProperties;
 import org.stategen.framework.generator.util.TemplateHelpers;
 import org.stategen.framework.util.StringUtil;
 
@@ -57,6 +58,7 @@ import freemarker.cache.MultiTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import lombok.Cleanup;
 
 /**
  * 代码生成器核心引擎 主要提供以下两个方法供外部使用
@@ -344,19 +346,32 @@ public class Generator {
             if (GeneratorHelper.isIgnoreTemplateProcess(srcFile, templateFile, includes, excludes)) {
                 return;
             }
-
+            String outputFilePath = proceeForOutputFilepath(filePathModel, templateFile);
+            final String dubbleEqu="/==";
+            if (outputFilePath.indexOf(dubbleEqu)>0) {
+               //如果不是当前daoType 的文件夹 则跳过
+               if (outputFilePath.indexOf(dubbleEqu+GenProperties.daoType)<0) {
+                   return ;
+               } else {
+                   outputFilePath =outputFilePath.replace(dubbleEqu+GenProperties.daoType, "");
+               }
+            }
+            
             if (isCopyBinaryFile && FileHelper.isBinaryFile(srcFile)) {
-                String outputFilepath = proceeForOutputFilepath(filePathModel, templateFile);
-                File outputFile = new File(getOutRootDir(), outputFilepath);
+                File outputFile = new File(getOutRootDir(), outputFilePath);
                 GLogger.println("[copy binary file by extention] from:" + srcFile + " => "
                         + outputFile);
                 FileHelper.parentMkdir(outputFile);
-                IOHelper.copyAndClose(new FileInputStream(srcFile),
-                        new FileOutputStream(outputFile));
+                @Cleanup
+                FileInputStream fileInputStream = new FileInputStream(srcFile);
+                @Cleanup
+                FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+                IOHelper.copyAndClose(fileInputStream,
+                        fileOutputStream);
                 return;
             }
-            String outputFilepath = proceeForOutputFilepath(filePathModel, templateFile);
-            initGeneratorControlProperties(srcFile, outputFilepath);
+            
+            initGeneratorControlProperties(srcFile, outputFilePath);
             processTemplateForGeneratorControl(templateModel, templateFile);
 
             if (gg.isIgnoreOutput()) {
@@ -388,8 +403,18 @@ public class Generator {
             if (GeneratorHelper.isIgnoreTemplateProcess(srcFile, templateFile, includes, excludes)) {
                 return;
             }
-            String outputFilepath = proceeForOutputFilepath(filePathModel, templateFile);
-            initGeneratorControlProperties(srcFile, outputFilepath);
+            String outputFilePath = proceeForOutputFilepath(filePathModel, templateFile);
+            final String dubbleEqu="/==";
+            if (outputFilePath.indexOf(dubbleEqu)>0) {
+               //如果不是当前daoType
+               if (outputFilePath.indexOf(dubbleEqu+GenProperties.daoType)<0) {
+                   return ;
+               } else {
+                   outputFilePath =outputFilePath.replace(dubbleEqu+GenProperties.daoType, "");
+               }
+            }
+            
+            initGeneratorControlProperties(srcFile, outputFilePath);
             gg.deleteGeneratedFile = true;
             processTemplateForGeneratorControl(templateModel, templateFile);
             GLogger.println("[delete file] file:" + new File(gg.getOutputFile()).getAbsolutePath());
@@ -451,8 +476,10 @@ public class Generator {
 
             //使freemarker支持过滤,如 ${className?lower_case} 现在为 ${className^lower_case}
             outputFilePath = outputFilePath.replace('^', '?');
+            
             String result =FmHelper.processTemplateString(outputFilePath, filePathModel,
                 conf);
+            result =StringUtil.replaceBackSlash(result);
             return result;
         }
 
@@ -535,11 +562,13 @@ public class Generator {
                                                      Map model, File outputFile,
                                                      StringWriter newFileContent)
                 throws IOException, TemplateException {
+            @Cleanup
             LineNumberReader reader = new LineNumberReader(new FileReader(outputFile));
             String line = null;
             boolean isFoundInsertLocation = false;
 
             //FIXME 持续性的重复生成会导致out of memory
+            @Cleanup
             PrintWriter writer = new PrintWriter(newFileContent);
             while ((line = reader.readLine()) != null) {
                 writer.println(line);
@@ -551,8 +580,6 @@ public class Generator {
                 }
             }
 
-            writer.close();
-            reader.close();
             return isFoundInsertLocation;
         }
 

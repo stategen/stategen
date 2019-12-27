@@ -24,12 +24,7 @@
             <version>${stategen-version}</version>
         </dependency>
 
-<!--         <dependency>
-            <groupId>org.apache.ibatis</groupId>
-            <artifactId>ibatis-sqlmap</artifactId>
-            <version>2.3.4.726</version>
-            <scope>provided</scope>
-        </dependency> -->
+
 
         <dependency>
             <groupId>org.mybatis</groupId>
@@ -37,14 +32,25 @@
             <version>2.3.7</version>
             <scope>provided</scope>
         </dependency>
-
+            
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.5.3</version>
+            <scope>provided</scope>
+        </dependency>    
+                
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>2.0.3</version>
+            <scope>provided</scope>
+        </dependency>  
+            
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis-2-spring</artifactId>
-            <version>1.1.0</version>        
-<!--             <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring-orm-version}</version> -->
+            <version>1.1.0</version>  
             <exclusions>
                 <exclusion>
                     <artifactId>spring-orm</artifactId>

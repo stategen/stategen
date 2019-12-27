@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import lombok.Cleanup;
 public class ZipUtils {
 
 	private static AtomicLong tempFileCount = new AtomicLong(System.currentTimeMillis());
@@ -17,9 +19,11 @@ public class ZipUtils {
 			if(!tempFolder.mkdirs()) {
 				throw new RuntimeException("cannot make temp folder:"+tempFolder);
 			}
-			InputStream in = new BufferedInputStream(new FileInputStream(zipfile));
+			@Cleanup
+			FileInputStream fileInputStream = new FileInputStream(zipfile);
+			@Cleanup
+			InputStream in = new BufferedInputStream(fileInputStream);
 			unzip(tempFolder,in);
-			in.close();
 			return tempFolder;
 		}catch(IOException e) {
 			throw new RuntimeException("cannot create temp folder",e);
@@ -53,9 +57,9 @@ public class ZipUtils {
 	 * @throws IOException
 	 */
 	public static void unzip(File unzipDir,File zipFile) throws IOException {
+	    @Cleanup
 		InputStream in = new BufferedInputStream(new FileInputStream(zipFile));
 		unzip(unzipDir,in);
-		in.close();
 	}
 
 	private static void makedirs(File f){

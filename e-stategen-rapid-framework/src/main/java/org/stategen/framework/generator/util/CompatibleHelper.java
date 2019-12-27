@@ -103,7 +103,7 @@ public class CompatibleHelper {
         }
         return sql;
     }
-    public static String replaceColumnCase(String sql) {
+    public static String replaceColumnCase(String sql) throws Exception  {
         if (CollectionUtil.isNotEmpty(OLD_FIELDS)) {
             for (String fieldName : OLD_FIELDS.values()) {
                 String fName = "\"" + fieldName + "\"";

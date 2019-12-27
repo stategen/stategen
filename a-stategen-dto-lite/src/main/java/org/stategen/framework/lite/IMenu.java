@@ -16,8 +16,8 @@
  */
 package org.stategen.framework.lite;
 
-import org.stategen.framework.lite.enums.VisitCheckType;
 import org.stategen.framework.lite.enums.MenuType;
+import org.stategen.framework.lite.enums.VisitCheckType;
 
 /**
  * IMenu
@@ -33,21 +33,21 @@ import org.stategen.framework.lite.enums.MenuType;
  */
 public interface IMenu<T extends IMenu<T>> extends  ITreeNode<T> {
 
-    public void setProjectName(String projectName);
+    public T setProjectName(String projectName);
 
-    public void setControllerName(String controllerName);
+    public T setControllerName(String controllerName);
 
-    public void setMethodName(String methodName);
+    public T setMethodName(String methodName);
 
-    public void setUrl(String url);
+    public T setUrl(String url);
 
-    public void setName(String name);
+    public T setName(String name);
 
-    public void setRoute(String route);
+    public T setRoute(String route);
 
-    public void setMenuType(MenuType menuType);
+    public T setMenuType(MenuType menuType);
 
-    public void setCheckType(VisitCheckType visitCheckType);
+    public T setCheckType(VisitCheckType visitCheckType);
     
     public String getControllerName();
 

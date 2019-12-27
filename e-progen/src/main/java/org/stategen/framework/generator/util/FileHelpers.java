@@ -39,9 +39,16 @@ import org.stategen.framework.util.StringUtil;
  */
 public class FileHelpers {
     final static Logger logger = LoggerFactory.getLogger(FileHelpers.class);
-    final static String unOverrideFolderFlag ="@"+StringUtil.SLASH;
-    final static String unOverrideFolderFlag_Back ="@"+StringUtil.BACK_SLASH;
-    
+    final static String unOverrideFolderFlag = "@" + StringUtil.SLASH;
+    final static String unOverrideFolderFlag_Back = "@" + StringUtil.BACK_SLASH;
+
+    public static boolean isExists(String fileName) {
+        if (StringUtil.isNotBlank(fileName)) {
+            File file = new File(fileName);
+            return file.isFile() && file.exists();
+        }
+        return false;
+    }
 
     public static File getFile(String file) {
         if (StringUtil.isBlank(file)) {
@@ -131,8 +138,8 @@ public class FileHelpers {
         }
     }
 
-    public static Set<String> ignoreList = new HashSet<String>(Arrays.asList(".svn", "CVS", ".cvsignore", ".copyarea.db", "SCCS", "vssver.scc",
-        ".DS_Store", ".git", ".settings", ".idea", ".vscode", ".myeclipse"));
+    public static Set<String> ignoreList = new HashSet<String>(Arrays.asList(".svn", "CVS", ".cvsignore",
+        ".copyarea.db", "SCCS", "vssver.scc", ".DS_Store", ".git", ".settings", ".idea", ".vscode", ".myeclipse"));
     public static Set<String> binaryExtentionsList = new HashSet<String>(
         Arrays.asList(".gif", ".jpg", ".woff", ".png", ".eot", ".svg", ".ttf", ".woff", ".css", ".less", ".pdf"));
 
@@ -203,8 +210,7 @@ public class FileHelpers {
 
         return absolutePath.substring(baseDir.getAbsolutePath().length() + 1);
     }
-    
-    
+
     /**
      * https://blog.csdn.net/u013309993/article/details/84099290
      * 获得targetPath相对于sourcePath的相对路径
@@ -214,46 +220,46 @@ public class FileHelpers {
      */
     public static String getRelativePath(String sourcePath, String targetPath) {
         StringBuffer pathSB = new StringBuffer();
-            
-        if (targetPath.indexOf(sourcePath) == 0){
+
+        if (targetPath.indexOf(sourcePath) == 0) {
             pathSB.append(targetPath.replace(sourcePath, ""));
-        }else {
+        } else {
             String[] sourcePathArray = sourcePath.split("/");
             String[] targetPathArray = targetPath.split("/");
-            if (targetPathArray.length >= sourcePathArray.length){
-                for (int i = 0; i < targetPathArray.length; i++){
-                    if (sourcePathArray.length > i && targetPathArray[i].equals(sourcePathArray[i])){
+            if (targetPathArray.length >= sourcePathArray.length) {
+                for (int i = 0; i < targetPathArray.length; i++) {
+                    if (sourcePathArray.length > i && targetPathArray[i].equals(sourcePathArray[i])) {
                         continue;
-                    }else {
-                        for (int j = i; j < sourcePathArray.length; j++){
-                                pathSB.append("../");
+                    } else {
+                        for (int j = i; j < sourcePathArray.length; j++) {
+                            pathSB.append("../");
                         }
-                        for (;i < targetPathArray.length; i++){
+                        for (; i < targetPathArray.length; i++) {
                             pathSB.append(targetPathArray[i] + "/");
                         }
                         break;
                     }
                 }
-            }else {
-                for (int i = 0; i < sourcePathArray.length; i++){
-                    if (targetPathArray.length > i && targetPathArray[i].equals(sourcePathArray[i])){
+            } else {
+                for (int i = 0; i < sourcePathArray.length; i++) {
+                    if (targetPathArray.length > i && targetPathArray[i].equals(sourcePathArray[i])) {
                         continue;
-                    }else {
-                        for (int j = i; j < sourcePathArray.length; j++){
+                    } else {
+                        for (int j = i; j < sourcePathArray.length; j++) {
                             pathSB.append("../");
                         }
                         break;
                     }
                 }
             }
-                
+
         }
-        
-        String result =pathSB.toString();
-        if (!targetPath.endsWith("/") && result.endsWith("/")){
-            result =result.substring(0,result.length()-1);
+
+        String result = pathSB.toString();
+        if (!targetPath.endsWith("/") && result.endsWith("/")) {
+            result = result.substring(0, result.length() - 1);
         }
-        
+
         return result;
     }
 
@@ -273,16 +279,14 @@ public class FileHelpers {
         }
         return result;
     }
-    
-    public static boolean isUnOverridePath(String fileName){
-        return fileName.indexOf(unOverrideFolderFlag)>0 || fileName.indexOf(unOverrideFolderFlag_Back)>0;
+
+    public static boolean isUnOverridePath(String fileName) {
+        return fileName.indexOf(unOverrideFolderFlag) > 0 || fileName.indexOf(unOverrideFolderFlag_Back) > 0;
     }
-    
-    public static String replaceUnOverridePath(String fileName){
+
+    public static String replaceUnOverridePath(String fileName) {
         return fileName.replaceAll(unOverrideFolderFlag, StringUtil.SLASH);
     }
-    
-    
 
     /** 搜索目录下的所有文件,并忽略如 .svn .cvs等文件 */
     public static List<File> searchAllNotIgnoreFile(File dir) {
@@ -326,19 +330,18 @@ public class FileHelpers {
         }
     }
 
-
     public static String getCanonicalPath(String outputDir, String targetFileName) throws IOException {
         File targetFile = new File(outputDir, targetFileName);
         return processCononicalPath(targetFile, targetFileName);
     }
-    
+
     public static String getCanonicalPath(String fileName) throws IOException {
-       File targetFile =getFile(fileName);
-       return processCononicalPath(targetFile, fileName);
-       
+        File targetFile = getFile(fileName);
+        return processCononicalPath(targetFile, fileName);
+
     }
-    
-    private static String processCononicalPath(File targetFile ,String targetFileName) throws IOException{
+
+    private static String processCononicalPath(File targetFile, String targetFileName) throws IOException {
         String canonicalPath = targetFile.getCanonicalPath();
         if (StringUtil.isFolderEnd(targetFileName)) {
             canonicalPath = StringUtil.endWithSlash(canonicalPath);
@@ -354,7 +357,7 @@ public class FileHelpers {
             if (newText.equals(fileText)) {
                 return true;
             } else {
-               //System.out.println(newText.length()+"   "+fileText.length());
+                //System.out.println(newText.length()+"   "+fileText.length());
             }
         }
         return false;

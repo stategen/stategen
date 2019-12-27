@@ -60,9 +60,9 @@ public class FileHelper {
         }
     }
 
-    public static InputStream getInputStream(String file)
+    public static InputStream createInputStream(String file)
             throws FileNotFoundException {
-        InputStream inputStream = null;
+        InputStream inputStream;
         if (file.startsWith("classpath:")) {
             inputStream = ClassHelper.getDefaultClassLoader()
                     .getResourceAsStream(file.substring("classpath:".length()));

@@ -25,6 +25,7 @@ import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
+import lombok.Cleanup;
 
 // contributors
 // Ted Graham, Matt Fowles, see also http://jira.qos.ch/browse/LBCORE-32
@@ -109,33 +110,37 @@ public class ContextInitializer {
         return null;
     }
 
-    private URL loadURLFormPropertiesFile(ClassLoader myClassLoader, boolean updateStatus) {
+    private URL loadURLFormPropertiesFile(ClassLoader myClassLoader, boolean updateStatus) throws IOException {
         StatusManager sm = loggerContext.getStatusManager();
         sm.add(new InfoStatus("正在读取：" + application_properties, loggerContext));
         URL application_url=getResource(application_properties, myClassLoader, updateStatus);
-        String applicationPropertiesFilePath = application_url.getPath();
+        if (application_url==null) {
+            return null;
+        }
         
+        String applicationPropertiesPath = application_url.getPath();
 
         Properties prop = new Properties();
+        @Cleanup
         InputStream in = null;
         try {
-            sm.add(new InfoStatus(applicationPropertiesFilePath, loggerContext) );
+            sm.add(new InfoStatus(applicationPropertiesPath, loggerContext) );
             in=myClassLoader.getResourceAsStream(application_properties);
             prop.load(in);
             if (!prop.containsKey(logback_config_xml_key)) {
-                sm.add(new ErrorStatus(applicationPropertiesFilePath+" 文件中没有键："+logback_config_xml_key, loggerContext) );
+                sm.add(new ErrorStatus(applicationPropertiesPath+" 文件中没有键："+logback_config_xml_key, loggerContext) );
                 return null;
             }
-            sm.add(new InfoStatus(applicationPropertiesFilePath+" 文件中有键："+logback_config_xml_key, loggerContext) );
+            sm.add(new InfoStatus(applicationPropertiesPath+" 文件中有键："+logback_config_xml_key, loggerContext) );
 
             String logbackFile = prop.getProperty(logback_config_xml_key);
             logbackFile = logbackFile.trim();
             
             if (logbackFile==null || logbackFile.isEmpty()) {
-                sm.add(new ErrorStatus(applicationPropertiesFilePath+" 文件中键："+logback_config_xml_key+" 为空!", loggerContext) );
+                sm.add(new ErrorStatus(applicationPropertiesPath+" 文件中键："+logback_config_xml_key+" 为空!", loggerContext) );
                 return null;
             }
-            sm.add(new InfoStatus(applicationPropertiesFilePath+" 文件中键："+logback_config_xml_key+" 值为:"+logbackFile, loggerContext) );
+            sm.add(new InfoStatus(applicationPropertiesPath+" 文件中键："+logback_config_xml_key+" 值为:"+logbackFile, loggerContext) );
 
             logbackFile = OSUtil.getRealUriPathByOs(logbackFile);
             sm.add(new InfoStatus("Found logback configration :"+logbackFile, loggerContext) );
@@ -144,19 +149,12 @@ public class ContextInitializer {
             return url;
         } catch (IOException e) {
             sm.add(new ErrorStatus(
-                "Failed to get url list for resource [" + applicationPropertiesFilePath + "]", loggerContext, e));
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                }
-            }
-        }
+                "Failed to get url list for resource [" + applicationPropertiesPath + "]", loggerContext, e));
+        } 
         return null;
     }
 
-    public URL findURLOfDefaultConfigurationFile(boolean updateStatus) {
+    public URL findURLOfDefaultConfigurationFile(boolean updateStatus) throws IOException {
         StatusManager sm = loggerContext.getStatusManager();
         ClassLoader myClassLoader = Loader.getClassLoaderOfObject(this);
         URL url = null;
@@ -195,7 +193,7 @@ public class ContextInitializer {
         return url;
     }
 
-    public void autoConfig() throws JoranException {
+    public void autoConfig() throws JoranException ,IOException{
         StatusListenerConfigHelper.installIfAsked(loggerContext);
         URL url = findURLOfDefaultConfigurationFile(true);
         if (url != null) {

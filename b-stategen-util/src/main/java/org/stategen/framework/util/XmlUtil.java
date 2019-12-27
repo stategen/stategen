@@ -14,6 +14,8 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
+import lombok.Cleanup;
+
 public class XmlUtil {
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(XmlUtil.class);
 
@@ -79,17 +81,17 @@ public class XmlUtil {
 
     // 下面的为固定代码---------可以完成java对XML的写,改等操作
     public static void saveDocument(Document document, File xmlFile) throws IOException {
+        @Cleanup
         Writer osWrite = new OutputStreamWriter(new FileOutputStream(xmlFile),StringUtil.UTF_8);// 创建输出流
         OutputFormat format = OutputFormat.createPrettyPrint(); // 获取输出的指定格式
         format.setEncoding(document.getXMLEncoding());  
         format.setNewLineAfterDeclaration(false);//解决声明下空行问题  
         
         format.setEncoding(StringUtil.UTF_8);// 设置编码 ，确保解析的xml为UTF-8格式
+        @Cleanup
         XMLWriter writer = new XMLWriter(osWrite, format);// XMLWriter
         writer.write(document);// 把document写入xmlFile指定的文件(可以为被解析的文件或者新创建的文件)
         writer.flush();
-        writer.close();
-        osWrite.close();
     }
 
 }

@@ -9,21 +9,22 @@ import java.security.PrivilegedAction;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
+import lombok.Cleanup;
+
 public class PropertiesUtil {
-    
-    
+
     public static Properties loadPropertiesFromClasspath(final String propertiesFileName) {
-        Properties result = null;
+        Properties  result      = null;
         InputStream imputStream = AccessController.doPrivileged(new PrivilegedAction<InputStream>() {
-            public InputStream run() {
-                ClassLoader cl = Thread.currentThread().getContextClassLoader();
-                if (cl != null) {
-                    return cl.getResourceAsStream(propertiesFileName);
-                } else {
-                    return ClassLoader.getSystemResourceAsStream(propertiesFileName);
-                }
-            }
-        });
+                                    public InputStream run() {
+                                        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+                                        if (cl != null) {
+                                            return cl.getResourceAsStream(propertiesFileName);
+                                        } else {
+                                            return ClassLoader.getSystemResourceAsStream(propertiesFileName);
+                                        }
+                                    }
+                                });
 
         if (null != imputStream) {
             try {
@@ -40,8 +41,8 @@ public class PropertiesUtil {
         }
         return result;
     }
-    
-    public static String getStringProperty(String name,Properties properties) {
+
+    public static String getStringProperty(String name, Properties properties) {
         String prop = null;
         try {
             prop = System.getProperty(name);
@@ -50,23 +51,19 @@ public class PropertiesUtil {
         }
         return (prop == null) ? properties.getProperty(name) : prop;
     }
-    
-    
-    public static Properties load(String...files) throws InvalidPropertiesFormatException, IOException {
+
+    public static Properties load(String... files) throws InvalidPropertiesFormatException, IOException {
         Properties properties = new Properties();
-        for(String f : files) {
-            File file = new File(f);
+        for (String f : files) {
+            File        file  = new File(f);
+            @Cleanup
             InputStream input = new FileInputStream(file);
-            try {
-                if(file.getPath().endsWith(".xml")){
-                    properties.loadFromXML(input);
-                }else {
-                    properties.load(input);
-                }
-                properties.putAll(properties);
-            }finally {
-                input.close();
+            if (file.getPath().endsWith(".xml")) {
+                properties.loadFromXML(input);
+            } else {
+                properties.load(input);
             }
+            properties.putAll(properties);
         }
         return properties;
     }

@@ -19,6 +19,7 @@ package org.stategen.framework.util;
 import java.beans.PropertyDescriptor;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
@@ -38,6 +39,8 @@ import org.springframework.util.ClassUtils;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+
+import lombok.Cleanup;
 
 /**
  * The Class CopyUtil.
@@ -79,7 +82,7 @@ public class CopyUtil {
         return new ArrayList<T>(0);
     }
 
-    public static <T> T deepCopy(T dest) {
+    public static <T> T deepCopy(T dest) throws IOException {
         T result =null;
         result = KryoDeepCopy(dest);
         return result;
@@ -87,7 +90,7 @@ public class CopyUtil {
     
 
     @SuppressWarnings("unchecked")
-    public static <T> T KryoDeepCopy(T dest) {
+    public static <T> T KryoDeepCopy(T dest) throws IOException {
         if (dest == null) {
             return null;
         }
@@ -95,24 +98,29 @@ public class CopyUtil {
         Kryo kryo =new Kryo();
 
         T result = null;
+        @Cleanup
         ByteArrayOutputStream fileOut = new ByteArrayOutputStream();
-        Output objectOutput = new Output(fileOut);
-        kryo.writeObject(objectOutput, dest);
-        objectOutput.close();
+        fileOut = new ByteArrayOutputStream();
+        @Cleanup
+        Output output = new Output(fileOut);
+        kryo.writeObject(output, dest);
         
         byte[] buf = fileOut.toByteArray();
+        @Cleanup
         Input input = new Input(buf);
         result = (T) kryo.readObject(input, dest.getClass());
-        input.close();
         return result;
     }    
 
     @SuppressWarnings("unchecked")
-    public static <T> T jdkDeepCopy(T dest) {
+    public static <T> T jdkDeepCopy(T dest) throws IOException {
+        @Cleanup
         ByteArrayOutputStream baos = null;  
+        @Cleanup
         ObjectOutputStream oos = null;  
-          
+        @Cleanup
         ByteArrayInputStream bais = null;  
+        @Cleanup
         ObjectInputStream ois = null;  
           
         T result = null;  
@@ -124,12 +132,10 @@ public class CopyUtil {
             oos = new ObjectOutputStream(baos);  
             oos.writeObject(dest);  
             byte[] buf = baos.toByteArray();
-            oos.close();
             
             bais = new ByteArrayInputStream(buf);  
             ois = new ObjectInputStream(bais);  
             result = (T) ois.readObject();  
-            ois.close();
         } catch (Exception e) {  
            logger.error(new StringBuffer("在运行时产生错误信息,此错误信息表示该相应方法已将相关错误catch了，请尽快修复!\n以下是具体错误产生的原因:")
                .append(e.getMessage()).append(" \n").toString(),

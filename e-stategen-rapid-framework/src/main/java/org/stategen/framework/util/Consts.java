@@ -31,13 +31,11 @@ public class Consts {
     public final static String controller_name_suffix = "controller_name_suffix";
     public final static String base_name_suffix    = "base_name_suffix";
     
-    public final static String dalgen_dir = "dalgen_dir";
     public final static String dir_table_configs = "dir_table_configs";
     public final static String dir_templates_root = "dir_templates_root";
     public final static String packageName = "packageName";
     public final static String genInputCmd = "genInputCmd";
     public final static String cmdPath = "cmdPath";
-    public final static String projectsPath = "projectsPath";
     public final static String dir_dal_output_root = "dir_dal_output_root";
     public final static String dto_module_name = "dto_module_name";
     public final static String pojo_module_name = "pojo_module_name";

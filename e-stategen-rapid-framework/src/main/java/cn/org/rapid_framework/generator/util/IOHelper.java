@@ -15,6 +15,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Cleanup;
 /**
  * 
  * @author badqiu
@@ -81,12 +83,9 @@ public class IOHelper {
 
 	public static String readFile(File file,String encoding) {
 		try {
+		    @Cleanup
 			InputStream inputStream = new FileInputStream(file);
-			try {
-			    return toString(encoding, inputStream);
-			}finally{
-			    inputStream.close();
-			}
+			return toString(encoding, inputStream);
 		}catch(IOException e){
 			throw new RuntimeException(e);
 		}
@@ -124,10 +123,11 @@ public class IOHelper {
     
 	public static void saveFile(File file,String content,String encoding,boolean append)  {
 		try {
-		FileOutputStream output = new FileOutputStream(file,append);
-		Writer writer = StringHelper.isBlank(encoding) ? new OutputStreamWriter(output) : new OutputStreamWriter(output,encoding);
-		writer.write(content);
-		writer.close();
+		    @Cleanup
+		    FileOutputStream output = new FileOutputStream(file,append);
+		    @Cleanup
+    		Writer writer = StringHelper.isBlank(encoding) ? new OutputStreamWriter(output) : new OutputStreamWriter(output,encoding);
+    		writer.write(content);
 		}catch(IOException e){
 			throw new RuntimeException(e);
 		}
@@ -135,9 +135,9 @@ public class IOHelper {
 
 	public static void saveFile(File file,InputStream in)  {
 		try{
+		    @Cleanup
 			FileOutputStream output = new FileOutputStream(file);
 			copy(in,output);
-			output.close();
 		}catch(IOException e){
 			throw new RuntimeException(e);
 		}

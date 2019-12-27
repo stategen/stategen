@@ -8,6 +8,8 @@ import java.util.Properties;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.Property;
 
+import lombok.Cleanup;
+
 public class PropertiesLoadTask extends Property {
 
     @Override
@@ -20,9 +22,9 @@ public class PropertiesLoadTask extends Property {
         if(file.getName().endsWith(".xml")) {
             try {
                 Properties props = new Properties();
+                @Cleanup
                 FileInputStream in = new FileInputStream(file);
                 props.loadFromXML(in);
-                in.close();
                 addProperties(props);
             }catch(IOException e) {
                 throw new BuildException("load properties occer error:"+file+" cause:"+e,e);

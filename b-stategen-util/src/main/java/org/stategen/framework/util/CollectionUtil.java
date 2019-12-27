@@ -275,6 +275,7 @@ public class CollectionUtil {
     public static List<String> toList(String ids, String split) {
         List<String> result = null;
         if (StringUtil.isNotBlank(ids)) {
+            ids =ids.trim();
             String[] IdArray = ids.split(split);
             result = new ArrayList<String>();
             for (String id : IdArray) {
