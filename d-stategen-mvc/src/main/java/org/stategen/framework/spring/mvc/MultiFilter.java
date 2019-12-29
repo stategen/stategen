@@ -81,8 +81,8 @@ public class MultiFilter extends GenericFilterBean {
                 //cookie或令牌伪造，生成的都是json
                 boolean passed =httpServletResponse.checkTokens();              
                 if (!passed) {
-                    if (logger.isInfoEnabled()) {
-                        logger.info(new StringBuffer(requestMapping).append("被拦截").toString());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(new StringBuffer(requestMapping).append("被拦截").toString());
                     }
                     return;
                 }              

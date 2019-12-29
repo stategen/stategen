@@ -144,9 +144,9 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
             if (strong) {
                 //清空所有不正确的cookie
                 this.expireAllCookies();
-                if (logger.isInfoEnabled()) {
+                if (logger.isDebugEnabled()) {
                     logger
-                        .info(new StringBuffer(requestPath).append("输出info信息: 请求被拦截:").append(requestPath).toString());
+                        .debug(new StringBuffer(requestPath).append("输出info信息: 请求被拦截:").append(requestPath).toString());
                 }
                 //验证没有通过，返回json对象
                 IResponseStatus responseStatusOfTokenError = IResponseStatus
@@ -179,9 +179,9 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
                 }
             }
 
-            if (logger.isInfoEnabled()) {
+            if (logger.isDebugEnabled()) {
                 String requestPath = RequestUtil.getRequestPath();
-                logger.info(
+                logger.debug(
                     new StringBuffer("path:").append(requestPath).append(", token校验，用户 token:").append(cookieToken)
                         .append(", 计算token:").append(calcuToken).append("相等？").append(result).toString());
             }

@@ -43,11 +43,6 @@ public class RequestMappingResolver {
         
         //判断requestMapping是否在method上
         boolean requestMappingOnMethod =method.isAnnotationPresent(RequestMapping.class);
-        if (method.getName().equals("getUserById")){
-            if (logger.isInfoEnabled()) {
-                logger.info(new StringBuffer("输出info信息: requestMappingValue:").append(requestMappingValue).toString());
-            }
-        }
         
         if (!requestMappingOnMethod && apiRequestMappingAutoWithMethodName != null && StringUtil.isBlank(requestMappingValue)) {
             String methodName = method.getName();
