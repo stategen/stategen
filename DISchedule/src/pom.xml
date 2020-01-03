@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.stategen.framework</groupId>
         <artifactId>stategen-parent</artifactId>
-        <version>2.0.8.stategen.RELEASE</version>
+        <version>stg.2.1.0.RELEASE</version>
         <relativePath>../../</relativePath>
     </parent>
     <groupId>com.taobao.pamirs.schedule</groupId>
@@ -190,7 +190,6 @@
                 </configuration>
             </plugin>
 
-            <!-- deploy时只上传jar包到远程仓库的配置 -->
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <executions>

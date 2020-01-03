@@ -275,7 +275,18 @@ public class FacadeGenerator {
         } else {
             if (!isDirectory) {
                 Template template = conf.getTemplate(relativeFileName, Locale.getDefault(), StringUtil.UTF_8);
-                processFileString(root, writer, template, targetFileName);
+                try {
+                    processFileString(root, writer, template, targetFileName);
+                } catch (TemplateException e) {
+                    logger.error(new StringBuffer("写入文件出错, 模版:")
+                        .append(tempFile.getCanonicalPath())
+                        .append("\n目录文件:").append(fullTargetFileName)
+                        .append(e.getMessage())
+                        .append(" \n")
+                        .toString(), e);
+
+                    throw e;
+                }
                 outFiles.add(fullTargetFileName);
             }
         }

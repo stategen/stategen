@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.stategen.framework</groupId>
     <artifactId>stategen-parent</artifactId>
-    <version>2.0.8.stategen.RELEASE</version>
+    <version>stg.2.1.0.RELEASE</version>
     <packaging>pom</packaging>
     <name>a_stategen-parent</name>
     <description />
@@ -18,7 +18,7 @@
         <spring-data-redis-version>2.1.10.RELEASE</spring-data-redis-version>
 
         <swagger.springfox.verion>2.4.0</swagger.springfox.verion>
-        <stategen-version>2.0.8.stategen.RELEASE</stategen-version>
+        <stategen-version>stg.2.1.0.RELEASE</stategen-version>
         <spring-orm-version>3.1.4.RELEASE</spring-orm-version>
 
         <DI-tbSchedule-version>3.3.3.2</DI-tbSchedule-version>
@@ -28,17 +28,51 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- 编译时的编码 -->
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
-        <dubbo-version>2.8.4</dubbo-version>
+        <dubbo-version>2.7.5</dubbo-version>
+        <!-- <dubbo-version>2.8.4</dubbo-version> -->
         <fastjson-version>1.2.29</fastjson-version>
         <logback-version>1.2.3</logback-version>
         <dom4j.version>1.6.1</dom4j.version>
     </properties>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License Version 3</name>
+            <url>http://www.gnu.org/licenses/lgpl.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/stategen</url>
+        <connection>https://github.com/stategen/stategen.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>niaoge</id>
+            <email>78493244@qq.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+
 
     <distributionManagement>
         <repository>
             <id>thirdparty</id>
             <url>http://nexus:8081/content/repositories/thirdparty/</url>
         </repository>
+
+<!--         <snapshotRepository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+
+        <repository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository> -->
     </distributionManagement>
 
     <modules>
@@ -51,11 +85,14 @@
         <module>e-stategen-dubbox</module>
         <module>e-progen</module>
         <module>e-stategen-rapid-framework</module>
+        <!-- 不发布到maven仓库 -->
         <module>f-dalgenx</module>
         <module>i-swagger2-ui</module>
-        <module>DISchedule</module>
-        <module>DISchedule/src</module>
         <module>j-wechat-open-sdk</module>
+        <!-- 不发布到maven仓库 -->
+        <module>DISchedule</module>
+        <!-- 不发布到maven仓库 -->
+        <module>DISchedule/src</module>
     </modules>
 
     <dependencies>
@@ -122,13 +159,26 @@
                         </execution>
                     </executions>
                 </plugin>
-                      <!-- resources plugin -->
+                <!-- resources plugin -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <configuration>
                         <encoding>UTF-8</encoding>
                     </configuration>
+                </plugin>
+
+                <!-- GPG -->
+                <plugin>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -148,6 +198,10 @@
             <plugin>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-gpg-plugin</artifactId>
             </plugin>
 
         </plugins>

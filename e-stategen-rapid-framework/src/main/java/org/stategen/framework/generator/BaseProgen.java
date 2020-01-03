@@ -166,7 +166,7 @@ public class BaseProgen {
         }
     }
 
-    public void root() throws IOException, TemplateException {
+    public void boot() throws IOException, TemplateException {
         Properties root = getRootProperties();
         root.putAll(StringHelper.getDirValuesMap(root));
 
@@ -194,19 +194,6 @@ public class BaseProgen {
         }
         IOHelpers.saveFile(new File(projectPomXml), projectPomText, StringUtil.UTF_8);
 
-        //        Boolean hasClient = false;
-        //        String webType = System.getProperty("webType");
-        //        if (StringUtil.isNotBlank(webType) && !"-e".equals(webType)) {
-        //            hasClient = true;
-        //            root.put("webType", webType);
-        //        } else {
-        //            root.put("webType", "");
-        //        }
-        //        root.put("hasClient", hasClient);
-        //
-        //        if (hasClient) {
-        //            processClient(root, hasClient, webType, projectFolderName);
-        //        }
     }
 
     public void client() throws IOException, TemplateException, DocumentException {
