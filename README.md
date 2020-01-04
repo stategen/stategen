@@ -1,3 +1,7 @@
+#一切为了迭代
+spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(可选)+react+antd(可选antd.mobile)+flutter(可选)
+**全栈**骨架生成器+一键迭代开发生成器
+
 ### 增加一篇论文介绍原理:[利用java反射和java-parser制作可以迭代、分布式、全栈代码生成器的研究](https://github.com/stategen/stategen/blob/master/%E5%88%A9%E7%94%A8java%E5%8F%8D%E5%B0%84%E5%92%8Cjava-parser%E5%88%B6%E4%BD%9C%E5%8F%AF%E4%BB%A5%E8%BF%AD%E4%BB%A3%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E3%80%81%E5%85%A8%E6%A0%88%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E7%A0%94%E7%A9%B6.md)
 #### 市面上代码生成器分类  
 1. 一次性脚手架式：一次性生成/覆盖目标代码,用在项目初始化,如：maven初始化项目、各种网页配置生成。  
@@ -97,70 +101,77 @@ E.	nodejs8+yarn
   因为stg工程是git管理的， 前端是一个整个git项目的子项目
 
 #### 开发环境安装
->1.	Install dubbox/或者发布dubbox至公司的私有仓库  
-```
-git clone https://github.com/dangdangdotcom/dubbox.git
-mvn install –Dmaven.test.skip=true -e
-```
->2.	Install stategen/或者发布stategen至公司的私有仓库
-```
-git clone --recursive https://github.com/stategen/stategen
-mvn install –Dmaven.test.skip=true -e
-```
-(上面2步在有公司的私有maven仓库的情况下，只要发布一次就可以,并不是每台开发机上都要配置)
->3. 配置 dalgenX
+因项目依赖jar已经在maven中央仓库，只需要 git dalgenX即可
+1.  配置 dalgenX
 ```
 git clone https://github.com/stategen/dalgenx.git
 ```
 >>设置 DALGENX_HOME 环境变量为 dalgenx所在目录  
 >>将 %DALGENX_HOME% 添加至 PATH 中  
 #### Ide中配置（eclipse\idea）
->1.	location: {DALGENX_HOME}\gen.schemas-1.0.dtd  
+>>1.  location: {DALGENX_HOME}\gen.schemas-1.0.dtd  
 key type: system Id  
 key: https://github.com/stategen/dalgenx/blob/master/gen.schemas-1.0.dtd
->2.	location: {DALGENX_HOME}\dubbo.xsd    
-key type: namespaces Name   
-key: http://code.alibabatech.com/schema/dubbo/dubbo.xsd  
-
 
 #### 用命令初始化系统及项目/范例
->1.创建系统
+>1. 帮助请罝入 
+```
+gen.sh -h
+```
+>2. 创建系统骨架,注意，骨架|脚手架生成器重复运行，不会覆盖已有文件，但会补充不存在的文件
 ```
 gen.sh system com.mycompany.biz trade -e  
 ```
 >>com.mycompany.biz 为包名   
 >>trade 系统名 /数据库名 dubbox 系统名    
 
->2.创建cms项目	
+>2.  创建cms web 项目  (可选)
 ```
 gen.sh project cms web –e  
 ```
 >>cms 项目名称
 >>web 以web(模版所在的文件夹生成前端) ，目前提供2个模版web|app，不要这个参数，即没有前端
-	
->3.创建app项目	
-```
-gen.sh project app app –e  
-```
->4.创建shedule项目,不带前端	
+
+>4.  创建shedule项目,不带前端 (可选)	
 ```
 gen.sh project schedule –e  
 ```
+	
+>3.  创建app web api 项目  (可选)
+```
+gen.sh project app h5 –e  
 
->5.gitbash 中 运行  xxx-frontend目录下git_add_to_parent_as_sub.sh，变为git项目和子项目   
->6.sourceTree查看文件并提交  
->7.	环境及表  
->> 创建trade数据库并运行 运行 trade.sql，,city hoppy region province user_hoppy topic*都是演示表  
->>把opt复制到同盘根目录下  
+//再创建一个客户端 比如 flutter
+gen.sh project app flutter –e 
+
+//或者时入子目录
+cd 7-trade-web-app
+gen.sh client flutter -e
+
+//把项目转换为sprintboot 
+gen.sh boot -e
+
+//变为git版本控制, trade 为git 项目，app-frontend-flutter为trade的子项目 
+cd app-frontend-flutter
+sh git_add_to_parent_as_sub.sh
+```
+
+>7.	 环境及表  
+>> 创建trade数据库并运行 运行 trade.sql
+>>把opt复制到同盘(tomcat所以盘)根目录下,修改stategen.xml中的数据库配置
 >>修改gen_config.xml中的数据库配置  
->>先后在 gitbatsh中运行 tablebatch.sh 和 dalbatch.sh 批量生成缺失的文件  
->8.sourceTree查看文件并提交  
+>>因为一些文件可以用生成器获取，所以不在版本控制里，先后在 gitbatsh中运行 tablebatch.sh 和 dalbatch.sh  
+```
+./tablebatch.sh 
+./dalbatch.sh 
+```
+>8.sourceTree查看,修改项目提交地址，提交  
 
 #### 一个典型Stategen 系统 结构图
 ![Image](https://github.com/stategen/docs/blob/master/stg-fm-bbr.png) 
 
 
-#### 演示Teacher需求开发
+#### 演示Teacher需求开发 (一键开发，一键迭代,显式代码，所见即所得)
 ```
 DROP TABLE IF EXISTS `teacher`;
 CREATE TABLE `teacher` (
@@ -215,7 +226,7 @@ gen.sh api teacher cms|app
 >1.	运行test/UmiFacadeProcessor.java   
 >2.	webstorm打开前端代码 ，配置webpack解读代码  
 >3.	yarn 下载前端依赖  
->4.	fiddler 脚本设置 onBeforeRequest  
+>4.	fiddler 脚本设置 onBeforeRequest 函数中 
 ```
         var url:String=oSession.PathAndQuery;
   

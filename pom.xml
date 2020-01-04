@@ -9,7 +9,9 @@
     <version>stg.2.1.0.RELEASE</version>
     <packaging>pom</packaging>
     <name>a_stategen-parent</name>
-    <description />
+    <description >spring+springmvc+mybatis|ibatis+apache.dubbo framework with gernerator and dev generator</description>
+    
+    <url>https://github.com/stategen</url>
 
     <properties>
         <spring.version>5.1.10.RELEASE</spring.version>
@@ -64,7 +66,7 @@
 
 
     <distributionManagement>
-        <!-- <repository>
+<!--         <repository>
             <id>thirdparty</id>
             <url>http://nexus:8081/content/repositories/thirdparty/</url>
             </repository> -->
@@ -173,6 +175,23 @@
                     </configuration>
                 </plugin>
 
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <doclint>none</doclint>
+                        <aggregate>true</aggregate>
+                        <show>public</show><!--在哪里设置访问级别就OK了-->
+                    </configuration>
+                </plugin>
+
                 <!-- GPG -->
                 <plugin>
                     <artifactId>maven-gpg-plugin</artifactId>
@@ -203,6 +222,10 @@
             <plugin>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
 
             <plugin>
