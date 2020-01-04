@@ -1,4 +1,4 @@
-##一切为了迭代!!!   
+##  一切为了迭代!!!   
 spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(可选)+react+antd(可选antd.mobile)+flutter(可选)
 **全栈**骨架生成器+一键迭代开发生成器
 
@@ -114,30 +114,30 @@ key type: system Id
 key: https://github.com/stategen/dalgenx/blob/master/gen.schemas-1.0.dtd
 
 #### 用命令初始化系统及项目/范例
->1. 帮助请罝入 
+1.  帮助
 ```
 gen.sh -h
 ```
->2. 创建系统骨架,注意，骨架|脚手架生成器重复运行，不会覆盖已有文件，但会补充不存在的文件
+2.  创建系统骨架,注意，骨架|脚手架生成器重复运行，不会覆盖已有文件，但会补充不存在的文件
 ```
 gen.sh system com.mycompany.biz trade -e  
 ```
 >>com.mycompany.biz 为包名   
 >>trade 系统名 /数据库名 dubbox 系统名    
 
->2.  创建cms web 项目  (可选)
+3.  创建cms web 项目  (可选)
 ```
 gen.sh project cms web –e  
 ```
 >>cms 项目名称
 >>web 以web(模版所在的文件夹生成前端) ，目前提供2个模版web|app，不要这个参数，即没有前端
 
->4.  创建shedule项目,不带前端 (可选)	
+4.  创建shedule项目,不带前端 (可选)	
 ```
 gen.sh project schedule –e  
 ```
 	
->3.  创建app web api 项目  (可选)
+5.  创建app web api 项目  (可选)
 ```
 gen.sh project app h5 –e  
 
@@ -156,7 +156,7 @@ cd app-frontend-flutter
 sh git_add_to_parent_as_sub.sh
 ```
 
->7.	 环境及表  
+6.	环境及表  
 >> 创建trade数据库并运行 运行 trade.sql
 >>把opt复制到同盘(tomcat所以盘)根目录下,修改stategen.xml中的数据库配置
 >>修改gen_config.xml中的数据库配置  
@@ -165,7 +165,7 @@ sh git_add_to_parent_as_sub.sh
 ./tablebatch.sh 
 ./dalbatch.sh 
 ```
->8.sourceTree查看,修改项目提交地址，提交  
+8.  sourceTree查看,修改项目提交地址，提交  
 
 #### 一个典型Stategen 系统 结构图
 ![Image](https://github.com/stategen/docs/blob/master/stg-fm-bbr.png) 
