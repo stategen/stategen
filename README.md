@@ -68,14 +68,14 @@ Stategen采用第三种生成方式可以豪无限制地兼容其它技术，所
 # StateGen已经支持flutter   
   采用google 2019 i/o大会上推荐的provider
 ##  最好的沟通是避免沟通   
-<img src="https://github.com/stategen/docs/blob/master/category.png" width="375" />  
-<img src="https://github.com/stategen/docs/blob/master/homeApis.png" width="375" />   
-<img src="https://github.com/stategen/docs/blob/master/category_json.png" width="375" />  
-<img src="https://github.com/stategen/docs/blob/master/dva_react_model.png" width="375" />   
-<img src="https://github.com/stategen/docs/blob/master/flutter_goods_provider.png" width="375" />  
-<img src="https://github.com/stategen/docs/blob/master/stategenAppSnapshort.png" width="375" />  
+<img src="https://github.com/stategen/docs/blob/master/category.png" width="400" />
+<img src="https://github.com/stategen/docs/blob/master/homeApis.png" width="400" />
+<img src="https://github.com/stategen/docs/blob/master/category_json.png" width="400" />
+<img src="https://github.com/stategen/docs/blob/master/dva_react_model.png" width="400" />
+<img src="https://github.com/stategen/docs/blob/master/flutter_goods_provider.png" width="400" />
+<img src="https://github.com/stategen/docs/blob/master/stategenAppSnapshort.png" width="400" />
 mobile端  
-<img src="https://github.com/stategen/docs/blob/master/stategenWebSnapShort1.png" width="375" />  
+<img src="https://github.com/stategen/docs/blob/master/stategenWebSnapShort1.png" width="400" />  
 web端  
 **上面2张图，按通常的开发量需要上千行代码，现在只需要开发10多行代码**  
 本说明视频演示请移步[Stategen快速调试开发运行精简教程](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)  
