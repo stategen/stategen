@@ -66,14 +66,14 @@ public class BaseTargets extends HashMap<String, Object> {
         packageName        = pts.getProperty(Consts.packageName);
         cmdPath            = pts.getProperty(Consts.cmdPath);
 
-        tablesPath = GenProperties.projectsPath + "/" + dir_table_configs;
+        tablesPath = GenProperties.getProjectsPath() + "/" + dir_table_configs;
 
-        pojo_module_name       = genDir(GenProperties.projectsPath, pts, Consts.pojo_module_name);
-        dto_module_name        = genDir(GenProperties.projectsPath, pts, Consts.dto_module_name);
-        dao_module_name        = genDir(GenProperties.projectsPath, pts, Consts.dao_module_name);
-        facade_module_name     = genDir(GenProperties.projectsPath, pts, Consts.facade_module_name);
-        service_module_name    = genDir(GenProperties.projectsPath, pts, Consts.service_module_name);
-        controller_module_name = genDir(GenProperties.projectsPath, pts, Consts.controller_module_name);
+        pojo_module_name       = genDir(GenProperties.getProjectsPath(), pts, Consts.pojo_module_name);
+        dto_module_name        = genDir(GenProperties.getProjectsPath(), pts, Consts.dto_module_name);
+        dao_module_name        = genDir(GenProperties.getProjectsPath(), pts, Consts.dao_module_name);
+        facade_module_name     = genDir(GenProperties.getProjectsPath(), pts, Consts.facade_module_name);
+        service_module_name    = genDir(GenProperties.getProjectsPath(), pts, Consts.service_module_name);
+        controller_module_name = genDir(GenProperties.getProjectsPath(), pts, Consts.controller_module_name);
 
         dir_dal_output_root = dao_module_name;                       //projectsPath+"/"+pts.getProperty(Const.dir_dal_output_root);
         dir_tmpl_share      = dir_templates_root + "/java/share/dal";

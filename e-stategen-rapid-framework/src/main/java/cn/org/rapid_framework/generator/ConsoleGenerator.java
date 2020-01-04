@@ -5,7 +5,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import org.stategen.framework.generator.BaseTargets;
-import org.stategen.framework.generator.util.GenConst;
+import org.stategen.framework.generator.util.GenNames;
 import org.stategen.framework.generator.util.GenProperties;
 import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.StringUtil;
@@ -53,11 +53,11 @@ public class ConsoleGenerator {
             }
 
             if (executeTarget.equals("dal") || executeTarget.equals("table")) {
-                System.setProperty(GenConst.executeTarget, executeTarget);
+                System.setProperty(GenNames.executeTarget, executeTarget);
                 idx++;
                 tableName = inputs.get(idx);
                 if (tableName != null) {
-                    System.setProperty(GenConst.tableName, tableName);
+                    System.setProperty(GenNames.tableName, tableName);
                     find = true;
                 }
             }
@@ -68,7 +68,7 @@ public class ConsoleGenerator {
 
         }
 
-        Properties mergedProps = GenProperties.getAllMergedProps(GenProperties.getGenConfigXml());
+        Properties mergedProps = GenProperties.getAllMergedProps(GenProperties.getGenConfigXmlIfRunTest());
         GenProperties.putStatics(mergedProps);
         Properties pts = GeneratorProperties.getProperties();
         pts.putAll(mergedProps);

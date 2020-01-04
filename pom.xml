@@ -2,8 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 >
-    <modelVersion>4.0.0</modelVersion>
+
     <groupId>org.stategen.framework</groupId>
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>stategen-parent</artifactId>
     <version>stg.2.1.0.RELEASE</version>
     <packaging>pom</packaging>
@@ -11,10 +12,7 @@
     <description />
 
     <properties>
-        <!-- <spring.version>4.3.4.RELEASE</spring.version> -->
         <spring.version>5.1.10.RELEASE</spring.version>
-        <!-- <spring.version>5.2.2.RELEASE</spring.version> -->
-        <!-- <spring-data-redis-version>1.6.4.RELEASE</spring-data-redis-version> -->
         <spring-data-redis-version>2.1.10.RELEASE</spring-data-redis-version>
 
         <swagger.springfox.verion>2.4.0</swagger.springfox.verion>
@@ -23,16 +21,23 @@
 
         <DI-tbSchedule-version>3.3.3.2</DI-tbSchedule-version>
 
-        <!-- 文件拷贝时的编码 -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!-- 编译时的编码 -->
-        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <dubbo-version>2.7.5</dubbo-version>
         <!-- <dubbo-version>2.8.4</dubbo-version> -->
         <fastjson-version>1.2.29</fastjson-version>
         <logback-version>1.2.3</logback-version>
         <dom4j.version>1.6.1</dom4j.version>
+
+        <spring.boot.version>2.1.9.RELEASE</spring.boot.version>
+        <mybatis2.version>2.3.7</mybatis2.version>
+        <mybatis.version>3.5.3</mybatis.version>
+        <spring-data-redis-version>2.1.10.RELEASE</spring-data-redis-version>
+
+
+        <!-- 文件拷贝时的编码 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- 编译时的编码 -->
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     </properties>
 
     <licenses>
@@ -64,15 +69,15 @@
             <url>http://nexus:8081/content/repositories/thirdparty/</url>
         </repository>
 
-<!--         <snapshotRepository>
+        <!-- <snapshotRepository>
             <id>oss</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
+            </snapshotRepository>
 
-        <repository>
+            <repository>
             <id>oss</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository> -->
+            </repository> -->
     </distributionManagement>
 
     <modules>
@@ -82,7 +87,6 @@
         <module>c-stategen-logback</module>
         <module>c-stategen-cache</module>
         <module>d-stategen-mvc</module>
-        <module>e-stategen-dubbox</module>
         <module>e-progen</module>
         <module>e-stategen-rapid-framework</module>
         <!-- 不发布到maven仓库 -->
@@ -107,6 +111,7 @@
 
     <dependencyManagement>
         <dependencies>
+
             <dependency>
                 <groupId>org.freemarker</groupId>
                 <artifactId>freemarker</artifactId>

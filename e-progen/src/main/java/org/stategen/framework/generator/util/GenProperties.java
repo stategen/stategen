@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.stategen.framework.util.BusinessAssert;
+import org.stategen.framework.util.StringUtil;
 
 public class GenProperties {
 
@@ -13,7 +14,7 @@ public class GenProperties {
     public static String dalgenHome = null;
     public static String tableName = null;
     
-    public static String projectsPath = null;
+    private static String projectsPath = null;
     public static String projectPath = null;
     public static String projectName = null;
     public static String systemName = null;
@@ -22,18 +23,33 @@ public class GenProperties {
     public static String cmdPath = null;
 
     public static DaoType daoType = DaoType.ibatis;
+    
 
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(GenProperties.class);
+    
+    public static void setProjectsPath(String projectsPath) {
+        GenProperties.projectsPath = projectsPath;
+    }
+    
+    public static String getProjectsPath() {
+        return projectsPath;
+    }
+    
 
-    public static String getGenConfigXml() throws IOException {
+    public static String getGenConfigXmlIfRunTest() throws IOException {
+        String cmdPath = System.getProperty(GenNames.cmdPath);
+        if (StringUtil.isNotEmpty(cmdPath)) {
+            String     configFile = System.getProperty(GenNames.genConfigXml);
+            return configFile;
+        }
+        
         String testClassPath = GenProperties.class.getResource("/").toString();
         projectPath = FileHelpers.getCanonicalPath(testClassPath + "../../");
-        projectsPath = FileHelpers.getCanonicalPath(projectPath + "../");
-        String genConfigXml = FileHelpers.getCanonicalPath(projectsPath + "/gen_config.xml");
+        setProjectsPath(FileHelpers.getCanonicalPath(projectPath + "../"));
+        String genConfigXml = FileHelpers.getCanonicalPath(getProjectsPath() + "/gen_config.xml");
         
-        System.setProperty(GenConst.projectsPath, projectsPath);
-        System.setProperty(GenConst.projectPath, projectPath);
-        
+        System.setProperty(GenNames.projectsPath, getProjectsPath());
+        System.setProperty(GenNames.projectPath, projectPath);
         return genConfigXml;
     }
     
@@ -45,8 +61,8 @@ public class GenProperties {
 
         Map<String, String> environments = System.getenv();
 
-        String dalgenHome = environments.get(GenConst.DALGENX_HOME);
-        BusinessAssert.mustNotBlank(dalgenHome, GenConst.DALGENX_HOME + " 环境变量没有设!");
+        String dalgenHome = environments.get(GenNames.DALGENX_HOME);
+        BusinessAssert.mustNotBlank(dalgenHome, GenNames.DALGENX_HOME + " 环境变量没有设!");
 
         String genXml = dalgenHome + "/gen.xml";
 
@@ -71,12 +87,12 @@ public class GenProperties {
             mergedProps.putAll(genConfigXmlProperties);
         }
 
-        dalgenHome = (String) mergedProps.get(GenConst.DALGENX_HOME);
+        dalgenHome = (String) mergedProps.get(GenNames.DALGENX_HOME);
         dir_templates_root = dalgenHome + "/templates/";
         mergedProps.put("dir_templates_root", dir_templates_root);
         
-        projectsPath=mergedProps.getProperty(GenConst.projectsPath);
-        tableName=mergedProps.getProperty(GenConst.tableName);
+        setProjectsPath(mergedProps.getProperty(GenNames.projectsPath));
+        tableName=mergedProps.getProperty(GenNames.tableName);
 
         return mergedProps;
     }

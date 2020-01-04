@@ -123,12 +123,12 @@ public class FmHelper {
             if (file.isFile() && file.exists()) {
                 //考虑到编码格式
                 @Cleanup
-                FileInputStream fileInputStream = new FileInputStream(file);
+                FileInputStream   fileInputStream = new FileInputStream(file);
                 @Cleanup
-                InputStreamReader read           = new InputStreamReader(fileInputStream, StringUtil.UTF_8);
+                InputStreamReader read            = new InputStreamReader(fileInputStream, StringUtil.UTF_8);
                 @Cleanup
-                BufferedReader    bufferedReader = new BufferedReader(read);
-                String            lineTxt        = null;
+                BufferedReader    bufferedReader  = new BufferedReader(read);
+                String            lineTxt         = null;
                 while ((lineTxt = bufferedReader.readLine()) != null) {
                     GLogger.info(lineTxt);
                 }
@@ -136,7 +136,7 @@ public class FmHelper {
                 GLogger.error("找不到指定的文件");
             }
         } catch (Exception e) {
-            GLogger.error("读取文件内容出错",e);
+            GLogger.error("读取文件内容出错", e);
         }
     }
 
@@ -190,8 +190,10 @@ public class FmHelper {
         } catch (Exception e1) {
             GLogger.error(
                 new StringBuffer("如果参数内设置 add_illegal_prefix 那么生成的 className 将有一个 '?'字符以阻止dal层生成,目的是让你先检测类名是否符合要求,\n")
-                    .append("比如驼峰写法，比如可以避免windows不区分文件名的大小写的麻烦,\n请先检查tables内相应的xml文件:\n").append(e1.getMessage())
-                    .append(" \n").toString(),
+                    .append("比如驼峰写法，比如可以避免windows不区分文件名的大小写的麻烦,\n请先检查tables内相应的xml文件:\n")
+                    .append(e1.getMessage())
+                    .append(" \n")
+                    .toString(),
                 e1);
             throw e1;
         }
@@ -290,41 +292,50 @@ public class FmHelper {
                 return;
             }
 
+            String gerneratedText = checkAndConvertIfMybatisXml(javaType, charArrayWriter, isFileExits);
             if (isFileExits) {
-                String fileText = IOHelpers.readFile(canonicalFile, StringUtil.UTF_8, false);
-                String newText  = charArrayWriter.toString();
-                newText = checkAndConvertMybatisXml(javaType, newText, charArrayWriter);
-
-                if (fileText.equals(newText)) {
+                String oldFileText = IOHelpers.readFile(canonicalFile, StringUtil.UTF_8, false);
+                if (oldFileText.equals(gerneratedText)) {
+                    oldFileText = null;
                     GLogger.info("智能忽略重写入----------------->:" + canonicalFile.getName());
                     return;
                 }
+                oldFileText = null;
             }
             @Cleanup
             FileOutputStream fileOutputStream = new FileOutputStream(canonicalFile);
-            
+
             @Cleanup
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, encoding);
-            
+
             @Cleanup
             BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
             charArrayWriter.writeTo(bufferedWriter);
+
+            gerneratedText = null;
         }
 
     }
 
-    private static String checkAndConvertMybatisXml(JavaType javaType, String newText,
-                                                    CharArrayWriter charArrayWriter) throws IOException {
+    private static String checkAndConvertIfMybatisXml(JavaType javaType, CharArrayWriter charArrayWriter,
+                                                      boolean isFileExits) throws IOException {
+        String gerneratedText = null;
         if (javaType == null) {
             if (GenProperties.daoType == DaoType.mybatis) {
-                if (newText.lastIndexOf("</sqlMap>") > 0) {
-                    newText = IbatisXmlToMybatis.transformXmlByXslt(newText);
+                gerneratedText = charArrayWriter.toString();
+                if (gerneratedText.lastIndexOf("</sqlMap>") > 0) {
+                    gerneratedText = IbatisXmlToMybatis.transformXmlByXslt(gerneratedText);
                     charArrayWriter.reset();
-                    charArrayWriter.write(newText);
+                    charArrayWriter.write(gerneratedText);
                 }
+                return gerneratedText;
             }
         }
-        return newText;
+        
+        if (isFileExits) {
+            gerneratedText = charArrayWriter.toString(); 
+        }
+        return gerneratedText;
     }
 
     /**
