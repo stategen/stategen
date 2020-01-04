@@ -64,20 +64,20 @@
 
 
     <distributionManagement>
-        <repository>
+        <!-- <repository>
             <id>thirdparty</id>
             <url>http://nexus:8081/content/repositories/thirdparty/</url>
-        </repository>
+            </repository> -->
 
-        <!-- <snapshotRepository>
+        <snapshotRepository>
             <id>oss</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            </snapshotRepository>
+        </snapshotRepository>
 
-            <repository>
+        <repository>
             <id>oss</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-            </repository> -->
+        </repository>
     </distributionManagement>
 
     <modules>
