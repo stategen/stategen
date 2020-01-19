@@ -69,6 +69,11 @@ Stategen采用第三种生成方式可以豪无限制地兼容其它技术，所
   采用google 2019 i/o大会上推荐的provider
 ##  最好的沟通是避免沟通   
 <p float="left">
+<img src="https://github.com/stategen/docs/blob/master/javaCodeDemo.png" width="600" alt="drawing" />
+<img src="https://github.com/stategen/docs/blob/master/typescriptCodeDemo.png" width="600" alt="drawing" />
+<img src="https://github.com/stategen/docs/blob/master/flutterCodeDemo.png" width="600" alt="drawing" />
+</p>
+<p float="left">
 <img src="https://github.com/stategen/docs/blob/master/category.png" width="400" alt="drawing" />
 <img src="https://github.com/stategen/docs/blob/master/homeApis.png" width="400" alt="drawing" />
 <img src="https://github.com/stategen/docs/blob/master/category_json.png" width="400" alt="drawing" />
