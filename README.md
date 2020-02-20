@@ -1,8 +1,17 @@
-##  一切为了迭代!!!   
+##  一切为了迭代!!!  
 spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(可选)+react+antd(可选antd.mobile)+flutter(可选)
 **全栈**骨架生成器+一键迭代开发生成器
 
-### 增加一篇论文介绍原理:[利用java反射和java-parser制作可以迭代、分布式、全栈代码生成器的研究](https://github.com/stategen/stategen/blob/master/%E5%88%A9%E7%94%A8java%E5%8F%8D%E5%B0%84%E5%92%8Cjava-parser%E5%88%B6%E4%BD%9C%E5%8F%AF%E4%BB%A5%E8%BF%AD%E4%BB%A3%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E3%80%81%E5%85%A8%E6%A0%88%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E7%A0%94%E7%A9%B6.md)
+应用一个架构/生成器的成本应包括几个部分  
+
+1. 开发业务代码的成本
+2. 维护、迭代、重构的成本
+3. 替换、升级框架中的某种技术的成本
+
+成本越高，开发风险越大。往往，大多数框架/脚手架能大大节约（1）中个成本，但是同时带来几倍于（1）中的成本来维持（2）、（3）中，使开发陷入泥潭和死扣，statege要做的就是解决这种风险。
+
+### 增加一篇论文介绍原理:[利用java反射和java-parser制作可以迭代、分布式、全栈代码生成器的研究](https://github.com/stategen/stategen/blob/master/%E5%88%A9%E7%94%A8java%E5%8F%8D%E5%B0%84%E5%92%8Cjava-parser%E5%88%B6%E4%BD%9C%E5%8F%AF%E4%BB%A5%E8%BF%AD%E4%BB%A3%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E3%80%81%E5%85%A8%E6%A0%88%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E7%A0%94%E7%A9%B6.md)    
+
 #### 市面上代码生成器分类  
 1. 一次性脚手架式：一次性生成/覆盖目标代码,用在项目初始化,如：maven初始化项目、各种网页配置生成。  
 2. 持续脚手架式：分步生成/覆盖目标代码,如：MyBatis/Ibatis/Hibernate/ generator、dalgen,各种网页配置生成。  
@@ -10,38 +19,25 @@ spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(
 目前市面上的代码生成器都是前2种，而StateGen三种都有，StateGen开发生成器属于第3种.    
 如果生成器只有前面2种，而为了不挖坑,要么只能做比较基本的生成，要么集成当时市面上所有时髦的技术，增加学习成本不说，
 很快这些时髦都成为不时髦而且甩不掉的累赘，形成更大的坑，维护成本巨大。 
-Stategen采用第三种生成方式可以豪无限制地兼容其它技术，所以无需扯一些不需要的技术当噱头、还把挖坑还当卖点。  
-#### 关于分布式  
-1. 市面上的分布式架构都是黑白分明的分布式，要布分布式，要么本地。   
-2. 假如某服务本地能查找到，通常分布式流程：http请求->分布式路由->分布式服务(可能是本地)->序列化->分布式路由->本地反序列化->序列化->http出口  
-   而StateGen是这样直接: http请求->本地服务->http出口   
-3. 为什么StateGen能按照最快的走法,诀窍就是：java继承。简单地理解这个事：本项目下，所有的服务中选一些对外，而不是倒过来，
-#### 关于spring 和 springboot    
-1.  spring和springboot是两个并行的版本，springboot并不是spring的升级版，spring是功能完整的版本，springboot是对spring的脚手架式封装，相于当摄影中，傻瓜相机对于完整相机功能的封装。
-1.  spring中xml配置是spring的根本，xml像文档中的纲要把beans管理起来。springboot是用java代码代替xml配置，递归读取Annotation加载beans，
-这是用java反射形成树状beans管理，计算机处理这种结构无所谓，  
-但人工从树的root找到某个leaf非常难，需翻阅大量的java代码，所以springboot项目非常不适合项目owner管理,甚至过一段时间，连开发人员自己不能确切地知道有哪些bean。     
-1.  理由我说了，而且国内大型电商的招聘里一般更多地还要考察tomcat,jboss能力，这是为了把项目放到容器里调优。springboot不具有架构级别的调优功能或者很难。重构也非常难.
-1.  stategen 支持在工程下把spring一键转换为springboot(命令 **gen.sh root -e**). 也可能手功变为**0-springboot-dependency**项目，但我仍然建议不要使用springboot管理项目。
-4.  本架构的目的是为了制作**多模块、高并发、易管理、易交付、易维护，易重构**的前、后端项目。更迎合那些想把项目管理达到BAT水准的项目owner、开发者。
-5.  至于部署，本架构服务端支持测试通过后由jenkins直接部署到生产，无需再改配置编译,避免人工疏忽.
-#### 关于Ibatis or MyBatis or hibernate 和dalgenX
-1.  SSH架构火了10年，其中hibernate支持自动生成sql的优势功不可没，但是再牛逼程序也不能满足复杂的sql自动生成,于是hibernate允许在java代码里掺杂hql和sql.
-1.  上面的本意是给编程带来方便,但是一旦这个大门打开，就不能阻止开发人员进入，当java代码中混入大量的sql或hql后，项目离死也就不远了，除了难以维护，DBA也无法参与后期优化.
-1.  当年，同期发展的ibatis被hibernate打得措手不及，由apache的顶级项目变成弃儿.但是正是ibatis的缺点：手写sql,解决了hibernate的先天不足，由是很多人在web2.0时代又重新转向了SSI架构。
-1.  但是ibatis需要大写的手写配置，特别是xml配置,于是又出现了MyBatis(改名的很大原因是应对apache版权),稍微减轻了一些手写配置的开发工作量。
-1.  但即使是MyBatis-gernerator也不能避免大量手写配置,还是影响开发效率，于是又出现了MyBatis plus,于是又回到了老路,在java代码混入大量的sql.特别是用java代码拼装where条件.
-    项目的维护成本极高.像**在支付宝这样的公司这种是严格禁止的**。
-1.  解决ibatis手写配置的开发瓶颈问题的是支付宝的天才程序员**程立**(支付宝CTO,首席架构师)开发的dalgen，有了dalgen，ibatis简洁sql执行效率反而是优势。可惜，除支付宝之外的公司很少知道dalgen的存在，而且dalgen不开源.
-    直到2015年前我在taocode找到dalgen的freemarker简单开源实现，作者是**badqiu**. 
-1.  上面的dalgen只能算demo,无法商用,但是思路完备，我结合工作中开发，不断地改造升级，现在已很好的支持商用，实际使用效果比支持宝的dalgen还方便很多，特别是支持迭代开发生成，
-     这是代码生成器史上质的飞跃。由是改名叫dalgenX,之所以没有用其它的名子，是向2位天才和前人致敬。     
+stategen采用第三种生成方式可以豪无限制地兼容其它技术，所以无需扯一些不需要的技术当噱头、还把挖坑还当卖点。  
+
+####关于dalgenX   
+
+1. 一些通用orm生成器各有优缺点，带来方便也带来麻烦，并不能达到我的要求。我个人觉得这其中最好的是支付宝的dalgen,由天才程序员**程立**博士(支付宝CTO/首席架构师,现阿里巴巴CTO)开发。可惜，除支付宝外，知名不高，而且dalgen不开源.  
+1. 直到2015年前我在taocode找到dalgen的freemarker简单开源实现，作者是**badqiu**. 
+1. 上面的dalgen只能算demo,无法用于生产,但是思路完备，我结合工作中完善、改造升级，现在已很好地用于生产，实际使用效果比支持宝的dalgen还方便很多，特别是**支持迭代开发**，这是代码生成器史上质的飞跃。由是改名叫dalgenX,之所以没有用其它的名子，是向2位天才和前人致敬。     
 1.  dalgenX和dalgen一样，以及本架构内的前端生成器、脚手架，都属于开发阶段生成器，只生成预期的目标代码，不参与编译期和运行期， 
-## StateGen原理:
-   ### 关于前端
+## StateGen构成:
+###后端及全栈道架构   
+
+1.  spring|springboot|ibatis|mybatis|dubbo 
+1. ​ 几种技术可以挑选，全部采用显示bean,离开架构师也能看得懂的架构 
+1.  每个web项目可以支持0-n个前端，前端为后端的git子项目。
+### 关于前端生成器及原理
+   >1. 生成器适合响应式前端，不是老式的jsp,jquery,easyui或者类似的冬冬
    >1.  对于后端一个任意给定的api,其对应的前端网络调用、数据状态化、交互代码基本都是确定和没有歧义的，既然是确定的，说明是规有律性的，找到规律就可以实现机器来生成，
    stategen在不增加学习和额外开发成本的情况下找到了这种规律，它避免了以往手工或半手工导致的不规范而增加开发、维护成本。现在stategen可以自动秒撸  
-   >2.  经过分析,同一作用域中，任何新调用的api返回值与之前的数据之间的关系只有以下3种，如此，前端状态的自动化代码有了理论基础:
+   >1.  经过分析,同一作用域中，任何新调用的api返回值与之前的数据之间的关系只有以下3种，如此，前端状态的自动化代码有了理论基础:
    >>a.  重新加载  
    >>b.  按主键增加或更新  
    >>c.  按主键删除  
@@ -54,17 +50,16 @@ Stategen采用第三种生成方式可以豪无限制地兼容其它技术，所
      B.  不同的Controller数据已经按model/provider隔离    
    >4. 以前生成代码方式有2种，配置和伪代码:这两种方式增加学习成本，看似节约时间，实际上要花费更多的时间在坑里维护代码，任何基于json或者配置做前端都是太菜了，stategen不这样做.
      StateGen直接通过java反射硬解析后端java代码来生成前端代码，没有任何多余工作环节或学习,不改变开发流程.当然也不存在挖坑  
-    
- 
-     
-   ### 关于后端
+
+
+### 关于后端生成器
    >1. 对于任意一个sql,其配置、对应的java代码，参数个数，类型，返回值类型、字段都是确定的，这些以前都是手工或半手工撸出来.
    >2. 业务逻辑都是由调用一个或多个sql组成的
    >3. 市面上代码生成器都覆盖式生成代码,其生成的代码无法预先指定继承、实现接口、类型指定,无法保护已有业务代码成果,
        比如要多写功能相同逻辑的DTO绕开限制，但这违背单一职责框架设置原理，欲使用先入坑.StateGen采用解析已有java
        代码的方式解决上述问题
-   ### 代码生成器难以解决的是问题迭代和增量开发,但是实际的项目开发都是不断地迭代功能和新功能叠加，而stategen非常适合迭代开发    
-     
+ ### 代码生成器难以解决的是问题迭代和增量开发,但是实际的项目开发都是不断地迭代功能和新功能叠加，而stategen非常适合迭代开发    
+
 # StateGen已经支持flutter   
   采用google 2019 i/o大会上推荐的provider
 ##  最好的沟通是避免沟通   
@@ -87,12 +82,6 @@ web端
 **上面2张图，按通常的开发量需要上千行代码，现在只需要开发10多行代码**  
 本说明视频演示请移步[Stategen快速调试开发运行精简教程](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)  
 视频中的相关文档，请见 https://github.com/stategen/docs    
->**stategen不是创造技术，而是对现有常用j2ee技术的框架级开放式整合**   
->**开放式意思是和别的技术做兼容，而不是使用stategen后限定使用其它技术**  
->**无论使用哪种整合，必不可少的是基本代码的开发，通过dalgenX代码生成器可以减少前后端50-90%的工作量**  
->**dalgenX不同于常用代码生成器，它是可迭代、开放式代码生成器，可以在现有代码的基础上随迭代再次生成,再不是覆盖生成，保留之前的开发成果**  
->**dalgenX可很好地解决DDD技术中领域模型/pojo的胖、瘦问题，避免大量DTO的编写**  
->**最好的沟通是避免沟通,stategen可以避免大量后端、分布式、前后端文档编写，减少相互扯皮**
 
 ### Stategen快速调试运行
 
@@ -104,7 +93,7 @@ C.	mysql5.7
 D.	gitbash(安装git2.0 自带)  
 E.	nodejs8+yarn  
 >2.	单纯的前端/客户端开发  
->>A.	nodejs8+yarn  
+>>A.	nodejs8+yarn｜andriod studio| flutter
   因为stg工程是git管理的， 前端是一个整个git项目的子项目
 
 #### 开发环境安装
@@ -143,7 +132,7 @@ gen.sh project cms web –e
 ```
 gen.sh project schedule –e  
 ```
-	
+
 5.  创建app web api 项目  (可选)
 ```
 gen.sh project app h5 –e  
@@ -247,7 +236,7 @@ gen.sh api teacher cms|app
                 oSession.host="localhost:8080";
             }            
         }
-```        
+```
 
 >5.	后端发布到eclipse tomcat中,运行  
 >6.	yarn run dev  
@@ -264,7 +253,7 @@ mvn package
 ```
     <!-- <import resource="classpath*:context/dubbo-provider-auto-*.xml" /> -->
     <!-- <import resource="classpath*:context/dubbo-provider-manual-*.xml" /> -->
-```  
+```
 ### Stategen中 spring bean都是显示配置的 
 ### StategenMvc框架几处用法,可以避免在业务中频繁地写与业务无关的代码，这些用法是自定义配置的
 #### MultiFilter.java 配置在web.xml，它对客户端的请求CookieGroup检测是否伪造,CookieGroup可以配置多个,便于业务分组.每个CookieGroup下的所有cookie都有一个离伪造的token签名，
