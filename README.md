@@ -202,7 +202,7 @@ CREATE TABLE `teacher` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 ```
->1.运行命令生成表sql配置和java代码
+>1.运行命令生成表sql配置和java代码 (或者在6-${systemName}-web-base/test下运行 DevGennerator.java)
 ```
 gen.sh table teacher –e
 ```
@@ -222,7 +222,8 @@ gen.sh api teacher cms|app
 >1.	运行test/UmiFacadeProcessor.java   
 >2.	webstorm打开前端代码 ，配置webpack解读代码  
 >3.	yarn 下载前端依赖  
->4.	fiddler 脚本设置 onBeforeRequest 函数中 
+>4.	fiddler 脚本设置 onBeforeRequest 函数中        
+
 ```
         var url:String=oSession.PathAndQuery;
   
@@ -240,18 +241,18 @@ gen.sh api teacher cms|app
 
 >5.	后端发布到eclipse tomcat中,运行  
 >6.	yarn run dev  
+>7. 后端代码变化后， 直接运行对应的 XXXFacadeProcessor.java，前端可实时开发编译
 
-
-#### 打包 前后端
+#### 打包 前后端 （注意：因为stategen编译前端是在maven test阶段，所以不能添加参数 -Dmaven.test.skip=true）
 ```
 mvn package 
 ```
 
 ### 其它
-#### 开启 dubbox, 
+#### 开启 dubbo服务
 >反注释 dubbo-provider-spring.xml 中的
 ```
-    <!-- <import resource="classpath*:context/dubbo-provider-auto-*.xml" /> -->
+    <!-- <import resource="classpath*:context/dubbo-provider-auto-*.xml" /> -->    
     <!-- <import resource="classpath*:context/dubbo-provider-manual-*.xml" /> -->
 ```
 ### Stategen中 spring bean都是显示配置的 
