@@ -29,25 +29,25 @@ import org.stategen.framework.lite.enums.VisitCheckType;
  * 该类仅不可以修改dalgen生成的属生(field)类型 ,方法(Method)返回值类型和参数类型
  * </pre>.
  *
- * @param <M> the generic type
+ * @param <T> the generic type
  */
 public interface IMenu<T extends IMenu<T>> extends  ITreeNode<T> {
 
-    public T setProjectName(String projectName);
+    public void setProjectName(String projectName);
 
-    public T setControllerName(String controllerName);
+    public void setControllerName(String controllerName);
 
-    public T setMethodName(String methodName);
+    public void setMethodName(String methodName);
 
-    public T setUrl(String url);
+    public void setUrl(String url);
 
-    public T setName(String name);
+    public void setName(String name);
 
-    public T setRoute(String route);
+    public void setRoute(String route);
 
-    public T setMenuType(MenuType menuType);
+    public void setMenuType(MenuType menuType);
 
-    public T setCheckType(VisitCheckType visitCheckType);
+    public void setCheckType(VisitCheckType visitCheckType);
     
     public String getControllerName();
 

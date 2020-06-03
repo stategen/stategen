@@ -15,10 +15,16 @@ public class MybatisSqlDaoSupport extends SqlSessionDaoSupport implements SqlDao
         int effectCount = getSqlSession().update(statementName, params);
         return effectCount;
     }
+    
+    public <T> int delete(String statementName, Object params) {
+        int effectCount = getSqlSession().delete(statementName, params);
+        return effectCount;
+    }
 
     public <T> void insert(String statementName, T t) {
         getSqlSession().insert(statementName, t);
     }
+    
 
     public <T> T selectOne(String statementName, Object params) {
         return getSqlSession().selectOne(statementName, params);
@@ -27,6 +33,8 @@ public class MybatisSqlDaoSupport extends SqlSessionDaoSupport implements SqlDao
     public <T> List<T> selectList(String statementName, Object params) {
         return getSqlSession().selectList(statementName, params);
     }
+    
+    
 
 }
 

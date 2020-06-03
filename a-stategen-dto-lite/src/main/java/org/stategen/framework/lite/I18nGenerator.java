@@ -28,7 +28,7 @@ public interface I18nGenerator {
      *
      * 
      * @param destMessage  原如的信息，destMessage
-     * @param params
+     * @param agrs
      * @return
      */
     public String genBundleMessage(String destMessage,Object...agrs);

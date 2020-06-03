@@ -6,7 +6,7 @@
     <groupId>org.stategen.framework</groupId>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>stategen-parent</artifactId>
-    <version>stg.2.1.0.RELEASE</version>
+    <version>stg.2.1.1.RELEASE</version>
     <packaging>pom</packaging>
     <name>a_stategen-parent</name>
     <description >spring+springmvc+mybatis|ibatis+apache.dubbo framework with gernerator and dev generator</description>
@@ -18,7 +18,7 @@
         <spring-data-redis-version>2.1.10.RELEASE</spring-data-redis-version>
 
         <swagger.springfox.verion>2.4.0</swagger.springfox.verion>
-        <stategen-version>stg.2.1.0.RELEASE</stategen-version>
+        <stategen-version>stg.2.1.1.RELEASE</stategen-version>
         <spring-orm-version>3.1.4.RELEASE</spring-orm-version>
 
         <DI-tbSchedule-version>3.3.3.2</DI-tbSchedule-version>
@@ -66,12 +66,12 @@
 
 
     <distributionManagement>
-<!--         <repository>
+         <repository>
             <id>thirdparty</id>
             <url>http://nexus:8081/content/repositories/thirdparty/</url>
-            </repository> -->
+            </repository>
 
-        <snapshotRepository>
+<!--         <snapshotRepository>
             <id>oss</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </snapshotRepository>
@@ -79,7 +79,7 @@
         <repository>
             <id>oss</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
+        </repository> -->
     </distributionManagement>
 
     <modules>
@@ -130,6 +130,17 @@
 
 
     </dependencyManagement>
+<profiles>
+        <profile>
+            <id>disable-javadoc-doclint</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <javadoc.opts>-Xdoclint:none</javadoc.opts>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <pluginManagement>
@@ -187,6 +198,7 @@
                     </executions>
                     <configuration>
                         <doclint>none</doclint>
+                        <additionalparam>${javadoc.opts}</additionalparam>
                         <aggregate>true</aggregate>
                         <show>public</show><!--在哪里设置访问级别就OK了-->
                     </configuration>

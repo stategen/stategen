@@ -13,11 +13,12 @@ import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.slf4j.LoggerFactory;
 
 import lombok.Cleanup;
 
 public class XmlUtil {
-    final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(XmlUtil.class);
+    final static org.slf4j.Logger logger = LoggerFactory.getLogger(XmlUtil.class);
 
     public static String appendToNode(String xmlFileName, String nodeName, String value) throws DocumentException, IOException {
         SAXReader sr = new SAXReader(); // 需要导入jar包:dom4j

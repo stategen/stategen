@@ -18,7 +18,9 @@
 package cn.org.rapid_framework.generator.ext.tableconfig.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +56,8 @@ public class TableConfig {
     public String className;
 
     public List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-    public List<OperationConfig> operations = new ArrayList<OperationConfig>();
+//    public List<OperationConfig> operations = new ArrayList<OperationConfig>();
+    public LinkedHashMap<String,OperationConfig> operationMap = new LinkedHashMap<String, TableConfig.OperationConfig>();
     public List<ResultMapConfig> resultMaps = new ArrayList<ResultMapConfig>();
     
 
@@ -181,22 +184,15 @@ public class TableConfig {
     }
 
     public List<OperationConfig> getOperations() {
-        return operations;
+        Collection<OperationConfig> values = this.operationMap.values();
+        return new ArrayList<OperationConfig>(values);
     }
-
-    public void setOperations(List<OperationConfig> operations) {
-        this.operations = operations;
+    
+    public LinkedHashMap<String, OperationConfig> getOperationMap() {
+        return operationMap;
     }
-
-    public OperationConfig findOperation(String operationName) {
-        OperationConfig operation = null;
-        for (OperationConfig item : getOperations()) {
-            if (item.getName().equals(operationName)) {
-                return item;
-            }
-        }
-        return null;
-    }
+    
+    
 
     public String getDummyPk() {
         return dummyPk;
@@ -273,12 +269,7 @@ public class TableConfig {
     }
 
     public OperationConfig getOperation(String name) {
-        for (OperationConfig op : operations) {
-            if (op.getName().equals(name)) {
-                return op;
-            }
-        }
-        return null;
+        return this.operationMap.get(name);
     }
 
     /**
@@ -295,7 +286,7 @@ public class TableConfig {
         }
 
         public Sql toSql(TableConfig table, String operationName) {
-            OperationConfig operation = table.findOperation(operationName);
+            OperationConfig operation = table.getOperation(operationName);
             if (operation == null)
                 throw new IllegalArgumentException("not found operation with name:" + operationName);
             return processOperation(operation, table);

@@ -20,7 +20,10 @@ package cn.org.rapid_framework.generator.ext.tableconfig.builder;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+
+import org.xml.sax.SAXException;
 
 import cn.org.rapid_framework.generator.GeneratorConstants;
 import cn.org.rapid_framework.generator.GeneratorProperties;
@@ -32,10 +35,10 @@ import cn.org.rapid_framework.generator.ext.tableconfig.model.TableConfig.Result
 import cn.org.rapid_framework.generator.ext.tableconfig.model.TableConfig.SqlConfig;
 import cn.org.rapid_framework.generator.ext.tableconfig.model.TableConfigSet;
 import cn.org.rapid_framework.generator.util.BeanHelper;
+import cn.org.rapid_framework.generator.util.GLogger;
 import cn.org.rapid_framework.generator.util.StringHelper;
 import cn.org.rapid_framework.generator.util.XMLHelper;
 import cn.org.rapid_framework.generator.util.XMLHelper.NodeData;
-import org.xml.sax.SAXException;
 
 public class TableConfigXmlBuilder {
 
@@ -95,7 +98,14 @@ public class TableConfigXmlBuilder {
                         BeanHelper.setProperty(target, opChild.nodeName, getNodeValue(opChild));
                     }
                 }
-                config.operations.add(target);
+                //后来的覆盖之前的，让用户可以在自动生成的基础上自定义覆盖
+                LinkedHashMap<String, OperationConfig> operationMap = config.getOperationMap();
+                String opName = target.name;
+                if (operationMap.containsKey(opName)) {
+                    //warn颜色是黄色，不够醒目
+                    GLogger.warn(opName+" 覆盖了之前的 operation");
+                }
+                operationMap.put(opName, target);
             }
             // table/column
             if("column".equals(child.nodeName)) {

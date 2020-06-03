@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  *   当 bean=Province.class,将获取 getProinceOptions
  *   当 bean 为空时，该field或名parameter 的名称 name，去掉结尾 Id ,Ids,ID,IDs 
  *   get+name(首字母大写)+Options 
- *   如cityId,cityIds =>getCityOptions
+ *   如cityId,cityIds =&gt;getCityOptions
  * </pre>
  *  *  */
 @Target({ ElementType.TYPE,ElementType.FIELD,ElementType.METHOD,ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })

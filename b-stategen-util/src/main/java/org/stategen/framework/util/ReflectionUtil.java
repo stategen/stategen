@@ -44,6 +44,7 @@ import org.springframework.util.ReflectionUtils.MethodFilter;
 /**
  * The Class ReflectionUtil.
  * java反射的工具类,复制自 dynamic-spring(niaoge)
+ * @author niaoge
  */
 public class ReflectionUtil {
 
@@ -73,17 +74,20 @@ public class ReflectionUtil {
     public static <T extends Member> T setAccess(final Member theMember) {
         if (theMember instanceof Method) {
             Method real = (Method) theMember;
-            if (!real.isAccessible())
+            if (! real.isAccessible()) {
                 real.setAccessible(true);
+            }
         } else if (theMember instanceof Constructor) {
             @SuppressWarnings("rawtypes")
             Constructor real = (Constructor) theMember;
-            if (!real.isAccessible())
+            if (!real.isAccessible()) {
                 real.setAccessible(true);
+            }
         } else if (theMember instanceof Field) {
             Field real = (Field) theMember;
-            if (!real.isAccessible())
+            if (!real.isAccessible()) {
                 real.setAccessible(true);
+            }
         }
         return (T) theMember;
     }
@@ -100,7 +104,7 @@ public class ReflectionUtil {
             return null;
         }
         Class<?> targetClass = getClass(target);
-        Field theField;
+        Field    theField;
         try {
             theField = targetClass.getDeclaredField(fieldName);
             return setAccess(theField);
@@ -108,17 +112,17 @@ public class ReflectionUtil {
         }
         return findField(targetClass.getSuperclass(), fieldName);
     }
-    
-    public static List<Field> getAllDeclaredFields(Class<?> targetClass){
-        List<Field> result =new ArrayList<Field>(32);
-        while (targetClass!=null &&  targetClass!=Object.class) {
+
+    public static List<Field> getAllDeclaredFields(Class<?> targetClass) {
+        List<Field> result = new ArrayList<Field>(32);
+        while (targetClass != null && targetClass != Object.class) {
             Field[] declaredFields = targetClass.getDeclaredFields();
-            if (CollectionUtil.isNotEmpty(declaredFields)){
+            if (CollectionUtil.isNotEmpty(declaredFields)) {
                 for (Field field : declaredFields) {
                     result.add(field);
                 }
             }
-            targetClass =targetClass.getSuperclass();
+            targetClass = targetClass.getSuperclass();
         }
         return result;
     }
@@ -136,7 +140,7 @@ public class ReflectionUtil {
         }
 
         Class<?> targetClass = getClass(target);
-        Method theMethod;
+        Method   theMethod;
         try {
             theMethod = targetClass.getDeclaredMethod(methodName);
             return setAccess(theMethod);
@@ -144,7 +148,6 @@ public class ReflectionUtil {
             return findMethod(targetClass.getSuperclass(), methodName);
         }
     }
-
 
     /**
      * Find fields.
@@ -216,7 +219,7 @@ public class ReflectionUtil {
         }
 
         Map<String, Field> result = null;
-        result = new HashMap<String, Field>();
+        result = new HashMap<String, Field>(fieldNames.length);
         for (String fieldName : fieldNames) {
             Field theField = findField(target, fieldName);
             if (theField != null) {
@@ -238,7 +241,7 @@ public class ReflectionUtil {
             return null;
         }
         Class<?> targetClass = getClass(target);
-        Field[] fields = targetClass.getDeclaredFields();
+        Field[]  fields      = targetClass.getDeclaredFields();
 
         for (Field field : fields) {
             Annotation tmpAnn = field.getAnnotation(ann);
@@ -279,8 +282,9 @@ public class ReflectionUtil {
             return null;
         }
         Field theField = findField(obj, fieldName);
-        if (isFieldType(theField, type))
+        if (isFieldType(theField, type)) {
             return theField;
+        }
         return null;
     }
 
@@ -298,7 +302,6 @@ public class ReflectionUtil {
         sb.append(Character.toUpperCase(name.charAt(0))).append(name.substring(1));
         return sb.toString();
     }
-
 
     /**
      * Gets the setter or setter method name.
@@ -347,10 +350,7 @@ public class ReflectionUtil {
                 Object newValue = ConvertUtils.convert(value, theField.getType());
                 theField.set(target, newValue);
             } catch (Exception e) {
-                logger
-                    .error(
-                        "在调用时产生错误信息,此错误信息表示该相应方法已将相关错误catch了，请尽快修复!\n以下是具体错误产生的原因:\n"
-                                + e.getMessage() + " \n", e);
+                logger.error("在调用时产生错误信息,此错误信息表示该相应方法已将相关错误catch了，请尽快修复!\n以下是具体错误产生的原因:\n" + e.getMessage() + " \n", e);
             }
         }
     }
@@ -385,29 +385,28 @@ public class ReflectionUtil {
         return null;
     }
 
-    
     /***
      * TODO,还需要加上Parameter
      * @param member
      * @param annoType
      * @return
      */
-    public static <A extends Annotation> A getAnntationUntilParent(Member member ,Class<A > annoType){
-        A anno =null;
-        
-        if (Method.class.isInstance(member)){
-            Method method =((Method)member);
-            anno=method .getAnnotation(annoType);
-        } 
-        
-        if (anno==null){
+    public static <A extends Annotation> A getAnntationUntilParent(Member member, Class<A> annoType) {
+        A anno = null;
+
+        if (Method.class.isInstance(member)) {
+            Method method = ((Method) member);
+            anno = method.getAnnotation(annoType);
+        }
+
+        if (anno == null) {
             return member.getDeclaringClass().getAnnotation(annoType);
         }
-        
+
         return null;
     }
-    
-    public static boolean methodIsInherited(String methodName,Class<?> returnType,Class<?>[] parameterTypes,Method targetMtd) {
+
+    public static boolean methodIsInherited(String methodName, Class<?> returnType, Class<?>[] parameterTypes, Method targetMtd) {
         if (!methodName.equals(targetMtd.getName())) {
             return false;
         }
@@ -421,11 +420,11 @@ public class ReflectionUtil {
         if (CollectionUtil.isEmpty(parameterTypes) && CollectionUtil.isNotEmpty(subParameterTypes)) {
             return false;
         }
-        
+
         if (CollectionUtil.isNotEmpty(parameterTypes) && CollectionUtil.isEmpty(subParameterTypes)) {
             return false;
         }
-        
+
         if (CollectionUtil.isEmpty(parameterTypes) && CollectionUtil.isEmpty(subParameterTypes)) {
             return true;
         }
@@ -439,30 +438,34 @@ public class ReflectionUtil {
                 return false;
             }
         }
-        
+
         return true;
     }
-    
-    public static boolean isNormalMethod(Method method){
+
+    public static boolean isNormalMethod(Method method) {
         int modifiers = method.getModifiers();
         return Modifier.isPublic(modifiers) && !Modifier.isStatic(modifiers) && !Modifier.isAbstract(modifiers);
     }
+
+    final static String GET ="get";
+    final static char A ='A';
+    final static char Z ='Z';
     
-    public static String isAndGetGetterMethodFeildName(Method method){
-        if (ReflectionUtil.isNormalMethod(method) && (method.getReturnType()!=Void.class) && CollectionUtil.isEmpty(method.getGenericParameterTypes())){
+    public static String isAndGetGetterMethodFeildName(Method method) {
+        if (ReflectionUtil.isNormalMethod(method) && (method.getReturnType() != Void.class)
+            && CollectionUtil.isEmpty(method.getGenericParameterTypes())) {
             String methodName = method.getName();
-            int length = methodName.length();
-            if (length >= 4 && methodName.startsWith("get")) {
+            int    length     = methodName.length();
+            if (length > GET.length() && methodName.startsWith(GET)) {
                 char first = methodName.charAt(3);
-                if (first>='A' && first <='Z'){
-                    first=Character.toLowerCase(first);
-                    return new StringBuffer(length-3).append(first).append(methodName,4,length).toString();
+                if (first >= A && first <= Z) {
+                    first = Character.toLowerCase(first);
+                    return new StringBuffer(length - 3).append(first).append(methodName, 4, length).toString();
                 }
             }
         }
         return null;
     }
-    
 
     /***不获取到Object中的method*/
     public static void doWithMethods(Class<?> clazz, MethodCallback mc, MethodFilter mf) {
@@ -474,75 +477,99 @@ public class ReflectionUtil {
             }
             try {
                 mc.doWith(method);
-            }
-            catch (IllegalAccessException ex) {
+            } catch (IllegalAccessException ex) {
                 throw new IllegalStateException("Not allowed to access method '" + method.getName() + "': " + ex);
             }
         }
         Class<?> superclass = clazz.getSuperclass();
-        
-        if (superclass != null && superclass!=Object.class) {
+
+        if (superclass != null && superclass != Object.class) {
             doWithMethods(clazz.getSuperclass(), mc, mf);
-        }
-        else if (clazz.isInterface()) {
+        } else if (clazz.isInterface()) {
             for (Class<?> superIfc : clazz.getInterfaces()) {
                 doWithMethods(superIfc, mc, mf);
             }
         }
     }
-    
+
     public static Map<String, Method> getGetterNameMethods(Class<?> currentType) {
-        Map<String, Method> getterNameMethodMap =new LinkedHashMap<String, Method>(64);
+        Map<String, Method> getterNameMethodMap = new LinkedHashMap<String, Method>(64);
         doWithMethods(currentType, new MethodCallback() {
+            @Override
             public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
                 String getterMethodFeildName = ReflectionUtil.isAndGetGetterMethodFeildName(method);
                 getterNameMethodMap.put(getterMethodFeildName, method);
-                
+
             }
         }, new MethodFilter() {
+            @Override
             public boolean matches(Method method) {
                 String getterMethodFeildName = ReflectionUtil.isAndGetGetterMethodFeildName(method);
                 return StringUtil.isNotEmpty(getterMethodFeildName) && !getterNameMethodMap.containsKey(getterMethodFeildName);
             }
-        } );
-        
+        });
+
         return getterNameMethodMap;
     }
-    
-    
+
     public static Map<String, Field> getFieldNameFieldMap(Class<?> currentType) {
-        Map<String, Field> fieldNameFieldMap =new LinkedHashMap<String, Field>(64);
+        Map<String, Field> fieldNameFieldMap = new LinkedHashMap<String, Field>(64);
         ReflectionUtils.doWithFields(currentType, new FieldCallback() {
+            @Override
             public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
                 fieldNameFieldMap.put(field.getName(), field);
             }
         }, new FieldFilter() {
+            @Override
             public boolean matches(Field field) {
-               return !fieldNameFieldMap.containsKey(field.getName());
+                return !fieldNameFieldMap.containsKey(field.getName());
             }
         });
-        
+
         return fieldNameFieldMap;
     }
-    
-    public static String getJavaConsoleLink(AccessibleObject accessibleObject){
-        String errMessage =null;
+
+    public static String getJavaConsoleLink(AccessibleObject accessibleObject) {
+        String        className  = null;
+        StringBuilder sb         = new StringBuilder("\n★★★★★ at ");
+        String        fieldName  = null;
+        String        methodName = null;
+        String        simpleName = null;
+
         if (accessibleObject instanceof Executable) {
             Executable executable = (Executable) accessibleObject;
-            String classPath =executable.getDeclaringClass().getPackage().getName()+'.'+executable.getDeclaringClass().getSimpleName();
-            if (!(executable instanceof Constructor)){      
-                classPath+="."+executable.getName();
-            } else{
-                classPath+="."+executable.getDeclaringClass().getSimpleName();
+            className = executable.getDeclaringClass().getPackage().getName() + '.' + executable.getDeclaringClass().getSimpleName();
+            if (!(executable instanceof Constructor)) {
+                methodName = executable.getName();
+            } else {
+                methodName = executable.getDeclaringClass().getSimpleName();
             }
-            errMessage="\n★★★★★ at "+classPath+"("+ executable.getDeclaringClass().getSimpleName()+".java:0)";
+
+            simpleName = executable.getDeclaringClass().getSimpleName();
+
+            //append(".java:0)");
         } else {
-           Field field =(Field) accessibleObject;
-           String classPath =field.getDeclaringClass().getPackage().getName()+'.'+field.getDeclaringClass().getSimpleName();
-           classPath+="."+field.getDeclaringClass().getSimpleName();
-           errMessage="\n★★★★★ at "+classPath+"("+ field.getDeclaringClass().getSimpleName()+".java:0)";
+            Field field = (Field) accessibleObject;
+            fieldName  = field.getName();
+            simpleName = field.getDeclaringClass().getSimpleName();
+            className  = field.getDeclaringClass().getPackage().getName() + '.' + simpleName;
+
+        }
+        sb.append(className);
+
+        int xlineNumber = 0;
+        if (fieldName != null) {
+            sb.append(".").append(fieldName);
+        } else if (methodName != null) {
+            sb.append(".").append(methodName);
         }
 
+        sb.append("(").append(simpleName);
+        sb.append(".java:");
+
+        sb.append(xlineNumber).append(")");
+
+        String errMessage = sb.toString();
         return errMessage;
     }
 }
