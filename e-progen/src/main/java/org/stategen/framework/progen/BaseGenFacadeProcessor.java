@@ -87,7 +87,7 @@ public class BaseGenFacadeProcessor {
         
         if (CollectionUtil.isNotEmpty(GenContext.staticUtils)){
             for (Class<?> utilClazz : GenContext.staticUtils) {
-                mergedPros.put(utilClazz.getSimpleName(), BeanUtils.instantiate(utilClazz));
+                mergedPros.put(utilClazz.getSimpleName(), BeanUtils.instantiateClass(utilClazz));
             }
         }
         facadeGenerator.genFacades(allcClasses, mergedPros);

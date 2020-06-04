@@ -30,6 +30,10 @@ public class BusinessAssert {
     public static void throwException(String elseMessage){
         throw new BusinessException(elseMessage);
     }
+
+    public static void throwException(String elseMessage,Throwable cause){
+        throw new BusinessException(elseMessage,cause);
+    }
     
     public static boolean mustTrue(boolean expression, String elseMessage) {
         if (!expression) {
@@ -56,6 +60,13 @@ public class BusinessAssert {
         return object;
     }
     
+    public static <T> T mustNull(T object, String elseMessage) {
+        if(object != null) {
+            BusinessAssert.throwException(elseMessage);
+        }
+        return object;
+    }
+
 
 
     public static String mustNotEmpty(String str, String elseMessage) {

@@ -7,6 +7,10 @@ public interface BaseService<T> {
 
     public T update(T t);
 
-    PageList<T> getPageList(T t, int pageSize, int pageNum);
+    PageList<T> getPageList(T query, int pageSize, int pageNum);
+    
+    default public T getFirst(T query) {
+       return  getPageList(query,1,1).first();
+    }
 
 }

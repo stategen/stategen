@@ -286,7 +286,7 @@ public abstract class NamedWrap extends MemberWrap {
 
             if (context.getAppWrap().getFunction(api) == null) {
                 String errorMessage = "参数:" + getName() + "在AppController中 找不到对应的方法:" + api + " 无法 通过ajax请求检查" + javaConsoleLink
-                                      + ReflectionUtil.getJavaConsoleLink(context.getAppWrap().getClazz().getConstructors()[0])+"<--添加方法<--"+api;
+                                      + ReflectionUtil.getJavaConsoleLink(context.getAppWrap().getClazz().getConstructors()[0])+"<== 请添加方法 <=="+api;
                 
                 //目的是让继承自jar中的class通过前端编译, 经测试，正常，jsInJar只对真正在jar中的class有效，对于maven test中的jar，是本地文件
                 if (JarUtil.isInJar(member.getDeclaringClass())) {
