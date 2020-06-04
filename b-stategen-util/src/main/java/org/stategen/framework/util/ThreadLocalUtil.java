@@ -11,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public class ThreadLocalUtil {
 
-    /**threadLocal创建后，基本都是程序退出时清空，因此读多写少*/
+    /**threadLocal创建后，基本都是程序退出时清空，因此读多写少,性能*/
     private static Set<ThreadLocal<?>> threadLocals = new CopyOnWriteArraySet<ThreadLocal<?>>();
 
     public static <T> void registThreadLocal(ThreadLocal<T> threadLocal) {
