@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.stategen.framework.spring.util.RequestUtil;
+import org.stategen.framework.util.ThreadLocalUtil;
 
 /**
  * *
@@ -34,16 +35,16 @@ import org.stategen.framework.spring.util.RequestUtil;
 public class ServletContextUtil {
 
     /***在MultiFilter内清除或重新赋值*/
-    private static ThreadLocal<HttpServletRequest>  REQUEST_LOCAL  = new ThreadLocal<HttpServletRequest>();
+    private static ThreadLocal<HttpServletRequest>  REQUEST_LOCAL  = ThreadLocalUtil.createLocalThread();
     
     /***在MultiFilter内清除或重新赋值*/
-    private static ThreadLocal<HttpServletResponse> RESPONSE_LOCAL = new ThreadLocal<HttpServletResponse>();
+    private static ThreadLocal<HttpServletResponse> RESPONSE_LOCAL = ThreadLocalUtil.createLocalThread();
     
     /***在MultiFilter内清除或重新赋值*/
-    public static ThreadLocal<Map<String, Cookie>> DECODE_COOKIES_LOCAL = new ThreadLocal<Map<String, Cookie>>();
+    public static ThreadLocal<Map<String, Cookie>> DECODE_COOKIES_LOCAL = ThreadLocalUtil.createLocalThread();
     
     
-    public static ThreadLocal<Map<String/*cookieNamePrefix*/, CookiesHolder>> PREFIX_NAME_COOKIESHOLDERMAP_THREADLOCAL = new ThreadLocal<Map<String, CookiesHolder>>();
+    public static ThreadLocal<Map<String/*cookieNamePrefix*/, CookiesHolder>> PREFIX_NAME_COOKIESHOLDERMAP_THREADLOCAL = ThreadLocalUtil.createLocalThread();
     
     
     private static volatile String requestMapping =null;
@@ -71,13 +72,5 @@ public class ServletContextUtil {
     public static HttpServletResponse getHttpServletResponse() {
         return RESPONSE_LOCAL.get();
     }
-    
-    public static void removeThrdLoc(){
-        REQUEST_LOCAL.remove();
-        RESPONSE_LOCAL.remove();
-        DECODE_COOKIES_LOCAL.remove();
-        PREFIX_NAME_COOKIESHOLDERMAP_THREADLOCAL.remove();
-    }
-    
 
 }

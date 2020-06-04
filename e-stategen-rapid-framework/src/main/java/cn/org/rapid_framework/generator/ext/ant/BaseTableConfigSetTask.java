@@ -1,13 +1,13 @@
 package cn.org.rapid_framework.generator.ext.ant;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.stategen.framework.util.ThreadLocalUtil;
+
 import cn.org.rapid_framework.generator.ext.tableconfig.builder.TableConfigXmlBuilder;
 import cn.org.rapid_framework.generator.ext.tableconfig.model.TableConfigSet;
-import cn.org.rapid_framework.generator.util.StringHelper;
 /**
  * 如果要使用TableConfigSet的GeneratorTask，则可以继承该类
  * 
@@ -19,7 +19,7 @@ public abstract class BaseTableConfigSetTask extends BaseGeneratorTask{
 	private String tableConfigFiles; 
 	protected TableConfigSet tableConfigSet;
 	
-	private static ThreadLocal<Map> threadLocalCache = new ThreadLocal<Map>();
+	private static ThreadLocal<Map> threadLocalCache = ThreadLocalUtil.createLocalThread();
 
 	@Override
 	protected void executeBefore() throws Exception {

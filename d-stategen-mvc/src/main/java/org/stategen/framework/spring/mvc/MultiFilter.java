@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.GenericFilterBean;
 import org.stategen.framework.spring.util.RequestUtil;
 import org.stategen.framework.util.NumberUtil;
+import org.stategen.framework.util.ThreadLocalUtil;
 import org.stategen.framework.web.cookie.AntiCookieFakeResponseWrapper;
 import org.stategen.framework.web.cookie.ServletContextUtil;
 
@@ -94,7 +95,7 @@ public class MultiFilter extends GenericFilterBean {
                 .toString(), e);
             throw e;
         } finally {
-            ServletContextUtil.removeThrdLoc();
+            ThreadLocalUtil.cleanValuesOnThreadLocals();
         }
     }
 
