@@ -377,7 +377,7 @@ public class SqlParseHelper {
         private String replace2NamedParametersByOperator(String sql, String operator) {
             Pattern p = Pattern.compile("(\\w+)\\s*" + operator + "\\s*\\?", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
             Matcher m = p.matcher(sql);
-            StringBuilder sb = new StringBuilder();
+            StringBuffer sb = new StringBuffer();
             while (m.find()) {
                 String segment = m.group(0);
                 String columnSqlName = m.group(1);

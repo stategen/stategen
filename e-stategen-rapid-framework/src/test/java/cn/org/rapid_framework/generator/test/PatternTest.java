@@ -30,7 +30,7 @@ public class PatternTest {
         Pattern p = Pattern.compile("(\\w+)\\s*[=<>!]{0,}\\s*\\?", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
         String sql = "  begin_expire_time=UNIX_TIMESTAMP(?)*1000";
         Matcher m = p.matcher(sql);
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
         while (m.find()) {
             String segment = m.group(0);
             String columnSqlName = m.group(1);

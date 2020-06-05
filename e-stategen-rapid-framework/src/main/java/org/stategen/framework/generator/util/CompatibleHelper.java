@@ -74,7 +74,7 @@ public class CompatibleHelper {
     public static String replaceAll2(String input, String regex, String replacement) {
         Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(input);
-        StringBuilder sb = new StringBuilder(input.length()+10);
+        StringBuffer sb = new StringBuffer(input.length()+10);
         boolean result = m.find();
         while (result) {
             m.appendReplacement(sb, replacement);

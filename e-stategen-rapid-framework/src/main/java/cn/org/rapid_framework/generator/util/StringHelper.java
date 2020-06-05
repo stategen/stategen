@@ -386,7 +386,7 @@ public class StringHelper {
         return inString;
     }
 
-    public static void appendReplacement(Matcher m, StringBuilder sb, String replacement) {
+    public static void appendReplacement(Matcher m, StringBuffer sb, String replacement) {
         replacement = StringHelper.replace(replacement, "$", "\\$");
         m.appendReplacement(sb, replacement);
     }
