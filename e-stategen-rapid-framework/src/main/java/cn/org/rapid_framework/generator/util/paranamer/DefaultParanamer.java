@@ -106,7 +106,7 @@ public class DefaultParanamer implements Paranamer {
     }
 
     static String getParameterTypeNamesCSV(Class<?>[] parameterTypes) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parameterTypes.length; i++) {
             sb.append(getParameterTypeName(parameterTypes[i]));
             if (i < parameterTypes.length - 1) {

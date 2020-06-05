@@ -231,7 +231,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
                     CreateMode.PERSISTENT);
             } catch (Exception e) {
                 log.error(
-                    new StringBuffer(zkTaskItemPath).append(e.getMessage()).append(" \n").toString(), e);
+                    new StringBuilder(zkTaskItemPath).append(e.getMessage()).append(" \n").toString(), e);
                 throw e;
             }
 		}
@@ -738,7 +738,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
 			 this.updateReloadTaskItemFlag(taskType);
 		 }
 		 if(log.isDebugEnabled()){
-			 StringBuffer buffer = new StringBuffer();
+			 StringBuilder buffer = new StringBuilder();
 			 for(ScheduleTaskItem taskItem: this.loadAllTaskItem(taskType)){
 				buffer.append("\n").append(taskItem.toString());
 			 }
@@ -803,7 +803,7 @@ public class ScheduleDataManager4ZK implements IScheduleDataManager {
 			 this.updateReloadTaskItemFlag(taskType);
 		 }
 		 if(log.isDebugEnabled()){
-			 StringBuffer buffer = new StringBuffer();
+			 StringBuilder buffer = new StringBuilder();
 			 for(ScheduleTaskItem taskItem: this.loadAllTaskItem(taskType)){
 				buffer.append("\n").append(taskItem.toString());
 			 }

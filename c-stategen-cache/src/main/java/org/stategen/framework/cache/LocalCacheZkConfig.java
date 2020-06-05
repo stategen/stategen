@@ -52,7 +52,7 @@ public class LocalCacheZkConfig {
 
     public void setConnectionTimeout(Integer zkConnectionTimeout) {
         if (zkConnectionTimeout <= 0) {
-            logger.warn(new StringBuffer("zkConnectionTimeout时间小于0，设置不成功,").append(zkConnectionTimeout).toString());
+            logger.warn(new StringBuilder("zkConnectionTimeout时间小于0，设置不成功,").append(zkConnectionTimeout).toString());
             return;
         }
         LocalCacheZkConfig.zkConnectionTimeout = zkConnectionTimeout;

@@ -113,7 +113,7 @@ public class ListHashtable extends Hashtable {
 		}
 	}
 	public String toString() {
-		StringBuffer x = new StringBuffer();
+		StringBuilder x = new StringBuilder();
 		x.append("Ordered Keys: ");
 		int numKeys = orderedKeys.size();
 		x.append("[");

@@ -144,7 +144,7 @@ public class ApiWrap extends BaseHasImportsWrap implements CanbeImportWrap {
     }
 
     public String getClassNameLower() {
-        return new StringBuffer(className.length()).append(className.substring(0, 1).toLowerCase()).append(className.substring(1)).toString();
+        return new StringBuilder(className.length()).append(className.substring(0, 1).toLowerCase()).append(className.substring(1)).toString();
     }
 
     public String getControllerUrl() {

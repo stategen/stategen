@@ -83,7 +83,7 @@ public class HttpsUtil {
      */
     public static String doGet(String url, Map<String, Object> params) {
         String apiUrl = url;
-        StringBuffer param = new StringBuffer();
+        StringBuilder param = new StringBuilder();
         int i = 0;
         for (String key : params.keySet()) {
             if (i == 0)

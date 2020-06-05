@@ -127,11 +127,11 @@ public class XMLHelper {
 	        nodeData.attributes = attrbiuteToMap(elm.getAttributes());
 	        nodeData.nodeName = elm.getNodeName();
 	        nodeData.childs = new ArrayList<NodeData>();
-	        nodeData.innerXML = childsAsText(elm, new StringBuffer(),true).toString();
-	        nodeData.outerXML = nodeAsText(elm,new StringBuffer(),true).toString();
+	        nodeData.innerXML = childsAsText(elm, new StringBuilder(),true).toString();
+	        nodeData.outerXML = nodeAsText(elm,new StringBuilder(),true).toString();
 	        nodeData.nodeValue = getNodeValue(elm);
-	//        nodeData.innerText = childsAsText(elm, new StringBuffer(),false).toString();
-	//        nodeData.outerText = nodeAsText(elm,new StringBuffer(),false).toString();
+	//        nodeData.innerText = childsAsText(elm, new StringBuilder(),false).toString();
+	//        nodeData.outerText = nodeAsText(elm,new StringBuilder(),false).toString();
 	        NodeList childs = elm.getChildNodes();
 	        for(int i = 0; i < childs.getLength() ; i++) {
 	            Node node = childs.item(i);
@@ -142,7 +142,7 @@ public class XMLHelper {
 	        return nodeData;
 	    }
 	
-		private static StringBuffer childsAsText(Element elm, StringBuffer sb,boolean ignoreComments) {
+		private static StringBuilder childsAsText(Element elm, StringBuilder sb,boolean ignoreComments) {
 			NodeList childs = elm.getChildNodes();
 	        for(int i = 0; i < childs.getLength() ; i++) {
 	            Node child = childs.item(i);
@@ -151,7 +151,7 @@ public class XMLHelper {
 	        return sb;
 		}    	
 	    
-	    private static StringBuffer nodeAsText(Node elm,StringBuffer sb,boolean ignoreComments) {
+	    private static StringBuilder nodeAsText(Node elm,StringBuilder sb,boolean ignoreComments) {
 	    	 if(elm.getNodeType() == Node.CDATA_SECTION_NODE) {
 	    		 CDATASection cdata = (CDATASection)elm;
 	    		 sb.append("<![CDATA[");
@@ -190,7 +190,7 @@ public class XMLHelper {
 	    	 return sb; 
 		}
 	
-		private static void attributes2String(Node elm, StringBuffer sb) {
+		private static void attributes2String(Node elm, StringBuilder sb) {
 			NamedNodeMap attributes = elm.getAttributes();
 	         if(attributes != null && attributes.getLength() > 0) {
 	        	 sb.append(" ");

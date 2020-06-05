@@ -61,7 +61,7 @@ public class NumberUtil {
             try {
                 return Long.parseLong(dest);
             } catch (NumberFormatException e) {
-                logger.error(new StringBuffer("转换为Long时出错: e:").append(dest).toString());
+                logger.error(new StringBuilder("转换为Long时出错: e:").append(dest).toString());
             }
         }
         return null;
@@ -72,7 +72,7 @@ public class NumberUtil {
             try {
                 return Integer.parseInt(dest);
             } catch (NumberFormatException e) {
-                logger.error(new StringBuffer("转换为Integer时出错: e:").append(dest).toString());
+                logger.error(new StringBuilder("转换为Integer时出错: e:").append(dest).toString());
             }
         }
         return null;

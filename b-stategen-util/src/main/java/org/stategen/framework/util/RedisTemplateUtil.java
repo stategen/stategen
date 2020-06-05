@@ -72,7 +72,7 @@ public final class RedisTemplateUtil {
             value = (T) redisTemplate.boundValueOps(key).get();
         } catch (Exception e) {
             logger.error(
-                new StringBuffer("redis读取 key\"").append(key).append("\"出错，错误信息：").append(e.getMessage()).append(" \n").toString(), e);
+                new StringBuilder("redis读取 key\"").append(key).append("\"出错，错误信息：").append(e.getMessage()).append(" \n").toString(), e);
         }
         return  value;
     }  
@@ -152,7 +152,7 @@ public final class RedisTemplateUtil {
 //          concat = concat.concat("." + appId);
 //      }
 //      return concat;
-        StringBuffer sb =new StringBuffer();
+        StringBuilder sb =new StringBuilder();
         sb.append(key).append('.').append(arg);
         if (!StringUtils.isEmpty(appId)){
             sb.append('.').append(appId);

@@ -82,11 +82,11 @@ public class OSUtil {
             && !fileName.startsWith(osPath.webContextPath) && !fileName.startsWith(osPath.diskPath)) {
             //file:
             fileName = fileName.substring(filePrefix.length());
-            fileName = new StringBuffer(fileName.length() + osPath.diskPath.length()).append(osPath.diskPath)
+            fileName = new StringBuilder(fileName.length() + osPath.diskPath.length()).append(osPath.diskPath)
                 .append(fileName).toString();
 
         } else if (!osPath.isWindows && fileName.startsWith(filePrefix+"//") &&  !fileName.startsWith(filePrefix+"///")){
-            fileName =new StringBuffer(filePrefix+"///").append(fileName.substring(filePrefix.length()+2)).toString();
+            fileName =new StringBuilder(filePrefix+"///").append(fileName.substring(filePrefix.length()+2)).toString();
         }
         return fileName;
     }

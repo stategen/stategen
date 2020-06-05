@@ -26,7 +26,7 @@ public class LocalCacheTst {
     public void testLocalCache() throws InterruptedException{
         final String province ="province";
         if (logger.isInfoEnabled()) {
-            logger.info(new StringBuffer("输出info信息: province:").append(province).toString());
+            logger.info(new StringBuilder("输出info信息: province:").append(province).toString());
         }
         
         LocalCacheNameTaker nameTaker =new LocalCacheNameTaker("appapi",province, "不包括省下面的等");

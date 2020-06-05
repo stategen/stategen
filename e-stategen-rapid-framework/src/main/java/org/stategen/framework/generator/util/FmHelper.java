@@ -189,7 +189,7 @@ public class FmHelper {
             canonicalFile = outputFile.getCanonicalFile();
         } catch (Exception e1) {
             GLogger.error(
-                new StringBuffer("如果参数内设置 add_illegal_prefix 那么生成的 className 将有一个 '?'字符以阻止dal层生成,目的是让你先检测类名是否符合要求,\n")
+                new StringBuilder("如果参数内设置 add_illegal_prefix 那么生成的 className 将有一个 '?'字符以阻止dal层生成,目的是让你先检测类名是否符合要求,\n")
                     .append("比如驼峰写法，比如可以避免windows不区分文件名的大小写的麻烦,\n请先检查tables内相应的xml文件:\n")
                     .append(e1.getMessage())
                     .append(" \n")
@@ -223,7 +223,7 @@ public class FmHelper {
                 } catch (Exception e) {
                     String javaFileText = IOHelpers.readFile(canonicalFile, StringUtil.UTF_8, true);
                     GLogger.error(
-                        new StringBuffer("java文件:").append(canonicalFile).append(" \n").append(javaFileText).toString(),
+                        new StringBuilder("java文件:").append(canonicalFile).append(" \n").append(javaFileText).toString(),
                         e);
                     throw e;
                 }

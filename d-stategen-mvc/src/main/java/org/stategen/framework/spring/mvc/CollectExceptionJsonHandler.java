@@ -46,10 +46,10 @@ public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler imple
     public ModelAndView resolveException(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler, Exception ex) {
         String failMessage =ex.getMessage();
         if (ex instanceof BaseBusinessException) {
-            logger.error(new StringBuffer("业务异常：").append(ServletContextUtil.getRequestMapping()).append("\n").append(failMessage).append(" \n").toString(),
+            logger.error(new StringBuilder("业务异常：").append(ServletContextUtil.getRequestMapping()).append("\n").append(failMessage).append(" \n").toString(),
                 ex);
         } else {
-            logger.error(new StringBuffer("请求产生了一个错误:").append(ServletContextUtil.getRequestMapping()).append("\n").append(failMessage).append(" \n").toString(),
+            logger.error(new StringBuilder("请求产生了一个错误:").append(ServletContextUtil.getRequestMapping()).append("\n").append(failMessage).append(" \n").toString(),
                 ex);
         }
         

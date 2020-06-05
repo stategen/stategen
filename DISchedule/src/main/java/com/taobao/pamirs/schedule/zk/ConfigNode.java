@@ -60,7 +60,7 @@ public class ConfigNode {
 	}
 
 	public String toString() {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append("配置根目录：").append(rootPath).append("\n");
 		buffer.append("配置类型：").append(configType).append("\n");
 		buffer.append("任务名称：").append(name).append("\n");

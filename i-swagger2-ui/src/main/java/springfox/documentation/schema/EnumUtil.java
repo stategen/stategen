@@ -33,7 +33,7 @@ public class EnumUtil {
 
             Enum[] enums = (Enum[]) erasedType.getEnumConstants();
             if (CollectionUtil.isNotEmpty(enums)) {
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < enums.length; i++) {
                     Enum enm = enums[i];
                     String name = enm.name();

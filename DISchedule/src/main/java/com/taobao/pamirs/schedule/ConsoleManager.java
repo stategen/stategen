@@ -37,7 +37,7 @@ public class ConsoleManager {
             logger.info("加载Schedule配置文件：\n"+Properties);
             return true;
 		} else {
-            logger.warn(new StringBuffer("tbSchedule没有读取到真正的配置文件").toString());
+            logger.warn(new StringBuilder("tbSchedule没有读取到真正的配置文件").toString());
             return false;  
 		}
 	}	

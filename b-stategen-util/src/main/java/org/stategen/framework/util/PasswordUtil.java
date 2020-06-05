@@ -25,7 +25,7 @@ public class PasswordUtil {
     
     
     public static String calcuMd5Password(String password,String passwordRandom){
-        StringBuffer sb =new StringBuffer().append(password);
+        StringBuilder sb =new StringBuilder().append(password);
         if (StringUtil.isNotBlank(passwordRandom)){
             sb.append(passwordRandom);
         }

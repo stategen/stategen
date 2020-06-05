@@ -298,7 +298,7 @@ public class ReflectionUtil {
         if (StringUtil.isEmpty(name)) {
             return name;
         }
-        StringBuffer sb = new StringBuffer(name.length());
+        StringBuilder sb = new StringBuilder(name.length());
         sb.append(Character.toUpperCase(name.charAt(0))).append(name.substring(1));
         return sb.toString();
     }
@@ -314,7 +314,7 @@ public class ReflectionUtil {
         if (StringUtil.isEmpty(fieldName)) {
             return fieldName;
         }
-        StringBuffer sb = new StringBuffer(fieldName.length() + 3);
+        StringBuilder sb = new StringBuilder(fieldName.length() + 3);
         if (isSet) {
             sb.append("set");
         } else {
@@ -460,7 +460,7 @@ public class ReflectionUtil {
                 char first = methodName.charAt(3);
                 if (first >= A && first <= Z) {
                     first = Character.toLowerCase(first);
-                    return new StringBuffer(length - 3).append(first).append(methodName, 4, length).toString();
+                    return new StringBuilder(length - 3).append(first).append(methodName, 4, length).toString();
                 }
             }
         }

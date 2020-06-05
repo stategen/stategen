@@ -94,7 +94,7 @@ public class ModelProperty {
       if (enumDesc==null){
           return description;
       } else {
-          return new StringBuffer().append(description).append(':').append(enumDesc).toString();
+          return new StringBuilder().append(description).append(':').append(enumDesc).toString();
       }
   }
 

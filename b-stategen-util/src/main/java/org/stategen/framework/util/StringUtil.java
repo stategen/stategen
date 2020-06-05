@@ -31,14 +31,14 @@ import org.slf4j.LoggerFactory;
 public class StringUtil {
     final static Logger logger = LoggerFactory.getLogger(StringUtil.class);
 
-    public static final String SLASH = "/";
+    public static final String SLASH      = "/";
     public static final String BACK_SLASH = "\\";
-    public static final String UNDERLINE = "_";
-    public static final String $ = "$";
-    public static final String COLON = ":";
+    public static final String UNDERLINE  = "_";
+    public static final String $          = "$";
+    public static final String COLON      = ":";
 
     public static final String emptyString = "";
-    public static final String UTF_8 = "utf-8";
+    public static final String UTF_8       = "utf-8";
 
     /**
      * Equals.
@@ -50,12 +50,12 @@ public class StringUtil {
     public static boolean equals(String source, String dest) {
         return (source != null) && (source.equals(dest));
     }
-    
-    public static boolean equ(Object source ,Object dest){
-        if (source==null && dest==null){
+
+    public static boolean equ(Object source, Object dest) {
+        if (source == null && dest == null) {
             return true;
         }
-        if (source==null){
+        if (source == null) {
             return false;
         }
         return source.equals(dest);
@@ -301,7 +301,7 @@ public class StringUtil {
             return "";
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < params.length; i++) {
             sb.append(params[i]);
             if (i < params.length - 1) {
@@ -361,7 +361,7 @@ public class StringUtil {
             return source;
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(source.subSequence(0, fromIdx));
         for (int i = 0; i < times; i++) {
             sb.append(replaceChar);
@@ -398,24 +398,24 @@ public class StringUtil {
             return "";
         }
         int beginIndex = 3;
-        int endIndex = 0;
-        int stars = 4;
+        int endIndex   = 0;
+        int stars      = 4;
         if (mobile.length() >= 11) {
             endIndex = mobile.length() - 4;
-            stars = mobile.length() - 7;
+            stars    = mobile.length() - 7;
         } else if (mobile.length() > 7 && mobile.length() < 11) {
             endIndex = 7;
         } else if (mobile.length() > 3 && mobile.length() <= 7) {
             endIndex = mobile.length();
-            stars = mobile.length() - 3;
+            stars    = mobile.length() - 3;
         } else {
-            endIndex = mobile.length();
+            endIndex   = mobile.length();
             beginIndex = mobile.length();
-            stars = 0;
+            stars      = 0;
         }
         String before = mobile.substring(0, beginIndex);
-        String end = mobile.substring(endIndex, mobile.length());
-        String star = "";
+        String end    = mobile.substring(endIndex, mobile.length());
+        String star   = "";
         while (stars > 0) {
             star += "*";
             stars--;
@@ -432,14 +432,14 @@ public class StringUtil {
             return "";
         }
         if (desensitizeStr.length() >= 2) {
-            String star = "";
-            int stars = desensitizeStr.length() - 2;
+            String star  = "";
+            int    stars = desensitizeStr.length() - 2;
             while (stars > 0) {
                 star += "*";
                 stars--;
             }
             String begin = desensitizeStr.substring(0, 1);
-            String end = desensitizeStr.substring(desensitizeStr.length() - 1);
+            String end   = desensitizeStr.substring(desensitizeStr.length() - 1);
             desensitizeStr = begin + star + end;
         }
         return desensitizeStr;
@@ -453,7 +453,7 @@ public class StringUtil {
      */
     public static String concatNoNull(String... strs) {
         if (CollectionUtil.isNotEmpty(strs)) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (String str : strs) {
                 if (isNotEmpty(str)) {
                     sb.append(str);
@@ -465,9 +465,9 @@ public class StringUtil {
     }
 
     public static String concat(String join, String... strs) {
-        StringBuffer sb = new StringBuffer();
-        boolean append = false;
-        boolean joinIsNotEmpty = isNotEmpty(join);
+        StringBuilder sb             = new StringBuilder();
+        boolean      append         = false;
+        boolean      joinIsNotEmpty = isNotEmpty(join);
         for (String str : strs) {
             if (isNotEmpty(str)) {
                 if (append) {
@@ -482,24 +482,46 @@ public class StringUtil {
         }
         return sb.toString();
     }
-    public static String replaceBackSlash(String dest){
+
+    public static String replaceBackSlash(String dest) {
         return dest.replace(StringUtil.BACK_SLASH, StringUtil.SLASH);
     }
-    
-    public static String concatPath(String... subPaths) {
+
+    public static String concatWithSlash(boolean repalceBckSlash, String... subPaths) {
         if (CollectionUtil.isNotEmpty(subPaths)) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb       = new StringBuilder();
+            boolean       appended = false;
             for (int i = 0; i < subPaths.length; i++) {
                 String subPath = subPaths[i];
                 if (isNotEmpty(subPath)) {
-                    subPath =StringUtil.replaceBackSlash(subPath);
+                    if (repalceBckSlash) {
+                        subPath = StringUtil.replaceBackSlash(subPath);
+                    }
+
                     subPath = endWithSlash(subPath);
-                    sb.append(subPath);
+                    if (appended && subPath.startsWith(SLASH)) {
+                        if (subPath.length() >= 2) {
+                            sb.append(subPath, 1, subPath.length() - 1);
+                            appended = true;
+                        }
+                    } else {
+                        sb.append(subPath);
+                        appended = true;
+                    }
+
                 }
             }
             return sb.toString();
         }
         return "";
+    }
+
+    public static String concatWithSlash(String... subPaths) {
+        return concatWithSlash(false, subPaths);
+    }
+
+    public static String concatPath(String... subPaths) {
+        return concatWithSlash(true, subPaths);
     }
 
     public static String toStringIfNullThenEmpty(Object dest) {
@@ -536,7 +558,7 @@ public class StringUtil {
         } else {
             ch = Character.toLowerCase(ch);
         }
-        StringBuffer sb = new StringBuffer(dest.length()).append(ch);
+        StringBuilder sb = new StringBuilder(dest.length()).append(ch);
 
         if (dest.length() > 1) {
             sb.append(dest.substring(1));
@@ -555,7 +577,7 @@ public class StringUtil {
     public static String startWith(String dest, String start) {
         if (dest != null) {
             if (!dest.startsWith(start)) {
-                dest = new StringBuffer(start.length() + dest.length()).append(start).append(dest).toString();
+                dest = new StringBuilder(start.length() + dest.length()).append(start).append(dest).toString();
             }
         }
         return dest;
@@ -564,7 +586,7 @@ public class StringUtil {
     public static String endWith(String dest, String end) {
         if (dest != null) {
             if (!dest.endsWith(end)) {
-                dest = new StringBuffer(end.length() + dest.length()).append(dest).append(end).toString();
+                dest = new StringBuilder(end.length() + dest.length()).append(dest).append(end).toString();
             }
         }
         return dest;
@@ -587,7 +609,7 @@ public class StringUtil {
     }
 
     public static String join(String joinStr, String... dests) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (String dest : dests) {
             sb.append(dest);
             if (!dest.endsWith(joinStr)) {
@@ -621,9 +643,9 @@ public class StringUtil {
         if (StringUtil.isEmpty(dest) || StringUtil.isEmpty(indexStr)) {
             return dest;
         }
-        
+
         if (dest.endsWith(indexStr)) {
-            dest = dest.substring(0, dest.length()- indexStr.length());
+            dest = dest.substring(0, dest.length() - indexStr.length());
         }
         return dest;
     }
@@ -669,14 +691,14 @@ public class StringUtil {
         }
         return dest;
     }
-    
-    public static String trimePrefixIgnoreCase(String dest, String indexStr){
+
+    public static String trimePrefixIgnoreCase(String dest, String indexStr) {
         if (StringUtil.isEmpty(dest) || StringUtil.isEmpty(indexStr)) {
             return dest;
         }
-        
-        if (startsWithIgnoreCase(dest, indexStr)){
-            dest = dest.substring(indexStr.length()); 
+
+        if (startsWithIgnoreCase(dest, indexStr)) {
+            dest = dest.substring(indexStr.length());
         }
 
         return dest;
@@ -686,7 +708,7 @@ public class StringUtil {
         if (isEmpty(dest) || isEmpty(subStr)) {
             return false;
         }
-        dest = dest.toUpperCase();
+        dest   = dest.toUpperCase();
         subStr = subStr.toUpperCase();
         return dest.contains(subStr);
     }
@@ -710,15 +732,14 @@ public class StringUtil {
         String lines[] = destLines.split("\\r?\\n");
         return Arrays.asList(lines);
     }
-    
+
     public static String trim(String str) {
         return str == null ? null : str.trim();
     }
-    
+
     public static String trimToNull(String str) {
         String ts = trim(str);
         return isEmpty(ts) ? null : ts;
     }
-    
 
 }

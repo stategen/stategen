@@ -29,7 +29,7 @@ public class RSAKeysTaker {
     }
 
     private String buildRedisKeyName(String keyProperty) {
-        return new StringBuffer().append(keyProperty).append('_').append(rsaKeyName).toString();
+        return new StringBuilder().append(keyProperty).append('_').append(rsaKeyName).toString();
     }
 
     public String getRsaPublicKey() {

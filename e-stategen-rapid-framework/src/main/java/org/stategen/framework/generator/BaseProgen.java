@@ -128,7 +128,7 @@ public class BaseProgen {
         if (StringUtil.isNotEmpty(pomXmlText)) {
             IOHelpers.saveFile(new File(projectsPomXmlFilename), pomXmlText, StringUtil.UTF_8);
             if (logger.isInfoEnabled()) {
-                logger.info(new StringBuffer("修改pom成功:").append(projectsPomXmlFilename).toString());
+                logger.info(new StringBuilder("修改pom成功:").append(projectsPomXmlFilename).toString());
             }
         }
         if (hasClient) {

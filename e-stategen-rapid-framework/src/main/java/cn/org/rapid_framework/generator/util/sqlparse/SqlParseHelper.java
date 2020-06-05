@@ -277,7 +277,7 @@ public class SqlParseHelper {
         public String join(String[] array, String seperator) {
             if (array == null)
                 return null;
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             int i = -1;
             boolean hasLt = false;
             while (i < array.length - 1) {
@@ -310,7 +310,7 @@ public class SqlParseHelper {
             return result.toString();
         }
 
-        private boolean addBreak(boolean hasLt, String[] array, StringBuffer result, int i, String value) {
+        private boolean addBreak(boolean hasLt, String[] array, StringBuilder result, int i, String value) {
             if (i > 0) {
                 value = value.trim();
                 if (value.charAt(0) == '<') {
@@ -377,7 +377,7 @@ public class SqlParseHelper {
         private String replace2NamedParametersByOperator(String sql, String operator) {
             Pattern p = Pattern.compile("(\\w+)\\s*" + operator + "\\s*\\?", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
             Matcher m = p.matcher(sql);
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             while (m.find()) {
                 String segment = m.group(0);
                 String columnSqlName = m.group(1);

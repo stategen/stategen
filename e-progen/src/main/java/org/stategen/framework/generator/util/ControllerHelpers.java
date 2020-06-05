@@ -67,7 +67,7 @@ public class ControllerHelpers {
         
         route = StringUtil.uncapfirst(route);
         int size = route.length() + 8;
-        StringBuffer sb = new StringBuffer(size);
+        StringBuilder sb = new StringBuilder(size);
         String[] subRoutes = route.split(StringUtil.UNDERLINE);
         for (int i = 0; i < subRoutes.length; i++) {
             String subRoute = subRoutes[i];
@@ -100,8 +100,8 @@ public class ControllerHelpers {
         }
 
         String methodUrl = resolved.getPath();
-        methodUrl = StringUtil.startWithSlash(methodUrl);
-        String url = StringUtil.concatNoNull(controllerUrl, methodUrl);
+//        methodUrl = StringUtil.startWithSlash(methodUrl);
+        String url = StringUtil.concatWithSlash(controllerUrl, methodUrl);
         return new RequestMethodWrap(url, requestMethod);
     }
 

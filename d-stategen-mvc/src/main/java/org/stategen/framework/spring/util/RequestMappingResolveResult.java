@@ -40,7 +40,7 @@ public class RequestMappingResolveResult {
     
     @Override
     public String toString() {
-        return new StringBuffer().append(path).append(requestMethod).toString();
+        return new StringBuilder().append(path).append(requestMethod).toString();
     }
 
 }

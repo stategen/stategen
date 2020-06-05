@@ -49,7 +49,7 @@ public class IbatisXmlToMybatis {
             result = AntReplaceUtil.replaceAll(result, "[a-z.]{2,}\\[\\]", "item", "ig");
             Long after =System.nanoTime();
             if (logger.isInfoEnabled()) {
-                logger.info(new StringBuffer("转换经过时间：").append((after-before)/1000000L).append(" 毫秒").toString());
+                logger.info(new StringBuilder("转换经过时间：").append((after-before)/1000000L).append(" 毫秒").toString());
             }
             
             

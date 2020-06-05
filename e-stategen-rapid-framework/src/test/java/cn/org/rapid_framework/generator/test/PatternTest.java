@@ -30,7 +30,7 @@ public class PatternTest {
         Pattern p = Pattern.compile("(\\w+)\\s*[=<>!]{0,}\\s*\\?", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
         String sql = "  begin_expire_time=UNIX_TIMESTAMP(?)*1000";
         Matcher m = p.matcher(sql);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         while (m.find()) {
             String segment = m.group(0);
             String columnSqlName = m.group(1);
@@ -44,7 +44,7 @@ public class PatternTest {
         System.out.println(sb.toString());
     }
 
-    private void simpleClass(String clzz, Pattern pattern,StringBuffer sb) {
+    private void simpleClass(String clzz, Pattern pattern,StringBuilder sb) {
         Matcher matcher = pattern.matcher(clzz);
         if (matcher.find()) {
             //          System.out.println(matcher.group(0));
@@ -59,7 +59,7 @@ public class PatternTest {
 
 //    @Test
     public void testJavaClazz() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 //        String clzz = "java.util.Map<java.lang.String, java.util.List<java.lang.String>>";
         String clzz = "java.util.List<String>";
         String[] namespaces = clzz.split("<");

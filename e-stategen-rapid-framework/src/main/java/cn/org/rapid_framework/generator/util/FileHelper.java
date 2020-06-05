@@ -84,7 +84,7 @@ public class FileHelper {
      */
     public static String readEntireDirectoryContent(File dir, String encoding) throws IOException {
         List<File> files = searchAllNotIgnoreFile(dir);
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         for (File file : files) {
             if (file.isDirectory())
                 continue;

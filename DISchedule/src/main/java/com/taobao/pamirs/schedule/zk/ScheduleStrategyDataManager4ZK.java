@@ -354,9 +354,9 @@ public class ScheduleStrategyDataManager4ZK{
 	 * @param writer
 	 * @throws Exception
 	 */
-	public StringBuffer exportConfig(String rootPath, Writer writer)
+	public StringBuilder exportConfig(String rootPath, Writer writer)
 			throws Exception {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (String type : new String[] { "baseTaskType", "strategy" }) {
 			if (type.equals("baseTaskType")) {
 				writer.write("<h2>基本任务配置列表：</h2>\n");
@@ -378,7 +378,7 @@ public class ScheduleStrategyDataManager4ZK{
 		}
 		if (buffer.length() > 0) {
 			String str = buffer.toString();
-			return new StringBuffer(str.substring(0, str.length() - 1));
+			return new StringBuilder(str.substring(0, str.length() - 1));
 		}
 		return buffer;
 	}

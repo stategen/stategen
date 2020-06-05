@@ -57,12 +57,12 @@ public class XmlUtil {
                 Element ele = parent.addElement(nodeName);
                 ele.setText(value);
                 if (logger.isInfoEnabled()) {
-                    logger.info(new StringBuffer("添加节点:").append(ele.asXML()).toString());
+                    logger.info(new StringBuilder("添加节点:").append(ele.asXML()).toString());
                 }
                 return true;
             } else {
                 if (logger.isInfoEnabled()) {
-                    logger.info(new StringBuffer("节点存在:").append(findValue.asXML()).toString());
+                    logger.info(new StringBuilder("节点存在:").append(findValue.asXML()).toString());
                 }
             }
             return false;

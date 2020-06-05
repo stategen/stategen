@@ -257,7 +257,7 @@ public class TBScheduleManagerStatic extends TBScheduleManager {
 			if(this.currentTaskItemList.size() ==0 && 
 					scheduleCenter.getSystemTime() - this.lastReloadTaskItemListTime
 					> this.taskTypeInfo.getHeartBeatRate() * 20){
-				StringBuffer buf =new StringBuffer();
+				StringBuilder buf =new StringBuilder();
 				buf.append("调度服务器");
 				buf.append( this.currenScheduleServer.getUuid());
 				buf.append("[TASK_TYPE=");

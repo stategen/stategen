@@ -49,7 +49,7 @@ public class DBDemoMulti extends IScheduleTaskDealMultiBase<Long> {
             return result;
         }
 
-        StringBuffer condition = new StringBuffer();
+        StringBuilder condition = new StringBuilder();
         for (int i = 0; i < queryCondition.size(); i++) {
             if (i > 0) {
                 condition.append(",");

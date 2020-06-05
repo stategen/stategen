@@ -76,7 +76,7 @@ public class CurrencyHandlerCallback  implements TypeHandlerCallback{
         } catch (Exception e) {
             logger
                 .error(
-                    new StringBuffer("\"").append(currencyCode).append("\"  不能转换为货币!").toString(), e);
+                    new StringBuilder("\"").append(currencyCode).append("\"  不能转换为货币!").toString(), e);
             return null;
         }
     }

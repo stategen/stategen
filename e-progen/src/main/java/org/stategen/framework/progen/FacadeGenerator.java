@@ -78,7 +78,7 @@ public class FacadeGenerator {
                         }
                     }
                 } catch (Exception e) {
-                    logger.error(new StringBuffer("在运行时产生错误信息,此错误信息表示该相应方法已将相关错误catch了，请尽快修复!\n以下是具体错误产生的原因:\n").append(e.getMessage()).append(apiName)
+                    logger.error(new StringBuilder("在运行时产生错误信息,此错误信息表示该相应方法已将相关错误catch了，请尽快修复!\n以下是具体错误产生的原因:\n").append(e.getMessage()).append(apiName)
                         .append(" \n").toString(), e);
                     throw e;
                 }
@@ -261,13 +261,13 @@ public class FacadeGenerator {
         if (!isDirectory && (isBlob || FileHelpers.isBinaryFile(fullTargetFileName))) {
             if (fullTargetFile.exists()) {
                 if (logger.isInfoEnabled()) {
-                    logger.info(new StringBuffer("二进制文件已存在，忽略写入:").append(fullTargetFile).toString());
+                    logger.info(new StringBuilder("二进制文件已存在，忽略写入:").append(fullTargetFile).toString());
                 }
                 return;
             }
 
             if (logger.isInfoEnabled()) {
-                logger.info(new StringBuffer("写入二进制文件").append(fullTargetFile).toString());
+                logger.info(new StringBuilder("写入二进制文件").append(fullTargetFile).toString());
             }
             Files.copy(tempFile.toPath(), fullTargetFile.toPath());
             writer.close();
@@ -278,7 +278,7 @@ public class FacadeGenerator {
                 try {
                     processFileString(root, writer, template, targetFileName);
                 } catch (TemplateException e) {
-                    logger.error(new StringBuffer("写入文件出错, 模版:")
+                    logger.error(new StringBuilder("写入文件出错, 模版:")
                         .append(tempFile.getCanonicalPath())
                         .append("\n目录文件:").append(fullTargetFileName)
                         .append(e.getMessage())
@@ -298,7 +298,7 @@ public class FacadeGenerator {
         if (!isDirectory) {
             if (fullTargetFile.exists() && fullTargetFile.isFile()) {
                 if (!doOverride) {
-                    logger.info(new StringBuffer("模版文件或文件夹以@或@.ftl结尾，当目标文件存在时，忽略写入:" + fullTargetFileName).append('\n').append(newText).toString());
+                    logger.info(new StringBuilder("模版文件或文件夹以@或@.ftl结尾，当目标文件存在时，忽略写入:" + fullTargetFileName).append('\n').append(newText).toString());
                     return;
                 }
 
@@ -329,7 +329,7 @@ public class FacadeGenerator {
         try {
             template.process(root, writer);
         } catch (Exception e) {
-            logger.error(new StringBuffer("在制作: ").append(fileName).append(" 产生了错误: ").append(e.getMessage()).append(" \n").toString(), e);
+            logger.error(new StringBuilder("在制作: ").append(fileName).append(" 产生了错误: ").append(e.getMessage()).append(" \n").toString(), e);
 
             throw e;
         }

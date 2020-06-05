@@ -91,24 +91,24 @@ public class ResponseUtil {
     //                }
     //
     //                if (redirect) {
-    //                    onFailResouce = new StringBuffer(Constant.REDIRECT).append("/").append(onFailResouce).toString();
+    //                    onFailResouce = new StringBuilder(Constant.REDIRECT).append("/").append(onFailResouce).toString();
     //                }
     //
     //                if (logger.isInfoEnabled()) {
-    //                    logger.info(new StringBuffer("输出info信息: onFail:").append(onFailResouce).toString());
+    //                    logger.info(new StringBuilder("输出info信息: onFail:").append(onFailResouce).toString());
     //                }
     //                return onFailResouce;
     //            } else {
     //                if (logger.isInfoEnabled()) {
-    //                    logger.info(new StringBuffer("输出拦截信息: json:").append(onFailMessage).toString());
+    //                    logger.info(new StringBuilder("输出拦截信息: json:").append(onFailMessage).toString());
     //                }
     //                
     //                Object failMessage = failResponse.getFailMessage(method, annotationType, onFailMessage,e);
     //                return failMessage;
     //            }
     //        } else {
-    //            String failMessage = new StringBuffer("failResponse").append(annotationType).append(" not defined!").toString();
-    //            logger.warn(new StringBuffer("输出warn信息:failMessage:").append(failResponse).toString());
+    //            String failMessage = new StringBuilder("failResponse").append(annotationType).append(" not defined!").toString();
+    //            logger.warn(new StringBuilder("输出warn信息:failMessage:").append(failResponse).toString());
     //
     //            return BaseResponse.error(failMessage);
     //        }

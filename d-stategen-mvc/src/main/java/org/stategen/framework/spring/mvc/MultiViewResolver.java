@@ -68,12 +68,12 @@ public class MultiViewResolver implements ViewResolver ,Ordered {
 
         if (viewResolver != null) {
 //            if (logger.isDebugEnabled()) {
-//                logger.debug(new StringBuffer("找到 viewResolver:").append(viewName).toString());
+//                logger.debug(new StringBuilder("找到 viewResolver:").append(viewName).toString());
 //            }
         } else {
             if (defaultViewResolver != null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug(new StringBuffer("没找到 viewResolver:").append(viewName).append(",启用缺省的viewResolver")
+                    logger.debug(new StringBuilder("没找到 viewResolver:").append(viewName).append(",启用缺省的viewResolver")
                         .toString());
                 }
                 viewResolver = defaultViewResolver;

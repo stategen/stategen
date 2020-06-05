@@ -62,7 +62,7 @@ public class SignedResourceBundle extends ResourceBundle {
             if (useCodeAsDefaultMessage) {
                 value = key;
             }
-            logger.warn(new StringBuffer().append("\"").append(key).append("\"").append("没找对应语言的翻译, ").append(indexObject).toString());
+            logger.warn(new StringBuilder().append("\"").append(key).append("\"").append("没找对应语言的翻译, ").append(indexObject).toString());
         }
         return value;
     }

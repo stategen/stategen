@@ -64,7 +64,7 @@ public class IbatisSqlMapConfigParser {
         str = Helper.removeSelectKeyXmlForInsertSql(str);
         
         Pattern xmlTagRegex =  Pattern.compile("<(/?[\\w#@]+)(.*?)>");
-        StringBuffer sql = new StringBuffer();
+        StringBuilder sql = new StringBuilder();
         Matcher m = xmlTagRegex.matcher(str);
         
         OpenCloseTag openClose = null;
@@ -104,7 +104,7 @@ public class IbatisSqlMapConfigParser {
 //        return StringHelper.unescapeXml(StringHelper.removeXMLCdataTag(SqlParseHelper.replaceWhere(sql.toString()))).replace(";", "");
     }
 
-	private OpenCloseTag processOpenClose(StringBuffer sql,
+	private OpenCloseTag processOpenClose(StringBuilder sql,
 			OpenCloseTag openClose, String xmlTag,
 			Map<String, String> attributes) {
 		if(openClose != null && openClose.close != null && xmlTag.equals("/"+openClose.xmlTag)) {
@@ -131,7 +131,7 @@ public class IbatisSqlMapConfigParser {
 
     //process <include refid="otherSql"/>
     private void processIncludeByRefid(Map<String, String> includeSqls,
-            StringBuffer sb, Matcher m, Map<String, String> attributes) {
+            StringBuilder sb, Matcher m, Map<String, String> attributes) {
         String refid = attributes.get("refid");
         if(refid == null) {
              m.appendReplacement(sb, "");
@@ -145,7 +145,7 @@ public class IbatisSqlMapConfigParser {
     }
     
     static class MybatisHelper {
-    	private static void processMybatisForeachCloseTag(StringBuffer sql, Map preTagAttributes,
+    	private static void processMybatisForeachCloseTag(StringBuilder sql, Map preTagAttributes,
     			String xmlTag) {
     		// mybatis username in <foreach collection="usernameList" item="item" index="index" open="(" separator="," close=")">#{item}<foreach>
     		if ("/foreach".equals(xmlTag.trim())) {
@@ -159,7 +159,7 @@ public class IbatisSqlMapConfigParser {
     		}
     	}
     	
-        private static void processForMybatis(StringBuffer sb, String xmlTag,
+        private static void processForMybatis(StringBuilder sb, String xmlTag,
                                               Map<String, String> attributes) {
             // mybatis <where>
             if ("where".equals(xmlTag.trim())) {

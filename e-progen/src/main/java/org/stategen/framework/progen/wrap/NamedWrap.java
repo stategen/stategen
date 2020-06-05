@@ -389,7 +389,7 @@ public abstract class NamedWrap extends MemberWrap {
                         referConfigAnno = AnnotationUtil.getAnnotationFormMembers(ReferConfig.class, editorType);
                         if (referConfigAnno != null) {
                             if (logger.isInfoEnabled()) {
-                                logger.info(new StringBuffer("输出info信息: editorType:").append(editorType).toString());
+                                logger.info(new StringBuilder("输出info信息: editorType:").append(editorType).toString());
                             }
                         }
                     }

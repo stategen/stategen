@@ -219,7 +219,7 @@ public class FileHelpers {
      * @return
      */
     public static String getRelativePath(String sourcePath, String targetPath) {
-        StringBuffer pathSB = new StringBuffer();
+        StringBuilder pathSB = new StringBuilder();
 
         if (targetPath.indexOf(sourcePath) == 0) {
             pathSB.append(targetPath.replace(sourcePath, ""));

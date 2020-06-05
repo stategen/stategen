@@ -83,7 +83,7 @@ public class MultiFilter extends GenericFilterBean {
                 boolean passed =httpServletResponse.checkTokens();              
                 if (!passed) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug(new StringBuffer(requestMapping).append("被拦截").toString());
+                        logger.debug(new StringBuilder(requestMapping).append("被拦截").toString());
                     }
                     return;
                 }              
@@ -91,7 +91,7 @@ public class MultiFilter extends GenericFilterBean {
             
             filterChain.doFilter(request, response);
         } catch (Exception e) {
-            logger.error(new StringBuffer().append(requestMapping).append(" 请求出错啦!").append(" \n")
+            logger.error(new StringBuilder().append(requestMapping).append(" 请求出错啦!").append(" \n")
                 .toString(), e);
             throw e;
         } finally {

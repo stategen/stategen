@@ -79,7 +79,7 @@ public class AuthCheckerHandlerInterceptor extends ResponseStatusTypeHandler imp
             for (Annotation checkAnno : checkAnnos) {
                 Class<? extends Annotation> checkAnnoClz = checkAnno.annotationType();
                 AbstractMethodChecker<Annotation> abstractMethodChecker = AbstractMethodChecker.getChecker(checkAnnoClz);
-                AssertUtil.mustNotNull(abstractMethodChecker, new StringBuffer("标注:").append(checkAnnoClz).append(" 没有找到相应的校验器").toString());
+                AssertUtil.mustNotNull(abstractMethodChecker, new StringBuilder("标注:").append(checkAnnoClz).append(" 没有找到相应的校验器").toString());
                 Class<? extends IResponseStatus> responseStatusClzOfCheckFailDefault = this.getResponseStatusClz();
                 IResponseStatus errorResponseStatus = abstractMethodChecker.doCheck(method, checkAnno, responseStatusClzOfCheckFailDefault);
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -87,7 +87,7 @@ public class AuthCheckerHandlerInterceptor extends ResponseStatusTypeHandler imp
                     if (responseBodyAnno != null) {
                         ResponseUtil.writhResponse(true,null, errorResponseStatus);
                         if (logger.isInfoEnabled()) {
-                            logger.info(new StringBuffer("校验").append(checkAnnoClz).append(" 没有通过，方法执行被拦截!").toString());
+                            logger.info(new StringBuilder("校验").append(checkAnnoClz).append(" 没有通过，方法执行被拦截!").toString());
                         }
                     } else {
                         ResponseUtil.writeResponsePage(errorResponseStatus);

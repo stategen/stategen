@@ -567,7 +567,7 @@ public class TableFactory {
             ResultSet schemaRs = null;
             ResultSet catalogRs = null;
             String nl = System.getProperty("line.separator");
-            StringBuffer sb = new StringBuffer(nl);
+            StringBuilder sb = new StringBuilder(nl);
             // Let's give the user some feedback. The exception
             // is probably related to incorrect schema configuration.
             sb.append("Configured schema:").append(schema).append(nl);

@@ -112,7 +112,7 @@ public class TemplateHelpers {
             result =out.toString();
         } catch (Exception e) {
             logger.error(
-                new StringBuffer("解析字符串出错:").append(dest).append("\n")
+                new StringBuilder("解析字符串出错:").append(dest).append("\n")
                 .append(e.getMessage()).append(" \n").toString(), e);
 
             throw e;

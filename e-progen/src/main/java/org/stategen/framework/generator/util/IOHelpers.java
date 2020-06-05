@@ -102,7 +102,7 @@ public class IOHelpers {
     
     public static String addLineNumber(String dest){
         List<String> lines =splitStringToLine(dest);
-        StringBuffer sb =new StringBuffer();
+        StringBuilder sb =new StringBuilder();
         int lineNum = 0;
         for (String line : lines) {
             appendWithLineNum(true, line, lineNum, sb); 
@@ -119,7 +119,7 @@ public class IOHelpers {
         BufferedReader read = new BufferedReader(isr);
 
         String line = null;
-        StringBuffer sb = new StringBuffer(1024 * 256);
+        StringBuilder sb = new StringBuilder(1024 * 256);
         if (writeLineNum) {
             int lineNum = 0;
             while ((line = read.readLine()) != null) {
@@ -133,7 +133,7 @@ public class IOHelpers {
         return sb.toString();
         //System.out.println(str);//此时str就保存了一行字符串
 
-        //        StringBuffer sb = new StringBuffer();
+        //        StringBuilder sb = new StringBuilder();
         //        Reader reader = null;
         //        try {
         //            // 一次读多个字符
@@ -153,7 +153,7 @@ public class IOHelpers {
         //        }
     }
 
-    private static void appendWithLineNum(boolean writeLineNum, String line, int lineNum, StringBuffer sb) {
+    private static void appendWithLineNum(boolean writeLineNum, String line, int lineNum, StringBuilder sb) {
         if (lineNum > 0) {
             sb.append('\n');
         }

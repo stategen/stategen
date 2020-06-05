@@ -53,26 +53,26 @@ public class PropertiesOwn {
 //    public static void findConfigFile(){
 //        if (configFile==null && systemName==null){
 //            if (logger.isInfoEnabled()) {
-//                logger.info(new StringBuffer("读取:").append(application_properties_file).toString());
+//                logger.info(new StringBuilder("读取:").append(application_properties_file).toString());
 //            }
 //            
 //            Properties properties =PropertiesUtil.loadPropertiesFromClasspath(application_properties_file);
 //            String configlFileName =null;
 //            if (properties!=null){
 //                if (logger.isInfoEnabled()) {
-//                    logger.info(new StringBuffer("读取:").append(application_properties_file).append(" 成功!").toString());
+//                    logger.info(new StringBuilder("读取:").append(application_properties_file).append(" 成功!").toString());
 //                }                
 //                configlFileName=PropertiesUtil.getStringProperty(schedule_config_file, properties);
 //                systemName=PropertiesUtil.getStringProperty(systemName, properties);
 //                if (systemName==null){
-//                    logger.warn(new StringBuffer("请在application.properties中设置system.name").toString());
+//                    logger.warn(new StringBuilder("请在application.properties中设置system.name").toString());
 //                }
 //            } else {
-//                logger.warn(new StringBuffer("没有从application.properties找到键值 :").append(schedule_config_file).toString());
+//                logger.warn(new StringBuilder("没有从application.properties找到键值 :").append(schedule_config_file).toString());
 //            }
 //            
 //            if (logger.isInfoEnabled()) {
-//                logger.info(new StringBuffer(schedule_config_file).append("的配置文件为:").append(configlFileName).toString());
+//                logger.info(new StringBuilder(schedule_config_file).append("的配置文件为:").append(configlFileName).toString());
 //            }
 //            
 //            if (configlFileName!=null){
@@ -85,7 +85,7 @@ public class PropertiesOwn {
 //            }
 //            
 //            if (logger.isInfoEnabled()) {
-//                logger.info(new StringBuffer("configFile为:").append(configFile).append(",systemName为:").append(systemName).toString());
+//                logger.info(new StringBuilder("configFile为:").append(configFile).append(",systemName为:").append(systemName).toString());
 //            }   
 //            
 //        }

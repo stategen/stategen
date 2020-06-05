@@ -67,6 +67,8 @@ import io.swagger.annotations.ApiParam;
  */
 public class MethodWrap {
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(MethodWrap.class);
+    
+    static final Pattern urlPathPattern = Pattern.compile("\\{(.+?)\\}");
     private Method methodFun;
     private ParamWrap json = null;
     private List<ParamWrap> params = new ArrayList<ParamWrap>();
@@ -238,7 +240,7 @@ public class MethodWrap {
 
             Boolean isJson = AnnotationUtil.getAnnotation(parameter, RequestBody.class) != null;
             if (isJson) {
-                AssertUtil.mustNull(this.json, new StringBuffer().append(methodFun).append(" 方法中有不只1个RequestBody,不能同时处理").toString());
+                AssertUtil.mustNull(this.json, new StringBuilder().append(methodFun).append(" 方法中有不只1个RequestBody,不能同时处理").toString());
             }
 
             Type parameterizedType = parameter.getParameterizedType();
@@ -345,9 +347,9 @@ public class MethodWrap {
     public List<UrlPart> getUrlParts() {
         if (urlParts == null) {
             urlParts = new ArrayList<UrlPart>();
-            Pattern pattern = Pattern.compile("\\{(.+?)\\}");
+            
             String path = getUrl();
-            Matcher matcher = pattern.matcher(path);
+            Matcher matcher = urlPathPattern.matcher(path);
             int last = 0;
             while (matcher.find()) {
                 UrlPart urlPart = new UrlPart(path.substring(last, matcher.start()), false);

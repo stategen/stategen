@@ -294,13 +294,13 @@ public class GeneratorControl {
     public String append(String str) throws IOException {
         String content = IOHelper.readFile(new File(outRoot,outputFile), sourceEncoding);
         if(StringUtil.isBlank(content)) throw new IllegalArgumentException(new File(outRoot,outputFile).getAbsolutePath()+" is blank");
-        return new StringBuffer(content).append(str).toString();
+        return new StringBuilder(content).append(str).toString();
     }
     
     public String prepend(String str) throws IOException {
         String content = IOHelper.readFile(new File(outRoot,outputFile), sourceEncoding);
         if(StringUtil.isBlank(content)) throw new IllegalArgumentException(new File(outRoot,outputFile).getAbsolutePath()+" is blank");
-        return new StringBuffer(content).insert(0,str).toString();
+        return new StringBuilder(content).insert(0,str).toString();
     }
 
 //  public String getRequiredProperty(String key){

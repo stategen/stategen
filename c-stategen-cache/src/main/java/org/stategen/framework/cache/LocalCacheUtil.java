@@ -73,7 +73,7 @@ public class LocalCacheUtil {
     
     public static String buildNotifyName(String notifyName ,String tableName){
         if (StringUtil.isNotEmpty(notifyName) && StringUtil.isNotEmpty(tableName)){
-            return new StringBuffer().append(notifyName).append(".").append(tableName).toString();
+            return new StringBuilder().append(notifyName).append(".").append(tableName).toString();
         }
         return null;
     }
@@ -152,14 +152,14 @@ public class LocalCacheUtil {
                 dataWrapper.setNanoTime(nanoTime);
                 dataWrapper.clean();
                 if (logger.isInfoEnabled()) {
-                    logger.info(new StringBuffer("dataPath节点时间改变,本地数据失效,将被清除").append(dataPath).append("   ").append(nanoTime).toString());
+                    logger.info(new StringBuilder("dataPath节点时间改变,本地数据失效,将被清除").append(dataPath).append("   ").append(nanoTime).toString());
                 }
             }
         }
 
         public void handleDataDeleted(String dataPath) throws Exception {
             if (logger.isInfoEnabled()) {
-                logger.info(new StringBuffer("zk dataPath被删除:").append(dataPath).toString());
+                logger.info(new StringBuilder("zk dataPath被删除:").append(dataPath).toString());
             }
         }
 
@@ -175,7 +175,7 @@ public class LocalCacheUtil {
     }
 
     private static String getResourcePath(String notifyName) {
-        return new StringBuffer(LocalCacheZkConfig.rootPath).append(notifyName).toString();
+        return new StringBuilder(LocalCacheZkConfig.rootPath).append(notifyName).toString();
     }
 
     public static Long getResourceNano(String notifyName) {

@@ -84,7 +84,7 @@ public class HttpRequestUtil {
      * @throws IOException 
      */
     public static String httpRequest(String req_url) throws IOException {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         URL url = new URL(req_url);
         HttpURLConnection httpUrlConn = (HttpURLConnection) url.openConnection();
 
@@ -254,7 +254,7 @@ public class HttpRequestUtil {
         HttpServletRequest request = RequestUtil.getRequest();
         String requestURI = RequestUtil.getRequestPath();
         String newURI = requestURI.replaceFirst(orgUrlRex, reWrite);
-        StringBuffer newUrlBuffer = new StringBuffer(targetServer).append(newURI);
+        StringBuilder newUrlBuffer = new StringBuilder(targetServer).append(newURI);
         String queryString = request.getQueryString();
         String newUrl = newUrlBuffer.toString();
         String result = HttpRequestUtil.sendGet(newUrl, queryString);

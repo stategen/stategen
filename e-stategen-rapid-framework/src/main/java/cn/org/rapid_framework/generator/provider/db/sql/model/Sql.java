@@ -487,7 +487,7 @@ public class Sql {
 
     private String joinColumnsSqlName() {
         // TODO 未解决 a.*,b.*问题
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for(Iterator<Column> it = columns.iterator();it.hasNext();) {
 			Column c = it.next();
 			sb.append(c.getSqlName());

@@ -343,7 +343,7 @@ public class CollectionUtil {
     //            Map<String, T> result = dest != null ? dest : new HashMap<String, T>(items.size());
     //            for (T t : items) {
     //                if (t != null) {
-    //                    StringBuffer sb = new StringBuffer();
+    //                    StringBuilder sb = new StringBuilder();
     //                    boolean append =false;
     //                    for (Function<? super T, ?> function : getMethods) {
     //                        if (append){

@@ -39,7 +39,7 @@ public class HttpsTrustManager implements X509TrustManager {
      */
     public static String httpsRequest(String requestUrl, String requestMethod,
             String outputStr) {
-        StringBuffer buffer = null;
+        StringBuilder buffer = null;
         try {
             // 创建SSLContext
             SSLContext sslContext = SSLContext.getInstance("SSL");
@@ -81,7 +81,7 @@ public class HttpsTrustManager implements X509TrustManager {
             //读取内容
             InputStreamReader isr = new InputStreamReader(is,"utf-8");
             BufferedReader br = new BufferedReader(isr);
-            buffer = new StringBuffer();
+            buffer = new StringBuilder();
             String line = null;
             while ((line = br.readLine()) != null) {
                 buffer.append(line);

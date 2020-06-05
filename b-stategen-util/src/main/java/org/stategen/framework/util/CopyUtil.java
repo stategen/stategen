@@ -137,7 +137,7 @@ public class CopyUtil {
             ois = new ObjectInputStream(bais);  
             result = (T) ois.readObject();  
         } catch (Exception e) {  
-           logger.error(new StringBuffer("在运行时产生错误信息,此错误信息表示该相应方法已将相关错误catch了，请尽快修复!\n以下是具体错误产生的原因:")
+           logger.error(new StringBuilder("在运行时产生错误信息,此错误信息表示该相应方法已将相关错误catch了，请尽快修复!\n以下是具体错误产生的原因:")
                .append(e.getMessage()).append(" \n").toString(),
             e);
         } 

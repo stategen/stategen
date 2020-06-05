@@ -32,7 +32,7 @@ public class MultiLocaleResolver extends CookieLocaleResolver{
     public Locale resolveLocale(HttpServletRequest request) {
         Locale LocaleResolved = super.resolveLocale(request);
         if (logger.isInfoEnabled()) {
-            logger.info(new StringBuffer("输出info信息: LocaleResolved:").append(LocaleResolved).toString());
+            logger.info(new StringBuilder("输出info信息: LocaleResolved:").append(LocaleResolved).toString());
         }
         return LocaleResolved;
     }

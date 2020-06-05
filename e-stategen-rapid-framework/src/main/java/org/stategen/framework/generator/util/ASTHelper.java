@@ -329,7 +329,7 @@ class ASTHelper {
             }
 
             if (CollectionUtil.isNotEmpty(disabledAnnoNames)) {
-                StringBuffer sb = new StringBuffer(oldBlockCommentText);
+                StringBuilder sb = new StringBuilder(oldBlockCommentText);
                 for (String annoName : disabledAnnoNames) {
                     sb.append(" ").append("!@").append(annoName);
                 }
@@ -343,7 +343,7 @@ class ASTHelper {
 
     private static String getAllCommentsText(BodyDeclaration declaration) {
         List<Comment> allContainedComments = declaration.getAllContainedComments();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         boolean append =false;
         Optional<Comment> commentOp = declaration.getComment();
         if (commentOp.isPresent()){

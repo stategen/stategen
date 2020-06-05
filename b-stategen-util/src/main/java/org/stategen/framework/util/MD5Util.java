@@ -41,7 +41,7 @@ public class MD5Util {
             MessageDigest md = MessageDigest.getInstance(md5);
             md.update(dest.getBytes(utf8));
             byte[] digest = md.digest();
-            StringBuffer md5 = new StringBuffer();
+            StringBuilder md5 = new StringBuilder();
             for (int i = 0; i < digest.length; i++) {
                 md5.append(Character.forDigit((digest[i] & 0xF0) >> 4, 16));
                 md5.append(Character.forDigit((digest[i] & 0xF), 16));
@@ -49,7 +49,7 @@ public class MD5Util {
             dest = md5.toString();
         } catch (Exception e) {
             logger.error(
-                new StringBuffer("在运行时产生错误信息,此错误信息表示该相应方法已将相关错误catch了，请尽快修复!\n以下是具体错误产生的原因:").append(e.getMessage())
+                new StringBuilder("在运行时产生错误信息,此错误信息表示该相应方法已将相关错误catch了，请尽快修复!\n以下是具体错误产生的原因:").append(e.getMessage())
                     .append(" \n").toString(), e);
         }
         return dest;

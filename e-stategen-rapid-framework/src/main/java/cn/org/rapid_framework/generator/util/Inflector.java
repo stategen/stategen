@@ -216,7 +216,7 @@ public class Inflector {
     public String camelize(String word, boolean flag) {
         if (word.length() == 0) return word;
         
-        StringBuffer sb = new StringBuffer(word.length());
+        StringBuilder sb = new StringBuilder(word.length());
         if (flag) {
             sb.append(Character.toLowerCase(word.charAt(0)));
         } else {
@@ -411,7 +411,7 @@ public class Inflector {
         if (words.endsWith("_id")) {
             words = words.substring(0, words.length() - 3);
         }
-        StringBuffer sb = new StringBuffer(words.length());
+        StringBuilder sb = new StringBuilder(words.length());
         sb.append(Character.toUpperCase(words.charAt(0)));
         for (int i = 1; i < words.length(); i++) {
             char ch = words.charAt(i);
@@ -590,7 +590,7 @@ public class Inflector {
      */
     public String titleize(String words) {
 
-        StringBuffer sb = new StringBuffer(words.length());
+        StringBuilder sb = new StringBuilder(words.length());
         boolean capitalize = true; // To get the first character right
         for (int i = 0; i < words.length(); i++) {
             char ch = words.charAt(i);
@@ -644,7 +644,7 @@ public class Inflector {
      */
     public String underscore(String word) {
 
-        StringBuffer sb = new StringBuffer(word.length() + 5);
+        StringBuilder sb = new StringBuilder(word.length() + 5);
         boolean uncapitalize = false;
         for (int i = 0; i < word.length(); i++) {
             char ch = word.charAt(i);
@@ -830,7 +830,7 @@ public class Inflector {
          */
         public String replacement() {
 
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             boolean group = false;
             for (int i = 0; i < rule.length(); i++) {
                 char ch = rule.charAt(i);

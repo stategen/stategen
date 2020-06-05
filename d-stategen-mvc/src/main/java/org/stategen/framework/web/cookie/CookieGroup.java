@@ -134,7 +134,7 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
      */
     public boolean checkTokenIfNotWritResponse() {
         if (!checkCookieFake) {
-            logger.warn(new StringBuffer("没有检查到:").append(getCookieNamePrefix()).append(" 的cookies").toString());
+            logger.warn(new StringBuilder("没有检查到:").append(getCookieNamePrefix()).append(" 的cookies").toString());
             return true;
         }
         boolean tokenPass = checkTokenEqual();
@@ -146,7 +146,7 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
                 this.expireAllCookies();
                 if (logger.isDebugEnabled()) {
                     logger
-                        .debug(new StringBuffer(requestPath).append("输出info信息: 请求被拦截:").append(requestPath).toString());
+                        .debug(new StringBuilder(requestPath).append("输出info信息: 请求被拦截:").append(requestPath).toString());
                 }
                 //验证没有通过，返回json对象
                 IResponseStatus responseStatusOfTokenError = IResponseStatus
@@ -155,7 +155,7 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
                 return false;
             } else {
                 logger.warn(
-                    new StringBuffer(requestPath).append("输出warn信息：cooke校验没有通过，但是由于不是强制拦截，本次请求不会被拦截，只打印日志").toString());
+                    new StringBuilder(requestPath).append("输出warn信息：cooke校验没有通过，但是由于不是强制拦截，本次请求不会被拦截，只打印日志").toString());
             }
         }
         return true;
@@ -182,7 +182,7 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
             if (logger.isDebugEnabled()) {
                 String requestPath = RequestUtil.getRequestPath();
                 logger.debug(
-                    new StringBuffer("path:").append(requestPath).append(", token校验，用户 token:").append(cookieToken)
+                    new StringBuilder("path:").append(requestPath).append(", token校验，用户 token:").append(cookieToken)
                         .append(", 计算token:").append(calcuToken).append("相等？").append(result).toString());
             }
 
@@ -191,7 +191,7 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
     }
 
     private String getWholeCookieName(String name) {
-        return new StringBuffer(getCookieNamePrefix()).append(name).toString();
+        return new StringBuilder(getCookieNamePrefix()).append(name).toString();
     }
 
     private Cookie internalAddCookie(String name, Object value, Integer cookieAge) {
@@ -331,7 +331,7 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
         }
 
         COOKIE_GROUP_MAP.put(cookieTypeClz, this);
-        _tokenCookieName = new StringBuffer(cookiePrefixName).append(TOKEN_COOKIE_NAME).toString();
+        _tokenCookieName = new StringBuilder(cookiePrefixName).append(TOKEN_COOKIE_NAME).toString();
 
         super.afterPropertiesSet();
     }

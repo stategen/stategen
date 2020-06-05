@@ -78,7 +78,7 @@ public class StringHelper {
         if (StringUtil.isEmpty(dest)){
             return dest;
         }
-        StringBuffer sb =new StringBuffer(dest.length()*2);
+        StringBuilder sb =new StringBuilder(dest.length()*2);
         for (char c : dest.toCharArray()) {
             String xml = UN_XML.get(c);
             if (xml!=null){
@@ -125,7 +125,7 @@ public class StringHelper {
     public static String escapeXml(String str) {
         if (str == null)
             return null;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
             String escapedStr = getEscapedStringByChar(c);
@@ -140,7 +140,7 @@ public class StringHelper {
     public static String escapeXml(String str, String escapeChars) {
         if (str == null)
             return null;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
             if (escapeChars.indexOf(c) < 0) {
@@ -219,7 +219,7 @@ public class StringHelper {
             return content;
         int index = content.indexOf(compareToken);
         if (index >= 0) {
-            return new StringBuffer(content).insert(index, insertString).toString();
+            return new StringBuilder(content).insert(index, insertString).toString();
         } else {
             throw new IllegalArgumentException("not found insert location by compareToken:" + compareToken + " content:" + content);
         }
@@ -230,7 +230,7 @@ public class StringHelper {
             return content;
         int index = content.indexOf(compareToken);
         if (index >= 0) {
-            return new StringBuffer(content).insert(index + compareToken.length(), insertString).toString();
+            return new StringBuilder(content).insert(index + compareToken.length(), insertString).toString();
         } else {
             throw new IllegalArgumentException("not found insert location by compareToken:" + compareToken + " content:" + content);
         }
@@ -357,7 +357,7 @@ public class StringHelper {
     }
 
     public static String toSimple(String clzz) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String[] namespaces = clzz.split("<");
         for (int i = 0; i < namespaces.length; i++) {
             String namespace = namespaces[i];
@@ -386,7 +386,7 @@ public class StringHelper {
         return inString;
     }
 
-    public static void appendReplacement(Matcher m, StringBuffer sb, String replacement) {
+    public static void appendReplacement(Matcher m, StringBuilder sb, String replacement) {
         replacement = StringHelper.replace(replacement, "$", "\\$");
         m.appendReplacement(sb, replacement);
     }
@@ -399,8 +399,8 @@ public class StringHelper {
             return inString;
         }
 
-        StringBuffer sbuf = new StringBuffer();
-        // output StringBuffer we'll build up
+        StringBuilder sbuf = new StringBuilder();
+        // output StringBuilder we'll build up
         int pos = 0; // our position in the old string
         int index = inString.indexOf(oldPattern);
         // the index of an occurrence we've found, or -1
@@ -432,7 +432,7 @@ public class StringHelper {
         if (str == null || str.length() == 0) {
             return str;
         }
-        StringBuffer buf = new StringBuffer(str.length());
+        StringBuilder buf = new StringBuilder(str.length());
         if (capitalize) {
             buf.append(Character.toUpperCase(str.charAt(0)));
         } else {
@@ -533,7 +533,7 @@ public class StringHelper {
             filteredName = filteredName.toLowerCase();
         }
 
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         if (filteredName != null && filteredName.length() > 0) {
             result.append(filteredName.substring(0, 1).toLowerCase());
             for (int i = 1; i < filteredName.length(); i++) {
@@ -641,7 +641,7 @@ public class StringHelper {
     public static String join(Object[] array, String seperator) {
         if (array == null)
             return null;
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         for (int i = 0; i < array.length; i++) {
             result.append(array[i]);
             if (i != array.length - 1) {
@@ -721,7 +721,7 @@ public class StringHelper {
         if (selectBeginPos == -1) {
             return str;
         }
-        return new StringBuffer(str).insert(selectBeginPos + "select ".length(), insertValue).toString();
+        return new StringBuilder(str).insert(selectBeginPos + "select ".length(), insertValue).toString();
     }
 
     public static String removeXmlTagIfBodyEmpty(String sql) {
@@ -1128,7 +1128,7 @@ public class StringHelper {
                 }
                 return new String(output2);
             default:
-                StringBuffer buf = new StringBuffer(outputLength);
+                StringBuilder buf = new StringBuilder(outputLength);
                 for (int i = 0; i < repeat; i++) {
                     buf.append(str);
                 }
@@ -1138,7 +1138,7 @@ public class StringHelper {
 
     public static String firstLowerCase(String dest) {
         if (dest.length() > 1) {
-            return new StringBuffer().append(Character.toLowerCase(dest.charAt(0))).append(dest.substring(1)).toString();
+            return new StringBuilder().append(Character.toLowerCase(dest.charAt(0))).append(dest.substring(1)).toString();
         }
         return dest.toLowerCase();
     }

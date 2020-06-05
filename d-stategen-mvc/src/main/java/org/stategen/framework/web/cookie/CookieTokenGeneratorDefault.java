@@ -44,7 +44,7 @@ public class CookieTokenGeneratorDefault implements CookieTokenGenerator ,Initia
      */
     @Override
     public String genToken(Map<String, Cookie> reuestCookieMap) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         
         int filteredCount =0;
         if (CollectionUtil.isNotEmpty(reuestCookieMap)){
