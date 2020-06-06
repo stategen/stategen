@@ -59,12 +59,13 @@ public class RequestMappingMethodHandlerMapping extends RequestMappingHandlerMap
             return null;
         }
 
-        RequestCondition<?> condition = (isClass ? getCustomTypeCondition((Class<?>) element) : getCustomMethodCondition((Method) element));
+        RequestCondition<?> condition = (isClass ? getCustomTypeCondition((Class<?>) element)
+            : getCustomMethodCondition((Method) element));
 
-        ApiRequestMappingAutoWithMethodName apiRequestMappingAutoWithMethodNameAnno = AnnotatedElementUtils.findMergedAnnotation(element,
+        ApiRequestMappingAutoWithMethodName methodNameAnno = AnnotatedElementUtils.findMergedAnnotation(element,
             ApiRequestMappingAutoWithMethodName.class);
 
-        if (apiRequestMappingAutoWithMethodNameAnno == null) {
+        if (methodNameAnno == null) {
             return createRequestMappingInfo(requestMappingAnno, condition);
         }
 
@@ -83,21 +84,25 @@ public class RequestMappingMethodHandlerMapping extends RequestMappingHandlerMap
         return info;
     }
 
-    protected RequestMappingInfo createRequestMappingInfoByApiMethodAnno(RequestMapping requestMapping, RequestCondition<?> customCondition,
+    protected RequestMappingInfo createRequestMappingInfoByApiMethodAnno(RequestMapping requestMapping,
+                                                                         RequestCondition<?> customCondition,
                                                                          Method method) {
         String[] patterns = resolveEmbeddedValuesInPatterns(requestMapping.value());
         if (!method.isAnnotationPresent(RequestMapping.class) || CollectionUtil.isEmpty(patterns)) {
             RequestMappingResolveResult methodParsered = RequestMappingResolver.resolveOwnPath(method);
-            String path = methodParsered.getPath();
+            String                      path           = methodParsered.getPath();
             patterns = new String[] { path };
         }
 
         return new RequestMappingInfo(
-            new PatternsRequestCondition(patterns, getUrlPathHelper(), getPathMatcher(), this.useSuffixPatternMatch, this.useTrailingSlashMatch,
-                this.fileExtensions),
-            new RequestMethodsRequestCondition(requestMapping.method()), new ParamsRequestCondition(requestMapping.params()),
-            new HeadersRequestCondition(requestMapping.headers()), new ConsumesRequestCondition(requestMapping.consumes(), requestMapping.headers()),
-            new ProducesRequestCondition(requestMapping.produces(), requestMapping.headers(), this.contentNegotiationManager), customCondition);
+            new PatternsRequestCondition(patterns, getUrlPathHelper(), getPathMatcher(), this.useSuffixPatternMatch,
+                this.useTrailingSlashMatch, this.fileExtensions),
+            new RequestMethodsRequestCondition(requestMapping.method()),
+            new ParamsRequestCondition(requestMapping.params()), new HeadersRequestCondition(requestMapping.headers()),
+            new ConsumesRequestCondition(requestMapping.consumes(), requestMapping.headers()),
+            new ProducesRequestCondition(requestMapping.produces(), requestMapping.headers(),
+                this.contentNegotiationManager),
+            customCondition);
     }
 
 }

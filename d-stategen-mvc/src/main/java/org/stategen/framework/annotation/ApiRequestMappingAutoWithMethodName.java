@@ -44,6 +44,7 @@ import io.swagger.annotations.ResponseHeader;
 @ApiOperation(value = "")
 @Inherited
 /***
+ * 方法名即路径名，减少硬编码和调试困难
  * 这是一个集成swagger ApiOperation与requestMapping的标注，该类可以可以方法名(method)，方法名自动映射到路径上，减少开发中的不一致
  * 
  * @author XiaZhengsheng

@@ -28,11 +28,12 @@ import org.stategen.framework.response.FastJsonResponseUtil;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 
 /**
  * The Class FastJsonHttpMessageConverter.
  */
-public class FastJsonHttpMessageConverter extends com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter implements InitializingBean{
+public class FastJsonHttpMessageConvertor extends FastJsonHttpMessageConverter implements InitializingBean{
 
     
     @Override
