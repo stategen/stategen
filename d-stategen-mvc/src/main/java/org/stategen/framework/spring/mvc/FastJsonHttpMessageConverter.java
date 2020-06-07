@@ -27,6 +27,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.stategen.framework.response.FastJsonResponseUtil;
@@ -44,6 +45,16 @@ public class FastJsonHttpMessageConverter extends com.alibaba.fastjson.support.s
     @Override
     public void afterPropertiesSet() throws Exception {
         FastJsonResponseUtil.FASTJSON_HTTP_MESSAGE_CONVERTOR = this;
+    }
+    
+    @Override
+    protected boolean canRead(MediaType mediaType) {
+        boolean result =super.canRead(mediaType);
+        if (!result) {
+            //spring 在没有 获取 mediaType 强行赋值 MediaType.APPLICATION_OCTET_STREAM_VALUE
+            result =MediaType.APPLICATION_OCTET_STREAM==mediaType;
+        }
+        return result;
     }
 
     @Override
