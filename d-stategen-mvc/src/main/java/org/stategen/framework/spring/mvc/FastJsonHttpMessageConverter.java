@@ -55,6 +55,8 @@ public class FastJsonHttpMessageConverter extends com.alibaba.fastjson.support.s
             FastJsonConfig fastJsonConfig = getFastJsonConfig();
 
             String       text = obj.toString();
+            
+            //headers先获得
             HttpHeaders headers = outputMessage.getHeaders();
             OutputStream out  = outputMessage.getBody();
             out.write(text.getBytes());
