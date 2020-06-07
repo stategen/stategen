@@ -12,6 +12,14 @@ import java.util.Set;
  * @version $Id: AssertUtil.java, v 0.1 2016年12月26日 下午1:45:40 niaoge Exp $
  */
 public class AssertUtil {
+    
+    public static <T> T ifNull(T dest, T defaultV) {
+        if (dest==null) {
+            return defaultV;
+        }
+        return dest;
+    }
+    
     public static void throwException(String elseMessage){
         throw new IllegalArgumentException(elseMessage);
     }

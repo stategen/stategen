@@ -34,7 +34,6 @@ import org.stategen.framework.response.ResponseStatusTypeHandler;
 import org.stategen.framework.response.ResponseUtil;
 import org.stategen.framework.util.AnnotationUtil;
 import org.stategen.framework.util.StringUtil;
-import org.stategen.framework.web.cookie.ServletContextUtil;
 
 /**
  * The Class CollectExceptionJsonHandler.
@@ -43,51 +42,51 @@ public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler imple
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CollectExceptionJsonHandler.class);
 
     @Override
-    public ModelAndView resolveException(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler, Exception ex) {
-        String failMessage =ex.getMessage();
+    public ModelAndView resolveException(HttpServletRequest httpServletRequest,
+                                         HttpServletResponse httpServletResponse,
+                                         Object handler,
+                                         Exception ex) {
+        String        failMessage = ex.getMessage();
+        StringBuilder sb          = new StringBuilder(httpServletRequest.getRequestURI()).append(" ");
         if (ex instanceof BaseBusinessException) {
-            logger.error(new StringBuilder("业务异常：").append(ServletContextUtil.getRequestMapping()).append("\n").append(failMessage).append(" \n").toString(),
-                ex);
+            logger.error(sb.append("业务异常：").append("\n").append(failMessage).toString(), ex);
         } else {
-            logger.error(new StringBuilder("请求产生了一个错误:").append(ServletContextUtil.getRequestMapping()).append("\n").append(failMessage).append(" \n").toString(),
-                ex);
+            logger.error(sb.append("请求产生了一个错误:").append("\n").append(failMessage).append(" \n").toString(), ex);
         }
-        
-        
-        ModelAndView modelAndView = new ModelAndView(); 
+
+        ModelAndView modelAndView = new ModelAndView();
         if (!(handler instanceof HandlerMethod)) {
             return modelAndView;
         }
 
         final HandlerMethod handlerMethod = (HandlerMethod) handler;
-        Method method = handlerMethod.getMethod();
+        Method              method        = handlerMethod.getMethod();
 
-        HandleError handleError = AnnotationUtil.getMethodOrOwnerAnnotation(method, HandleError.class);
+        HandleError     handleError         = AnnotationUtil.getMethodOrOwnerAnnotation(method, HandleError.class);
         IResponseStatus errorResponseStatus = this.getResponseStatus();
-        
+
         if (handleError == null || !handleError.exclude()) {
             ResponseBody responseBodyAnno = AnnotationUtil.getMethodOrOwnerAnnotation(method, ResponseBody.class);
-            if (responseBodyAnno!=null){
+            if (responseBodyAnno != null) {
                 BaseResponse<?> errorResponse = ResponseUtil.buildResponse(null, errorResponseStatus);
                 errorResponse.setExeptionClass(ex.getClass().getSimpleName());
                 errorResponse.setMessage(failMessage);
                 httpServletResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
                 boolean supportMethod = ResponseBodyAdviceWrapper.supportMethod(method);
-                ResponseUtil.writhResponse(supportMethod,errorResponse);
-                
+                ResponseUtil.writhResponse(supportMethod, errorResponse);
+
             } else {
-                String redirect =errorResponseStatus.isRedirect()?"redirect:":null;
-                String viewName = StringUtil.concatNoNull(redirect,errorResponseStatus.getErrorPage());
+                String redirect = errorResponseStatus.isRedirect() ? "redirect:" : null;
+                String viewName = StringUtil.concatNoNull(redirect, errorResponseStatus.getErrorPage());
                 modelAndView.setViewName(viewName);
             }
         }
         return modelAndView;
     }
-    
+
     public void setResponseStatusClzOfException(Class<? extends IResponseStatus> responseStatusClzOfException) {
         super.setResponseStatusClz(responseStatusClzOfException);
     }
-
 
     @Override
     public void afterPropertiesSet() throws Exception {

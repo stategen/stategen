@@ -23,11 +23,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.springframework.core.annotation.AliasFor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import configs.Constant;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import io.swagger.annotations.Extension;
@@ -64,7 +64,7 @@ public @interface ApiRequestMappingAutoWithMethodName {
     String[] headers() default {};
 
     @AliasFor(annotation = RequestMapping.class)
-    String produces() default Constant.APPLICATION_JSON;
+    String produces() default MediaType.APPLICATION_JSON_UTF8_VALUE;
     
     /***
      * <pre>
