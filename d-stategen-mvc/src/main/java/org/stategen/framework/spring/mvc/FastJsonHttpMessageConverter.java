@@ -42,6 +42,24 @@ import com.alibaba.fastjson.util.IOUtils;
 public class FastJsonHttpMessageConverter extends com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter
                                           implements InitializingBean {
 
+    
+    /**
+     * 用和不用stringconvertor有以下几个问题，因此改造fastjson解决
+     * 1. 当返回值为String,但需要包装反回时，stringconvertor会有返回值类型检测错误
+     * 2. 当返回值为String,再不需要包装时，比如 test,fastjson会强行包装为 "test",因些需要plaintString开关
+     */
+    private Boolean plainString =true;
+    
+    
+    public Boolean getPlainString() {
+        return plainString;
+    }
+    
+    public void setPlainString(Boolean plaintString) {
+        this.plainString = plaintString;
+    }
+    
+    
     @Override
     public void afterPropertiesSet() throws Exception {
         FastJsonResponseUtil.FASTJSON_HTTP_MESSAGE_CONVERTOR = this;
@@ -51,7 +69,7 @@ public class FastJsonHttpMessageConverter extends com.alibaba.fastjson.support.s
     protected boolean canRead(MediaType mediaType) {
         boolean result =super.canRead(mediaType);
         if (!result) {
-            //spring 在没有 获取 mediaType 强行赋值 MediaType.APPLICATION_OCTET_STREAM_VALUE
+            //spring 在没有 获取 mediaType 强行用MediaType.APPLICATION_OCTET_STREAM_VALUE 检测
             result =MediaType.APPLICATION_OCTET_STREAM==mediaType;
         }
         return result;
@@ -61,7 +79,7 @@ public class FastJsonHttpMessageConverter extends com.alibaba.fastjson.support.s
     protected void writeInternal(Object obj,
                                  HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
 
-        if (obj != null && obj instanceof String) {
+        if (plainString && obj != null && obj instanceof String) {
             //string 直接写入string,不加双引号
             FastJsonConfig fastJsonConfig = getFastJsonConfig();
 
