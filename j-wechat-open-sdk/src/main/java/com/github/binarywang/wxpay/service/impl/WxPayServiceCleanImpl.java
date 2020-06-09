@@ -8,4 +8,6 @@ public class WxPayServiceCleanImpl extends WxPayServiceImpl {
         //注册以便线程不用时清空
         ThreadLocalUtil.registThreadLocal(wxApiData); 
     }
+    
+
 }

@@ -37,7 +37,7 @@ import io.swagger.annotations.ResponseHeader;
 /**
  * The Interface ApiRequestMappingAutoWithMethodName.
  */
-@Target({ElementType.METHOD})
+@Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @RequestMapping()
 @ResponseBody
@@ -46,17 +46,24 @@ import io.swagger.annotations.ResponseHeader;
 /***
  * 方法名即路径名，减少硬编码和调试困难
  * 这是一个集成swagger ApiOperation与requestMapping的标注，该类可以可以方法名(method)，方法名自动映射到路径上，减少开发中的不一致
+ * @Target({ElementType.METHOD})
+ * @Retention(RetentionPolicy.RUNTIME)
+ * @RequestMapping()
+ * @ResponseBody
+ * @ApiOperation(value = "")
+ * @Inherited
+ * 
  * 
  * @author XiaZhengsheng
  */
 public @interface ApiRequestMappingAutoWithMethodName {
-    
+
     @AliasFor(annotation = RequestMapping.class)
-    RequestMethod method() default RequestMethod.POST ;
-    
+    RequestMethod method() default RequestMethod.POST;
+
     @AliasFor(annotation = RequestMapping.class)
     String path() default "";
-    
+
     @AliasFor(annotation = RequestMapping.class)
     String[] params() default {};
 
@@ -65,7 +72,7 @@ public @interface ApiRequestMappingAutoWithMethodName {
 
     @AliasFor(annotation = RequestMapping.class)
     String produces() default MediaType.APPLICATION_JSON_UTF8_VALUE;
-    
+
     /***
      * <pre>
      * apiPath值可以为：[(/)(methodName)(/)({PathVariable})),
@@ -75,18 +82,17 @@ public @interface ApiRequestMappingAutoWithMethodName {
      * </pre>
      * @return
      */
-//    String[] apiPath() default {};
-    
+    //    String[] apiPath() default {};
+
     /******************************
      * @ApiOperation
      * ***************************/
-    
-    @AliasFor(annotation = ApiOperation.class,attribute="value")
+
+    @AliasFor(annotation = ApiOperation.class, attribute = "value")
     String name() default "";
-    
-    @AliasFor(attribute="name")
+
+    @AliasFor(attribute = "name")
     String value() default "";
-    
 
     @AliasFor(annotation = ApiOperation.class)
     String notes() default "";
@@ -103,16 +109,15 @@ public @interface ApiRequestMappingAutoWithMethodName {
     @AliasFor(annotation = ApiOperation.class)
     String responseReference() default "";
 
-
-
     @AliasFor(annotation = ApiOperation.class)
-    @Deprecated int position() default 0;
+    @Deprecated
+    int position() default 0;
 
     @AliasFor(annotation = ApiOperation.class)
     String nickname() default "";
 
-//    @AliasFor(annotation = ApiOperation.class)
-//    String consumes() default "";
+    //    @AliasFor(annotation = ApiOperation.class)
+    //    String consumes() default "";
 
     @AliasFor(annotation = ApiOperation.class)
     String protocols() default "";
@@ -130,9 +135,5 @@ public @interface ApiRequestMappingAutoWithMethodName {
 
     @AliasFor(annotation = ApiOperation.class)
     Extension[] extensions() default @Extension(properties = @ExtensionProperty(name = "", value = ""));
-    
-    
 
-
- }
-
+}

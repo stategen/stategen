@@ -48,7 +48,7 @@ public class FastJsonHttpMessageConverter extends com.alibaba.fastjson.support.s
      * 1. 当返回值为String,但需要包装反回时，stringconvertor会有返回值类型检测错误
      * 2. 当返回值为String,再不需要包装时，比如 test,fastjson会强行包装为 "test",因些需要plaintString开关
      */
-    private Boolean plainString =true;
+    private Boolean plainString =false;
     
     
     public Boolean getPlainString() {

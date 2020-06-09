@@ -21,6 +21,13 @@
         </dependency>
                 
         <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-open</artifactId>
+            <version>3.8.0</version>
+            <scope>provided</scope>
+        </dependency>
+                
+        <dependency>
             <groupId>org.stategen.framework</groupId>
             <artifactId>stategen-util</artifactId>
             <version>${stategen-version}</version>
