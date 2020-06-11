@@ -116,19 +116,38 @@ public class CompatibleHelper {
     }
     
 
+    /***在大写字母之前插入'_',如果前面没有的话,*/
     public static String reaplce2_(String name) {
-        StringBuilder sb = new StringBuilder(name.length() + 10);
-        boolean lastUpper = false;
+        boolean findLowercase =false;
         for (int i = 0; i < name.length(); i++) {
             char c = name.charAt(i);
-            if (Character.isUpperCase(c)) {
-                if (i > 0 && !lastUpper) {
-                    sb.append('_');
-                }
-                lastUpper = true;
-            } else {
-                lastUpper = false;
+            if (Character.isLowerCase(c)){
+                findLowercase=true;
+                break;
             }
+        }
+
+        if (!findLowercase){
+            return  name;
+        }
+
+        StringBuilder sb = new StringBuilder(name.length() + 10);
+        boolean lastIsUnder =false;
+        for (int i = 0; i < name.length(); i++) {
+            char c = name.charAt(i);
+            if (c=='_'){
+                lastIsUnder =true;
+                sb.append(c);
+                continue;
+            }
+
+            if (Character.isUpperCase(c)) {
+              if (!lastIsUnder)  {
+                  sb.append('_');
+              }
+            }
+
+            lastIsUnder =false;
             sb.append(c);
         }
         return sb.toString();

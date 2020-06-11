@@ -283,20 +283,49 @@ public class StringHelper {
         return value.toString();
     }
 
+//    public static String makeAllWordFirstLetterUpperCase(String sqlName) {
+//        sqlName = CompatibleHelper.reaplce2_(sqlName);
+//        String[] strs = sqlName.toLowerCase().split("_");
+//        String result = "";
+//        String preStr = "";
+//        for (int i = 0; i < strs.length; i++) {
+//            if (preStr.length() == 1) {
+//                result += strs[i];
+//            } else {
+//                result += capitalize(strs[i]);
+//            }
+//            preStr = strs[i];
+//        }
+//        return result;
+//    }
+
     public static String makeAllWordFirstLetterUpperCase(String sqlName) {
         sqlName = CompatibleHelper.reaplce2_(sqlName);
-        String[] strs = sqlName.toLowerCase().split("_");
-        String result = "";
-        String preStr = "";
-        for (int i = 0; i < strs.length; i++) {
-            if (preStr.length() == 1) {
-                result += strs[i];
-            } else {
-                result += capitalize(strs[i]);
+        sqlName= sqlName.toLowerCase();
+        StringBuilder sb =new StringBuilder(sqlName.length());
+        boolean append =false;
+        boolean findUnd =true;
+        for (int i = 0; i < sqlName.length(); i++) {
+            char c = sqlName.charAt(i);
+            if (c=='_'){
+                if (!append){
+                    sb.append(c);
+                    append=true;
+                } else{
+                    findUnd=true;
+                }
+                continue;
             }
-            preStr = strs[i];
+
+            if (findUnd){
+                c =Character.toUpperCase(c);
+            }
+            findUnd=false;
+            append =true;
+            sb.append(c);
         }
-        return result;
+        String result =sb.toString();
+        return  result;
     }
 
     public static int indexOfByRegex(String input, String regex) {
@@ -315,7 +344,6 @@ public class StringHelper {
     /**
      * 将一个数据库名称转换为 Java 变量名称,如 user_info => userInfo
      * @param sqlName
-     * @param singularize
      * @return
      */
     public static String toJavaClassName(String sqlName) {
@@ -518,7 +546,7 @@ public class StringHelper {
     /**
      * Convert a name in camelCase to an underscored name in lower case.
      * Any upper case letters are converted to lower case with a preceding underscore.
-     * @param filteredName the string containing original name
+     * @param name the string containing original name
      * @return the converted name
      */
     public static String toUnderscoreName(String name) {
@@ -1020,7 +1048,7 @@ public class StringHelper {
      * </pre>
      * @param str the CharSequence to check (may be <code>null</code>)
      * @return <code>true</code> if the CharSequence is not null and has length
-     * @see #hasText(String)
+     * @see #hasLength(String)
      */
     public static boolean hasLength(CharSequence str) {
         return (str != null && str.length() > 0);

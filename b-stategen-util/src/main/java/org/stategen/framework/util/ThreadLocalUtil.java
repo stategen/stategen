@@ -25,6 +25,7 @@ public class ThreadLocalUtil {
     }
 
     public static <T> void removeThreadLocal(ThreadLocal<T> threadLocal) {
+        
         threadLocals.remove(threadLocal);
     }
 

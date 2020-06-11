@@ -34,8 +34,11 @@ import io.swagger.annotations.Extension;
 import io.swagger.annotations.ExtensionProperty;
 import io.swagger.annotations.ResponseHeader;
 
-/**
- * The Interface ApiRequestMappingAutoWithMethodName.
+/***
+ * 方法名即路径名，减少硬编码和调试困难
+ * 这是一个集成swagger ApiOperation与requestMapping的标注，该类可以可以方法名(method)，方法名自动映射到路径上，减少开发中的不一致
+ *
+ * @author XiaZhengsheng
  */
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
@@ -43,19 +46,6 @@ import io.swagger.annotations.ResponseHeader;
 @ResponseBody
 @ApiOperation(value = "")
 @Inherited
-/***
- * 方法名即路径名，减少硬编码和调试困难
- * 这是一个集成swagger ApiOperation与requestMapping的标注，该类可以可以方法名(method)，方法名自动映射到路径上，减少开发中的不一致
- * @Target({ElementType.METHOD})
- * @Retention(RetentionPolicy.RUNTIME)
- * @RequestMapping()
- * @ResponseBody
- * @ApiOperation(value = "")
- * @Inherited
- * 
- * 
- * @author XiaZhengsheng
- */
 public @interface ApiRequestMappingAutoWithMethodName {
 
     @AliasFor(annotation = RequestMapping.class)
