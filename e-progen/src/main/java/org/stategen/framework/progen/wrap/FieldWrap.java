@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 
 import org.stategen.framework.progen.NamedContext;
 import org.stategen.framework.util.AnnotationUtil;
+import org.stategen.framework.util.StringUtil;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
@@ -33,13 +34,19 @@ public class FieldWrap extends NamedWrap {
     /***一些annotations从field上找，其它从 getMethod上长*/
     private Field field;
 
-    AnnotatedElement[] members;
+    private AnnotatedElement[] members;
 
     /**是否是父类中的字段*/
     private Boolean isSuper = false;
 
+    /***是否前端序列化,不序列化的字段*/
     private Boolean serialize;
+    
+    /***是否前端反序列化*/
     private Boolean deserialize;
+    
+    /***fastJson定的输入字段，TODO,jackson,gson**/
+    private String _jsonFieldName;
 
     public FieldWrap(NamedContext context) {
         super(context);
@@ -82,6 +89,19 @@ public class FieldWrap extends NamedWrap {
             deserialize = AnnotationUtil.getAnnotationValueFormMembers(JSONField.class, JSONField::deserialize, true, getMembers());
         }
         return deserialize;
+    }
+    
+    @Override
+    public String toString() {
+        if (_jsonFieldName==null) {
+            _jsonFieldName= AnnotationUtil.getAnnotationValueFormMembers(JSONField.class, JSONField::name, null, getMembers());
+        }
+        
+        if (StringUtil.isBlank(_jsonFieldName)) {
+            _jsonFieldName =super.toString(); 
+        }
+        
+        return _jsonFieldName;
     }
 
 }

@@ -41,19 +41,23 @@ import io.swagger.annotations.Api;
 @Api
 @Menu
 public @interface ApiConfig {
-
+    /***对应{@link  io.swagger.annotations.Api#value()} */
     @AliasFor(annotation = Api.class, attribute = "value")
     String name() default "";
 
+    /***该controller是否生成菜单项 ，默认 true */
     @AliasFor(annotation = Menu.class,attribute="value")
     boolean menu() default true;
     
+    /***对应{@link io.swagger.annotations.Api#hidden()} ,该controller是否生成前端api*/
     @AliasFor(annotation = Api.class)
     boolean hidden() default false;
     
+    /***是否生成前端对应的状态监听model*/
     @AliasFor(annotation = GenModel.class,attribute="value")
     boolean genModel() default true;
     
+    /***是否生成前端路由路径*/
     @AliasFor(annotation = GenRoute.class,attribute="value")
     boolean genRoute() default true;
 

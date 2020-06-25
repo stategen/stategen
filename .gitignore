@@ -9,4 +9,4 @@
 .jar
 .war
 .rar
-/target/
+target/

@@ -1,18 +1,14 @@
 /*
- * Copyright (C) 2018  niaoge<78493244@qq.com>
+ * Copyright (C) 2018 niaoge<78493244@qq.com>
  * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * 
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package org.stategen.framework.spring.mvc;
 
@@ -39,32 +35,36 @@ import org.stategen.framework.util.StringUtil;
  * The Class CollectExceptionJsonHandler.
  */
 public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler implements HandlerExceptionResolver {
+    
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CollectExceptionJsonHandler.class);
-
+    
     @Override
-    public ModelAndView resolveException(HttpServletRequest httpServletRequest,
-                                         HttpServletResponse httpServletResponse,
-                                         Object handler,
-                                         Exception ex) {
+    public ModelAndView resolveException(
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse,
+            Object handler,
+            Exception ex) {
         String        failMessage = ex.getMessage();
         StringBuilder sb          = new StringBuilder(httpServletRequest.getRequestURI()).append(" ");
         if (ex instanceof BaseBusinessException) {
             logger.error(sb.append("业务异常：").append("\n").append(failMessage).toString(), ex);
         } else {
-            logger.error(sb.append("请求产生了一个错误:").append("\n").append(failMessage).append(" \n").toString(), ex);
+            logger.error(
+                    sb.append("请求产生了一个错误:").append("\n").append(failMessage).append(" ").append(ex.getMessage()).append(" \n").toString(),
+                    ex);
         }
-
+        
         ModelAndView modelAndView = new ModelAndView();
         if (!(handler instanceof HandlerMethod)) {
             return modelAndView;
         }
-
+        
         final HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method              method        = handlerMethod.getMethod();
-
+        
         HandleError     handleError         = AnnotationUtil.getMethodOrOwnerAnnotation(method, HandleError.class);
         IResponseStatus errorResponseStatus = this.getResponseStatus();
-
+        
         if (handleError == null || !handleError.exclude()) {
             ResponseBody responseBodyAnno = AnnotationUtil.getMethodOrOwnerAnnotation(method, ResponseBody.class);
             if (responseBodyAnno != null) {
@@ -74,7 +74,7 @@ public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler imple
                 httpServletResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
                 boolean supportMethod = ResponseBodyAdviceWrapper.supportMethod(method);
                 ResponseUtil.writhResponse(supportMethod, errorResponse);
-
+                
             } else {
                 String redirect = errorResponseStatus.isRedirect() ? "redirect:" : null;
                 String viewName = StringUtil.concatNoNull(redirect, errorResponseStatus.getErrorPage());
@@ -83,14 +83,14 @@ public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler imple
         }
         return modelAndView;
     }
-
+    
     public void setResponseStatusClzOfException(Class<? extends IResponseStatus> responseStatusClzOfException) {
         super.setResponseStatusClz(responseStatusClzOfException);
     }
-
+    
     @Override
     public void afterPropertiesSet() throws Exception {
         super.afterPropertiesSet();
     }
-
+    
 }

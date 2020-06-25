@@ -9,8 +9,8 @@
     <version>stg.2.1.1.RELEASE</version>
     <packaging>pom</packaging>
     <name>a_stategen-parent</name>
-    <description >spring+springmvc+mybatis|ibatis+apache.dubbo framework with gernerator and dev generator</description>
-    
+    <description>spring+springmvc+mybatis|ibatis+apache.dubbo framework with gernerator and dev generator</description>
+
     <url>https://github.com/stategen</url>
 
     <properties>
@@ -26,6 +26,7 @@
         <dubbo-version>2.7.7</dubbo-version>
         <!-- <dubbo-version>2.8.4</dubbo-version> -->
         <fastjson-version>1.2.70</fastjson-version>
+        <!-- <fastjson-version>1.2.29</fastjson-version> -->
         <logback-version>1.2.3</logback-version>
         <dom4j.version>1.6.1</dom4j.version>
 
@@ -66,10 +67,10 @@
 
 
     <distributionManagement>
-         <repository>
+        <repository>
             <id>thirdparty</id>
             <url>http://nexus:8081/content/repositories/thirdparty/</url>
-            </repository>
+        </repository>
 
 <!--         <snapshotRepository>
             <id>oss</id>
@@ -94,7 +95,6 @@
         <!-- 不发布到maven仓库 -->
         <module>f-dalgenx</module>
         <module>i-swagger2-ui</module>
-        <module>j-wechat-open-sdk</module>
         <!-- 不发布到maven仓库 -->
         <module>DISchedule</module>
         <!-- 不发布到maven仓库 -->
@@ -130,7 +130,7 @@
 
 
     </dependencyManagement>
-<profiles>
+    <profiles>
         <profile>
             <id>disable-javadoc-doclint</id>
             <activation>

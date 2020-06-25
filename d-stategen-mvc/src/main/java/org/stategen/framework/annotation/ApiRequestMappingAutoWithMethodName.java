@@ -35,8 +35,10 @@ import io.swagger.annotations.ExtensionProperty;
 import io.swagger.annotations.ResponseHeader;
 
 /***
- * 方法名即路径名，减少硬编码和调试困难
- * 这是一个集成swagger ApiOperation与requestMapping的标注，该类可以可以方法名(method)，方法名自动映射到路径上，减少开发中的不一致
+ * <pre>
+ * 方法名即路径名，减少硬编码和调试沟通,默认 POST.如果方法上有 @RequestMapping标注，按 @RequestMapping解析,
+ * 同时集成swagger ApiOperation的标注
+ * </pre>
  *
  * @author XiaZhengsheng
  */

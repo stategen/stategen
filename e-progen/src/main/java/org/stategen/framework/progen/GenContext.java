@@ -44,12 +44,18 @@ public class GenContext {
     public static WrapContainer wrapContainer = new WrapContainer();
 
     public static Set<Class<?>> staticUtils = new HashSet<Class<?>>();
+    /****需要扫描的包名*/
     public static List<String> extPackageNames;
+    /***需要扫描的class所有的包,，通常只能列举每个包下一个文件即可，可以治疗硬编码*/
+    public static List<Class<?>> extClassPackages;
+    /***模版目录*/
     public static List<String> tempDirs;
+    /***输出目录*/
     public static String outDir;
 //    public static String outConfigDir;
     public static ApiWrap appWrap;
     public static Properties Properties =new Properties();
+    /***额外的模版字典*/
     public static Map<String, Object> customVirables = new HashMap<String, Object>();
     
 

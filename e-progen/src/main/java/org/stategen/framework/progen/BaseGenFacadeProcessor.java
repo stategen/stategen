@@ -76,6 +76,12 @@ public class BaseGenFacadeProcessor {
         if (CollectionUtil.isNotEmpty(GenContext.extPackageNames)){
             packageNames.addAll(GenContext.extPackageNames);
         }
+        
+        if (CollectionUtil.isNotEmpty(GenContext.extClassPackages)){
+            for (Class<?> clz : GenContext.extClassPackages) {
+                packageNames.add(clz.getPackage().getName());
+            }
+        }
         ResponseBodyAdviceWrapper.packages=packageNames;
    
           
