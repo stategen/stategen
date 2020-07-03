@@ -347,6 +347,7 @@ public class Generator {
                 return;
             }
             String outputFilePath = proceeForOutputFilepath(filePathModel, templateFile);
+
             final String dubbleEqu="/==";
             if (outputFilePath.indexOf(dubbleEqu)>0) {
                //如果不是当前daoType 的文件夹 则跳过
@@ -475,11 +476,11 @@ public class Generator {
                     sourceEncoding, "/filepath/processor/");
 
             //使freemarker支持过滤,如 ${className?lower_case} 现在为 ${className^lower_case}
-            outputFilePath = outputFilePath.replace('^', '?');
-            
+
+            outputFilePath =TemplateHelpers.replaceSpacialPathWords(outputFilePath);
             String result =FmHelper.processTemplateString(outputFilePath, filePathModel,
                 conf);
-            result =StringUtil.replaceBackSlash(result);
+
             return result;
         }
 

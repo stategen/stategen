@@ -133,7 +133,7 @@ public class BaseTargets extends HashMap<String, Object> {
         if (StringUtil.isNotBlank(pojo_module_name)) {
             Setting.current_gen_name = Consts.pojo;
             GenUtils.genByTableConfig(
-                Helper.createGeneratorFacade(pojo_module_name, dir_templates_root + "/java/1-pojo/dal", dir_tmpl_share),
+                Helper.createGeneratorFacade(pojo_module_name, dir_templates_root + "/java/dal/1-pojo/", dir_tmpl_share),
                 tableConfigSet, GenProperties.tableName);
         }
 
@@ -141,7 +141,7 @@ public class BaseTargets extends HashMap<String, Object> {
         if (StringUtil.isNotBlank(dto_module_name)) {
             Setting.current_gen_name = Consts.dto;
             GenUtils.genByTableConfig(
-                Helper.createGeneratorFacade(dto_module_name, dir_templates_root + "/java/1-dto/dal", dir_tmpl_share),
+                Helper.createGeneratorFacade(dto_module_name, dir_templates_root + "/java/dal/1-dto/", dir_tmpl_share),
                 tableConfigSet, GenProperties.tableName);
         }
 
@@ -149,19 +149,19 @@ public class BaseTargets extends HashMap<String, Object> {
         if (StringUtil.isNotBlank(facade_module_name)) {
             Setting.current_gen_name = Consts.service;
             GenUtils.genByTableConfig(Helper.createGeneratorFacade(facade_module_name,
-                dir_templates_root + "/java/2-facade/dal", dir_tmpl_share), tableConfigSet, GenProperties.tableName);
+                dir_templates_root + "/java/dal/2-facade/", dir_tmpl_share), tableConfigSet, GenProperties.tableName);
             GenUtils.genByTableConfigSet(Helper.createGeneratorFacade(facade_module_name,
-                dir_templates_root + "/java/2-facade/set/", dir_tmpl_share), tableConfigSet);
+                dir_templates_root + "/java/set/2-facade/", dir_tmpl_share), tableConfigSet);
         }
 
         //DAO
         if (StringUtil.isNotBlank(dao_module_name)) {
             Setting.current_gen_name = Consts.dao;
             GenUtils.genByTableConfig(
-                Helper.createGeneratorFacade(dao_module_name, dir_templates_root + "/java/4-dao/dal/", dir_tmpl_share),
+                Helper.createGeneratorFacade(dao_module_name, dir_templates_root + "/java/dal/4-dao/", dir_tmpl_share),
                 tableConfigSet, GenProperties.tableName);
             GenUtils.genByTableConfigSet(
-                Helper.createGeneratorFacade(dao_module_name, dir_templates_root + "/java/4-dao/set/", dir_tmpl_share),
+                Helper.createGeneratorFacade(dao_module_name, dir_templates_root + "/java/set/4-dao/", dir_tmpl_share),
                 tableConfigSet);
             Setting.current_gen_name = null;
         }
@@ -170,16 +170,17 @@ public class BaseTargets extends HashMap<String, Object> {
         if (StringUtil.isNotBlank(service_module_name)) {
             Setting.current_gen_name = Consts.service;
             GenUtils.genByTableConfig(Helper.createGeneratorFacade(service_module_name,
-                dir_templates_root + "/java/5-service/dal", dir_tmpl_share), tableConfigSet, GenProperties.tableName);
+                dir_templates_root + "/java/dal/5-service/", dir_tmpl_share), tableConfigSet, GenProperties.tableName);
+            
             GenUtils.genByTableConfigSet(Helper.createGeneratorFacade(service_module_name,
-                dir_templates_root + "/java/5-service/set/", dir_tmpl_share), tableConfigSet);
+                dir_templates_root + "/java/set/5-service/", dir_tmpl_share), tableConfigSet);
         }
 
         //controller 
         if (StringUtil.isNotBlank(controller_module_name)) {
             Setting.current_gen_name = Consts.controller;
             GenUtils.genByTableConfig(Helper.createGeneratorFacade(controller_module_name,
-                dir_templates_root + "/java/6-controller/dal", dir_tmpl_share), tableConfigSet,
+                dir_templates_root + "/java/dal/6-controller/", dir_tmpl_share), tableConfigSet,
                 GenProperties.tableName);
         }
     }

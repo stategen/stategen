@@ -82,9 +82,7 @@ public class TemplateHelpers {
         return conf;
     }
 
-    public static String processTemplitePath(Map<Object, Object> root, String dest) throws IOException, TemplateException {
-        Configuration conf =new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
-        final String stringTemplate = dest;
+    public static String replaceSpacialPathWords(String dest){
         dest=dest.replace(StringUtil.BACK_SLASH, StringUtil.SLASH);
         dest=dest.replace("[", "<");
         dest=dest.replace("]", ">");
@@ -94,6 +92,14 @@ public class TemplateHelpers {
         dest=dest.replace("${.}", "");
         //可以用 ^ 代替
         dest=dest.replace("${q}", "?");
+        return  dest;
+    }
+
+    public static String processTemplitePath(Map<Object, Object> root, String dest) throws IOException, TemplateException {
+        Configuration conf =new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
+        final String stringTemplate = dest;
+        dest =replaceSpacialPathWords(dest);
+
         
         /* 在整个应用的生命周期中，这个工作你应该只做一次。 */
         /* 创建和调整配置。 */
