@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis2</artifactId>
-            <version>2.3.7</version>
+            <version>${mybatis2.version}</version>
             <scope>provided</scope>
         </dependency>
             
