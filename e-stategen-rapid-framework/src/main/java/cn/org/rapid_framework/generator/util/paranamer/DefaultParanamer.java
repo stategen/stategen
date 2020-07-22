@@ -51,7 +51,7 @@ public class DefaultParanamer implements Paranamer {
     public static final String __PARANAMER_DATA = "v1.0 \n"
         + "lookupParameterNames java.lang.AccessibleObject methodOrConstructor \n"
         + "lookupParameterNames java.lang.AccessibleObject,boolean methodOrCtor,throwExceptionIfMissing \n"
-        + "getParameterTypeName java.lang.Class cls\n";
+        + "getParameterTypeName java.lang.Class<?> cls\n";
 
     public DefaultParanamer() {
     }
@@ -61,7 +61,7 @@ public class DefaultParanamer implements Paranamer {
     }
 
     public String[] lookupParameterNames(AccessibleObject methodOrCtor, boolean throwExceptionIfMissing) {
-        // Oh for some commonality between Constructor and Method !!
+        // Oh for some commonality between Constructor<?> and Method !!
         Class<?>[] types = null;
         Class<?> declaringClass = null;
         String name = null;

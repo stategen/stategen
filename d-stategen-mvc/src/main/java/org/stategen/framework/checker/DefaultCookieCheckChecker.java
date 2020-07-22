@@ -35,7 +35,7 @@ public class DefaultCookieCheckChecker extends AbstractMethodChecker<CookieCheck
         CookieCheck cookieCheck=(CookieCheck)anno;
         Class<? extends ICookieType> cookieTypeClz =cookieCheck.cookieTypeClz();
         String cookieName = cookieCheck.cookieName();
-        CookieGroup cookieGroup = CookieGroup.getCookieGroup(cookieTypeClz);
+        CookieGroup<?> cookieGroup = CookieGroup.getCookieGroup(cookieTypeClz);
 
         //如果相应的cookie不存在
         Cookie cookie = cookieGroup.getCookie(cookieName);

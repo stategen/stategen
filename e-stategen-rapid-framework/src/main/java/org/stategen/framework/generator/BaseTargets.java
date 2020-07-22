@@ -31,7 +31,6 @@ import org.stategen.framework.util.Setting;
 import org.stategen.framework.util.StringUtil;
 
 import cn.org.rapid_framework.generator.GenUtils;
-import cn.org.rapid_framework.generator.GeneratorFacade;
 import cn.org.rapid_framework.generator.GeneratorProperties;
 import cn.org.rapid_framework.generator.Helper;
 import cn.org.rapid_framework.generator.ext.tableconfig.builder.TableConfigXmlBuilder;
@@ -124,7 +123,7 @@ public class BaseTargets extends HashMap<String, Object> {
 
     public void dal() throws Exception {
         File           tablesDirFile  = new File(tablesPath);
-        TableConfigSet tableConfigSet = new TableConfigXmlBuilder().parseFromXML(tablesDirFile, packageName,
+        TableConfigSet tableConfigSet = TableConfigXmlBuilder.parseFromXML(tablesDirFile, packageName,
             Helper.getTableConfigFiles(tablesDirFile));
 
         GLogger.info("pojo_module_name<===========>:" + pojo_module_name);
@@ -187,15 +186,21 @@ public class BaseTargets extends HashMap<String, Object> {
 
     public void table() throws Exception {
         Setting.current_gen_name = Consts.table;
+        
+        File           tablesDirFile  = new File(tablesPath);
+        TableConfigSet tableConfigSet = TableConfigXmlBuilder.parseFromXMLDelay(tablesDirFile, packageName,
+            Helper.getTableConfigFiles(tablesDirFile),true);
+       
+        
         GenUtils.genByTable(
-            Helper.createGeneratorFacade(tablesPath, dir_templates_root + "/java/table/init", dir_tmpl_share),
+            Helper.createGeneratorFacade(tablesPath, dir_templates_root + "/java/table/init", dir_tmpl_share),tableConfigSet,
             GenProperties.tableName);
     }
 
     public void api() throws Exception {
         File tablesDirFile = new File(tablesPath);
 
-        TableConfigSet tableConfigSet = new TableConfigXmlBuilder().parseFromXML(tablesDirFile, packageName,
+        TableConfigSet tableConfigSet = TableConfigXmlBuilder.parseFromXML(tablesDirFile, packageName,
             Helper.getTableConfigFiles(tablesDirFile));
 
         GLogger.info("pojo_module_name<===========>:" + "api");
@@ -218,7 +223,7 @@ public class BaseTargets extends HashMap<String, Object> {
     }
 
     public void seq() throws Exception {
-        TableConfigSet tableConfigSet = new TableConfigXmlBuilder().parseFromXML(
+        TableConfigSet tableConfigSet = TableConfigXmlBuilder.parseFromXML(
             new File(GenProperties.dalgenHome, dir_table_configs), packageName,
             Helper.getTableConfigFiles(new File(GenProperties.dalgenHome, dir_table_configs)));
         GeneratorProperties.getProperties().put("basepackage", packageName);
@@ -226,11 +231,11 @@ public class BaseTargets extends HashMap<String, Object> {
             dir_templates_root + "/java/table_config_set/sequence", dir_tmpl_share), tableConfigSet);
     }
 
-    public void crud() throws Exception {
-        GeneratorFacade gf = Helper.createGeneratorFacade(dir_dal_output_root, dir_templates_root + "/share/basic",
-            dir_templates_root + "/table/dao_hibernate", dir_templates_root + "/table/dao_hibernate_annotation",
-            dir_templates_root + "/table/service_no_interface", dir_templates_root + "/table/web_struts2");
-        GenUtils.genByTable(gf, GenProperties.tableName);
-    }
+//    public void crud() throws Exception {
+//        GeneratorFacade gf = Helper.createGeneratorFacade(dir_dal_output_root, dir_templates_root + "/share/basic",
+//            dir_templates_root + "/table/dao_hibernate", dir_templates_root + "/table/dao_hibernate_annotation",
+//            dir_templates_root + "/table/service_no_interface", dir_templates_root + "/table/web_struts2");
+//        GenUtils.genByTable(gf, GenProperties.tableName);
+//    }
 
 }

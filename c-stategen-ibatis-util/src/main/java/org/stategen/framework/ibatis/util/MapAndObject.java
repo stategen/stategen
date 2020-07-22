@@ -17,18 +17,18 @@ import org.springframework.beans.BeanUtils;
  * 该类复制自rapid_framework
  * @author badqiu
  */
-public class MapAndObject implements Map {
+public class MapAndObject implements Map<String,Object> {
     final static Logger     logger = LoggerFactory.getLogger(MapAndObject.class);
-    private final Map<?, ?> map;
+    private final Map<String,Object> map;
     private final Object    bean;
 
-    public MapAndObject(Map map, Object bean) {
+    public MapAndObject(Map<String,Object> map, Object bean) {
         super();
         this.map = map;
         this.bean = bean;
     }
 
-    public Map getMap() {
+    public Map<String,Object> getMap() {
         return map;
     }
 
@@ -41,6 +41,7 @@ public class MapAndObject implements Map {
         return getFromMapOrBean(key);
     }
 
+    @SuppressWarnings("rawtypes")
     Object getFromMapOrBean(Object key) {
         Object result = null;
         if (map != null) {
@@ -74,27 +75,28 @@ public class MapAndObject implements Map {
     }
 
     @Override
-    public Set entrySet() {
+    public Set<Entry<String, Object>> entrySet() {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public boolean isEmpty() {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public Set keySet() {
-        throw new UnsupportedOperationException();
-    }
 
     @Override
-    public Object put(Object key, Object value) {
+    public Set<String> keySet() {
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
-    public void putAll(Map m) {
+    public Object put(String key, Object value) {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public void putAll(Map<? extends String, ? extends Object> m) {
         throw new UnsupportedOperationException();
     }
 
@@ -109,7 +111,7 @@ public class MapAndObject implements Map {
     }
 
     @Override
-    public Collection values() {
+    public Collection<Object> values() {
         throw new UnsupportedOperationException();
     }
 

@@ -8,6 +8,7 @@ import org.junit.Test;
 
 public class BatchGBK2UTF8 {
 
+    @SuppressWarnings("unchecked")
     @Test
     public void convert() throws Exception {
         //GBK编码格式源码路径

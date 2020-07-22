@@ -277,7 +277,7 @@ public class StatementCreatorUtils {
 //    /**
 //     * Check whether the given value can be treated as a String value.
 //     */
-//    private static boolean isStringValue(Class inValueType) {
+//    private static boolean isStringValue(Class<?> inValueType) {
 //        // Consider any CharSequence (including JDK 1.5's StringBuilder) as String.
 //        return (CharSequence.class.isAssignableFrom(inValueType) ||
 //                StringWriter.class.isAssignableFrom(inValueType));
@@ -287,7 +287,7 @@ public class StatementCreatorUtils {
 //     * Check whether the given value is a <code>java.util.Date</code>
 //     * (but not one of the JDBC-specific subclasses).
 //     */
-//    private static boolean isDateValue(Class inValueType) {
+//    private static boolean isDateValue(Class<?> inValueType) {
 //        return (java.util.Date.class.isAssignableFrom(inValueType) &&
 //                !(java.sql.Date.class.isAssignableFrom(inValueType) ||
 //                        java.sql.Time.class.isAssignableFrom(inValueType) ||

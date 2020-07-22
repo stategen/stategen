@@ -60,8 +60,8 @@ public class JavaMethod {
 	}
 
     public List<JavaClass> getExceptionTypes() {
-        List<JavaClass> result = new ArrayList();
-        for(Class c : method.getExceptionTypes()) {
+        List<JavaClass> result = new ArrayList<>();
+        for(Class<?> c : method.getExceptionTypes()) {
             result.add(new JavaClass(c));
         }
         return result;
@@ -84,7 +84,7 @@ public class JavaMethod {
 	}
 	
 	public List<MethodParameter> getParameters() {
-		Class[] parameters  = method.getParameterTypes();
+		Class<?>[] parameters  = method.getParameterTypes();
 		List<MethodParameter> results = new ArrayList<MethodParameter>();
 		for(int i = 0; i < parameters.length; i++) {
 			results.add(new MethodParameter(i+1,this,new JavaClass(parameters[i])));

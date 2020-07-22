@@ -272,7 +272,7 @@ public class Sql {
 	}
 
     /**
-     * 得到该sql方法相对应的操作名称,模板中的使用方式为: public List ${operation}(),示例值: findByUsername
+     * 得到该sql方法相对应的操作名称,模板中的使用方式为: public List<String> ${operation}(),示例值: findByUsername
      * @return
      */
 	public String getOperation() {
@@ -401,7 +401,7 @@ public class Sql {
 
     //	public String replaceParamsWith(String prefix,String suffix) {
 //		String sql = sourceSql;
-//		List<SqlParameter> sortedParams = new ArrayList(params);
+//		List<SqlParameter> sortedParams = new ArrayList<>()(params);
 //		Collections.sort(sortedParams,new Comparator<SqlParameter>() {
 //			public int compare(SqlParameter o1, SqlParameter o2) {
 //				return o2.paramName.length() - o1.paramName.length();

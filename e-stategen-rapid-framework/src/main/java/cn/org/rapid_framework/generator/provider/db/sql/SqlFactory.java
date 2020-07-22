@@ -141,7 +141,6 @@ public class SqlFactory {
                 
                 StringBuilder sb =new StringBuilder();
                 sb.append("delete from ").append(tableName).append(" where ");
-                boolean append =false;
                 
                 Column pkColumn = this.table.getPkColumn();
                 if (pkColumn==null){
@@ -226,8 +225,8 @@ public class SqlFactory {
     public static class SelectColumnsParser {
     
         private LinkedHashSet<Column> convert2Columns(Sql sql,ResultSetMetaData metadata) throws SQLException, Exception {
-            if(metadata == null) return new LinkedHashSet();
-            LinkedHashSet<Column> columns = new LinkedHashSet();
+            if(metadata == null) return new LinkedHashSet<>();
+            LinkedHashSet<Column> columns = new LinkedHashSet<>();
             for(int i = 1; i <= metadata.getColumnCount(); i++) {
                 Column c = convert2Column(sql,metadata, i);
                 if(c == null) throw new IllegalStateException("column must be not null");
@@ -344,7 +343,7 @@ public class SqlFactory {
             Column column = sql.getColumnByName(paramName);
             if(column == null) {
                 String paramNameLow= paramName.toLowerCase();
-                if ("and".equals(paramName) || "like".equals(paramName) || "between".equals(paramName)|| "in".equals(paramName)|| "not".equals(paramName)){
+                if ("and".equals(paramNameLow) || "like".equals(paramNameLow) || "between".equals(paramNameLow)|| "in".equals(paramNameLow)|| "not".equals(paramNameLow)){
                     return null;
                 }
                 //FIXME 还未处理 t.username = :username的t前缀问题,应该直接根据 t.确定属于那一张表,不需要再猜测

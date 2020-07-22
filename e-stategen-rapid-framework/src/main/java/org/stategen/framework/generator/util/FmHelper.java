@@ -58,7 +58,7 @@ import freemarker.template.TemplateException;
 import lombok.Cleanup;
 
 /**
- * The Class FmHelper.
+ * The Class<?> FmHelper.
  */
 @SuppressWarnings("all")
 public class FmHelper {
@@ -177,7 +177,7 @@ public class FmHelper {
      * @throws IllegalAccessException the illegal access exception
      * @throws ParseException 
      */
-    public static void processTemplate(Template template, Map model, File outputFile, String encoding, boolean isTable,
+    public static void processTemplate(Template template, Map<String, Object> model, File outputFile, String encoding, boolean isTable,
                                        boolean hasAtNotRelace) throws IOException, TemplateException, InstantiationException, IllegalAccessException, ParseException {
 
         //可以同时用来判断是否需要做java文件
@@ -346,7 +346,7 @@ public class FmHelper {
      * @param conf the conf
      * @return the string
      */
-    public static String processTemplateString(String templateString, Map model, Configuration conf) {
+    public static String processTemplateString(String templateString, Map<String, Object> model, Configuration conf) {
         StringWriter out = new StringWriter();
         try {
             Template template = new Template(templateString, new StringReader(templateString), conf);

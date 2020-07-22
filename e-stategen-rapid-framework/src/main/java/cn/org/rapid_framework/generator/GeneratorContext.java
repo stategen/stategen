@@ -15,7 +15,7 @@ public class GeneratorContext {
 	/** 
 	 * 生成器模板的上下文,存放在context中的变量,模板可以直接引用 
 	 **/
-    static ThreadLocal<Map> context = ThreadLocalUtil.createLocalThread();
+    static ThreadLocal<Map<String, Object>> context = ThreadLocalUtil.createLocalThread();
     /** 
 	 * GeneratorProperties可以引用的上下文 
 	 **/
@@ -26,15 +26,15 @@ public class GeneratorContext {
         generatorProperties.set(null);
     }
     
-    public static Map getContext() {
-        Map map = context.get();
+    public static Map<String, Object> getContext() {
+        Map<String, Object> map = context.get();
         if(map == null) {
-            setContext(new HashMap());
+            setContext(new HashMap<>());
         }
         return context.get();
     }
     
-    public static void setContext(Map map) {
+    public static void setContext(Map<String, Object> map) {
         context.set(map);
     }
     

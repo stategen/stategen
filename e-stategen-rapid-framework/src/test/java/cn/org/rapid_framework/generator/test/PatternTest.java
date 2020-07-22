@@ -44,18 +44,6 @@ public class PatternTest {
         System.out.println(sb.toString());
     }
 
-    private void simpleClass(String clzz, Pattern pattern,StringBuilder sb) {
-        Matcher matcher = pattern.matcher(clzz);
-        if (matcher.find()) {
-            //          System.out.println(matcher.group(0));
-            System.out.println(matcher.group(0));
-            System.out.println(matcher.group(1));
-            System.out.println(matcher.group());
-
-        } else {
-            sb.append(clzz);
-        }
-    }
 
 //    @Test
     public void testJavaClazz() {

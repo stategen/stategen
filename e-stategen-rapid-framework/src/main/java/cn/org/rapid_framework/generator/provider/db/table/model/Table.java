@@ -55,7 +55,7 @@ public class Table implements java.io.Serializable,Cloneable {
     Map<String, Column> _columnMap =new CaseInsensitiveHashMap<Column>();
     Map<String, SqlParameter> _fieldParameterMap =new CaseInsensitiveHashMap<SqlParameter>();
     
-    List<Column> primaryKeyColumns = new ArrayList<Column>();
+    List<String> primaryKeyColumns = new ArrayList<>();
     
     public Table() {}
     
@@ -136,7 +136,7 @@ public class Table implements java.io.Serializable,Cloneable {
 
     /** 使用 getPkColumns() 替换*/
     @Deprecated
-    public List<Column> getPrimaryKeyColumns() {
+    public List<String> getPrimaryKeyColumns() {
         return primaryKeyColumns;
     }
     
@@ -145,8 +145,7 @@ public class Table implements java.io.Serializable,Cloneable {
 //    }
     
     /** 使用 setPkColumns() 替换*/
-    @Deprecated
-    public void setPrimaryKeyColumns(List<Column> primaryKeyColumns) {
+    public void setPrimaryKeyColumns(List<String> primaryKeyColumns) {
         this.primaryKeyColumns = primaryKeyColumns;
     }
     
@@ -228,13 +227,11 @@ public class Table implements java.io.Serializable,Cloneable {
     }
     
     /** 使用 getPkCount() 替换*/
-    @Deprecated
     public boolean isSingleId() {
         return getPkCount() == 1 ? true : false;
     }
     
     /** 使用 getPkCount() 替换*/
-    @Deprecated
     public boolean isCompositeId() {
         return getPkCount() > 1 ? true : false;
     }

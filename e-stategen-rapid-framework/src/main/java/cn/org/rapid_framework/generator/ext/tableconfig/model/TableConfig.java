@@ -161,7 +161,7 @@ public class TableConfig {
 
     public List<ColumnConfig> getColumns() {
         if (columns == null) {
-            columns = new ArrayList();
+            columns = new ArrayList<>();
         }
         return columns;
     }
@@ -386,7 +386,7 @@ public class TableConfig {
                 }
             }
             if (GeneratorProperties.getBoolean("generator.extraParams.append", true)) {
-                LinkedHashSet result = new LinkedHashSet(sql.getParams());
+                LinkedHashSet<SqlParameter> result = new LinkedHashSet<>(sql.getParams());
                 result.addAll(filterdExtraParameters);
                 return result;
             } else {
@@ -409,7 +409,7 @@ public class TableConfig {
         }
 
         private static Map<String, String> toMap(List<SqlConfig> sql) {
-            Map map = new HashMap();
+            Map<String, String> map = new HashMap<>();
             for (SqlConfig s : sql) {
                 map.put(s.id, s.sql);
             }
@@ -538,7 +538,7 @@ public class TableConfig {
 
     public static class ResultMapConfig {
         private String name;
-        private List<ColumnConfig> columns = new ArrayList();
+        private List<ColumnConfig> columns = new ArrayList<>();
 
         public String getName() {
             return name;

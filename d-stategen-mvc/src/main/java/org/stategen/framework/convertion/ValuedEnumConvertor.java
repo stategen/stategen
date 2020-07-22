@@ -43,7 +43,6 @@ public class ValuedEnumConvertor implements ConverterFactory<String, Enum> {
             this.enumType = enumType;
         }
 
-        @SuppressWarnings("unchecked")
         public T convert(String source) {
             return (T) EnumUtil.valueOf(enumType, source);
         }

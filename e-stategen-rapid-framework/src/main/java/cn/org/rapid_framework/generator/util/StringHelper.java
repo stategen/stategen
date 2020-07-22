@@ -52,7 +52,6 @@ public class StringHelper {
 
     private static final String CURRENT_PATH = ".";
 
-    private static final char EXTENSION_SEPARATOR = '.';
 
     public static String removeCrlf(String str) {
         if (str == null)
@@ -98,9 +97,9 @@ public class StringHelper {
      * @param map
      * @return
      */
-    public static Map<String, String> getDirValuesMap(Map<Object, ?> map) {
+    public static Map<String, String> getDirValuesMap(Map<String, Object> map) {
         Map<String, String> dirValues = new HashMap<String, String>();
-        Set<Object> keys = map.keySet();
+        Set<String> keys = map.keySet();
         for (Object key : keys) {
             Object value = map.get(key);
             if (key instanceof String && value instanceof String) {
@@ -603,10 +602,10 @@ public class StringHelper {
 
     public static List<EnumMetaDada> string2EnumMetaData(String data) {
         if (data == null || data.trim().length() == 0)
-            return new ArrayList();
+            return new ArrayList<>();
         //enumAlias(enumKey,enumDesc),enumAlias(enumDesc)
 
-        List<EnumMetaDada> list = new ArrayList();
+        List<EnumMetaDada> list = new ArrayList<>();
         Pattern p = Pattern.compile("\\w+\\(.*?\\)");
         Matcher m = p.matcher(data);
         while (m.find()) {
@@ -647,16 +646,16 @@ public class StringHelper {
         if (str == null)
             return new String[0];
         StringTokenizer tokenlizer = new StringTokenizer(str, seperators);
-        List result = new ArrayList();
+        List<String> result = new ArrayList<>();
 
         while (tokenlizer.hasMoreElements()) {
-            Object s = tokenlizer.nextElement();
+            String s = (String) tokenlizer.nextElement();
             result.add(s);
         }
         return (String[]) result.toArray(new String[result.size()]);
     }
 
-    public static String join(List list, String seperator) {
+    public static String join(List<String> list, String seperator) {
         return join(list.toArray(new Object[0]), seperator);
     }
 
@@ -910,7 +909,7 @@ public class StringHelper {
      * @param delim the delimiter to use (probably a ",")
      * @return the delimited String
      */
-    public static String collectionToDelimitedString(Collection coll, String delim) {
+    public static String collectionToDelimitedString(Collection<?> coll, String delim) {
         return collectionToDelimitedString(coll, delim, "", "");
     }
 
@@ -947,12 +946,12 @@ public class StringHelper {
      * @param suffix the String to end each element with
      * @return the delimited String
      */
-    public static String collectionToDelimitedString(Collection coll, String delim, String prefix, String suffix) {
+    public static String collectionToDelimitedString(Collection<?> coll, String delim, String prefix, String suffix) {
         if (coll == null || coll.isEmpty()) {
             return "";
         }
         StringBuilder sb = new StringBuilder();
-        Iterator it = coll.iterator();
+        Iterator<?> it = coll.iterator();
         while (it.hasNext()) {
             sb.append(prefix).append(it.next()).append(suffix);
             if (it.hasNext()) {

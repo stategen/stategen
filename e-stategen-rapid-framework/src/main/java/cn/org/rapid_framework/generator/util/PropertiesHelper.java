@@ -161,9 +161,9 @@ public class PropertiesHelper {
 	}
 	
 	public static String[] loadAllPropertiesFromClassLoader(Properties properties,String... resourceNames) throws IOException {
-		List successLoadProperties = new ArrayList();
+		List<String> successLoadProperties = new ArrayList<>();
 		for(String resourceName : resourceNames) {
-			Enumeration urls = ClassHelper.getDefaultClassLoader().getResources(resourceName);
+			Enumeration<URL> urls = ClassHelper.getDefaultClassLoader().getResources(resourceName);
 			while (urls.hasMoreElements()) {
 				URL url = (URL) urls.nextElement();
 				successLoadProperties.add(url.getFile());

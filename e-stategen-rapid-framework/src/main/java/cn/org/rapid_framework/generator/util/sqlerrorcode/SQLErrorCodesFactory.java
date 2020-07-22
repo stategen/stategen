@@ -59,13 +59,13 @@ public class SQLErrorCodesFactory {
 	}
 
 	/**
-	 * Map to hold error codes for all databases defined in the config file.
+	 * Map<String, Object> to hold error codes for all databases defined in the config file.
 	 * Key is the database product name, value is the SQLErrorCodes instance.
 	 */
 	private final Map<String, SQLErrorCodes> errorCodesMap = new LinkedHashMap<String, SQLErrorCodes>();
 
 	/**
-	 * Map to cache the SQLErrorCodes instance per DataSource.
+	 * Map<String, Object> to cache the SQLErrorCodes instance per DataSource.
 	 */
 	private final Map<DataSource, SQLErrorCodes> dataSourceCache = new WeakHashMap<DataSource, SQLErrorCodes>(16);
 

@@ -8,7 +8,9 @@ import java.util.List;
 
 public class GeneratorException extends RuntimeException{
 	
-	public List<Exception> exceptions = new ArrayList();
+	/**  */
+    private static final long serialVersionUID = 1L;
+    public List<Exception> exceptions = new ArrayList<>();
 	
 	public GeneratorException() {
 		super();

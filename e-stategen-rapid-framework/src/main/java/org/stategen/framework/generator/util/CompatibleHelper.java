@@ -26,7 +26,7 @@ import org.stategen.framework.util.CollectionUtil;
 
 
 /**
- * The Class CompatibleHelper.
+ * The Class<?> CompatibleHelper.
  */
 public class CompatibleHelper {
 

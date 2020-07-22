@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.xml.sax.SAXException;
 
@@ -42,38 +43,52 @@ import cn.org.rapid_framework.generator.util.XMLHelper.NodeData;
 
 public class TableConfigXmlBuilder {
 
-    public TableConfigSet parseFromXML(String _package,File basedir) {
+    public static TableConfigSet parseFromXML(String _package,File basedir) {
         String[] tableConfigFilesArray = basedir.list();
-        TableConfigSet tableConfigSet = new TableConfigXmlBuilder().parseFromXML(basedir,_package, Arrays.asList(tableConfigFilesArray));
+        TableConfigSet tableConfigSet = parseFromXML(basedir,_package, Arrays.asList(tableConfigFilesArray));
         return tableConfigSet;
     }
     
-    public TableConfigSet parseFromXML(String _package,File basedir,String tableConfigFiles) {
+    public static TableConfigSet parseFromXML(String _package,File basedir,String tableConfigFiles) {
         String[] tableConfigFilesArray = StringHelper.tokenizeToStringArray(tableConfigFiles, ", \t\n\r\f");
-        TableConfigSet tableConfigSet = new TableConfigXmlBuilder().parseFromXML(basedir,_package, Arrays.asList(tableConfigFilesArray));
+        TableConfigSet tableConfigSet = parseFromXML(basedir,_package, Arrays.asList(tableConfigFilesArray));
         return tableConfigSet;
     }
     
-    public TableConfigSet parseFromXML(File basedir,String _package,List<String> tableConfigFiles) {
+    public static TableConfigSet parseFromXML(File basedir,String _package,List<String> tableConfigFiles) {
+        return parseFromXMLDelay(basedir, _package, tableConfigFiles, false);
+    }
+    
+    public static TableConfigSet parseFromXMLDelay(File basedir,String _package,List<String> tableConfigFiles,boolean isDelay) {
         TableConfigSet result = new TableConfigSet();
         result.setPackage(_package);
         for(String filepath : tableConfigFiles ) {
             if(filepath.endsWith(".xml")) {
                 File file = new File(basedir,filepath);
-                TableConfig tableConfig = null;
-                try {
-                    tableConfig = parseFromXML(file);
-                }catch(Throwable e) {
-                  throw new RuntimeException("parse file:"+file.getAbsolutePath()+" occer error",e);
+                if (isDelay) {
+                   Map<String, File> sqlNameXmlFileMap = result.getSqlNameXmlFileMap();
+                   sqlNameXmlFileMap.put(filepath.substring(0, filepath.length()-4), file);
+                } else {
+                    TableConfig tableConfig = parseTableConfig(file);
+                    result.addTableConfig(tableConfig);
                 }
-                result.addTableConfig(tableConfig);
             }
         }
         return result;
     }
 
+    public static TableConfig parseTableConfig(File file) {
+        TableConfig tableConfig = null;
+        try {
+            tableConfig = parseFromXML(file);
+        }catch(Throwable e) {
+            throw new RuntimeException("parse file:"+file.getAbsolutePath()+" occer error",e);
+        }
+        return tableConfig;
+    }
+
     
-    public TableConfig parseFromXML(File file) throws SAXException, IOException {
+    public static TableConfig parseFromXML(File file) throws SAXException, IOException {
         NodeData nodeData = new XMLHelper().parseXML(file);
         TableConfig config = new TableConfig();
         
@@ -138,7 +153,7 @@ public class TableConfigXmlBuilder {
         return config;
     }
     
-    public String getNodeValue(NodeData v) {
+    public static String getNodeValue(NodeData v) {
         if(GeneratorProperties.getBoolean(GeneratorConstants.USE_INNER_XML_FOR_XML_PARSING)) {
             return v.innerXML;
         }else {

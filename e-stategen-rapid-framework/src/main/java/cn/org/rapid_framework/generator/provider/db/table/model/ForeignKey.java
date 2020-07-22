@@ -18,7 +18,9 @@ import cn.org.rapid_framework.generator.util.StringHelper;
 public class ForeignKey implements java.io.Serializable{
 
 	
-	protected String   relationShip   = null;
+	/**  */
+    private static final long serialVersionUID = 1L;
+    protected String   relationShip   = null;
 	protected String   firstRelation  = null;
 	protected String   secondRelation = null;
 	protected Table parentTable ;
@@ -67,7 +69,8 @@ public class ForeignKey implements java.io.Serializable{
 	/**
 	 * 
 	 */
-	private void initRelationship() {
+	@SuppressWarnings("deprecation")
+    private void initRelationship() {
 		firstRelation   = "";
 		secondRelation  = "";
 		Table foreignTable = null;
@@ -76,8 +79,8 @@ public class ForeignKey implements java.io.Serializable{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		List parentPrimaryKeys    = parentTable.getPrimaryKeyColumns();
-		List foreignPrimaryKeys   = foreignTable.getPrimaryKeyColumns();
+        List<String> parentPrimaryKeys    = parentTable.getPrimaryKeyColumns();
+		List<String> foreignPrimaryKeys   = foreignTable.getPrimaryKeyColumns();
 		
 		if (hasAllPrimaryKeys(parentPrimaryKeys,parentColumns))
 			firstRelation = "one";
@@ -92,7 +95,7 @@ public class ForeignKey implements java.io.Serializable{
 		relationShip = firstRelation + "-to-" + secondRelation;
 		 
 	}
-	private boolean hasAllPrimaryKeys(List pkeys, ListHashtable cols) {
+	private boolean hasAllPrimaryKeys(List<String> pkeys, ListHashtable cols) {
 		boolean hasAll = true;
 		// if size is not equal then false
 		int numKeys = pkeys.size();
@@ -100,17 +103,16 @@ public class ForeignKey implements java.io.Serializable{
 			return false;
 		
 		for (int i=0;i<numKeys;i++) {
-			Column col = (Column) pkeys.get(i);
-			String colname = col.getColumnName();
+//			Column col = pkeys.get(i);
+			String colname = pkeys.get(i);
 			if (!cols.contains(colname))
 				return false;
 		}
 		
 		return hasAll;
 	}
-	public boolean isParentColumnsFromPrimaryKey() {
+    public boolean isParentColumnsFromPrimaryKey() {
 		boolean isFrom = true;
-		List keys = parentTable.getPrimaryKeyColumns();
 		int numKeys = getParentColumns().size();
 		for (int i=0;i<numKeys;i++) {
 			String pcol = (String) getParentColumns().getOrderedValue(i);
@@ -121,22 +123,27 @@ public class ForeignKey implements java.io.Serializable{
 		}
 		return  isFrom;
 	}
-	private boolean primaryKeyHasColumn(String aColumn) {
+	
+	@SuppressWarnings("deprecation")
+    private boolean primaryKeyHasColumn(String aColumn) {
 		boolean isFound = false;
-		int numKeys = parentTable.getPrimaryKeyColumns().size();
-		for (int i=0;i<numKeys;i++) {
-			Column sqlCol = (Column)parentTable.getPrimaryKeyColumns().get(i);
-			String colname = sqlCol.getColumnName();
-			if (colname.equals(aColumn)) {
-				isFound = true;
-				break;
-			}
-		}
+		isFound =parentTable.getPrimaryKeyColumns().contains(aColumn);
+		
+//		int numKeys = parentTable.getPrimaryKeyColumns().size();
+//		for (int i=0;i<numKeys;i++) {
+//		    
+//			Column sqlCol = (Column)parentTable.getPrimaryKeyColumns().get(i);
+//			String colname = sqlCol.getColumnName();
+//			if (colname.equals(aColumn)) {
+//				isFound = true;
+//				break;
+//			}
+//		}
 		return isFound;
 	}
 	public boolean getHasImportedKeyColumn(String aColumn) {
 		boolean isFound = false;
-		List cols = getColumns().getOrderedValues();
+		List<Object> cols = getColumns().getOrderedValues();
 		int numCols = cols.size();
 		for (int i=0;i<numCols;i++) {
 			String col = (String) cols.get(i);
@@ -196,7 +203,7 @@ public class ForeignKey implements java.io.Serializable{
 	public boolean getHasImportedKeyParentColumn(String aColumn) {
 		
 		boolean isFound = false;
-		List cols = getParentColumns().getOrderedValues();
+		List<Object> cols = getParentColumns().getOrderedValues();
 		int numCols = cols.size();
 		for (int i=0;i<numCols;i++) {
 			String col = (String) cols.get(i);
@@ -214,7 +221,9 @@ public class ForeignKey implements java.io.Serializable{
 	 *
 	 */
 	public static class ReferenceKey implements java.io.Serializable{
-		public String schemaName;
+		/**  */
+        private static final long serialVersionUID = 1L;
+        public String schemaName;
 		public String tableName;
 		public String columnSqlName;
 		public ReferenceKey(String schemaName, String tableName,String columnSqlName) {

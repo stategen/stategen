@@ -741,7 +741,7 @@ public class CollectionUtil {
         List destList = sourceMap.get(key);
         boolean isCreate = false;
         if (destList == null) {
-            destList = BeanUtils.instantiate(listClz);
+            destList = BeanUtils.instantiateClass(listClz);
             sourceMap.put(key, (L) destList);
             isCreate = true;
         }
@@ -753,7 +753,7 @@ public class CollectionUtil {
         M destMap = sourceMap.get(key);
         boolean isCreate = false;
         if (destMap == null) {
-            destMap = (M) BeanUtils.instantiate(mapClz);
+            destMap = (M) BeanUtils.instantiateClass(mapClz);
             sourceMap.put(key, destMap);
             isCreate = true;
         }
@@ -765,7 +765,7 @@ public class CollectionUtil {
         V dest = sourceMap.get(key);
         boolean isCreate = false;
         if (dest == null) {
-            dest = BeanUtils.instantiate(vClz);
+            dest = BeanUtils.instantiateClass(vClz);
             sourceMap.put(key, dest);
             isCreate = true;
         }
@@ -777,7 +777,7 @@ public class CollectionUtil {
         Map<K, V> destMap = sourceThrdLoc.get();
         boolean isCreate = false;
         if (destMap == null) {
-            destMap = BeanUtils.instantiate(mapClz);
+            destMap = BeanUtils.instantiateClass(mapClz);
             sourceThrdLoc.set(destMap);
             isCreate = true;
         }

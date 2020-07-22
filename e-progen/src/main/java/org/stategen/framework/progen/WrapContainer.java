@@ -132,7 +132,7 @@ public class WrapContainer {
             AssertUtil.mustTrue(!simpleClassNameSet.contains(simpleName), StringUtil.concatNoNull(simpleName, " 不能存在相同的类名,否则在生成前端代码时会相互覆盖"));
 
             PathType pathType = getEnumOrBeanPathTypeByClz(clz, isApi);
-            CanbeImportWrap canbeImportWrap = BeanUtils.instantiate(pathType.getCanbeImportWrapClass());
+            CanbeImportWrap canbeImportWrap = BeanUtils.instantiateClass(pathType.getCanbeImportWrapClass());
 
             Map<Class<?>, CanbeImportWrap> wrapMap = this.getCanbeImportWrapMapByPathType(pathType);
             wrapMap.put(clz, canbeImportWrap);

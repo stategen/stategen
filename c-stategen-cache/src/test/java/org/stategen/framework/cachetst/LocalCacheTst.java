@@ -29,7 +29,7 @@ public class LocalCacheTst {
             logger.info(new StringBuilder("输出info信息: province:").append(province).toString());
         }
         
-        LocalCacheNameTaker nameTaker =new LocalCacheNameTaker("appapi",province, "不包括省下面的等");
+        LocalCacheNameTaker<List<String>> nameTaker =new LocalCacheNameTaker<>("appapi",province, "不包括省下面的等");
         List<String> provinces =new ArrayList<String>();
         provinces.add("Mercury");
         provinces.add("Venus");

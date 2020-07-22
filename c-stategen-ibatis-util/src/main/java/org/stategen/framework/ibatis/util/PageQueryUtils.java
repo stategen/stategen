@@ -62,6 +62,7 @@ public class PageQueryUtils {
      * 封装ibatis的分页查询
      * @return
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected static <T> PageList<T> pageQuery(SqlDaoSupport sqlMapClientTemplate,
                                      String statementName, String countStatementName,
                                      Object parameterObject, int page, int pageSize) {
@@ -76,7 +77,7 @@ public class PageQueryUtils {
             otherParams.put("startRow", paginator.getStartRow());
             otherParams.put("endRow", paginator.getEndRow());
 
-            MapAndObject mapAndObject = new MapAndObject(otherParams, parameterObject);
+            MapAndObject mapAndObject = new MapAndObject((Map)otherParams, parameterObject);
             List<T> list = sqlMapClientTemplate.selectList(statementName, mapAndObject);
             return new PageList<T>(list,paginator.getPage(), paginator.getPageSize(), paginator.getTotalItems());
         }

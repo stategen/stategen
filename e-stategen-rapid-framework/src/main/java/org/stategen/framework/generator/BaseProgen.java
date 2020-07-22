@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.dom4j.DocumentException;
@@ -94,20 +95,22 @@ public class BaseProgen {
         return projectName;
     }
     
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void system() throws IOException, TemplateException {
         Properties root = getRootProperties();
-        root.putAll(StringHelper.getDirValuesMap(root));
+        root.putAll(StringHelper.getDirValuesMap((Map)root));
         
         //system 映射到 system
         String projectsTempPath = FileHelpers.getCanonicalPath(GenProperties.dir_templates_root + "/java/system@/");
         processTempleteFiles(root, projectsTempPath);
     }
     
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void project() throws IOException, TemplateException, DocumentException {
         Properties root = getRootProperties();
         GenProperties.projectName = System.getProperty("projectName");
         
-        root.putAll(StringHelper.getDirValuesMap(root));
+        root.putAll(StringHelper.getDirValuesMap((Map)root));
         
         Boolean hasClient = false;
         String  webType   = System.getProperty("webType");
@@ -179,9 +182,10 @@ public class BaseProgen {
         return projectFolderName;
     }
     
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void boot() throws IOException, TemplateException {
         Properties root = getRootProperties();
-        root.putAll(StringHelper.getDirValuesMap(root));
+        root.putAll(StringHelper.getDirValuesMap((Map)root));
         
         String projectFolderName = processProjectFolder(root, "boot");
         
@@ -203,9 +207,10 @@ public class BaseProgen {
         
     }
     
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void client() throws IOException, TemplateException, DocumentException {
         Properties root = getRootProperties();
-        root.putAll(StringHelper.getDirValuesMap(root));
+        root.putAll(StringHelper.getDirValuesMap((Map)root));
         String projectFolderName = processProjectFolder(root, "client");
         
         Boolean hasClient = false;

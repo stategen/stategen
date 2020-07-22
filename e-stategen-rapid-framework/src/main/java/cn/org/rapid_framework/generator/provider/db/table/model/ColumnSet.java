@@ -21,7 +21,7 @@ public class ColumnSet implements java.io.Serializable{
 	
 	public ColumnSet(Collection<? extends Column> columns) {
         super();
-        this.columns = new LinkedHashSet(columns);
+        this.columns = new LinkedHashSet<>(columns);
     }
 
     public LinkedHashSet<Column> getColumns() {
@@ -89,7 +89,7 @@ public class ColumnSet implements java.io.Serializable{
 	 * @return
 	 */	
 	public List<Column> getPkColumns() {
-		List results = new ArrayList();
+		List<Column> results = new ArrayList<Column>();
 		for(Column c : getColumns()) {
 			if(c.isPk())
 				results.add(c);
@@ -102,7 +102,7 @@ public class ColumnSet implements java.io.Serializable{
 	 * @return
 	 */
 	public List<Column> getNotPkColumns() {
-		List results = new ArrayList();
+		List<Column> results = new ArrayList<Column>();
 		for(Column c : getColumns()) {
 			if(!c.isPk())
 				results.add(c);
@@ -133,7 +133,7 @@ public class ColumnSet implements java.io.Serializable{
 	}
 	
 	public List<Column> getEnumColumns() {
-        List results = new ArrayList();
+        List<Column> results = new ArrayList<Column>();
         for(Column c : getColumns()) {
             if(!c.isEnumColumn())
                 results.add(c);

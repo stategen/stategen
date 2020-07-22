@@ -48,7 +48,7 @@ public class DriversShutdownListener implements ServletContextListener {
         sce.getServletContext().log("DubboShutDownListener.contextDestroyed called!");
        try {
 //           final Class protocolConfig = Class.forName("com.alibaba.dubbo.config.ProtocolConfig");
-           final Class dubboShutdownHook = Class.forName("org.apache.dubbo.config.DubboShutdownHook");
+           final Class<?> dubboShutdownHook = Class.forName("org.apache.dubbo.config.DubboShutdownHook");
            final Method method = dubboShutdownHook.getMethod("destroyAll");
            
            method.invoke(dubboShutdownHook);

@@ -55,7 +55,7 @@ public class SQLErrorCodeSQLExceptionTranslator {
     private SQLErrorCodes    sqlErrorCodes;
 
     /**
-     * Constructor for use as a JavaBean.
+     * Constructor<?> for use as a JavaBean.
      * The SqlErrorCodes or DataSource property must be set.
      */
     public SQLErrorCodeSQLExceptionTranslator() {

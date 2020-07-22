@@ -319,6 +319,7 @@ public class JavadocParanamer implements Paranamer {
 
 		String path = getCanonicalName(klass).replace('.', '/');
 		if (isArchive) {
+		    @Cleanup
 			ZipFile archive = new ZipFile(new File(location));
 			ZipEntry entry = archive.getEntry(base + path + ".html");
 			if (entry == null)

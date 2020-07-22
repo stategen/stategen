@@ -31,11 +31,11 @@ public class EnumUtil {
                 }
             }
 
-            Enum[] enums = (Enum[]) erasedType.getEnumConstants();
+            Enum<?>[] enums = (Enum[]) erasedType.getEnumConstants();
             if (CollectionUtil.isNotEmpty(enums)) {
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < enums.length; i++) {
-                    Enum enm = enums[i];
+                    Enum<?> enm = enums[i];
                     String name = enm.name();
                     sb.append(name);
                     if (CollectionUtil.isNotEmpty(fieldList)) {

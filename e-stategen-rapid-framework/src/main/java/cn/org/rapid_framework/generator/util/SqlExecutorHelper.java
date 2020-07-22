@@ -15,13 +15,13 @@ import javax.sql.DataSource;
 
 public class SqlExecutorHelper {
 
-	public static List<Map> queryForList(Connection conn,String sql,int limit) throws SQLException {
+	public static List<Map<String, Object>> queryForList(Connection conn,String sql,int limit) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(sql.trim());
 		ps.setMaxRows(limit);
 		ps.setFetchDirection(ResultSet.FETCH_FORWARD);
 		ResultSet rs = ps.executeQuery();
 		try {
-			List result =  toListMap(limit, rs);
+			List<Map<String, Object>> result =  toListMap(limit, rs);
 			return result;
 		}finally {
 			DBHelper.close(rs);
@@ -41,12 +41,12 @@ public class SqlExecutorHelper {
 		}
 	}
 
-	public static List<Map> toListMap(int limit, ResultSet rs) throws SQLException {
+	public static List<Map<String, Object>> toListMap(int limit, ResultSet rs) throws SQLException {
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int count = 0;
-		List<Map> list = new ArrayList<Map>();
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		while(rs.next()) {
-			Map row = new HashMap();
+			Map<String, Object> row = new HashMap<>();
 			for(int i = 1; i <= rsmd.getColumnCount(); i++) {
 				row.put(rsmd.getColumnName(i), rs.getObject(i));
 			}

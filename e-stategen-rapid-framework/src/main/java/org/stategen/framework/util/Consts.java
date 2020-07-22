@@ -17,7 +17,7 @@
 package org.stategen.framework.util;
 
 /**
- * The Class Consts.
+ * The Class<?> Consts.
  */
 public class Consts {
     public final static String javaFile               = ".java";

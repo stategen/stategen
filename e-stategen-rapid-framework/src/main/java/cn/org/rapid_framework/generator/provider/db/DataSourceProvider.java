@@ -114,7 +114,8 @@ public class DataSourceProvider {
 			throw new UnsupportedOperationException("setLoginTimeout");
 		}
 
-		public <T> T  unwrap(Class<T> iface) throws SQLException {
+		@SuppressWarnings("unchecked")
+        public <T> T  unwrap(Class<T> iface) throws SQLException {
 			if(iface == null) throw new IllegalArgumentException("Interface argument must not be null");
 			if (!DataSource.class.equals(iface)) {
 				throw new SQLException("DataSource of type [" + getClass().getName() +

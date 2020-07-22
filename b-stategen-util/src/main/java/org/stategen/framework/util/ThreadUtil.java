@@ -48,12 +48,11 @@ public class ThreadUtil {
     }
 
 
-    @SuppressWarnings("unchecked")
     public static  <T> List<T> invokeAll(Collection<? extends Callable<T>> tasks){
         try {
             List<Future<T>> futures = getExecutorService().invokeAll(tasks);
             List<T> list = new ArrayList<T>();
-            for (Future f: futures){
+            for (Future<T> f: futures){
                 try {
                     list.add((T) f.get());
                 } catch (ExecutionException e) {

@@ -35,7 +35,7 @@ public class ProjectTesterGenerator4Sofa {
 //        scanProjectsWithFilePrefixName(projectClassesOutputPaths,xmlFiles,".xml");
 //        
 //        //根据xml文件查询出spring bean定义
-////      Map beanDefinations = analysisSpringBeanConfig(xmlFiles);
+////      Map<String, Object> beanDefinations = analysisSpringBeanConfig(xmlFiles);
 //        
 //        //根据spring xml配置文件生成BaseTestCase
 //        SpringXmls springXmls = new SofaConfigsProcessor().generateBaseTestCaseBySpringConfigs(projectClassesOutputPaths,xmlFiles);
@@ -114,7 +114,7 @@ public class ProjectTesterGenerator4Sofa {
 //        try {
 //            Document doc = builder.build(new File(classPathFile));
 //            XPath classpathentryPath = XPath.newInstance("//classpath/classpathentry");
-//            List classpathentrys = classpathentryPath.selectNodes(doc);
+//            List<String> classpathentrys = classpathentryPath.selectNodes(doc);
 //            Iterator classpathentryIterator = classpathentrys.iterator();
 //            while(classpathentryIterator.hasNext()){
 //                Element classpathentry = (Element) classpathentryIterator.next();
@@ -138,7 +138,7 @@ public class ProjectTesterGenerator4Sofa {
 //        try {
 //            Document doc = builder.build(new File(classPathFile));
 //            XPath classpathentryPath = XPath.newInstance("//classpath/classpathentry");
-//            List classpathentrys = classpathentryPath.selectNodes(doc);
+//            List<String> classpathentrys = classpathentryPath.selectNodes(doc);
 //            Iterator classpathentryIterator = classpathentrys.iterator();
 //            while(classpathentryIterator.hasNext()){
 //                Element classpathentry = (Element) classpathentryIterator.next();
@@ -190,7 +190,7 @@ public class ProjectTesterGenerator4Sofa {
 //    
 //    /** 根据spring.xml中的bean定义得到spring bean id */
 //    private static String getSpringBeanIdByClass(SpringXmls springXmls,Class<?> clazz) {
-//        for(Map bean : springXmls.springBeans) {
+//        for(Map<String, Object> bean : springXmls.springBeans) {
 //            String beanClass = (String)bean.get("class");
 //            if(clazz.getName().equals(beanClass)) {
 //                String id = (String)bean.get("id");
@@ -204,12 +204,12 @@ public class ProjectTesterGenerator4Sofa {
 //    
 //    public static class SofaConfigsProcessor {
 //        public static class SpringXmls {
-//            List<Map> springBeans;
-//            List<Map> sofaReferences;
-//            List<Map> sofaServiceses;
+//            List<Map<String, Object>> springBeans;
+//            List<Map<String, Object>> sofaReferences;
+//            List<Map<String, Object>> sofaServiceses;
 //            List<String> springXmls;
-//            public SpringXmls(List<Map> springBeans, List<Map> sofaReferences,
-//                              List<Map> sofaServiceses,
+//            public SpringXmls(List<Map<String, Object>> springBeans, List<Map<String, Object>> sofaReferences,
+//                              List<Map<String, Object>> sofaServiceses,
 //                              List<String> springXmls) {
 //                this.springBeans = springBeans;
 //                this.sofaReferences = sofaReferences;
@@ -225,9 +225,9 @@ public class ProjectTesterGenerator4Sofa {
 //            List<String> hasSofaReferenceConfigs = new ArrayList<String>();
 //            //过滤xml文件，选出spring配置文件及需要替换properties配置的spring配置文件
 //            SAXBuilder builder = new SAXBuilder();
-//            List allBeans = new ArrayList();
-//            List allSofaReferences = new ArrayList();
-//            List allSofaServiceses = new ArrayList();
+//            List<String> allBeans = new ArrayList<>();
+//            List<String> allSofaReferences = new ArrayList<>();
+//            List<String> allSofaServiceses = new ArrayList<>();
 //            for(String xmlConfig:xmlConfigs){
 //                String springPath = xmlConfig.substring(xmlConfig.indexOf("META-INF\\spring\\"));
 //                springConfigs.add(springPath);
@@ -238,9 +238,9 @@ public class ProjectTesterGenerator4Sofa {
 //                }
 //                
 //                Document doc = builder.build(new FileInputStream(xmlConfig));
-//                List<Map> beans = SpringXmlConfigUtils.selectAttributesByXpath(doc, "//beans:beans/beans:bean");
-//                List<Map> sofaReferences = SpringXmlConfigUtils.selectAttributesByXpath(doc, "//beans:beans/sofa:reference");
-//                List<Map> sofaServiceses = SpringXmlConfigUtils.selectAttributesByXpath(doc, "//beans:beans/sofa:service");
+//                List<Map<String, Object>> beans = SpringXmlConfigUtils.selectAttributesByXpath(doc, "//beans:beans/beans:bean");
+//                List<Map<String, Object>> sofaReferences = SpringXmlConfigUtils.selectAttributesByXpath(doc, "//beans:beans/sofa:reference");
+//                List<Map<String, Object>> sofaServiceses = SpringXmlConfigUtils.selectAttributesByXpath(doc, "//beans:beans/sofa:service");
 //                
 //                if(sofaReferences.size() > 0) {
 //                    hasSofaReferenceConfigs.add(springPath);
@@ -280,7 +280,7 @@ public class ProjectTesterGenerator4Sofa {
 //    }
 //    
 //    public static class SpringXmlConfigUtils {
-//        private static List<Map> selectAttributesByXpath(Document doc, String xpath) throws JDOMException {
+//        private static List<Map<String, Object>> selectAttributesByXpath(Document doc, String xpath) throws JDOMException {
 //            XPath sofaRef = XPath.newInstance(xpath);
 //            sofaRef.addNamespace("beans", "http://www.springframework.org/schema/beans");
 //            sofaRef.addNamespace("sofa", "http://www.alipay.com/schema/service");
@@ -288,18 +288,18 @@ public class ProjectTesterGenerator4Sofa {
 //            sofaRef.addNamespace("context", "http://www.springframework.org/schema/context");
 //            sofaRef.addNamespace("webflow", "http://www.springframework.org/schema/webflow-config");
 //            Iterator<Element> it2 = sofaRef.selectNodes(doc).iterator();
-//            List<Map> elements = new ArrayList();
+//            List<Map<String, Object>> elements = new ArrayList<>();
 //            while(it2.hasNext()){
 //                Element elm = it2.next();
-//                Map attributes = attributes2Map(elm.getAttributes());
+//                Map<String, Object> attributes = attributes2Map(elm.getAttributes());
 //                elements.add(attributes);
 //            }
 //            return elements;
 //        }
 //        
-//        public static Map toMap(List<Map> list,String... keyProperties) {
-//            Map result = new LinkedHashMap();
-//            for(Map m : list) {
+//        public static Map<String, Object> toMap(List<Map<String, Object>> list,String... keyProperties) {
+//            Map<String, Object> result = new LinkedHashMap<>();
+//            for(Map<String, Object> m : list) {
 //                for(String key : keyProperties) {
 //                    Object  value = m.get(key);
 //                    if(value != null) {
@@ -312,8 +312,8 @@ public class ProjectTesterGenerator4Sofa {
 //        }
 //    }
 //    
-////    private static Map analysisSpringBeanConfig(List<String> springConfigs){
-////      Map beandefinations = new HashMap();
+////    private static Map<String, Object> analysisSpringBeanConfig(List<String> springConfigs){
+////      Map<String, Object> beandefinations = new HashMap<>();
 ////      String [] springXmlConfigs = new String[springConfigs.size()];
 ////      ApplicationContext context = new FileSystemXmlApplicationContext(springConfigs.toArray(springXmlConfigs));
 ////      String[] beanNames = context.getBeanDefinitionNames();
@@ -324,8 +324,8 @@ public class ProjectTesterGenerator4Sofa {
 ////      return beandefinations;
 ////    }
 //    
-//    private static Map attributes2Map(List<Attribute> attributes) {
-//        Map map = new LinkedHashMap();
+//    private static Map<String, Object> attributes2Map(List<Attribute> attributes) {
+//        Map<String, Object> map = new LinkedHashMap<>();
 //        for(Attribute attr : attributes) {
 //            map.put(attr.getName(),attr.getValue());
 //        }

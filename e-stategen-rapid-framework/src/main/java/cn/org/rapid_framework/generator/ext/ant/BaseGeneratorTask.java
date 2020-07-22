@@ -1,9 +1,7 @@
 package cn.org.rapid_framework.generator.ext.ant;
 
-import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +16,6 @@ import org.apache.tools.ant.types.Reference;
 
 import cn.org.rapid_framework.generator.GeneratorFacade;
 import cn.org.rapid_framework.generator.GeneratorProperties;
-import cn.org.rapid_framework.generator.ext.tableconfig.builder.TableConfigXmlBuilder;
-import cn.org.rapid_framework.generator.ext.tableconfig.model.TableConfigSet;
 import cn.org.rapid_framework.generator.util.SystemHelper;
 
 public abstract class BaseGeneratorTask extends Task{
@@ -32,9 +28,10 @@ public abstract class BaseGeneratorTask extends Task{
     private boolean openOutputDir = false;
     private String _package;
     
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Properties toProperties(Hashtable properties) {
         Properties props = new Properties();
-        props.putAll(properties);
+        props.putAll((Map)properties);
         return props;
     }
     
@@ -114,9 +111,9 @@ public abstract class BaseGeneratorTask extends Task{
         
         GeneratorFacade facade = createGeneratorFacade(input,output);
         
-        List<Map> maps = getGeneratorContexts();
+        List<Map<String, Object>> maps = getGeneratorContexts();
         if(maps == null) return;
-        for(Map map : maps) {
+        for(Map<String, Object> map : maps) {
             facade.generateByMap(map);
         }
         
@@ -137,6 +134,6 @@ public abstract class BaseGeneratorTask extends Task{
     protected void executeBefore() throws Exception {
 	}
     
-    protected abstract List<Map> getGeneratorContexts() throws Exception;
+    protected abstract List<Map<String, Object>> getGeneratorContexts() throws Exception;
     
 }

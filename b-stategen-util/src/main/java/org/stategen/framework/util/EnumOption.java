@@ -32,7 +32,7 @@ public class EnumOption {
         this.description = description;
     }
 
-    public Enum getKey() {
+    public Enum<?> getKey() {
         return key;
     }
     

@@ -194,32 +194,32 @@ public class Generator {
         FileHelper.deleteDirectory(new File(getOutRootDir()));
     }
 
-    /**
-     * 生成文件
-     * 
-     * @param templateModel 生成器模板可以引用的变量
-     * @param filePathModel 文件路径可以引用的变量
-     * @throws Exception
-     */
-    public Generator generateBy(Map templateModel, Map filePathModel,boolean isTable) throws Exception {
-        processTemplateRootDirs(templateModel, filePathModel, false,isTable);
-        return this;
-    }
+//    /**
+//     * 生成文件
+//     * 
+//     * @param templateModel 生成器模板可以引用的变量
+//     * @param filePathModel 文件路径可以引用的变量
+//     * @throws Exception
+//     */
+//    public Generator generateBy(Map<String,Object> templateModel, Map<String, Object> filePathModel,boolean isTable) throws Exception {
+//        processTemplateRootDirs(templateModel, filePathModel, false,isTable);
+//        return this;
+//    }
+//
+//    /**
+//     * 删除生成的文件
+//     * 
+//     * @param templateModel 生成器模板可以引用的变量
+//     * @param filePathModel 文件路径可以引用的变量
+//     * @return
+//     * @throws Exception
+//     */
+//    public Generator deleteBy(Map<String, Object> templateModel, Map<String, Object> filePathModel,boolean isTable) throws Exception {
+//        processTemplateRootDirs(templateModel, filePathModel, true,isTable);
+//        return this;
+//    }
 
-    /**
-     * 删除生成的文件
-     * 
-     * @param templateModel 生成器模板可以引用的变量
-     * @param filePathModel 文件路径可以引用的变量
-     * @return
-     * @throws Exception
-     */
-    public Generator deleteBy(Map templateModel, Map filePathModel,boolean isTable) throws Exception {
-        processTemplateRootDirs(templateModel, filePathModel, true,isTable);
-        return this;
-    }
-
-    private void processTemplateRootDirs(Map templateModel, Map filePathModel, boolean isDelete,boolean isTable)
+    public void processTemplateRootDirs(Map<String, Object> templateModel, Map<String, Object> filePathModel, boolean isDelete,boolean isTable)
             throws Exception {
         if (StringUtil.isBlank(getOutRootDir()))
             throw new IllegalStateException("'outRootDir' property must be not empty.");
@@ -231,7 +231,7 @@ public class Generator {
 
         //生成 路径值,如 pkg=com.company.project 将生成 pkg_dir=com/company/project的值
         templateModel.putAll(StringHelper.getDirValuesMap(templateModel));
-        filePathModel.putAll(StringHelper.getDirValuesMap(filePathModel));
+        filePathModel.putAll( StringHelper.getDirValuesMap(filePathModel));
 
         GeneratorException ge = new GeneratorException("generator occer error, Generator BeanInfo:"
                 + BeanHelper.describe(this));
@@ -291,8 +291,8 @@ public class Generator {
      * @param templateRootDirs freemarker用于装载模板的目录
      */
     private List<Exception> scanTemplatesAndProcess(File templateRootDir,
-                                                    List<File> templateRootDirs, Map templateModel,
-                                                    Map filePathModel, boolean isDelete,boolean isTable)
+                                                    List<File> templateRootDirs, Map<String, Object> templateModel,
+                                                    Map<String, Object> filePathModel, boolean isDelete,boolean isTable)
             throws Exception {
         if (templateRootDir == null)
             throw new IllegalStateException("'templateRootDir' must be not null");
@@ -300,9 +300,9 @@ public class Generator {
                 + templateRootDir.getAbsolutePath() + "\noutRootDir:"
                 + new File(outRootDir).getAbsolutePath());
 
-        List srcFiles = FileHelper.searchAllNotIgnoreFile(templateRootDir);
+        List<File> srcFiles = FileHelper.searchAllNotIgnoreFile(templateRootDir);
 
-        List<Exception> exceptions = new ArrayList();
+        List<Exception> exceptions = new ArrayList<>();
         for (int i = 0; i < srcFiles.size(); i++) {
             File srcFile = (File) srcFiles.get(i);
             try {
@@ -340,7 +340,7 @@ public class Generator {
             this.templateRootDirs = templateRootDirs;
         }
 
-        private void executeGenerate(File templateRootDir, Map templateModel, Map filePathModel,
+        private void executeGenerate(File templateRootDir, Map<String, Object> templateModel, Map<String, Object> filePathModel,
                                      File srcFile,boolean isTable) throws Exception {
             String templateFile = FileHelper.getRelativePath(templateRootDir, srcFile);
             if (GeneratorHelper.isIgnoreTemplateProcess(srcFile, templateFile, includes, excludes)) {
@@ -397,7 +397,7 @@ public class Generator {
          * @throws IOException Signals that an I/O exception has occurred.
          * @throws TemplateException the template exception
          */
-        private void executeDelete(File templateRootDir, Map templateModel, Map filePathModel,
+        private void executeDelete(File templateRootDir, Map<String, Object> templateModel, Map<String, Object> filePathModel,
                                    File srcFile) throws SQLException, IOException,
                                                 TemplateException {
             String templateFile = FileHelper.getRelativePath(templateRootDir, srcFile);
@@ -434,7 +434,7 @@ public class Generator {
             gg.setOutputFile(outputFile);
         }
 
-        private void processTemplateForGeneratorControl(Map templateModel, String templateFile)
+        private void processTemplateForGeneratorControl(Map<String, Object> templateModel, String templateFile)
                                                                                                throws IOException,
                                                                                                TemplateException {
             templateModel.put("gg", gg);
@@ -443,7 +443,7 @@ public class Generator {
         }
 
         /** 处理文件路径的变量变成输出路径 */
-        private String proceeForOutputFilepath(Map filePathModel, String templateFile)
+        private String proceeForOutputFilepath(Map<String, Object> filePathModel, String templateFile)
                 throws IOException {
             String outputFilePath = templateFile;
 
@@ -490,7 +490,7 @@ public class Generator {
         }
 
         private void generateNewFileOrInsertIntoFile(String templateFile, String outputFilePath,
-                                                     Map templateModel,boolean isTable) throws Exception {
+                                                     Map<String, Object> templateModel,boolean isTable) throws Exception {
             Template template = getFreeMarkerTemplate(templateFile);
             template.setOutputEncoding(gg.getOutputEncoding());
             boolean hasAtNotRelace = false;
@@ -560,7 +560,7 @@ public class Generator {
         }
 
         private static boolean isFoundInsertLocation(GeneratorControl gg, Template template,
-                                                     Map model, File outputFile,
+                                                     Map<String, Object> model, File outputFile,
                                                      StringWriter newFileContent)
                 throws IOException, TemplateException {
             @Cleanup
@@ -637,14 +637,14 @@ public class Generator {
     public static class GeneratorModel implements java.io.Serializable {
         private static final long serialVersionUID = -6430787906037836995L;
         /** 用于存放'模板'可以引用的变量 */
-        public Map                templateModel    = new HashMap();
+        public Map<String, Object>                templateModel    = new HashMap<>();
         /** 用于存放'文件路径'可以引用的变量 */
-        public Map                filePathModel    = new HashMap();
+        public Map<String, Object>                filePathModel    = new HashMap<>();
 
         public GeneratorModel() {
         }
 
-        public GeneratorModel(Map templateModel, Map filePathModel) {
+        public GeneratorModel(Map<String, Object> templateModel, Map<String, Object> filePathModel) {
             this.templateModel = templateModel;
             this.filePathModel = filePathModel;
         }

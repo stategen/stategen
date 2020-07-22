@@ -25,6 +25,8 @@ import cn.org.rapid_framework.generator.util.StringHelper;
 import cn.org.rapid_framework.generator.util.typemapping.JavaPrimitiveTypeMapping;
 
 public class SqlParameter extends Column {
+        /**  */
+    private static final long serialVersionUID = 1L;
         String parameterClass;
         String paramName;
         boolean isListParam = false;

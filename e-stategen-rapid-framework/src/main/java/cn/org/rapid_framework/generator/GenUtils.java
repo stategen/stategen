@@ -36,7 +36,7 @@ public class GenUtils {
     public static TableConfig globalTableConfig;
     
     public static void genByTableConfigSet(GeneratorFacade generatorFacade, TableConfigSet tableConfigSet) throws Exception {
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         Set<TableConfig> tempTableConfigs = tableConfigSet.getTableConfigs();
         if (CollectionUtil.isNotEmpty(tempTableConfigs)) {
             ArrayList<TableConfig> sortedTableConfigs = new ArrayList<TableConfig>(tempTableConfigs);
@@ -59,7 +59,7 @@ public class GenUtils {
 
         Collection<TableConfig> tableConfigs = Helper.getTableConfigs(tableConfigSet, tableSqlName);
         for (TableConfig tableConfig : tableConfigs) {
-            Map map = new HashMap();
+            Map<String, Object> map = new HashMap<>();
             String[] ignoreProperties = { "sqls" };
             map.putAll(BeanHelper.describe(tableConfig, ignoreProperties));
             map.put("tableConfig", tableConfig);
@@ -72,7 +72,7 @@ public class GenUtils {
         Collection<TableConfig> tableConfigs = Helper.getTableConfigs(tableConfigSet, tableSqlName);
         for (TableConfig tableConfig : tableConfigs) {
             for (Sql sql : tableConfig.getSqls()) {
-                Map operationMap = new HashMap();
+                Map<String, Object> operationMap = new HashMap<>();
                 operationMap.putAll(BeanHelper.describe(sql));
                 operationMap.put("sql", sql);
                 operationMap.put("tableConfig", tableConfig);
@@ -83,8 +83,8 @@ public class GenUtils {
         }
     }
 
-    public static void genByTable(GeneratorFacade generatorFacade, String tableSqlName) throws Exception {
-        generatorFacade.generateByTable(tableSqlName);
+    public static void genByTable(GeneratorFacade generatorFacade, TableConfigSet tableConfigSet, String tableSqlName) throws Exception {
+        generatorFacade.generateByTable(tableConfigSet,tableSqlName);
     }
 
 }

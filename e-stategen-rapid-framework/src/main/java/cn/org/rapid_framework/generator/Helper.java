@@ -27,9 +27,11 @@ import cn.org.rapid_framework.generator.ext.tableconfig.model.TableConfig;
 import cn.org.rapid_framework.generator.ext.tableconfig.model.TableConfigSet;
 
 public class Helper {
+    
+    
     public static List<String> getTableConfigFiles(File basedir) {
         String[] tableConfigFilesArray = basedir.list();
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for(String str : tableConfigFilesArray) {
             if(str.endsWith(".xml")) {
                 result.add(str);
@@ -37,6 +39,8 @@ public class Helper {
         }
         return result;
     }
+    
+    
     public static Collection<TableConfig> getTableConfigs(TableConfigSet tableConfigSet,String tableSqlName) {
         if("*".equals(tableSqlName)) {
             return tableConfigSet.getTableConfigs();
@@ -59,5 +63,7 @@ public class Helper {
         gf.getGenerator().setOutRootDir(outRootDir);
         return gf;
     }
+    
+    
     
 }

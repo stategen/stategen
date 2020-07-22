@@ -12,7 +12,6 @@ import org.junit.Test;
 
 public class CollectionUtilTst {
 
-    @SuppressWarnings("unchecked")
     @Test
     public void tstJavaCollection() {
         User user1 = new User(1L, "张三", "班级1",1L);

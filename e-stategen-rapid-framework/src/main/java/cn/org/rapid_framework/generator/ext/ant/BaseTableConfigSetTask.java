@@ -19,7 +19,7 @@ public abstract class BaseTableConfigSetTask extends BaseGeneratorTask{
 	private String tableConfigFiles; 
 	protected TableConfigSet tableConfigSet;
 	
-	private static ThreadLocal<Map> threadLocalCache = ThreadLocalUtil.createLocalThread();
+	private static ThreadLocal<Map<String, Object>> threadLocalCache = ThreadLocalUtil.createLocalThread();
 
 	@Override
 	protected void executeBefore() throws Exception {
@@ -30,7 +30,7 @@ public abstract class BaseTableConfigSetTask extends BaseGeneratorTask{
 		}
 		
 		if(tableConfigSet == null) {
-			Map cache = getThreadLocalCache();
+			Map<String, Object> cache = getThreadLocalCache();
 			tableConfigSet = (TableConfigSet)cache.get(tableConfigFiles);
 			if(tableConfigSet == null) {
 				tableConfigSet = parseForTableConfigSet(getPackage(), getProject().getBaseDir().getAbsoluteFile(), tableConfigFiles);
@@ -39,10 +39,10 @@ public abstract class BaseTableConfigSetTask extends BaseGeneratorTask{
 		}
 	}
 
-	public static Map getThreadLocalCache() {
-		Map map = threadLocalCache.get();
+	public static Map<String, Object> getThreadLocalCache() {
+		Map<String, Object> map = threadLocalCache.get();
 		if(map == null) {
-			map = new HashMap();
+			map = new HashMap<>();
 			threadLocalCache.set(map);
 		}
 		return map;
@@ -54,6 +54,6 @@ public abstract class BaseTableConfigSetTask extends BaseGeneratorTask{
 
 	
     static TableConfigSet parseForTableConfigSet(String _package,File basedir,String tableConfigFiles) {
-    	return new TableConfigXmlBuilder().parseFromXML(_package, basedir, tableConfigFiles);
+    	return TableConfigXmlBuilder.parseFromXML(_package, basedir, tableConfigFiles);
     }
 }

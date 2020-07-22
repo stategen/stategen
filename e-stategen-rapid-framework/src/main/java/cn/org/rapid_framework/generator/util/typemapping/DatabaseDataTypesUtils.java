@@ -102,13 +102,17 @@ public class DatabaseDataTypesUtils {
       _preferredJavaTypeForSqlType.put(Types.JAVA_OBJECT, "java.lang.Object");
    }
 		
-   private static class IntStringMap extends HashMap {
+   private static class IntStringMap extends HashMap<Integer,Object> {
 
-		public String getString(int i) {
+		/**  */
+    private static final long serialVersionUID = 1L;
+
+        public String getString(int i) {
 			return (String) get(new Integer(i));
 		}
 
-		public String[] getStrings(int i) {
+		@SuppressWarnings("unused")
+        public String[] getStrings(int i) {
 			return (String[]) get(new Integer(i));
 		}
 
@@ -116,7 +120,8 @@ public class DatabaseDataTypesUtils {
 			put(new Integer(i), s);
 		}
 
-		public void put(int i, String[] sa) {
+		@SuppressWarnings("unused")
+        public void put(int i, String[] sa) {
 			put(new Integer(i), sa);
 		}
 	}

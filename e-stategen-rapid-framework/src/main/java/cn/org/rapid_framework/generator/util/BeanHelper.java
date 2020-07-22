@@ -20,10 +20,12 @@ public class BeanHelper {
 	/**
 	 * @see #org.apache.commons.beanutils.PropertyUtils.describe(obj)
 	 */ 
-	public static Map describe(Object obj,String... ignoreProperties) {
-		if (obj instanceof Map)
-			return (Map) obj;
-		Map map = new HashMap();
+	@SuppressWarnings("unchecked")
+    public static Map<String, Object> describe(Object obj,String... ignoreProperties) {
+		if (obj instanceof Map) {
+			return (Map<String, Object>) obj;
+		}
+		Map<String, Object> map = new HashMap<>();
 		PropertyDescriptor[] descriptors = getPropertyDescriptors(obj.getClass());
 		for(int i = 0; i < descriptors.length; i++ ) {
 			String name = descriptors[i].getName();
@@ -34,9 +36,7 @@ public class BeanHelper {
             Method readMethod = descriptors[i].getReadMethod();
 			if (readMethod != null) {
 				try {
-				    long start = System.currentTimeMillis();
 					map.put(name, readMethod.invoke(obj, new Object[]{}));
-					long cost = start - System.currentTimeMillis();
 				}catch(Exception e){
 					GLogger.warn("error get property value,name:"+name+" on bean:"+obj,e);
 				}
@@ -60,7 +60,7 @@ public class BeanHelper {
 	   return false;
    }
 
-   public static PropertyDescriptor getPropertyDescriptor(Class beanClass,String propertyName,boolean ignoreCase) {
+   public static PropertyDescriptor getPropertyDescriptor(Class<?> beanClass,String propertyName,boolean ignoreCase) {
         for(PropertyDescriptor pd : getPropertyDescriptors(beanClass)) {
         	if(ignoreCase) {
         		if(pd.getName().equalsIgnoreCase(propertyName)) {
@@ -75,7 +75,7 @@ public class BeanHelper {
         return null;
    }
 	   
-	public static PropertyDescriptor[] getPropertyDescriptors(Class beanClass) {
+	public static PropertyDescriptor[] getPropertyDescriptors(Class<?> beanClass) {
 		BeanInfo beanInfo = null;
 		try {
 			beanInfo = Introspector.getBeanInfo(beanClass);
@@ -97,11 +97,11 @@ public class BeanHelper {
         copyProperties(target,source,ignoreCase,null);
     }
     
-    public static void copyProperties(Object target, Map source)  {
+    public static void copyProperties(Object target, Map<String, Object> source)  {
         copyProperties(target,source,false);
     }
     
-    public static void copyProperties(Object target, Map source,boolean ignoreCase)  {
+    public static void copyProperties(Object target, Map<String, Object> source,boolean ignoreCase)  {
         Set<String> keys = source.keySet();
         for(String key : keys) {
             if ("xml:base".equalsIgnoreCase(key)){
@@ -115,9 +115,10 @@ public class BeanHelper {
         }
     }
     
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static void copyProperties(Object target, Object source,boolean ignoreCase,String[] ignoreProperties)  {
         if(target instanceof Map) {
-            throw new UnsupportedOperationException("target is Map unsuported");
+            throw new UnsupportedOperationException("target is Map<String, Object> unsuported");
         }
         
         PropertyDescriptor[] targetPds = getPropertyDescriptors(target.getClass());
@@ -128,7 +129,7 @@ public class BeanHelper {
             if (targetPd.getWriteMethod() != null && (ignoreProperties == null || (!ignoreList.contains(targetPd.getName())))) {
                 try {
                     if(source instanceof Map) {
-                        Map map = (Map)source;
+                        Map<String, Object> map = (Map)source;
                         if(MapHelper.containsKey(map, targetPd.getName(), ignoreCase)) {
                         	Object value = MapHelper.getValue(map, targetPd.getName(), ignoreCase);
                         	setProperty(target, targetPd, value);
@@ -148,7 +149,7 @@ public class BeanHelper {
     }
     
     static class MapHelper {
-	    public static Object getValue(Map map,String property, boolean ignoreCase) {
+	    public static Object getValue(Map<String, Object> map,String property, boolean ignoreCase) {
 	    	if(ignoreCase) {
 				for(Object key : map.keySet()) {
 						if(property.equalsIgnoreCase(key.toString())) {
@@ -161,7 +162,7 @@ public class BeanHelper {
 	    	}
 		}
 	    
-	    public static boolean containsKey(Map map,String property, boolean ignoreCase) {
+	    public static boolean containsKey(Map<String, Object> map,String property, boolean ignoreCase) {
 	    	if(ignoreCase) {
 				for(Object key : map.keySet()) {
 						if(property.equalsIgnoreCase(key.toString())) {

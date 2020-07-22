@@ -19,7 +19,7 @@ package org.stategen.framework.util;
 import java.util.Map;
 
 /**
- * The Class Setting.
+ * The Class<?> Setting.
  */
 public class Setting {
     public static Boolean date_long_field_to_date = null;

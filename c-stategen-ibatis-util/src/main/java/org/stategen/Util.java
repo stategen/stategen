@@ -16,7 +16,7 @@ public class Util {
         }
 
         if (value instanceof Collection) {
-            return ((Collection) value).isEmpty();
+            return ((Collection<?>) value).isEmpty();
         } else if (value instanceof String) {
             return ((String) value).isEmpty();
         } else if (value.getClass().isArray()) {

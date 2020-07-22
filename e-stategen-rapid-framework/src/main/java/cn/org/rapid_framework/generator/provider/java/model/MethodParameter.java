@@ -164,7 +164,7 @@ public class MethodParameter {
         public String[] parseJavaFileForParamNames(Method method,String content) {
             Pattern methodPattern = Pattern.compile("(?s)"+method.getName()+"\\s*\\("+getParamsPattern(method)+"\\)\\s*\\{");
     	    Matcher m = methodPattern.matcher(content);
-    	    List paramNames = new ArrayList();
+    	    List<String> paramNames = new ArrayList<>();
     	    while(m.find()) {
     	        for(int i = 1; i <= method.getParameterTypes().length; i++) {
                     paramNames.add(m.group(i));
@@ -175,9 +175,9 @@ public class MethodParameter {
         }
     
         public static String getParamsPattern(Method method) {
-            List paramPatterns = new ArrayList();
+            List<String> paramPatterns = new ArrayList<>();
             for(int i = 0; i < method.getParameterTypes().length; i++ ) {
-                Class type = method.getParameterTypes()[i];
+                Class<?> type = method.getParameterTypes()[i];
                 String classType = type.getSimpleName().replace("[", "\\[").replace("]", "\\]");
                 String paramPattern = ".*"+classType+".*\\s+(\\w+).*";
                 paramPatterns.add(paramPattern);
@@ -186,9 +186,9 @@ public class MethodParameter {
         }
         
         public static String getSimpleParamsPattern(Method method) {
-            List paramPatterns = new ArrayList();
+            List<String> paramPatterns = new ArrayList<>();
             for(int i = 0; i < method.getParameterTypes().length; i++ ) {
-                Class type = method.getParameterTypes()[i];
+                Class<?> type = method.getParameterTypes()[i];
                 String classType = type.getSimpleName().replace("[", "\\[").replace("]", "\\]");
                 String paramPattern = classType+".*";
                 paramPatterns.add(paramPattern);

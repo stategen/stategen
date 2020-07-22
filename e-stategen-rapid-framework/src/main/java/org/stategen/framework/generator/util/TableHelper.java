@@ -21,7 +21,7 @@ import cn.org.rapid_framework.generator.provider.db.sql.model.SqlParameter;
 import cn.org.rapid_framework.generator.provider.db.table.model.Table;
 
 /**
- * The Class TableHelper.
+ * The Class<?> TableHelper.
  */
 public class TableHelper {
     

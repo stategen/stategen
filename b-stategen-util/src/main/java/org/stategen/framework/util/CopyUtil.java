@@ -53,7 +53,7 @@ public class CopyUtil {
         if(targetCls == null){
             return null;
         }
-        T instance = BeanUtils.instantiate(targetCls);
+        T instance = BeanUtils.instantiateClass(targetCls);
         return copy(source, instance, ignoreProperties);
     }
     
@@ -73,7 +73,7 @@ public class CopyUtil {
         if(CollectionUtil.isNotEmpty(sourceList)){
             List<T> targetList = new ArrayList<T>(sourceList.size());
             for(Object o:sourceList){
-                T targetObj = BeanUtils.instantiate(targetCls);
+                T targetObj = BeanUtils.instantiateClass(targetCls);
                 BeanUtils.copyProperties(o,targetObj,ignoreProperties);
                 targetList.add(targetObj);
             }

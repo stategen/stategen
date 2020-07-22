@@ -37,7 +37,7 @@ public abstract class AbstractValuedObjectCallback implements TypeHandlerCallbac
     
     public abstract <T> Class<T>  getValuedClass();
     
-    static Map<Class<? extends ValuedEnum>,ValueAndNameHolder > VALUED_MAPPING = new HashMap<Class<? extends ValuedEnum>, ValueAndNameHolder>();
+    static Map<Class<? extends ValuedEnum<?>>,ValueAndNameHolder<?>> VALUED_MAPPING = new HashMap<>();
     
     public static boolean isEmpty(Map<?, ?> map){
         return map==null || map.isEmpty();
@@ -47,7 +47,7 @@ public abstract class AbstractValuedObjectCallback implements TypeHandlerCallbac
         if (null == parameter) {
             setter.setNull(Types.VARCHAR);
         } else {
-            Object enumName =( (ValuedEnum)parameter).getValue();
+            Object enumName =( (ValuedEnum<?>)parameter).getValue();
             setter.setObject(enumName);
         }
     }
@@ -68,26 +68,26 @@ public abstract class AbstractValuedObjectCallback implements TypeHandlerCallbac
     /**
      * The Class ValueAndNameHolder.
      */
-    static class ValueAndNameHolder{
-        Map<String, ValuedEnum> valueStringMapping =new HashMap<String, ValuedEnum>();
-        Map<String, ValuedEnum> nameStringMapping =new HashMap<String, ValuedEnum>();
+    static class ValueAndNameHolder<T>{
+        Map<String, ValuedEnum<T>> valueStringMapping =new HashMap<>();
+        Map<String, ValuedEnum<T>> nameStringMapping =new HashMap<>();
         
-        ValuedEnum valueOf(String value) {
+        ValuedEnum<T> valueOf(String value) {
             if (!isEmpty(valueStringMapping)) {
                 return valueStringMapping.get(value);
             }
             return null;
         }
         
-        ValuedEnum nameOf( String name) {
+        ValuedEnum<T> nameOf( String name) {
             if (!isEmpty(nameStringMapping)) {
                 return nameStringMapping.get(name);
             }
             return null;
         }       
         
-        void registValues(ValuedEnum[] values){
-            for (ValuedEnum en : values) {
+        void registValues(ValuedEnum<T>[] values){
+            for (ValuedEnum<T> en : values) {
                 Object value = en.getValue();
                 valueStringMapping.put(value == null ? null : value.toString(), en);
                 nameStringMapping.put(en.toString(), en);
@@ -95,31 +95,32 @@ public abstract class AbstractValuedObjectCallback implements TypeHandlerCallbac
         }
     }
     
-    public static boolean isEmpty(ValuedEnum[] array){
+    public static <T>boolean isEmpty(ValuedEnum<T>[] array){
         return array==null || array.length==0;
     }        
     
-    public static void registValuedObjects(ValuedEnum[] valuedObjects) {
+    @SuppressWarnings("unchecked")
+    public static <T>void registValuedObjects(ValuedEnum<T>[] valuedObjects) {
         if (isEmpty(valuedObjects)) {
             return;
         }
         
-        Class<? extends ValuedEnum> enumClass = valuedObjects[0].getClass();
-        ValueAndNameHolder valueAndNameHolder =VALUED_MAPPING.get(enumClass);
+        Class<? extends ValuedEnum<T>> enumClass = (Class<? extends ValuedEnum<T>>) valuedObjects[0].getClass();
+        ValueAndNameHolder<T> valueAndNameHolder =(ValueAndNameHolder<T>) VALUED_MAPPING.get(enumClass);
         if (valueAndNameHolder == null) {
-            valueAndNameHolder = new ValueAndNameHolder();
+            valueAndNameHolder = new ValueAndNameHolder<T>();
             VALUED_MAPPING.put(enumClass, valueAndNameHolder);
         }
         valueAndNameHolder.registValues(valuedObjects);
     }
 
-    public static ValuedEnum valueOf(Class<?> valuedClass, String value) {
-        ValueAndNameHolder valueAndNameHolder =VALUED_MAPPING.get(valuedClass);
+    public static ValuedEnum<?> valueOf(Class<?> valuedClass, String value) {
+        ValueAndNameHolder<?> valueAndNameHolder =VALUED_MAPPING.get(valuedClass);
         return valueAndNameHolder==null?null:valueAndNameHolder.valueOf(value);
     }
     
-    public static ValuedEnum nameOf(Class<?> valuedClass, String name) {
-        ValueAndNameHolder valueAndNameHolder =VALUED_MAPPING.get(valuedClass);
+    public static ValuedEnum<?> nameOf(Class<?> valuedClass, String name) {
+        ValueAndNameHolder<?> valueAndNameHolder =VALUED_MAPPING.get(valuedClass);
         return valueAndNameHolder==null?null:valueAndNameHolder.nameOf(name);
     }           
     

@@ -20,6 +20,8 @@ package org.stategen.framework.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -740,6 +742,18 @@ public class StringUtil {
     public static String trimToNull(String str) {
         String ts = trim(str);
         return isEmpty(ts) ? null : ts;
+    }
+    
+    public static String findByRex(String line ,String regExStr) {
+        if (StringUtil.isEmpty(line) || StringUtil.isEmpty(regExStr)) {
+            return "";
+        }
+        
+        Matcher mat = Pattern.compile(regExStr).matcher(line);//此处是中文输入的（）
+        while(mat.find()){
+            return mat.group();
+        }
+        return "";
     }
 
 }

@@ -28,7 +28,6 @@ public class JavaSourceParanamer implements Paranamer{
         return lookupParameterNames(methodOrConstructor,true);
     }
 
-    @SuppressWarnings("unchecked")
 	public String[] lookupParameterNames(AccessibleObject methodOrConstructor,boolean throwExceptionIfMissing) {
         try {
 	        JavaSourceFileMethodParametersParser parser = new JavaSourceFileMethodParametersParser();
@@ -37,7 +36,7 @@ public class JavaSourceParanamer implements Paranamer{
 	        	Method m = (Method)methodOrConstructor;
 	        	javaSource = m.getDeclaringClass().getName().replace('.', '/')+".java";
 	        }else if(methodOrConstructor instanceof Constructor) {
-	        	Constructor c = (Constructor)methodOrConstructor;
+	        	Constructor<?> c = (Constructor<?>)methodOrConstructor;
 	        	javaSource = c.getDeclaringClass().getName().replace('.', '/')+".java";
 	        }else {
 	            throw new IllegalArgumentException("unknow AccessibleObject"+methodOrConstructor+",must be Method or Constructor");
@@ -76,7 +75,7 @@ public class JavaSourceParanamer implements Paranamer{
         	if(methodOrConstructor instanceof Method) {
         		return parseJavaFileForParamNames((Method)methodOrConstructor,content);
         	}else if(methodOrConstructor instanceof Constructor) {
-        		return parseJavaFileForParamNames((Constructor)methodOrConstructor,content);
+        		return parseJavaFileForParamNames((Constructor<?>)methodOrConstructor,content);
         	}else {
         		 throw new IllegalArgumentException("unknow AccessibleObject"+methodOrConstructor+",must be Method or Constructor");
         	}
@@ -98,9 +97,9 @@ public class JavaSourceParanamer implements Paranamer{
         }
 
         private String getParamsPattern(Class<?>[] parameterTypes) {
-            List paramPatterns = new ArrayList();
+            List<String> paramPatterns = new ArrayList<>();
             for(int i = 0; i < parameterTypes.length; i++ ) {
-                Class type = parameterTypes[i];
+                Class<?> type = parameterTypes[i];
                 String paramPattern = ".*"+type.getSimpleName()+".*\\s+(\\w+).*";
                 paramPatterns.add(paramPattern);
             }

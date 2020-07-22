@@ -65,11 +65,12 @@ public class GeneratorProperties {
 		}
 	}
 
-	public static String getDatabaseType(String key) {
-		return getDatabaseType(getHelper().getProperties(),key);
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static String getDatabaseType(String key) {
+		return getDatabaseType((Map)(getHelper().getProperties()),key);
 	}
 	
-	public static String getDatabaseType(Map p,String key) {
+	public static String getDatabaseType(Map<String, Object> p,String key) {
 		if(p.containsKey(key)) {
 			return (String)p.get(key);
 		}
@@ -156,7 +157,8 @@ public class GeneratorProperties {
 
 	public static void setProperties(Properties inputProps) {
 		propertiesHelper = new PropertiesHelper(inputProps,true);
-        for(Iterator it = propertiesHelper.entrySet().iterator();it.hasNext();) {
+        for(Iterator<?> it = propertiesHelper.entrySet().iterator();it.hasNext();) {
+            @SuppressWarnings("rawtypes")
             Map.Entry entry = (Map.Entry)it.next();
 //            assertPropertyKey(entry.getKey().toString());
             GLogger.debug("[Property] "+entry.getKey()+"="+entry.getValue());

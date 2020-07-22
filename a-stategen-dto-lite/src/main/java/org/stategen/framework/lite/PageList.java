@@ -28,7 +28,6 @@ public class PageList<E> implements IPageList, Serializable {
 
     private List<E> items;
 
-    private Pagination pagination;
 
     public PageList() {
         items = new ArrayList<>(0);

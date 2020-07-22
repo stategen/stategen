@@ -36,7 +36,7 @@ import java.util.Set;
 import org.stategen.framework.util.StringUtil;
 
 /**
- * The Class FileHelper.
+ * The Class<?> FileHelper.
  *
  * @author Xia Zhengsheng
  * @version $Id: FileHelper.java, v 0.1 2017-1-3 21:22:31 Xia zhengsheng Exp $

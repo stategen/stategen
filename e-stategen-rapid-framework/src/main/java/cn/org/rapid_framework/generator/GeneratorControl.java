@@ -67,7 +67,6 @@ import lombok.Cleanup;
  */
 public class GeneratorControl {
     private boolean isOverride = GeneratorProperties.getBoolean(GG_IS_OVERRIDE); 
-    private boolean isAppend = false; //no pass
     private boolean ignoreOutput = false; 
     private boolean isMergeIfExists = true; //no pass
     private String mergeLocation; 
@@ -326,10 +325,10 @@ public class GeneratorControl {
         return v;
     }
     
-    public List<Map> queryForList(String sql,int limit) throws SQLException {
+    public List<Map<String, Object>> queryForList(String sql,int limit) throws SQLException {
         Connection conn = DataSourceProvider.getConnection();
         try {
-            List<Map> result =  SqlExecutorHelper.queryForList(conn, sql, limit);
+            List<Map<String, Object>> result =  SqlExecutorHelper.queryForList(conn, sql, limit);
             return result;
         }finally {
             DBHelper.close(conn);

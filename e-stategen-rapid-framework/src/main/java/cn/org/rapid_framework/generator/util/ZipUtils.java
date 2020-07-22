@@ -62,10 +62,4 @@ public class ZipUtils {
 		unzip(unzipDir,in);
 	}
 
-	private static void makedirs(File f){
-		File ff = new File(f.getParent());
-		if(!ff.exists()) {
-			ff.mkdirs();
-		}
-	}
 }

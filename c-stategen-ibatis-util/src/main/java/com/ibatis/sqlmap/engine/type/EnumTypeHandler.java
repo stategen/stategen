@@ -12,17 +12,17 @@ import org.stategen.framework.util.EnumUtil;
  * String implementation of TypeHandler
  * 该类用于覆盖ibatis中原有的EnumTypeHandler,当值为非string时，如1,2,3,ibatis无法获取和存取枚举，需要用该类来转换.
  */
-public class EnumTypeHandler extends BaseTypeHandler implements TypeHandler {
+public class EnumTypeHandler<T extends Enum<T>> extends BaseTypeHandler implements TypeHandler {
 
-    private Class type;
+    private Class<T> type;
     
-    public EnumTypeHandler(Class type) {
+    public EnumTypeHandler(Class<T> type) {
         this.type = type;
     }
 
     public void setParameter(PreparedStatement ps, int i, Object parameter, String jdbcType) throws SQLException {
         if (ValuedEnum.class.isAssignableFrom(type)) {
-            Object value = ((ValuedEnum) parameter).getValue();
+            Object value = ((ValuedEnum<?>) parameter).getValue();
             ps.setObject(i, value);
             return;
         }
@@ -38,7 +38,6 @@ public class EnumTypeHandler extends BaseTypeHandler implements TypeHandler {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public Object getResultFormValuedCache(Object s) {
         return EnumUtil.valueOf(type, (String) s);
     }

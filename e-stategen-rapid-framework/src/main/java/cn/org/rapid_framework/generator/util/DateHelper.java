@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class DateHelper {
 
-    public static Date parseDate(String value,Class targetType,String... formats) {
+    public static Date parseDate(String value,Class<?> targetType,String... formats) {
         for(String format : formats) {
             try {
                 long v = new SimpleDateFormat(format).parse(value).getTime();

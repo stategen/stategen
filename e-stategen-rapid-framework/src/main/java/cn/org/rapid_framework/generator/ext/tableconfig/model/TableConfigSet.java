@@ -17,6 +17,7 @@
  */
 package cn.org.rapid_framework.generator.ext.tableconfig.model;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ import java.util.Set;
 import org.stategen.framework.lite.CaseInsensitiveHashMap;
 import org.stategen.framework.util.StringUtil;
 
+import cn.org.rapid_framework.generator.ext.tableconfig.builder.TableConfigXmlBuilder;
 import cn.org.rapid_framework.generator.provider.db.table.TableFactory;
 import cn.org.rapid_framework.generator.provider.db.table.TableFactoryListener;
 import cn.org.rapid_framework.generator.provider.db.table.model.Table;
@@ -36,8 +38,10 @@ public class TableConfigSet implements Iterable<TableConfig>, TableFactoryListen
 
     private Set<TableConfig> tableConfigs = new LinkedHashSet<TableConfig>();
 
-    private Map<String, TableConfig> sqlNameMap = new CaseInsensitiveHashMap<TableConfig>();
-    private Map<String, TableConfig> classNameMap = new HashMap<String, TableConfig>();
+    private Map<String, TableConfig> sqlNameMap = new CaseInsensitiveHashMap<>();
+    private Map<String, TableConfig> classNameMap = new HashMap<>();
+    private Map<String, File> sqlNameXmlFileMap = new HashMap<>();
+    
     private Set<String> sequences = new HashSet<String>();
 
     private String _package;
@@ -47,6 +51,10 @@ public class TableConfigSet implements Iterable<TableConfig>, TableFactoryListen
         //增加监听器,用于table的自定义className
         TableFactory tf = TableFactory.getInstance();
         tf.addTableFactoryListener(this);
+    }
+    
+    public Map<String, File> getSqlNameXmlFileMap() {
+        return sqlNameXmlFileMap;
     }
 
     public String getPackage() {
@@ -115,6 +123,12 @@ public class TableConfigSet implements Iterable<TableConfig>, TableFactoryListen
     }
 
     public TableConfig getBySqlName(String sqlName) {
+        //延时加载sqlname会放这里
+        File file = this.sqlNameXmlFileMap.remove(sqlName);
+        if (file!=null) {
+            TableConfig tableConfig = TableConfigXmlBuilder.parseTableConfig(file); 
+            this.addTableConfig(tableConfig);
+        }
         return sqlNameMap.get(sqlName);
     }
 

@@ -156,6 +156,7 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
  *
  * @author Julio Vilmar Gesser
  */
+@SuppressWarnings("deprecation")
 public class PrettyPrintVisitor implements VoidVisitor<Void> {
     protected final PrettyPrinterConfiguration configuration;
     protected final SourcePrinter printer;
@@ -484,7 +485,7 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         printJavaComment(n.getComment(), arg);
         printAnnotations(n.getAnnotations(), false, arg);
         boolean isFirst = true;
-        for (ReferenceType element : n.getElements()) {
+        for (ReferenceType<?> element : n.getElements()) {
             if (isFirst) {
                 isFirst = false;
             } else {
@@ -499,7 +500,7 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         printJavaComment(n.getComment(), arg);
         printAnnotations(n.getAnnotations(), true, arg);
         boolean isFirst = true;
-        for (ReferenceType element : n.getElements()) {
+        for (ReferenceType<?> element : n.getElements()) {
             if (isFirst) {
                 isFirst = false;
             } else {
@@ -847,7 +848,7 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         if (!isNullOrEmpty(n.getThrownExceptions())) {
             printer.print(" throws ");
             for (final Iterator<ReferenceType<?>> i = n.getThrownExceptions().iterator(); i.hasNext(); ) {
-                final ReferenceType name = i.next();
+                final ReferenceType<?> name = i.next();
                 name.accept(this, arg);
                 if (i.hasNext()) {
                     printer.print(", ");
@@ -889,7 +890,7 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         if (!isNullOrEmpty(n.getThrownExceptions())) {
             printer.print(" throws ");
             for (final Iterator<ReferenceType<?>> i = n.getThrownExceptions().iterator(); i.hasNext(); ) {
-                final ReferenceType name = i.next();
+                final ReferenceType<?> name = i.next();
                 name.accept(this, arg);
                 if (i.hasNext()) {
                     printer.print(", ");
@@ -1467,6 +1468,7 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public void visit(NodeList n, Void arg) {
         for (Object node : n) {

@@ -1,6 +1,7 @@
 package cn.org.rapid_framework.generator.provider.java.model;
 
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import cn.org.rapid_framework.generator.util.typemapping.ActionScriptDataTypesUtils;
@@ -76,16 +77,17 @@ public class JavaProperty {
             }
         }
 
+        @SuppressWarnings("unchecked")
         public static boolean isPk(Method readMethod) {
             if (isJPAClassAvaiable) {
-                if (readMethod != null && readMethod.isAnnotationPresent(classForName("javax.persistence.Id"))) {
+                if (readMethod != null && readMethod.isAnnotationPresent((Class<? extends Annotation>) classForName("javax.persistence.Id"))) {
                     return true;
                 }
             }
             return false;
         }
 
-        private static Class classForName(String clazz)  {
+        private static Class<?> classForName(String clazz)  {
             try {
                 return Class.forName(clazz);
             } catch (ClassNotFoundException e) {

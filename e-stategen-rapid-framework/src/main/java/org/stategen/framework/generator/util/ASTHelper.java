@@ -59,7 +59,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 
 /**
- * The Class ASTHelper.
+ * The Class<?> ASTHelper.
  */
 class ASTHelper {
 
@@ -154,7 +154,7 @@ class ASTHelper {
      * @param type the type
      * @return the field declaration map
      */
-    static <T extends BodyDeclaration> Map<String, T> getBodyDeclarationMap(Node node, Class<T> type) {
+    static <T extends BodyDeclaration<T>> Map<String, T> getBodyDeclarationMap(Node node, Class<T> type) {
         List<Node> children = node.getChildNodes();
         if (CollectionUtil.isEmpty(children)) {
             return new HashMap<String, T>(0);
@@ -219,7 +219,7 @@ class ASTHelper {
      * @throws InstantiationException the instantiation exception
      * @throws IllegalAccessException the illegal access exception
      */
-    static boolean addAnnotationExprsToBody(BodyDeclaration oldDeclaration, BodyDeclaration newDeclaration,
+    static boolean addAnnotationExprsToBody(BodyDeclaration<?> oldDeclaration, BodyDeclaration<?> newDeclaration,
                                             boolean replace) throws InstantiationException, IllegalAccessException {
         boolean modified = false;
         Set<String> disabledAnnoNames = new LinkedHashSet<String>();
@@ -341,7 +341,7 @@ class ASTHelper {
         return modified;
     }
 
-    private static String getAllCommentsText(BodyDeclaration declaration) {
+    private static String getAllCommentsText(BodyDeclaration<?> declaration) {
         List<Comment> allContainedComments = declaration.getAllContainedComments();
         StringBuilder sb = new StringBuilder();
         boolean append =false;
@@ -383,7 +383,7 @@ class ASTHelper {
     }
 
     /**
-     * The Class ImportComparator.
+     * The Class<?> ImportComparator.
      */
     static class ImportComparator implements java.util.Comparator<ImportDeclaration> {
         static final PrettyPrinterConfiguration prettyPrinterConfiguration;

@@ -1,9 +1,10 @@
 package org.stategen.framework.util;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public class TestGeneric<X>{
+public class TestGeneric<X> implements Serializable{
     X user;
     
     private static final long serialVersionUID = -1375958143091889386L;

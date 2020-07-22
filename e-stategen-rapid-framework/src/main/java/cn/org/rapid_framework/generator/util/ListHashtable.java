@@ -14,11 +14,13 @@ import java.util.List;
  * only put, putall, clear and remove maintains the ordered list
  *
  */
-public class ListHashtable extends Hashtable {
-	protected List orderedKeys = new ArrayList();
+public class ListHashtable extends Hashtable<Object,Object> {
+	/**  */
+    private static final long serialVersionUID = 1L;
+    protected List<Object> orderedKeys = new ArrayList<>();
 	public synchronized void clear() {
 		super.clear();
-		orderedKeys = new ArrayList();
+		orderedKeys = new ArrayList<>();
 	}
 	public synchronized Object put(Object aKey, Object aValue) {
 		if (orderedKeys.contains(aKey)) {
@@ -75,7 +77,7 @@ public class ListHashtable extends Hashtable {
 	 * 
 	 */
 	public void reorderIntegerKeys() {
-		List keys = getOrderedKeys();
+		List<Object> keys = getOrderedKeys();
 		int numKeys = keys.size();
 		if (numKeys <=0 )
 			return;
@@ -83,8 +85,8 @@ public class ListHashtable extends Hashtable {
 		if (!(getOrderedKey(0) instanceof Integer))
 			return;
 		
-		List newKeys   = new ArrayList();
-		List newValues = new ArrayList();
+		List<Integer> newKeys   = new ArrayList<>();
+		List<Object> newValues = new ArrayList<>();
 		
 		for (int i=0;i<numKeys;i++) {
 			Integer key = (Integer) getOrderedKey(i);
@@ -143,7 +145,7 @@ public class ListHashtable extends Hashtable {
 	/**
 	 * @return Returns the orderedKeys.
 	 */
-	public List getOrderedKeys() {
+	public List<Object> getOrderedKeys() {
 		return orderedKeys;
 	}
 	public Object getOrderedKey(int i) {
@@ -165,8 +167,8 @@ public class ListHashtable extends Hashtable {
 		}
 		return null;
 	}
-	public List getOrderedValues() {
-		List values = new ArrayList();
+	public List<Object> getOrderedValues() {
+		List<Object> values = new ArrayList<>();
 		int numKeys = orderedKeys.size();
 		for (int i=0;i<numKeys;i++) {
 			values.add(get(getOrderedKey(i)));

@@ -14,12 +14,12 @@ public class TableGenTask extends BaseGeneratorTask {
     private String tableSqlName; 
     
     @Override
-    protected List<Map> getGeneratorContexts() {
+    protected List<Map<String,Object>> getGeneratorContexts() {
         if("*".equals(tableSqlName)) {
-            List result = new ArrayList();
+            List<Map<String,Object>> result = new ArrayList<>();
             List<Table> tables = TableFactory.getInstance().getAllTables();
             for(Table t : tables) {
-                Map map = toMap(t);
+                Map<String,Object> map = toMap(t);
                 result.add(map);
             }
             return result;
@@ -29,13 +29,13 @@ public class TableGenTask extends BaseGeneratorTask {
                 log("没有找到该表:"+tableSqlName);
                 return null;
             }
-            Map map = toMap(table);
+            Map<String,Object> map = toMap(table);
             return Arrays.asList(map);           
         }
     }
 
-    private Map toMap(Table table) {
-        Map map = new HashMap();
+    private Map<String,Object> toMap(Table table) {
+        Map<String,Object> map = new HashMap<>();
         map.putAll(BeanHelper.describe(table));
         map.put("table", table);
         return map;

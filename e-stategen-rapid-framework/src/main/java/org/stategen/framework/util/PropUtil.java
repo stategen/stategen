@@ -30,7 +30,7 @@ import java.util.Properties;
 import cn.org.rapid_framework.generator.GeneratorProperties;
 
 /**
- * The Class PropUtil.
+ * The Class<?> PropUtil.
  */
 public class PropUtil {
 

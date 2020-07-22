@@ -118,24 +118,24 @@ public class Inflector {
 
 
     /**
-     * <p>List of <code>Replacer</code>s for performing replacement operations
+     * <p>List<String> of <code>Replacer</code>s for performing replacement operations
      * on matches for plural words.</p>
      */
-    private List plurals = new LinkedList();
+    private List<Replacer> plurals = new LinkedList<>();
 
 
     /**
-     * <p>List of <code>Replacer</code>s for performing replacement operations
+     * <p>List<String> of <code>Replacer</code>s for performing replacement operations
      * on matches for addSingular words.</p>
      */
-    private List singulars = new ArrayList();
+    private List<Replacer> singulars = new ArrayList<>();
 
 
     /**
-     * <p>List of words that represent addUncountable concepts that cannot be
+     * <p>List<String> of words that represent addUncountable concepts that cannot be
      * pluralized or singularized.</p>
      */
-    private List uncountables = new LinkedList();
+    private List<String> uncountables = new LinkedList<>();
 
 
     // ------------------------------------------------------ Instance Variables
@@ -372,7 +372,7 @@ public class Inflector {
      *   </tr>
      * </table>
      *
-     * @param className Class name for which to create a foreign key
+     * @param className Class<?> name for which to create a foreign key
      * @param underscore Flag indicating whether an underscore should
      *  be emitted between the class name and the "id" suffix
      */
@@ -496,7 +496,7 @@ public class Inflector {
 
         // Scan our patterns for a match and return the correct replacement
         for (int i = 0; i < plurals.size(); i++) {
-            Replacer replacer = (Replacer) plurals.get(i);
+            Replacer replacer = plurals.get(i);
             if (replacer.matches(word)) {
                 return replacer.replacement();
             }
@@ -525,7 +525,7 @@ public class Inflector {
 
         // Scan our patterns for a match and return the correct replacement
         for (int i = 0; i < singulars.size(); i++) {
-            Replacer replacer = (Replacer) singulars.get(i);
+            Replacer replacer = singulars.get(i);
             if (replacer.matches(word)) {
                 return replacer.replacement();
             }
@@ -557,7 +557,7 @@ public class Inflector {
      *   </tr>
      * </table>
      *
-     * @param className Class name to be converted
+     * @param className Class<?> name to be converted
      */
     public String tableize(String className) {
 
@@ -790,7 +790,6 @@ public class Inflector {
         // -------------------------------------------------- Instance Variables
 
 
-        private String input = null;
         private Matcher matcher = null;
         private Pattern pattern = null;
         private String rule = null;
@@ -811,10 +810,8 @@ public class Inflector {
 
             matcher = pattern.matcher(input);
             if (matcher.matches()) {
-                this.input = input;
                 return true;
             } else {
-                this.input = null;
                 this.matcher = null;
                 return false;
             }

@@ -51,7 +51,7 @@ public interface IMenu<T extends IMenu<T>> extends  ITreeNode<T> {
     
     public String getControllerName();
 
-    public static <M extends IMenu> M createMenu(Class<M> menuClz, String controllerName, String methodName, String url, String name,
+    public static <M extends IMenu<M>> M createMenu(Class<M> menuClz, String controllerName, String methodName, String url, String name,
                                                       String route, MenuType menuType,
                                                       VisitCheckType visitCheckType) throws IllegalArgumentException, IllegalAccessException  {
         M result;

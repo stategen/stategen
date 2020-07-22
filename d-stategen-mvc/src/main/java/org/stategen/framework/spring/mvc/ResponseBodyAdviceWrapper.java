@@ -22,10 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.ServletContext;
-
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -60,8 +57,6 @@ public class ResponseBodyAdviceWrapper extends ResponseStatusTypeHandler impleme
 
     public static Set<Class<? extends Annotation>> annotations = null;
 
-    @Autowired
-    private ServletContext servletContext;
 
     private Boolean wrapperResponse = true;
 
@@ -170,11 +165,11 @@ public class ResponseBodyAdviceWrapper extends ResponseStatusTypeHandler impleme
     }
 
     public void setPackages(Set<String> packages) {
-        this.packages = packages;
+        ResponseBodyAdviceWrapper.packages = packages;
     }
 
     public void setAnnotations(Set<Class<? extends Annotation>> annotations) {
-        this.annotations = annotations;
+        ResponseBodyAdviceWrapper.annotations = annotations;
     }
 
     @Override

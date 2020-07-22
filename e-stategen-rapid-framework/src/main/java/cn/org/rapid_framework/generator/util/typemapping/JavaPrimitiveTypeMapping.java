@@ -6,8 +6,8 @@ import java.util.Map;
 import cn.org.rapid_framework.generator.util.StringHelper;
 
 public class JavaPrimitiveTypeMapping {
-	static Map<String, String> wraper2primitive = new HashMap();
-	static Map<String, String> primitive2wraper = new HashMap();
+	static Map<String, String> wraper2primitive = new HashMap<>();
+	static Map<String, String> primitive2wraper = new HashMap<>();
 	static {
 		wraper2primitive.put("Byte", "byte");
 		wraper2primitive.put("Short", "short");

@@ -59,16 +59,16 @@ public class XMLHelper {
         }
         
         public LinkedHashMap<String,String> nodeNameAsAttributes(String nodeNameKey) {
-        	LinkedHashMap map = new LinkedHashMap();
+        	LinkedHashMap<String,String>  map = new LinkedHashMap<>();
             map.putAll(attributes);
             map.put(nodeNameKey, nodeName);
             return map;
         }
         
         public List<LinkedHashMap<String,String>> childsAsListMap() {
-        	List<LinkedHashMap<String,String>> result = new ArrayList();
+        	List<LinkedHashMap<String,String>> result = new ArrayList<>();
             for(NodeData c : childs) {
-            	LinkedHashMap map = new LinkedHashMap();
+            	LinkedHashMap<String,String>  map = new LinkedHashMap<>();
             	map.put(c.nodeName, c.nodeValue);
             	result.add(map);
             }
@@ -254,7 +254,7 @@ public class XMLHelper {
     
     public NodeData parseXML(File file) throws SAXException, IOException {
         Document doc = SimpleXmlParser.getLoadingDoc(file);
-        return new SimpleXmlParser().treeWalk(doc.getDocumentElement());
+        return SimpleXmlParser.treeWalk(doc.getDocumentElement());
     }
 
     
@@ -300,7 +300,7 @@ public class XMLHelper {
      * @return
      */
     public static LinkedHashMap<String, String> parse2Attributes(String attributes) {
-    	LinkedHashMap result = new LinkedHashMap();
+    	LinkedHashMap<String, String> result = new LinkedHashMap<>();
         Pattern p = Pattern.compile("(\\w+?)=['\"](.*?)['\"]");
         Matcher m = p.matcher(attributes);
         while(m.find()) {

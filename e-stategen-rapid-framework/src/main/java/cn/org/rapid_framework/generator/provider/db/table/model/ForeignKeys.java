@@ -15,10 +15,12 @@ import cn.org.rapid_framework.generator.util.ListHashtable;
  */
 public class ForeignKeys  implements java.io.Serializable{
 	
-	protected Table parentTable;  //宿主表
+	/**  */
+    private static final long serialVersionUID = 1L;
+    protected Table parentTable;  //宿主表
 	protected ListHashtable associatedTables;
 	/**
-	 * Constructor for Foreign Keys
+	 * Constructor<?> for Foreign Keys
 	 */
 	public ForeignKeys(Table aTable) {
 		super();

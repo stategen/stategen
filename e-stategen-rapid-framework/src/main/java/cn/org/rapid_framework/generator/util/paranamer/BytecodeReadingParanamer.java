@@ -53,6 +53,8 @@ import java.util.Map;
 public class BytecodeReadingParanamer implements Paranamer {
 
     private static final Map<String, String> primitives = new HashMap<String, String>() {
+        private static final long serialVersionUID = 1L;
+
         {
             put("int","I");
             put("boolean","Z");
@@ -300,7 +302,7 @@ public class BytecodeReadingParanamer implements Paranamer {
 
 
     /**
-     * A Java class parser to make a Class Visitor visit an existing class.
+     * A Java class parser to make a Class<?> Visitor visit an existing class.
      * This class parses a byte array conforming to the Java class file format and
      * calls the appropriate visit methods of a given class visitor for each field,
      * method and bytecode instruction encountered.
@@ -475,7 +477,7 @@ public class BytecodeReadingParanamer implements Paranamer {
          */
         private static byte[] readClass(final InputStream is) throws IOException {
             if (is == null) {
-                throw new IOException("Class not found");
+                throw new IOException("Class<?> not found");
             }
             byte[] b = new byte[is.available()];
             int len = 0;
@@ -516,18 +518,14 @@ public class BytecodeReadingParanamer implements Paranamer {
          */
         private void accept(final TypeCollector classVisitor) {
             char[] c = new char[maxStringLength]; // buffer used to read strings
-            int i, j, k; // loop variables
-            int u, v, w; // indexes in b
+            int i, j; // loop variables
+            int u, v; // indexes in b
 
-            String attrName;
-            int anns = 0;
-            int ianns = 0;
 
             // visits the header
             u = header;
             v = items[readUnsignedShort(u + 4)];
             int len = readUnsignedShort(u + 6);
-            w = 0;
             u += 8;
             for (i = 0; i < len; ++i) {
                 u += 2;

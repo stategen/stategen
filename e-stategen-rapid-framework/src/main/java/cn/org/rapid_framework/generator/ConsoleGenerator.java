@@ -10,12 +10,15 @@ import org.stategen.framework.generator.util.GenProperties;
 import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.StringUtil;
 
+import lombok.Cleanup;
+
 public class ConsoleGenerator {
     /**
      * 读取控制台内容
      */
     public static String consoleInput(String tip) {
         System.out.println(tip);
+        @Cleanup
         Scanner scanner = new Scanner(System.in);
         scanner.useDelimiter("\n");
         if (scanner.hasNext()) {

@@ -5,15 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.org.rapid_framework.generator.ext.tableconfig.model.TableConfigSet;
 import cn.org.rapid_framework.generator.util.BeanHelper;
-import cn.org.rapid_framework.generator.util.StringHelper;
 
 public class TableConfigSetGenTask extends BaseTableConfigSetTask {
 	
 	@Override
-    protected List<Map> getGeneratorContexts() {
-        Map map = new HashMap();
+    protected List<Map<String, Object>> getGeneratorContexts() {
+        Map<String, Object> map = new HashMap<>();
         map.putAll(BeanHelper.describe(tableConfigSet));
         map.put("tableConfigSet", tableConfigSet);
         return Arrays.asList(map);

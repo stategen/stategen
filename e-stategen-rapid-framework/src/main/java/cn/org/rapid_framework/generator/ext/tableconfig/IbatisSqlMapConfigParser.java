@@ -42,13 +42,12 @@ import cn.org.rapid_framework.generator.util.sqlparse.SqlParseHelper;
  * 
  */
 public class IbatisSqlMapConfigParser {
-    public Map<String,SqlSegment> usedIncludedSqls = new HashMap(); //增加一条sql语句引用的 includesSql的解析
-    private String sourceSql;
-    private Map<String,String> includeSqls;
+    public Map<String,SqlSegment> usedIncludedSqls = new HashMap<>(); //增加一条sql语句引用的 includesSql的解析
+
     public String resultSql;
     
     public String parse(String str) {
-        return parse(str,new HashMap());
+        return parse(str,new HashMap<>());
     }	
 
     final Set<String> dynamics = new HashSet<String>(Arrays.asList("isParameterPresent",
@@ -57,9 +56,9 @@ public class IbatisSqlMapConfigParser {
                                    "isGreaterEqual", "isLessThan", "isLessEqual",
                                    "isPropertyAvailable", "isNotPropertyAvailable"));
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public String parse(String str,Map<String,String> includeSqls) {
-    	this.sourceSql = str;
-    	this.includeSqls = includeSqls;
+        
         str = Helper.removeComments("<for_remove_comment>"+str+"</for_remove_comment>");
         str = Helper.removeSelectKeyXmlForInsertSql(str);
         
@@ -68,9 +67,8 @@ public class IbatisSqlMapConfigParser {
         Matcher m = xmlTagRegex.matcher(str);
         
         OpenCloseTag openClose = null;
-        Map previousTagAttributes = null;
+        Map<String, Object> previousTagAttributes = null;
 
-        boolean findRemoveFirstPrepend = false;
         while(m.find()) {
             String xmlTag = m.group(1);
             String attributesString = m.group(2);
@@ -96,7 +94,7 @@ public class IbatisSqlMapConfigParser {
             
             MybatisHelper.processMybatisForeachCloseTag(sql, previousTagAttributes, xmlTag);
             
-            previousTagAttributes = attributes;
+            previousTagAttributes = (Map)attributes;
         }
         //FIXME 不能兼容自动删除分号, 因为还需要测试最终的ibatis sql是否会删除;
         resultSql = StringHelper.unescapeXml(StringHelper.removeXMLCdataTag(SqlParseHelper.replaceWhere(sql.toString())));
@@ -120,7 +118,7 @@ public class IbatisSqlMapConfigParser {
 	}
 
     public List<SqlSegment> getSqlSegments() {
-    	return new ArrayList(usedIncludedSqls.values());
+    	return new ArrayList<>(usedIncludedSqls.values());
     }
     
     private static class OpenCloseTag {
@@ -145,7 +143,7 @@ public class IbatisSqlMapConfigParser {
     }
     
     static class MybatisHelper {
-    	private static void processMybatisForeachCloseTag(StringBuffer sql, Map preTagAttributes,
+    	private static void processMybatisForeachCloseTag(StringBuffer sql, Map<String, Object> preTagAttributes,
     			String xmlTag) {
     		// mybatis username in <foreach collection="usernameList" item="item" index="index" open="(" separator="," close=")">#{item}<foreach>
     		if ("/foreach".equals(xmlTag.trim())) {

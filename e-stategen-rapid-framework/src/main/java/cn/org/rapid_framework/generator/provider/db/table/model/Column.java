@@ -43,7 +43,10 @@ import cn.org.rapid_framework.generator.util.typemapping.JdbcType;
  * @email badqiu(a)gmail.com
  */
 public class Column implements java.io.Serializable,Cloneable{
-	/**
+	/**  */
+    private static final long serialVersionUID = 1L;
+
+    /**
 	 * Reference to the containing table
 	 */
 	private Table _table;

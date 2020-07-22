@@ -41,12 +41,12 @@ public class BasicSqlFormatter {
 
 	public static final String WHITESPACE = " \n\r\f\t";
 	
-	private static final Set BEGIN_CLAUSES = new HashSet();
-	private static final Set END_CLAUSES = new HashSet();
-	private static final Set LOGICAL = new HashSet();
-	private static final Set QUANTIFIERS = new HashSet();
-	private static final Set DML = new HashSet();
-	private static final Set MISC = new HashSet();
+	private static final Set<String> BEGIN_CLAUSES = new HashSet<>();
+	private static final Set<String> END_CLAUSES = new HashSet<>();
+	private static final Set<String> LOGICAL = new HashSet<>();
+	private static final Set<String> QUANTIFIERS = new HashSet<>();
+	private static final Set<String> DML = new HashSet<>();
+	private static final Set<String> MISC = new HashSet<>();
 
 	static {
 		BEGIN_CLAUSES.add( "left" );
@@ -97,14 +97,13 @@ public class BasicSqlFormatter {
 		boolean beginLine = true;
 		boolean afterBeginBeforeEnd = false;
 		boolean afterByOrSetOrFromOrSelect = false;
-		boolean afterValues = false;
 		boolean afterOn = false;
 		boolean afterBetween = false;
 		boolean afterInsert = false;
 		int inFunction = 0;
 		int parensSinceSelect = 0;
-		private LinkedList parenCounts = new LinkedList();
-		private LinkedList afterByOrFromOrSelects = new LinkedList();
+		private LinkedList<Integer> parenCounts = new LinkedList<>();
+		private LinkedList<Boolean> afterByOrFromOrSelects = new LinkedList<>();
 
 		int indent = 1;
 
@@ -329,7 +328,6 @@ public class BasicSqlFormatter {
 			out();
 			indent++;
 			newline();
-			afterValues = true;
 		}
 
 		private void closeParen() {
