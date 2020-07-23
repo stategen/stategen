@@ -62,7 +62,8 @@ public class GenUtils {
             Map<String, Object> map = new HashMap<>();
             String[] ignoreProperties = { "sqls" };
             map.putAll(BeanHelper.describe(tableConfig, ignoreProperties));
-            map.put("tableConfig", tableConfig);
+            map.put("tableConfig", tableConfig); 
+            map.put("tableConfigSet", tableConfigSet); 
             globalTableConfig=tableConfig;
             generatorFacade.generateByMap(map);
         }
@@ -76,6 +77,7 @@ public class GenUtils {
                 operationMap.putAll(BeanHelper.describe(sql));
                 operationMap.put("sql", sql);
                 operationMap.put("tableConfig", tableConfig);
+                operationMap.put("tableConfigSet", tableConfigSet); 
                 globalTableConfig=tableConfig;
                 operationMap.put("basepackage", tableConfig.getBasepackage());
                 generatorFacade.generateByMap(operationMap);

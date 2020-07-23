@@ -82,6 +82,7 @@ public class TableConfigXmlBuilder {
         try {
             tableConfig = parseFromXML(file);
         }catch(Throwable e) {
+            GLogger.error("parse file:"+file.getAbsolutePath()+" occer error",e);
             throw new RuntimeException("parse file:"+file.getAbsolutePath()+" occer error",e);
         }
         return tableConfig;
