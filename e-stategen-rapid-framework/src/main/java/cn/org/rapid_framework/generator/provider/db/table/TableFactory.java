@@ -107,7 +107,7 @@ public class TableFactory {
         Connection conn = null;
         try {
             conn = DataSourceProvider.getConnection();
-            List<Table> tables = new TableCreateProcessor(conn, getSchema(), getCatalog()).getAllTables();
+            List<Table> tables = new TableCreateProcessor(conn, getSchema(), getCatalog(), null).getAllTables();
             for (Table t : tables) {
                 dispatchOnTableCreatedEvent(t);
             }
@@ -152,9 +152,9 @@ public class TableFactory {
             try {
                 conn = DataSourceProvider.getOpenedConnection();
                 throw new NotFoundTableException("not found table with give name:" + tableName
-                        + (DatabaseMetaDataUtils.isOracleDataBase(DatabaseMetaDataUtils.getMetaData(conn))
+                        + (DatabaseMetaDataUtils.isOracleDataBase(DatabaseMetaDataUtils.getMetaData(conn,tableName))
                                 ? " \n databaseStructureInfo:" + DatabaseMetaDataUtils
-                                        .getDatabaseStructureInfo(DatabaseMetaDataUtils.getMetaData(conn), schema, catalog)
+                                        .getDatabaseStructureInfo(DatabaseMetaDataUtils.getMetaData(conn,tableName), schema, catalog)
                                 : "")
                         + "\n current " + DataSourceProvider.getDataSource() + " current schema:" + getSchema() + " current catalog:"
                         + getCatalog());
@@ -188,7 +188,7 @@ public class TableFactory {
         ResultSet        rs         = dbMetaData.getTables(catalog, schema, tableName, null);
         try {
             while (rs.next()) {
-                Table table = new TableCreateProcessor(conn, getSchema(), getCatalog()).createTable(rs);
+                Table table = new TableCreateProcessor(conn, getSchema(), getCatalog(), tableName).createTable(rs);
                 return table;
             }
         } finally {
@@ -205,6 +205,8 @@ public class TableFactory {
         
         private String schema;
         
+        private String tableName;
+        
         public String getCatalog() {
             return catalog;
         }
@@ -213,11 +215,12 @@ public class TableFactory {
             return schema;
         }
         
-        public TableCreateProcessor(Connection connection, String schema, String catalog) {
+        public TableCreateProcessor(Connection connection, String schema, String catalog, String tableName) {
             super();
             this.connection = connection;
             this.schema     = schema;
             this.catalog    = catalog;
+            this.tableName  = tableName;
         }
         
         public Table createTable(ResultSet rs) throws SQLException {
@@ -307,7 +310,7 @@ public class TableFactory {
         }
         
         private DatabaseMetaData getMetaData() {
-            return DatabaseMetaDataUtils.getMetaData(connection);
+            return DatabaseMetaDataUtils.getMetaData(connection, tableName);
         }
         
         private void retriveTableColumns(Table table) throws SQLException {
@@ -606,11 +609,11 @@ public class TableFactory {
             }
         }
         
-        public static DatabaseMetaData getMetaData(Connection connection) {
+        public static DatabaseMetaData getMetaData(Connection connection,String tableName) {
             try {
                 return connection.getMetaData();
-            } catch (SQLException e) {
-                throw new RuntimeException("cannot get DatabaseMetaData", e);
+            } catch (Exception e) {
+                throw new RuntimeException("cannot get DatabaseMetaData: "+tableName, e);
             }
         }
         
