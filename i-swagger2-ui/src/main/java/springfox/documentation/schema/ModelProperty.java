@@ -37,6 +37,7 @@ public class ModelProperty {
   private final AllowableValues allowableValues;
   private ModelReference modelRef;
   private final String example;
+  /***枚举中的描述 xia*/  
   private String enumDesc;
 
   public ModelProperty(
@@ -87,7 +88,9 @@ public class ModelProperty {
     return readOnly;
   }
 
+  /***枚举中的描述 xia*/  
   public String getDescription() {
+      //枚举中的描述 
       if (enumDesc==null){
           enumDesc=Optional.fromNullable(EnumUtil.getDescIfIsEnum(type)).or("");
       }

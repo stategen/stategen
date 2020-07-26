@@ -25,14 +25,15 @@ import io.swagger.annotations.ApiOperation;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 /**
  * The Class SwaggerConfig.
  */
 @Configuration
 //@EnableWebMvc
-@EnableSwagger2
+@EnableSwagger2WebMvc
+//@EnableSwagger2
 //@ComponentScan(basePackages ={"com.albert.swagger"})
 public class SwaggerConfig {
 

@@ -58,6 +58,7 @@ public class ApiParamParameterBuilder implements ParameterBuilderPlugin {
             methodParameter,
             apiParam.transform(toAllowableValue()).or("")));
     if (apiParam.isPresent()) {
+	/***枚举中的描述 xia*/  
         Optional<ResolvedType> typeOptional = context.parameterBuilder().build().getType();
         ResolvedType resolvedType = typeOptional.get();
         String enumDescs = EnumUtil.getDescIfIsEnum(resolvedType);
@@ -67,14 +68,13 @@ public class ApiParamParameterBuilder implements ParameterBuilderPlugin {
       } else {
           context.parameterBuilder().description(emptyToNull(apiParam.get().value()));
       }
+	  /***枚举中的描述 xia 结束*/
       context.parameterBuilder().parameterAccess(emptyToNull(apiParam.get().access()));
       context.parameterBuilder().defaultValue(emptyToNull(apiParam.get().defaultValue()));
       context.parameterBuilder().allowMultiple(apiParam.get().allowMultiple());
       context.parameterBuilder().required(apiParam.get().required());
     }
   }
-
-
 
   @VisibleForTesting
   Optional<ApiParam> findApiParam(MethodParameter methodParameter) {
