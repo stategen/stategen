@@ -18,8 +18,7 @@
         <spring.version>5.1.10.RELEASE</spring.version>
         <spring-data-redis-version>2.1.10.RELEASE</spring-data-redis-version>
 
-        <!-- <swagger.springfox.verion>2.4.0</swagger.springfox.verion> -->
-        <swagger.springfox.verion>2.10.5</swagger.springfox.verion>
+        <swagger.springfox.verion>2.4.0</swagger.springfox.verion>
         <stategen-version>stg.2.2.0.RELEASE</stategen-version>
         <spring-orm-version>3.1.4.RELEASE</spring-orm-version>
 
