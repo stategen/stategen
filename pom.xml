@@ -32,7 +32,6 @@
         <dom4j.version>1.6.1</dom4j.version>
 
         <spring.boot.version>2.1.9.RELEASE</spring.boot.version>
-        <!-- <mybatis2.version>2.3.7</mybatis2.version> -->
         <mybatis2.version>2.4.4</mybatis2.version>
         <mybatis.version>3.5.3</mybatis.version>
         <spring-data-redis-version>2.1.10.RELEASE</spring-data-redis-version>
