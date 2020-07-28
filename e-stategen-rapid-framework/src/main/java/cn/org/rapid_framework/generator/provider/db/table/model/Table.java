@@ -45,6 +45,7 @@ public class Table implements java.io.Serializable,Cloneable {
     String sqlName;
     String remarks;
     String className;
+
     
     /** the name of the owner of the synonym if this table is a synonym */
     private String ownerSynonymName = null;
@@ -70,6 +71,7 @@ public class Table implements java.io.Serializable,Cloneable {
         this.exportedKeys = t.exportedKeys;
         this.importedKeys = t.importedKeys;
     }
+
     
     public LinkedHashSet<Column> getColumns() {
         return columns.getColumns();
@@ -210,6 +212,7 @@ public class Table implements java.io.Serializable,Cloneable {
     public String getUnderscoreName() {
         return StringHelper.toUnderscoreName(getClassName()).toLowerCase();
     }
+
     /**
      * 返回值为getClassName()的第一个字母小写,如className=UserInfo,则ClassNameFirstLower=userInfo
      * @return

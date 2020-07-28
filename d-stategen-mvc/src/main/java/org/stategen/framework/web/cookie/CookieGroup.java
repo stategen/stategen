@@ -35,6 +35,7 @@ import configs.Configration;
 
 /**
  * The Class CookieGroup.
+ * *可以用Enum代替字符串限定数据范围
  */
 public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CookieGroup.class);
@@ -213,7 +214,7 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
     }
 
     public Cookie addCookie(E nameName, Object value) {
-        return addCookie(nameName.name(), value);
+        return addCookie(nameName.toString(), value);
     }
 
     public Cookie deleteCookie(String name) {
@@ -221,7 +222,7 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
     }
 
     public Cookie deleteCookie(E nameName) {
-        return deleteCookie(nameName.name());
+        return deleteCookie(nameName.toString());
     }
 
     /**
@@ -275,8 +276,8 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
         return cookiesHolder.getValiCookie(valiCookieName);
     }
 
-    public Cookie getCookie(E enunName) {
-        return getCookie(enunName.name());
+    public Cookie getCookie(E enm) {
+        return getCookie(enm.name());
     }
 
     /**
@@ -335,5 +336,6 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
 
         super.afterPropertiesSet();
     }
+
 
 }

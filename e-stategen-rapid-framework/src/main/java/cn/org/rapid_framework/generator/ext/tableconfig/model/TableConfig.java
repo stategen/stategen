@@ -45,15 +45,17 @@ import cn.org.rapid_framework.generator.util.typemapping.JavaPrimitiveTypeMappin
 import cn.org.rapid_framework.generator.util.typemapping.JdbcType;
 
 public class TableConfig {
-    public String sqlName;
+    private String sqlName;
     public String sequence;
     public String dummyPk;
-    public String remarks;
+    private String remarks;
 
     public String subPackage;
     public String _package;
     public boolean autoSwitchDataSrc;
-    public String className;
+    private String className;
+    private boolean isSimple =false;
+
 
     public List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 //    public List<OperationConfig> operations = new ArrayList<OperationConfig>();
@@ -143,6 +145,13 @@ public class TableConfig {
         return table;
     }
 
+    public Boolean getIsSimple() {
+        return isSimple;
+    }
+
+    public void setIsSimple(Boolean isSimple) {
+        this.isSimple = isSimple;
+    }
     public String getSqlName() {
         return sqlName;
     }

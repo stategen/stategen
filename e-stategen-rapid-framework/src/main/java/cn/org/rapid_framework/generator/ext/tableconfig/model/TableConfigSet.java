@@ -45,12 +45,24 @@ public class TableConfigSet implements Iterable<TableConfig>, TableFactoryListen
     private Set<String> sequences = new HashSet<String>();
 
     private String _package;
+    
+    private boolean isDelay=false;
 
     public TableConfigSet() {
 
         //增加监听器,用于table的自定义className
         TableFactory tf = TableFactory.getInstance();
         tf.addTableFactoryListener(this);
+    }
+    
+    
+    public boolean isDelay() {
+        return isDelay;
+    }
+    
+    
+    public void setDelay(boolean isDelay) {
+        this.isDelay = isDelay;
     }
     
     public Map<String, File> getSqlNameXmlFileMap() {
@@ -141,9 +153,16 @@ public class TableConfigSet implements Iterable<TableConfig>, TableFactoryListen
     }
 
     public void onTableCreated(Table table) {
-        TableConfig tc = getBySqlName(table.getSqlName());
-        if (tc == null)
+        TableConfig tc =null;
+        try {
+            tc = getBySqlName(table.getSqlName());
+        } catch (Exception e) {
+            //文件解析不出来，xhtml.xml没有创建
+            GLogger.error("", e);
+        }
+        if (tc == null) {
             return;
+        }
         tc.customTable(table);
         //        table.setClassName(tc.getClassName());
         //        if(StringUtil.isNotBlank(table.getRemarks())) {

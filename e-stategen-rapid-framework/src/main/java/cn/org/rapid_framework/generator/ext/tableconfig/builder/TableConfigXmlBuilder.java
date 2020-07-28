@@ -61,6 +61,7 @@ public class TableConfigXmlBuilder {
     
     public static TableConfigSet parseFromXMLDelay(File basedir,String _package,List<String> tableConfigFiles,boolean isDelay) {
         TableConfigSet result = new TableConfigSet();
+        result.setDelay(isDelay);
         result.setPackage(_package);
         for(String filepath : tableConfigFiles ) {
             if(filepath.endsWith(".xml")) {
@@ -93,7 +94,7 @@ public class TableConfigXmlBuilder {
         NodeData nodeData = new XMLHelper().parseXML(file);
         TableConfig config = new TableConfig();
         
-        // table
+        // table sqlName remarks className isSimple
         BeanHelper.copyProperties(config, nodeData.attributes,true);
         
         for(NodeData child : nodeData.childs) {

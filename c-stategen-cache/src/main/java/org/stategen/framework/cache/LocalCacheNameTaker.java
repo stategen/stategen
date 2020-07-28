@@ -134,8 +134,8 @@ public class LocalCacheNameTaker<T> extends BaseLocalCacheNameTaker implements I
                 //读锁解
                 rrwLock.readLock().unlock();
                 try {
-                    rrwLock.writeLock().lock();
                     if (partCache == null) {
+                        rrwLock.writeLock().lock();
                         try {
                             partCache = generator.generateCache();
                             cacheMap.put(key, partCache);
