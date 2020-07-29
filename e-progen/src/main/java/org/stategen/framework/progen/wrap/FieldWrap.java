@@ -19,6 +19,7 @@ package org.stategen.framework.progen.wrap;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 
+import org.stategen.framework.annotation.FieldNameConst;
 import org.stategen.framework.progen.NamedContext;
 import org.stategen.framework.util.AnnotationUtil;
 import org.stategen.framework.util.StringUtil;
@@ -47,6 +48,8 @@ public class FieldWrap extends NamedWrap {
     
     /***fastJson定的输入字段，TODO,jackson,gson**/
     private String _jsonFieldName;
+    
+    private Boolean isFieldNameConst;
 
     public FieldWrap(NamedContext context) {
         super(context);
@@ -89,6 +92,15 @@ public class FieldWrap extends NamedWrap {
             deserialize = AnnotationUtil.getAnnotationValueFormMembers(JSONField.class, JSONField::deserialize, true, getMembers());
         }
         return deserialize;
+    }
+    
+    
+    public Boolean getIsFieldNameConst() {
+        if (isFieldNameConst ==null) {
+            FieldNameConst fieldNameConstAnno = AnnotationUtil.getAnnotationFormMembers(FieldNameConst.class, getMembers());
+            isFieldNameConst = fieldNameConstAnno!=null;
+        }
+        return isFieldNameConst;
     }
     
     @Override
