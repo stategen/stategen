@@ -189,7 +189,7 @@ public class PropertiesHelper {
 	}
 	
     private static Properties resolveProperties(Properties props) {
-		Properties result = new Properties();
+        Properties result = new Properties();
 		for(Object s : props.keySet()) {
 			String sourceKey = s.toString();
 			String key  = resolveProperty(sourceKey,props);

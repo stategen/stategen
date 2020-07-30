@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -98,10 +97,10 @@ public class StringHelper {
      * @return
      */
     public static Map<String, String> getDirValuesMap(Map<String, Object> map) {
-        Map<String, String> dirValues = new HashMap<String, String>();
-        Set<String> keys = map.keySet();
-        for (Object key : keys) {
-            Object value = map.get(key);
+        Map<String, String> dirValues = new HashMap<String, String>(map.size());
+        for (Entry<String, Object> entry : map.entrySet()){
+            String key =entry.getKey();
+            Object value = entry.getValue();
             if (key instanceof String && value instanceof String) {
                 String dirKey = key + "_dir";
                 String dirValue = value.toString().replace('.', '/');
@@ -112,10 +111,12 @@ public class StringHelper {
     }
 
     public static String unescapeXml(String str) {
-        if (str == null)
+        if (str == null) {
             return null;
-        for (String key : XML.keySet()) {
-            String value = XML.get(key);
+        }
+        for (Entry<String, String> entry :XML.entrySet()){
+            String key =entry.getKey();
+            String value=entry.getValue();
             str = StringHelper.replace(str, "&" + key + ";", value);
         }
         return str;
@@ -157,8 +158,9 @@ public class StringHelper {
 
     private static String getEscapedStringByChar(char c) {
         String escapedStr = null;
-        for (String key : XML.keySet()) {
-            String value = XML.get(key);
+        for (Entry<String, String> entry :XML.entrySet()){
+            String key =entry.getKey();
+            String value=entry.getValue();
             if (c == value.charAt(0)) {
                 escapedStr = "&" + key + ";";
             }

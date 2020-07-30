@@ -2,6 +2,7 @@ package cn.org.rapid_framework.generator.util.typemapping;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import cn.org.rapid_framework.generator.util.StringHelper;
 
@@ -18,10 +19,9 @@ public class JavaPrimitiveTypeMapping {
 		wraper2primitive.put("Boolean", "boolean");
 		wraper2primitive.put("Integer", "int");
 		wraper2primitive.put("Character", "char");
-		
-		for(String key : wraper2primitive.keySet()) {
-			primitive2wraper.put(wraper2primitive.get(key), key);
-		}
+		for (Entry<String, String> entry :wraper2primitive.entrySet()){
+		    primitive2wraper.put(entry.getValue(), entry.getKey());
+        }
 	}
 
 	public static String getPrimitiveTypeOrNull(String clazz) {

@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 
 public class BeanHelper {
@@ -102,8 +102,8 @@ public class BeanHelper {
     }
     
     public static void copyProperties(Object target, Map<String, Object> source,boolean ignoreCase)  {
-        Set<String> keys = source.keySet();
-        for(String key : keys) {
+        for (Entry<String, Object> entry :source.entrySet()){
+            String key =entry.getKey();
             if ("xml:base".equalsIgnoreCase(key)){
                 continue;
             }
@@ -111,7 +111,7 @@ public class BeanHelper {
         	if(pd == null) {
         		throw new IllegalArgumentException("not found property:'"+key+"' on class:"+target.getClass());
         	}
-        	setProperty(target, pd, source.get(key));
+        	setProperty(target, pd, entry.getValue());
         }
     }
     
@@ -151,8 +151,10 @@ public class BeanHelper {
     static class MapHelper {
 	    public static Object getValue(Map<String, Object> map,String property, boolean ignoreCase) {
 	    	if(ignoreCase) {
-				for(Object key : map.keySet()) {
-						if(property.equalsIgnoreCase(key.toString())) {
+	    	    property=property.toLowerCase();
+				for(String key : map.keySet()) {
+				        String lowKey =key.toLowerCase();
+						if(property.equals(lowKey)) {
 							return map.get(key);
 						}
 				}
@@ -164,11 +166,13 @@ public class BeanHelper {
 	    
 	    public static boolean containsKey(Map<String, Object> map,String property, boolean ignoreCase) {
 	    	if(ignoreCase) {
-				for(Object key : map.keySet()) {
-						if(property.equalsIgnoreCase(key.toString())) {
-							return true;
-						}
-				}
+                property=property.toLowerCase();
+                for(String key : map.keySet()) {
+                        String lowKey =key.toLowerCase();
+                        if(property.equals(lowKey)) {
+                            return true;
+                        }
+                }
 				return false;
 	    	}else {
 	    		return map.containsKey(property);

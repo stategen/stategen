@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.WeakHashMap;
 
 import javax.sql.DataSource;
@@ -204,9 +205,9 @@ public class SQLErrorCodesFactory {
 	    try {
 	        conn = ds.getConnection();
 	        String dbName = (String) conn.getMetaData().getDatabaseProductName();
-	        
-	        for (String database : this.errorCodesMap.keySet()) {
-	            SQLErrorCodes candidate = errorCodesMap.get(database);
+	        for (Entry<String, SQLErrorCodes> entry :errorCodesMap.entrySet()){
+	            String database =entry.getKey();
+	            SQLErrorCodes candidate =entry.getValue();
                 if (database.equals(dbName) || PatternMatchHelper.simpleMatch(candidate.getDatabaseProductNames(), dbName)) {
                     return database;
                 }

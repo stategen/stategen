@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import cn.org.rapid_framework.generator.GeneratorProperties;
@@ -128,14 +129,15 @@ public class GLogger {
         if (logLevel <= DEBUG) {
             GLogger.println(string);
             if(templateModel == null) return;
-            for(Object key : templateModel.keySet()) {
+            for (Entry<String, Object> entry :templateModel.entrySet()){
+                String key =entry.getKey();
                 if(System.getProperties().containsKey(key) || GeneratorProperties.getProperties().containsKey(key)) {
                     continue;
                 }
                 if(key.toString().endsWith("_dir")) {
                     continue;
                 }
-                GLogger.println(key+" = " + templateModel.get(key));
+                GLogger.println(key+" = " + entry.getValue());
             }
         }
     }

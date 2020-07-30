@@ -221,10 +221,12 @@ public class Generator {
 
     public void processTemplateRootDirs(Map<String, Object> templateModel, Map<String, Object> filePathModel, boolean isDelete,boolean isTable)
             throws Exception {
-        if (StringUtil.isBlank(getOutRootDir()))
+        if (StringUtil.isBlank(getOutRootDir())) {
             throw new IllegalStateException("'outRootDir' property must be not empty.");
-        if (templateRootDirs == null || templateRootDirs.size() == 0)
+        }
+        if (templateRootDirs == null || templateRootDirs.size() == 0) {
             throw new IllegalStateException("'templateRootDirs'  must be not empty");
+        }
 
         GLogger.debug("******* Template reference variables *********", templateModel);
         GLogger.debug("\n\n******* FilePath reference variables *********", filePathModel);
