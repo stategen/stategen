@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 import cn.org.rapid_framework.generator.util.IOHelper;
 import cn.org.rapid_framework.generator.util.StringHelper;
+
+import lombok.Cleanup;
 /**
  * get parameter names from java source file
  * @author badqiu
@@ -41,17 +43,12 @@ public class JavaSourceParanamer implements Paranamer{
 	        }else {
 	            throw new IllegalArgumentException("unknow AccessibleObject"+methodOrConstructor+",must be Method or Constructor");
 	        }
-	        
+	        @Cleanup
 	        InputStream javaSourceInputStream = classLoader.getResourceAsStream(javaSource);
-	        try {
-	        	if(javaSourceInputStream != null) {
-	        		return parser.parseJavaFileForParamNames(methodOrConstructor, IOHelper.toString(javaSourceInputStream));
-	        	}
-	        	return Paranamer.EMPTY_NAMES;
-	        }finally {
-	        	if(javaSourceInputStream != null) 
-	        		javaSourceInputStream.close();
-	        }
+        	if(javaSourceInputStream != null) {
+        		return parser.parseJavaFileForParamNames(methodOrConstructor, IOHelper.toString(javaSourceInputStream));
+        	}
+        	return Paranamer.EMPTY_NAMES;
         }catch(IOException e) {
         	if(throwExceptionIfMissing) {
         		throw new RuntimeException("IOException while reading javasource,method:"+methodOrConstructor,e);

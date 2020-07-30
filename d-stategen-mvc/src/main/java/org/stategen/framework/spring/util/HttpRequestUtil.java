@@ -96,17 +96,16 @@ public class HttpRequestUtil {
         // 将返回的输入流转换成字符串 
         @Cleanup
         InputStream inputStream = httpUrlConn.getInputStream();
+        @Cleanup
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StringUtil.UTF_8);
+        @Cleanup
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
         String str = null;
         while ((str = bufferedReader.readLine()) != null) {
             buffer.append(str);
         }
-        bufferedReader.close();
-        inputStreamReader.close();
         httpUrlConn.disconnect();
-
         return buffer.toString();
     }
 
@@ -139,8 +138,8 @@ public class HttpRequestUtil {
      */
     public static String sendGet(String url, String params) throws IOException {
         String result = "";
+        @Cleanup
         BufferedReader in = null;
-        try {
             String urlNameString = url;
             if (StringUtil.isNotBlank(params)) {
                 urlNameString = urlNameString + "?" + params;
@@ -163,15 +162,7 @@ public class HttpRequestUtil {
             while ((line = in.readLine()) != null) {
                 result += line;
             }
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (Exception e2) {
-                //skip
-            }
-        }
+
         return result;
     }
 
@@ -188,10 +179,11 @@ public class HttpRequestUtil {
      * @throws IOException 
      */
     public static String sendPost(String url, String params, boolean isProxy) throws IOException {
+        @Cleanup
         OutputStreamWriter out = null;
+        @Cleanup
         BufferedReader in = null;
         String result = "";
-        try {
             URL realUrl = new URL(url);
             HttpURLConnection conn = null;
             if (isProxy) {//使用代理模式
@@ -231,20 +223,7 @@ public class HttpRequestUtil {
             while ((line = in.readLine()) != null) {
                 result += line;
             }
-        }
-        //使用finally块来关闭输出流、输入流
-        finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException ex) {
-                //skip
-            }
-        }
+
         return result;
     }
 

@@ -67,7 +67,7 @@ public class PatternTest {
         }
         System.out.println(sb.toString());
     }
-    @Test
+//    @Test
     public void testMax(){
         String maxAnno="abc//    @Id\r\n" + 
                 " cde //    @Max(64)\r\n" + 
@@ -90,6 +90,17 @@ public class PatternTest {
         compile = Pattern.compile("!@Max",   Pattern.DOTALL);
         matcher = compile.matcher(maxAnno);
         System.out.println("matcher.end()<===========>:" + matcher.find());
+        
+    }
+    
+    @Test
+    public void testStr() {
+        String str ="abcdesfg";
+        StringBuffer sb1=new StringBuffer().append(str.substring(1));
+        StringBuffer sb2=new StringBuffer().append(str,1,str.length());
+        System.out.println(sb1.toString()+"<===========>:" + sb2.toString());
+        
+        System.out.println('0'<'9');
         
     }
 }

@@ -33,6 +33,8 @@ import org.stategen.framework.util.StringUtil;
 import cn.org.rapid_framework.generator.provider.db.sql.model.SqlParameter;
 import cn.org.rapid_framework.generator.util.StringHelper;
 
+import lombok.Cleanup;
+
 /**
  * 用于生成代码的Table对象.对应数据库的table
  * @author badqiu
@@ -334,6 +336,7 @@ public class Table implements java.io.Serializable,Cloneable {
         
                // get imported keys a
     
+               @Cleanup
                ResultSet fkeys = dbmd.getImportedKeys(catalog,schema,this.sqlName);
 
                while ( fkeys.next()) {
@@ -345,7 +348,6 @@ public class Table implements java.io.Serializable,Cloneable {
                  Integer iseq   = new Integer(seq);
                  getImportedKeys().addForeignKey(pktable,pkcol,fkcol,iseq);
                }
-               fkeys.close();
     }
     
     /**
@@ -354,6 +356,7 @@ public class Table implements java.io.Serializable,Cloneable {
     public void initExportedKeys(DatabaseMetaData dbmd) throws java.sql.SQLException {
                // get Exported keys
     
+               @Cleanup
                ResultSet fkeys = dbmd.getExportedKeys(catalog,schema,this.sqlName);
               
                while ( fkeys.next()) {
@@ -365,7 +368,6 @@ public class Table implements java.io.Serializable,Cloneable {
                  Integer iseq   = new Integer(seq);
                  getExportedKeys().addForeignKey(fktable,fkcol,pkcol,iseq);
                }
-               fkeys.close();
     }
     
     /**

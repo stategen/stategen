@@ -34,12 +34,13 @@ import cn.org.rapid_framework.generator.provider.db.DataSourceProvider;
 import cn.org.rapid_framework.generator.provider.db.table.model.Column;
 import cn.org.rapid_framework.generator.provider.db.table.model.Table;
 import cn.org.rapid_framework.generator.util.BeanHelper;
-import cn.org.rapid_framework.generator.util.DBHelper;
 import cn.org.rapid_framework.generator.util.FileHelper;
 import cn.org.rapid_framework.generator.util.GLogger;
 import cn.org.rapid_framework.generator.util.StringHelper;
 import cn.org.rapid_framework.generator.util.XMLHelper;
 import cn.org.rapid_framework.generator.util.XMLHelper.NodeData;
+
+import lombok.Cleanup;
 
 /**
  * 
@@ -104,8 +105,9 @@ public class TableFactory {
     }
     
     public List<Table> getAllTables() {
-        Connection conn = null;
         try {
+            @Cleanup
+            Connection conn = null;
             conn = DataSourceProvider.getConnection();
             List<Table> tables = new TableCreateProcessor(conn, getSchema(), getCatalog(), null).getAllTables();
             for (Table t : tables) {
@@ -114,9 +116,7 @@ public class TableFactory {
             return tables;
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            DBHelper.close(conn);
-        }
+        } 
     }
     
     private void dispatchOnTableCreatedEvent(Table t) {
@@ -148,8 +148,9 @@ public class TableFactory {
         }
         
         if (t == null) {
-            Connection conn = null;
             try {
+                @Cleanup
+                Connection conn = null;
                 conn = DataSourceProvider.getOpenedConnection();
                 throw new NotFoundTableException("not found table with give name:" + tableName
                         + (DatabaseMetaDataUtils.isOracleDataBase(DatabaseMetaDataUtils.getMetaData(conn,tableName))
@@ -160,9 +161,7 @@ public class TableFactory {
                         + getCatalog());
             } catch (SQLException e) {
                 throw new RuntimeException(e);
-            } finally {
-                DBHelper.close(conn);
-            }
+            } 
         }
         dispatchOnTableCreatedEvent(t);
         return t;
@@ -182,17 +181,14 @@ public class TableFactory {
             throw new IllegalArgumentException("tableName must be not empty");
         catalog = StringHelper.defaultIfEmpty(catalog, null);
         schema  = StringHelper.defaultIfEmpty(schema, null);
-        
+        @Cleanup
         Connection       conn       = DataSourceProvider.getConnection();
         DatabaseMetaData dbMetaData = conn.getMetaData();
+        @Cleanup
         ResultSet        rs         = dbMetaData.getTables(catalog, schema, tableName, null);
-        try {
-            while (rs.next()) {
-                Table table = new TableCreateProcessor(conn, getSchema(), getCatalog(), tableName).createTable(rs);
-                return table;
-            }
-        } finally {
-            DBHelper.close(conn, rs);
+        while (rs.next()) {
+            Table table = new TableCreateProcessor(conn, getSchema(), getCatalog(), tableName).createTable(rs);
+            return table;
         }
         return null;
     }
@@ -267,23 +263,22 @@ public class TableFactory {
         
         private List<Table> getAllTables() throws SQLException {
             DatabaseMetaData dbMetaData = connection.getMetaData();
+            @Cleanup
             ResultSet        rs         = dbMetaData.getTables(getCatalog(), getSchema(), null, null);
-            try {
                 List<Table> tables = new ArrayList<Table>();
                 while (rs.next()) {
                     tables.add(createTable(rs));
                 }
                 return tables;
-            } finally {
-                DBHelper.close(rs);
-            }
         }
         
         private String[] getSynonymOwnerAndTableName(String synonymName) {
-            PreparedStatement ps  = null;
-            ResultSet         rs  = null;
             String[]          ret = new String[2];
             try {
+                @Cleanup
+                PreparedStatement ps  = null;
+                @Cleanup
+                ResultSet         rs  = null;
                 ps = connection.prepareStatement(
                         "select table_owner,table_name from sys.all_synonyms where synonym_name=? and owner=?");
                 ps.setString(1, synonymName);
@@ -303,8 +298,6 @@ public class TableFactory {
                         catalog);
                 GLogger.error(e.getMessage(), e);
                 throw new RuntimeException("Exception in getting synonym owner " + databaseStructure);
-            } finally {
-                DBHelper.close(null, ps, rs);
             }
             return ret;
         }
@@ -325,6 +318,7 @@ public class TableFactory {
             Map<String, Object> uniqueIndices = new HashMap<>();
             // maps column names to the index name.
             Map<String, List<String>>       uniqueColumns = new HashMap<>();
+            @Cleanup
             ResultSet indexRs       = null;
             
             try {
@@ -360,9 +354,7 @@ public class TableFactory {
             } catch (Throwable t) {
                 // Bug #604761 Oracle getIndexInfo() needs major grants
                 // http://sourceforge.net/tracker/index.php?func=detail&aid=604761&group_id=36044&atid=415990
-            } finally {
-                DBHelper.close(indexRs);
-            }
+            } 
             
             List<Column> columns = getTableColumns(table, primaryKeys, indices, uniqueIndices, uniqueColumns);
             
@@ -388,8 +380,8 @@ public class TableFactory {
                 Map<String, List<String>> uniqueColumns) throws SQLException {
             // get the columns
             List<Column>      columns  = new LinkedList<>();
+            @Cleanup
             ResultSet columnRs = getColumnsResultSet(table);
-            try {
                 while (columnRs.next()) {
                     int    sqlType            = columnRs.getInt("DATA_TYPE");
                     String sqlTypeName        = columnRs.getString("TYPE_NAME");
@@ -423,9 +415,6 @@ public class TableFactory {
                     BeanHelper.copyProperties(column, TableOverrideValuesProvider.getColumnConfigValues(table, column));
                     columns.add(column);
                 }
-            } finally {
-                DBHelper.close(columnRs);
-            }
             return columns;
         }
         
@@ -443,8 +432,8 @@ public class TableFactory {
         private List<String> getTablePrimaryKeys(Table table) throws SQLException {
             // get the primary keys
             List<String>      primaryKeys  = new LinkedList<>();
+            @Cleanup
             ResultSet primaryKeyRs = null;
-            try {
                 if (table.getOwnerSynonymName() != null) {
                     primaryKeyRs = getMetaData().getPrimaryKeys(getCatalog(), table.getOwnerSynonymName(),
                             table.getTableSynonymName());
@@ -456,9 +445,6 @@ public class TableFactory {
                     GLogger.trace("primary key:" + columnName);
                     primaryKeys.add(columnName);
                 }
-            } finally {
-                DBHelper.close(primaryKeyRs);
-            }
             return primaryKeys;
         }
         
@@ -556,9 +542,11 @@ public class TableFactory {
         }
         
         public static String queryForString(Connection conn, String sql, Integer columnIndex) {
-            Statement s  = null;
-            ResultSet rs = null;
             try {
+                @Cleanup
+                Statement s  = null;
+                @Cleanup
+                ResultSet rs = null;
                 s  = conn.createStatement();
                 rs = s.executeQuery(sql);
                 if (rs.next()) {
@@ -568,9 +556,7 @@ public class TableFactory {
             } catch (SQLException e) {
                 e.printStackTrace();
                 return null;
-            } finally {
-                DBHelper.close(null, s, rs);
-            }
+            } 
         }
     }
     
@@ -618,8 +604,7 @@ public class TableFactory {
         }
         
         public static String getDatabaseStructureInfo(DatabaseMetaData metadata, String schema, String catalog) {
-            ResultSet     schemaRs  = null;
-            ResultSet     catalogRs = null;
+
             String        nl        = System.getProperty("line.separator");
             StringBuilder sb        = new StringBuilder(nl);
             // Let's give the user some feedback. The exception
@@ -628,6 +613,9 @@ public class TableFactory {
             sb.append("Configured catalog:").append(catalog).append(nl);
             
             try {
+                @Cleanup
+                ResultSet     schemaRs  = null;
+                
                 schemaRs = metadata.getSchemas();
                 sb.append("Available schemas:").append(nl);
                 while (schemaRs.next()) {
@@ -636,11 +624,12 @@ public class TableFactory {
             } catch (SQLException e2) {
                 GLogger.warn("Couldn't get schemas", e2);
                 sb.append("  ?? Couldn't get schemas ??").append(nl);
-            } finally {
-                DBHelper.close(schemaRs);
-            }
+            } 
             
             try {
+                @Cleanup
+                ResultSet     catalogRs = null;
+                
                 catalogRs = metadata.getCatalogs();
                 sb.append("Available catalogs:").append(nl);
                 while (catalogRs.next()) {
@@ -649,9 +638,7 @@ public class TableFactory {
             } catch (SQLException e2) {
                 GLogger.warn("Couldn't get catalogs", e2);
                 sb.append("  ?? Couldn't get catalogs ??").append(nl);
-            } finally {
-                DBHelper.close(catalogRs);
-            }
+            } 
             return sb.toString();
         }
     }

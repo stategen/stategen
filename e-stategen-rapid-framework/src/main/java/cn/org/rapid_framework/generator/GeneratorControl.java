@@ -37,7 +37,6 @@ import org.stategen.framework.util.StringUtil;
 import org.xml.sax.InputSource;
 
 import cn.org.rapid_framework.generator.provider.db.DataSourceProvider;
-import cn.org.rapid_framework.generator.util.DBHelper;
 import cn.org.rapid_framework.generator.util.FileHelper;
 import cn.org.rapid_framework.generator.util.GLogger;
 import cn.org.rapid_framework.generator.util.IOHelper;
@@ -326,13 +325,10 @@ public class GeneratorControl {
     }
     
     public List<Map<String, Object>> queryForList(String sql,int limit) throws SQLException {
+        @Cleanup
         Connection conn = DataSourceProvider.getConnection();
-        try {
-            List<Map<String, Object>> result =  SqlExecutorHelper.queryForList(conn, sql, limit);
-            return result;
-        }finally {
-            DBHelper.close(conn);
-        }
+        List<Map<String, Object>> result =  SqlExecutorHelper.queryForList(conn, sql, limit);
+        return result;
     }
     
     boolean deleteGeneratedFile = false;

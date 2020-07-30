@@ -27,7 +27,9 @@ public class FreemarkerHelper {
 			try {
 				Template t = new Template("__auto_include_test__",new StringReader("1"),conf);
 				conf.setAutoIncludes(Arrays.asList(new String[]{autoInclude}));
-				t.process(new HashMap<>(), new StringWriter());
+				@Cleanup
+				StringWriter stringWriter = new StringWriter();
+				t.process(new HashMap<>(), stringWriter);
 				results.add(autoInclude);
 			}catch(Exception e) {
 			}
@@ -39,13 +41,16 @@ public class FreemarkerHelper {
 	    @Cleanup
 	    FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
 	    @Cleanup
-	    Writer out = new BufferedWriter(new OutputStreamWriter(fileOutputStream,encoding));
+	    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream,encoding);
+	    @Cleanup
+	    Writer out = new BufferedWriter(outputStreamWriter);
 		template.process(model,out);
 	}
 	
 	public static String processTemplateString(String templateString,Map<String, Object> model,Configuration conf) {
-		StringWriter out = new StringWriter();
 		try {
+		    @Cleanup
+		    StringWriter out = new StringWriter();
 			Template template = new Template("templateString...",new StringReader(templateString),conf);
 			template.process(model, out);
 			return out.toString();

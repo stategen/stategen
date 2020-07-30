@@ -180,8 +180,8 @@ public class JavadocParanamer implements Paranamer {
 				throw new IllegalArgumentException(archive.getAbsolutePath()
 						+ " is not a zip file.");
 			// check that a "package-list" exists somewhere in the archive
+			@Cleanup
 			ZipFile zip = new ZipFile(archive);
-			try {
 				// we need to check for a file named "package-list".
 				// There may be multiple files in the archive
 				// but we cannot use ZipFile.getEntry for suffix names
@@ -209,16 +209,10 @@ public class JavadocParanamer implements Paranamer {
 				base =
 						name.substring(0, name.length()
 								- "package-list".length());
+				@Cleanup
 				InputStream input = zip.getInputStream(entry);
-				try {
 					String packageListString = streamToString(input);
 					parsePackageList(packageListString);
-				} finally {
-					input.close();
-				}
-			} finally {
-				zip.close();
-			}
 		} else
 			throw new IllegalArgumentException(
 				archiveOrDirectory.getAbsolutePath()
@@ -249,13 +243,10 @@ public class JavadocParanamer implements Paranamer {
 
 		// check the package-list
 		URL packageListURL = new URL(url.toString() + "/package-list");
+		@Cleanup
 		InputStream input = urlToInputStream(packageListURL);
-		try {
-			String packageList = streamToString(input);
-			parsePackageList(packageList);
-		} finally {
-			input.close();
-		}
+		String packageList = streamToString(input);
+		parsePackageList(packageList);
 	}
 
     public String[] lookupParameterNames(AccessibleObject methodOrConstructor) {
@@ -324,6 +315,7 @@ public class JavadocParanamer implements Paranamer {
 			ZipEntry entry = archive.getEntry(base + path + ".html");
 			if (entry == null)
 				throw CLASS_NOT_SUPPORTED;
+			@Cleanup
 			InputStream input = archive.getInputStream(entry);
 			return getParameterNames2(input, constructorOrMethodName, types);
 		} else if (isDirectory) {
@@ -336,6 +328,7 @@ public class JavadocParanamer implements Paranamer {
 		} else if (isURI) {
 			try {
 				URL url = new URL(location.toString() + "/" + path + ".html");
+				@Cleanup
 				InputStream input = urlToInputStream(url);
 				return getParameterNames2(input, constructorOrMethodName, types);
 			} catch (FileNotFoundException e) {
@@ -354,8 +347,9 @@ public class JavadocParanamer implements Paranamer {
 	 */
 	private String[] getParameterNames2(InputStream input,
 			String constructorOrMethodName, Class<?>[] types) throws IOException {
-		String javadoc = streamToString(input);
-		input.close();
+	    @Cleanup
+	    InputStream in=input;
+		String javadoc = streamToString(in);
 
 		// String we're looking for is like
 		// 
@@ -420,7 +414,9 @@ public class JavadocParanamer implements Paranamer {
 
 	// storing the list of packages that we support is very lightweight
 	private void parsePackageList(String packageList) throws IOException {
+	    @Cleanup
 		StringReader reader = new StringReader(packageList);
+	    @Cleanup
 		BufferedReader breader = new BufferedReader(reader);
 		String line;
 		while ((line = breader.readLine()) != null) {
@@ -430,13 +426,15 @@ public class JavadocParanamer implements Paranamer {
 
 	// read an InputStream into a UTF-8 String
 	private String streamToString(InputStream input) throws IOException {
-		InputStreamReader reader;
+	    @Cleanup
+		InputStreamReader reader =null;
 		try {
 			reader = new InputStreamReader(input, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			// this should never happen
 			reader = new InputStreamReader(input);
 		}
+		@Cleanup
 		BufferedReader breader = new BufferedReader(reader);
 		String line;
 		StringBuilder builder = new StringBuilder();

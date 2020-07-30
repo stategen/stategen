@@ -13,31 +13,30 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import lombok.Cleanup;
+
 public class SqlExecutorHelper {
 
 	public static List<Map<String, Object>> queryForList(Connection conn,String sql,int limit) throws SQLException {
+	    @Cleanup
 		PreparedStatement ps = conn.prepareStatement(sql.trim());
 		ps.setMaxRows(limit);
 		ps.setFetchDirection(ResultSet.FETCH_FORWARD);
+		@Cleanup
 		ResultSet rs = ps.executeQuery();
-		try {
 			List<Map<String, Object>> result =  toListMap(limit, rs);
 			return result;
-		}finally {
-			DBHelper.close(rs);
-		}
 	}
 	
 	public static boolean execute(DataSource ds,String sql) {
-		Connection conn = null;
-		try {
-			conn = ds.getConnection();
+	    try {
+	        @Cleanup
+	        Connection conn = ds.getConnection();
+			@Cleanup
 			Statement s = conn.createStatement();
 			return s.execute(sql);
 		}catch(SQLException e) {
 			throw new RuntimeException(e.getMessage()+" errorCode:"+e.getErrorCode()+" SQLState:"+e.getSQLState());
-		}finally {
-			DBHelper.close(conn);
 		}
 	}
 

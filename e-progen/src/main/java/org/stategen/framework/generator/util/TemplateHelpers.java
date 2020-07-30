@@ -36,6 +36,7 @@ import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import lombok.Cleanup;
 
 /**
  * The Class TemplateHelpers.
@@ -51,7 +52,9 @@ public class TemplateHelpers {
             try {
                 Template t = new Template("__auto_include_test__", new StringReader("1"), conf);
                 conf.setAutoIncludes(Arrays.asList(new String[] { autoInclude }));
-                t.process(new HashMap(), new StringWriter());
+                @Cleanup
+                StringWriter stringWriter = new StringWriter();
+                t.process(new HashMap(), stringWriter);
                 results.add(autoInclude);
             } catch (Exception e) {
 
@@ -108,6 +111,7 @@ public class TemplateHelpers {
         stringLoader.putTemplate(stringTemplate, dest);
         conf.setTemplateLoader(stringLoader);
         /* 创建数据模型 */
+        @Cleanup
         Writer out=null;
         String result =null;
         try {

@@ -40,6 +40,8 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Cleanup;
+
 
 /**
  * An ASM-based implementation of Paranamer. It relies on debug information compiled
@@ -90,23 +92,21 @@ public class BytecodeReadingParanamer implements Paranamer {
         if (types.length == 0) {
             return EMPTY_NAMES;
         }
-        InputStream byteCodeStream = getClassAsStream(declaringClass);
-        if (byteCodeStream == null) {
-            if (throwExceptionIfMissing) {
-                throw new ParameterNamesNotFoundException("Unable to get class bytes");
-            } else {
-                return Paranamer.EMPTY_NAMES;
-            }
-        }
         try {
+            @Cleanup
+            InputStream byteCodeStream = getClassAsStream(declaringClass);
+            if (byteCodeStream == null) {
+                if (throwExceptionIfMissing) {
+                    throw new ParameterNamesNotFoundException("Unable to get class bytes");
+                } else {
+                    return Paranamer.EMPTY_NAMES;
+                }
+            }
+        
             ClassReader reader = new ClassReader(byteCodeStream);
             TypeCollector visitor = new TypeCollector(name, types, throwExceptionIfMissing);
             reader.accept(visitor);
             String[] parameterNamesForMethod = visitor.getParameterNamesForMethod();
-            try {
-                byteCodeStream.close();
-            } catch (IOException e) {
-            }
             return parameterNamesForMethod;
         } catch (IOException e) {
             if (throwExceptionIfMissing) {

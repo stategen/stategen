@@ -204,6 +204,7 @@ public class FmHelper {
             isFileExits = true;
             if (notReplacefile) {
                 GLogger.info(">>>>>>>>>>>>>文件已存在，不再次生成:" + canonicalFile.getCanonicalFile());
+                @Cleanup
                 CharArrayWriter charArrayWriter = new CharArrayWriter(1024 * 1024);
                 template.process(model, charArrayWriter);
                 GLogger.info("" + charArrayWriter);
@@ -347,8 +348,9 @@ public class FmHelper {
      * @return the string
      */
     public static String processTemplateString(String templateString, Map<String, Object> model, Configuration conf) {
-        StringWriter out = new StringWriter();
         try {
+            @Cleanup
+            StringWriter out = new StringWriter();
             Template template = new Template(templateString, new StringReader(templateString), conf);
             template.process(model, out);
             return out.toString();

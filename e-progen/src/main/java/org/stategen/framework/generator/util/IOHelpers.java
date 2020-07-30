@@ -69,6 +69,7 @@ public class IOHelpers {
 
     public static List<String> readLines(Reader input) {
         try {
+            @Cleanup
             BufferedReader reader = new BufferedReader(input);
             List<String> list = new ArrayList<String>();
             String line = reader.readLine();
@@ -83,9 +84,14 @@ public class IOHelpers {
     }
 
     public static String toString(Reader in) {
-        StringWriter out = new StringWriter();
-        copy(in, out);
-        return out.toString();
+        try {
+            @Cleanup
+            StringWriter out = new StringWriter();
+            copy(in, out);
+            return out.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(),e);
+        }
     }
 
     public static String readFile(File file, String encoding) throws IOException {
@@ -173,15 +179,23 @@ public class IOHelpers {
     }
 
     public static String toString(InputStream inputStream) {
-        Reader reader = new InputStreamReader(inputStream);
-        StringWriter writer = new StringWriter();
-        copy(reader, writer);
-        return writer.toString();
+        try {
+            @Cleanup
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            @Cleanup
+            StringWriter writer = new StringWriter();
+            copy(reader, writer);
+            return writer.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static String toString(String encoding, InputStream inputStream) {
         try {
+            @Cleanup
             Reader reader = new InputStreamReader(inputStream, encoding);
+            @Cleanup
             StringWriter writer = new StringWriter();
             copy(reader, writer);
             return writer.toString();
@@ -244,27 +258,5 @@ public class IOHelpers {
         }
     }
 
-    public static void copyAndClose(InputStream in, OutputStream out) {
-        try {
-            copy(in, out);
-        } finally {
-            close(in, out);
-        }
-    }
-
-    public static void close(InputStream in, OutputStream out) {
-        try {
-            if (in != null)
-                in.close();
-        } catch (Exception e) {
-        }
-        ;
-        try {
-            if (out != null)
-                out.close();
-        } catch (Exception e) {
-        }
-        ;
-    }
 
 }

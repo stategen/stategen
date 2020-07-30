@@ -128,11 +128,8 @@ public class StringHelper {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
-            String escapedStr = getEscapedStringByChar(c);
-            if (escapedStr == null)
-                sb.append(c);
-            else
-                sb.append(escapedStr);
+            Object escapedStr = getEscapedStringByChar(c);
+            sb.append(escapedStr);
         }
         return sb.toString();
     }
@@ -147,25 +144,28 @@ public class StringHelper {
                 sb.append(c);
                 continue;
             }
-            String escapedStr = getEscapedStringByChar(c);
-            if (escapedStr == null)
-                sb.append(c);
-            else
-                sb.append(escapedStr);
+            Object escapedStr = getEscapedStringByChar(c);
+            sb.append(escapedStr);
         }
         return sb.toString();
     }
 
-    private static String getEscapedStringByChar(char c) {
-        String escapedStr = null;
-        for (Entry<String, String> entry :XML.entrySet()){
-            String key =entry.getKey();
-            String value=entry.getValue();
-            if (c == value.charAt(0)) {
-                escapedStr = "&" + key + ";";
-            }
+    private static Object getEscapedStringByChar(char c) {
+        Character chr =c;
+        String escapedStr =UN_XML.get(c);
+        if (escapedStr!=null) {
+            return escapedStr; 
         }
-        return escapedStr;
+        return chr;
+//        String escapedStr = null;
+//        for (Entry<String, String> entry :XML.entrySet()){
+//            String key =entry.getKey();
+//            String value=entry.getValue();
+//            if (c == value.charAt(0)) {
+//                escapedStr = "&" + key + ";";
+//            }
+//        }
+//        return escapedStr;
     }
 
     public static String removePrefix(String str, String prefix) {
@@ -173,10 +173,12 @@ public class StringHelper {
     }
 
     public static String removePrefix(String str, String prefix, boolean ignoreCase) {
-        if (str == null)
+        if (str == null) {
             return null;
-        if (prefix == null)
+        }
+        if (prefix == null) {
             return str;
+        }
         if (ignoreCase) {
             if (str.toLowerCase().startsWith(prefix.toLowerCase())) {
                 return str.substring(prefix.length());
@@ -206,8 +208,9 @@ public class StringHelper {
     }
 
     public static String getExtension(String str) {
-        if (str == null)
+        if (str == null) {
             return null;
+        }
         int i = str.lastIndexOf('.');
         if (i >= 0) {
             return str.substring(i + 1);
@@ -216,8 +219,9 @@ public class StringHelper {
     }
 
     public static String insertBefore(String content, String compareToken, String insertString) {
-        if (content.indexOf(insertString) >= 0)
+        if (content.indexOf(insertString) >= 0) {
             return content;
+        }
         int index = content.indexOf(compareToken);
         if (index >= 0) {
             return new StringBuilder(content).insert(index, insertString).toString();
@@ -227,8 +231,9 @@ public class StringHelper {
     }
 
     public static String insertAfter(String content, String compareToken, String insertString) {
-        if (content.indexOf(insertString) >= 0)
+        if (content.indexOf(insertString) >= 0) {
             return content;
+        }
         int index = content.indexOf(compareToken);
         if (index >= 0) {
             return new StringBuilder(content).insert(index + compareToken.length(), insertString).toString();
@@ -257,8 +262,9 @@ public class StringHelper {
     }
 
     public static boolean contains(String str, String... keywords) {
-        if (str == null)
+        if (str == null) {
             return false;
+        }
         if (keywords == null)
             throw new IllegalArgumentException("'keywords' must be not null");
 
@@ -377,10 +383,9 @@ public class StringHelper {
     }
 
     public static String getJavaClassSimpleName(String clazz) {
-        if (clazz == null)
-            return null;
-        if (clazz.lastIndexOf(".") >= 0) {
-            return clazz.substring(clazz.lastIndexOf(".") + 1);
+        String result =getExtension(clazz);
+        if (result!=null) {
+            return result;
         }
         return clazz;
     }
@@ -467,7 +472,7 @@ public class StringHelper {
         } else {
             buf.append(Character.toLowerCase(str.charAt(0)));
         }
-        buf.append(str.substring(1));
+        buf.append(str,1,str.length());
         return buf.toString();
     }
 
@@ -555,32 +560,34 @@ public class StringHelper {
             return null;
 
         String filteredName = name;
-        if (filteredName.indexOf("_") >= 0 && filteredName.equals(filteredName.toUpperCase())) {
+        int underIdx = filteredName.indexOf("_");
+        String filteredNameUpp = filteredName.toUpperCase();
+        if (underIdx >= 0 && filteredName.equals(filteredNameUpp)) {
             filteredName = filteredName.toLowerCase();
         }
-        if (filteredName.indexOf("_") == -1 && filteredName.equals(filteredName.toUpperCase())) {
+        if (underIdx == -1 && filteredName.equals(filteredNameUpp)) {
             filteredName = filteredName.toLowerCase();
         }
 
         StringBuilder result = new StringBuilder();
-        if (filteredName != null && filteredName.length() > 0) {
+        if (isNotEmpty(filteredName)) {
             result.append(filteredName.substring(0, 1).toLowerCase());
             for (int i = 1; i < filteredName.length(); i++) {
-                String preChart = filteredName.substring(i - 1, i);
-                String c = filteredName.substring(i, i + 1);
-                if (c.equals("_")) {
-                    result.append("_");
-                    continue;
-                }
-                if (preChart.equals("_")) {
-                    result.append(c.toLowerCase());
-                    continue;
-                }
-                if (c.matches("\\d")) {
+                char preChart = filteredName.charAt(i - 1);
+                char c = filteredName.charAt(i);
+                if (c=='_') {
                     result.append(c);
-                } else if (c.equals(c.toUpperCase())) {
-                    result.append("_");
-                    result.append(c.toLowerCase());
+                    continue;
+                }
+                if (preChart=='_') {
+                    result.append(Character.toLowerCase(c));
+                    continue;
+                }
+                if (c >='0'&& c<='9') {
+                    result.append(c);
+                } else if (c == Character.toUpperCase(c)) {
+                    result.append('_');
+                    result.append(Character.toLowerCase(c));
                 } else {
                     result.append(c);
                 }
@@ -645,8 +652,9 @@ public class StringHelper {
     }
 
     public static String[] tokenizeToStringArray(String str, String seperators) {
-        if (str == null)
+        if (str == null) {
             return new String[0];
+        }
         StringTokenizer tokenlizer = new StringTokenizer(str, seperators);
         List<String> result = new ArrayList<>();
 
@@ -668,8 +676,9 @@ public class StringHelper {
     }
 
     public static String join(Object[] array, String seperator) {
-        if (array == null)
+        if (array == null) {
             return null;
+        }
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < array.length; i++) {
             result.append(array[i]);
@@ -690,8 +699,9 @@ public class StringHelper {
     }
 
     public static int containsCount(String string, String keyword) {
-        if (string == null)
+        if (string == null) {
             return 0;
+        }
         int count = 0;
         for (int i = 0; i < string.length(); i++) {
             int indexOf = string.indexOf(keyword, i);
@@ -709,12 +719,15 @@ public class StringHelper {
     }
 
     public static String getByRegex(String str, String regex, int group) {
-        if (regex == null)
+        if (regex == null) {
             throw new NullPointerException();
-        if (group < 0)
+        }
+        if (group < 0) {
             throw new IllegalArgumentException();
-        if (str == null)
+        }
+        if (str == null) {
             return null;
+        }
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(str);
         if (m.find()) {

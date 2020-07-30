@@ -250,7 +250,7 @@ public class FacadeGenerator {
             targetFileName = targetFileName.substring(0, targetFileName.length() - blobExt.length());
             isBlob         = true;
         }
-        
+        @Cleanup
         CharArrayWriter writer = new CharArrayWriter(1024 * 1024);
         //这一步就要判断，因为getCanonicalPath可能就不再含有@/
         
@@ -275,7 +275,6 @@ public class FacadeGenerator {
                 logger.info(new StringBuilder("写入二进制文件").append(fullTargetFile).toString());
             }
             Files.copy(tempFile.toPath(), fullTargetFile.toPath());
-            writer.close();
             return;
         } else {
             if (!isDirectory) {
@@ -298,7 +297,6 @@ public class FacadeGenerator {
         
         String newTargetFileName = fullTargetFileName;
         String newText           = writer.toString();
-        writer.close();
         
         if (!isDirectory) {
             if (fullTargetFile.exists() && fullTargetFile.isFile()) {

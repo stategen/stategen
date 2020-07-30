@@ -58,6 +58,8 @@ import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 
+import lombok.Cleanup;
+
 /**
  * The Class<?> ASTHelper.
  */
@@ -481,6 +483,7 @@ class ASTHelper {
                             String shortFileName) throws IOException, ParseException, InstantiationException, IllegalAccessException {
         boolean replaced = false;
         CompilationUnit nowCompilationUnit = null;
+        @Cleanup
         Reader nowFileReader = new CharArrayReader(nowJavaUnitCharArrayWriter.toCharArray());
         try {
             //下面这种不会产生乱码

@@ -1,10 +1,13 @@
 package cn.org.rapid_framework.generator.util;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Cleanup;
 
 public class GeneratorException extends RuntimeException{
 	
@@ -77,11 +80,17 @@ public class GeneratorException extends RuntimeException{
 	}
 	
 	public String toString() {
-		StringWriter out = new StringWriter();
-		for(Exception e : exceptions) {
-		    out.append(e.toString()+"\n");
-		}
-		return out.toString();
+        try {
+            @Cleanup
+            StringWriter out= new StringWriter();
+            for(Exception e : exceptions) {
+                out.append(e.toString()+"\n");
+            }
+            return out.toString();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex.getMessage(),ex);
+        }
+
 	}
 	
 	

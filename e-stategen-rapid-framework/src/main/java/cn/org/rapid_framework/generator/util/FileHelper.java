@@ -35,6 +35,8 @@ import java.util.Set;
 
 import org.stategen.framework.util.StringUtil;
 
+import lombok.Cleanup;
+
 /**
  * The Class<?> FileHelper.
  *
@@ -62,7 +64,7 @@ public class FileHelper {
 
     public static InputStream createInputStream(String file)
             throws FileNotFoundException {
-        InputStream inputStream;
+        InputStream inputStream = null;
         if (file.startsWith("classpath:")) {
             inputStream = ClassHelper.getDefaultClassLoader()
                     .getResourceAsStream(file.substring("classpath:".length()));
@@ -215,10 +217,10 @@ public class FileHelper {
             while (urls.hasMoreElements()) {
                 notFound = false;
                 URL url = urls.nextElement();
+                @Cleanup
                 InputStream input = url.openStream();
                 binaryExtentionsList.addAll(IOHelper
                         .readLines(new InputStreamReader(input)));
-                input.close();
             }
             if (notFound)
                 throw new IllegalStateException("not found required file with:"

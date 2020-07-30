@@ -346,7 +346,6 @@ public class GeneratorFacade {
                         e.printStackTrace();
                     e.printStackTrace(output);
                 }
-                output.close();
                 System.err
                         .println("***************************************************************");
                 System.err.println("* " + "* 输出目录已经生成generator_error.log用于查看错误 ");

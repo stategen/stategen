@@ -369,8 +369,7 @@ public class Generator {
                 FileInputStream fileInputStream = new FileInputStream(srcFile);
                 @Cleanup
                 FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-                IOHelper.copyAndClose(fileInputStream,
-                        fileOutputStream);
+                IOHelper.copy(fileInputStream, fileOutputStream);
                 return;
             }
             
@@ -504,6 +503,7 @@ public class Generator {
             File absoluteOutputFilePath = FileHelper.parentMkdir(outputFilePath);
             
             if (absoluteOutputFilePath.exists()) {
+                @Cleanup
                 StringWriter newFileContentCollector = new StringWriter();
                 if (GeneratorHelper.isFoundInsertLocation(gg, template, templateModel,
                         absoluteOutputFilePath, newFileContentCollector)) {

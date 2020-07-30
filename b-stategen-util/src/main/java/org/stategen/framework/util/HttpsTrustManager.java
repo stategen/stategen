@@ -77,9 +77,12 @@ public class HttpsTrustManager implements X509TrustManager {
                 os.write(outputStr.getBytes("utf-8"));
             }
             // 读取服务器端返回的内容
+            @Cleanup
             InputStream is = conn.getInputStream();
             //读取内容
+            @Cleanup
             InputStreamReader isr = new InputStreamReader(is,"utf-8");
+            @Cleanup
             BufferedReader br = new BufferedReader(isr);
             buffer = new StringBuilder();
             String line = null;
@@ -168,7 +171,7 @@ public class HttpsTrustManager implements X509TrustManager {
             
              if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) { 
                   HttpEntity entity = response.getEntity();  
-                  
+                  @Cleanup
                   InputStream in = entity.getContent();  
                   
                   FileUtils.copyInputStreamToFile(in, new File(savePath));

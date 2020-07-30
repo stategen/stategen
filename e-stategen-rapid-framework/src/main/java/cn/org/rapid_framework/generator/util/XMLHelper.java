@@ -276,7 +276,6 @@ public class XMLHelper {
         @Cleanup
         InputStream forEncodingInput = new FileInputStream(file);
         String encoding = XMLHelper.getXMLEncoding(forEncodingInput);
-        forEncodingInput.close();
         
         @Cleanup
         InputStream input = new FileInputStream(file);

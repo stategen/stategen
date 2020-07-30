@@ -37,6 +37,7 @@ public class ZipUtils {
 	 */
 	public static void unzip(File unzipDir, InputStream in) throws IOException {
 		unzipDir.mkdirs();
+		@Cleanup
 		ZipInputStream zin = new ZipInputStream(in);
 		ZipEntry entry = null;
 		while ((entry = zin.getNextEntry()) != null) {
@@ -58,7 +59,10 @@ public class ZipUtils {
 	 */
 	public static void unzip(File unzipDir,File zipFile) throws IOException {
 	    @Cleanup
-		InputStream in = new BufferedInputStream(new FileInputStream(zipFile));
+	    FileInputStream fileInputStream = new FileInputStream(zipFile);
+	    
+	    @Cleanup
+		InputStream in = new BufferedInputStream(fileInputStream);
 		unzip(unzipDir,in);
 	}
 

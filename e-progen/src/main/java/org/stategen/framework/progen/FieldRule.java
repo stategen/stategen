@@ -38,6 +38,8 @@ import org.stategen.framework.util.AssertUtil;
 import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.StringUtil;
 
+import lombok.Cleanup;
+
 /**
  * The Class FieldRule.
  */
@@ -63,8 +65,10 @@ public class FieldRule {
 
 
             try {
+                @Cleanup
                 InputStream ips = FieldRule.class.getResourceAsStream("ValidationMessages_zh_CN.xml");
 //                InputStream ips = HibernateValidator.class.getResourceAsStream("ValidationMessages_zh_CN.properties");
+                @Cleanup
                 InputStream in = new BufferedInputStream(ips);
                 messageProppties.loadFromXML(in);
 //                messageProppties.load(in);

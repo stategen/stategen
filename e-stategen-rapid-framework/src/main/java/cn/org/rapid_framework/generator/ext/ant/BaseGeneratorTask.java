@@ -1,5 +1,6 @@
 package cn.org.rapid_framework.generator.ext.ant;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Hashtable;
@@ -17,6 +18,8 @@ import org.apache.tools.ant.types.Reference;
 import cn.org.rapid_framework.generator.GeneratorFacade;
 import cn.org.rapid_framework.generator.GeneratorProperties;
 import cn.org.rapid_framework.generator.util.SystemHelper;
+
+import lombok.Cleanup;
 
 public abstract class BaseGeneratorTask extends Task{
     protected Path classpath;
@@ -36,9 +39,14 @@ public abstract class BaseGeneratorTask extends Task{
     }
     
     private void error(Exception e) {
-        StringWriter out = new StringWriter();
-        e.printStackTrace(new PrintWriter(out));
-        log(out.toString(),Project.MSG_ERR);
+        try {
+            @Cleanup
+            StringWriter out = new StringWriter();
+            e.printStackTrace(new PrintWriter(out));
+            log(out.toString(),Project.MSG_ERR);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex.getMessage(),ex);
+        }
     }
     
     protected GeneratorFacade createGeneratorFacade(String input,String output) {

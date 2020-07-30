@@ -25,9 +25,10 @@ import java.util.WeakHashMap;
 
 import javax.sql.DataSource;
 
-import cn.org.rapid_framework.generator.util.DBHelper;
 import cn.org.rapid_framework.generator.util.GLogger;
 import cn.org.rapid_framework.generator.util.PatternMatchHelper;
+
+import lombok.Cleanup;
 
 /**
  * Factory for creating {@link SQLErrorCodes} based on the
@@ -178,8 +179,9 @@ public class SQLErrorCodesFactory {
 				return sec;
 			}
 			// We could not find it - got to look it up.
-			Connection conn = null;
 			try {
+			    @Cleanup
+			    Connection conn = null;
 			    conn = dataSource.getConnection();
                 String dbName = (String) conn.getMetaData().getDatabaseProductName();;
     			if (dbName != null) {
@@ -191,7 +193,6 @@ public class SQLErrorCodesFactory {
     				return sec;
     			}
 			} catch(SQLException e) {
-			    DBHelper.close(conn);
 			    throw new IllegalStateException("canot getErrorCodes by dataSource",e);
 			}
 		}
@@ -201,8 +202,9 @@ public class SQLErrorCodesFactory {
 	}
 	
 	public String getDatabaseType(DataSource ds) {
-	    Connection conn = null; 
 	    try {
+	        @Cleanup
+	        Connection conn = null; 
 	        conn = ds.getConnection();
 	        String dbName = (String) conn.getMetaData().getDatabaseProductName();
 	        for (Entry<String, SQLErrorCodes> entry :errorCodesMap.entrySet()){
@@ -214,7 +216,6 @@ public class SQLErrorCodesFactory {
             }
 	        return null;
 	    }catch(SQLException e) {
-	        DBHelper.close(conn);
 	        throw new IllegalStateException("canot get database type by dataSource",e);
 	    }
 	}

@@ -54,6 +54,8 @@ import cn.org.rapid_framework.generator.util.sqlparse.SqlParseHelper;
 import cn.org.rapid_framework.generator.util.sqlparse.SqlParseHelper.NameWithAlias;
 import cn.org.rapid_framework.generator.util.sqlparse.StatementCreatorUtils;
 import cn.org.rapid_framework.generator.util.typemapping.JdbcType;
+
+import lombok.Cleanup;
 /**
  * 
  * 根据SQL语句生成Sql对象,用于代码生成器的生成<br />
@@ -93,39 +95,37 @@ public class SqlFactory {
         GLogger.debug("namedSql  :"+namedSql);
         GLogger.debug("executeSql :"+sql.getExecuteSql());
         GLogger.debug("*********************************");
-        
-        Connection conn = null;
-        PreparedStatement ps = null;
         try {
-            conn = DataSourceProvider.getNewConnection();
-            conn.setAutoCommit(false);
-//          if(DatabaseMetaDataUtils.isMysqlDataBase(conn.getMetaData())){
-//              conn.setReadOnly(true);
-//          }
-            String noneOrdersSql=SqlParseHelper.removeOrders(executeSql);
-            ps = conn.prepareStatement(noneOrdersSql);
-            SqlParametersParser sqlParametersParser = new SqlParametersParser();
-            sqlParametersParser.execute(parsedSql,sql);
-            Map<String, Object> randomValues =new HashMap<String, Object>();
-            ResultSetMetaData resultSetMetaData = executeSqlForResultSetMetaData(executeSql,ps,sqlParametersParser.allParams,randomValues);
-            sql.setColumns(new SelectColumnsParser().convert2Columns(sql,resultSetMetaData));
-            sql.setParams(sqlParametersParser.params);
-            
-            if (sql.isInsertSql()){
-                deleteDestInsertedData(sql, conn, noneOrdersSql, sqlParametersParser.allParams,randomValues);
+            @Cleanup
+            Connection conn = null;
+            @Cleanup
+            PreparedStatement ps = null;
+            try {
+                conn = DataSourceProvider.getNewConnection();
+                conn.setAutoCommit(false);
+                //          if(DatabaseMetaDataUtils.isMysqlDataBase(conn.getMetaData())){
+                //              conn.setReadOnly(true);
+                //          }
+                String noneOrdersSql = SqlParseHelper.removeOrders(executeSql);
+                ps = conn.prepareStatement(noneOrdersSql);
+                SqlParametersParser sqlParametersParser = new SqlParametersParser();
+                sqlParametersParser.execute(parsedSql, sql);
+                Map<String, Object> randomValues      = new HashMap<String, Object>();
+                ResultSetMetaData   resultSetMetaData = executeSqlForResultSetMetaData(executeSql, ps, sqlParametersParser.allParams,
+                        randomValues);
+                sql.setColumns(new SelectColumnsParser().convert2Columns(sql, resultSetMetaData));
+                sql.setParams(sqlParametersParser.params);
+                if (sql.isInsertSql()) {
+                    deleteDestInsertedData(sql, conn, noneOrdersSql, sqlParametersParser.allParams, randomValues);
+                }
+                return afterProcessedSql(sql);
+            } finally {
+                DBHelper.rollback(conn);  
             }
-            
-            return afterProcessedSql(sql);
         }catch(SQLException e) {
             throw new RuntimeException("execute sql occer error,\nexecutedSql:"+sql,e);
         }catch(Exception e) {
             throw new RuntimeException("sql parse error,\nexecutedSql:"+executeSql,e);
-        }finally {
-            try {
-                DBHelper.rollback(conn);
-            }finally {
-                DBHelper.close(conn,ps,null);
-            }
         }
     }
 
@@ -154,6 +154,7 @@ public class SqlFactory {
                 Object paramValue =randomValues.get(pkColumn.getSqlName());
                 GLogger.info("noneOrdersSql<===========>:" + noneOrdersSql);
                 GLogger.info("===>删除之前dalgen运行insert产生的脏数据----------------->:\n" + deleteDestSql+"\nparam ?="+paramValue);
+                @Cleanup
                 PreparedStatement delPs = conn.prepareStatement(deleteDestSql);
                 delPs.setObject(1, paramValue);
                 delPs.execute();
@@ -182,6 +183,7 @@ public class SqlFactory {
             ps.setMaxRows(3);
             ps.setFetchSize(3);
             ps.setQueryTimeout(20);
+            @Cleanup
             ResultSet rs = null;
             if(ps.execute()) {
                 rs = ps.getResultSet();

@@ -167,21 +167,15 @@ public class PropertiesHelper {
 			while (urls.hasMoreElements()) {
 				URL url = (URL) urls.nextElement();
 				successLoadProperties.add(url.getFile());
+				@Cleanup
 				InputStream input = null;
-				try {
-					URLConnection con = url.openConnection();
-					con.setUseCaches(false);
-					input = con.getInputStream();
-					if(resourceName.endsWith(".xml")){
-						properties.loadFromXML(input);
-					}else {
-						properties.load(input);
-					}
-				}
-				finally {
-					if (input != null) {
-						input.close();
-					}
+				URLConnection con = url.openConnection();
+				con.setUseCaches(false);
+				input = con.getInputStream();
+				if(resourceName.endsWith(".xml")){
+					properties.loadFromXML(input);
+				}else {
+					properties.load(input);
 				}
 			}
 		}

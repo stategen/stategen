@@ -35,6 +35,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 
+import lombok.Cleanup;
+
 public class HttpsUtil {
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(HttpsUtil.class);
     private static PoolingHttpClientConnectionManager connMgr;
@@ -108,6 +110,7 @@ public class HttpsUtil {
             HttpResponse response = httpClient.execute(httpGet);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
+                @Cleanup
                 InputStream instream = entity.getContent();
                 result = IOUtils.toString(instream, "UTF-8");
             }
