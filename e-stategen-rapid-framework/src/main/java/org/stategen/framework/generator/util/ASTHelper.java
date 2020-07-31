@@ -97,7 +97,8 @@ class ASTHelper {
     static <N extends Node> Integer getTypeIndex(Node container, Class<N> clazz) {
         List<Node> children = container.getChildNodes();
         if (CollectionUtil.isNotEmpty(children)) {
-            for (int i = 0; i < children.size(); i++) {
+            int childrenSize = children.size();
+            for (int i = 0; i < childrenSize; i++) {
                 Node child = children.get(i);
                 if (clazz.isInstance(child)) {
                     return i;
@@ -229,7 +230,8 @@ class ASTHelper {
         String oldCommentText = getAllCommentsText(oldDeclaration);
         NodeList<AnnotationExpr> newAnnotations = newDeclaration.getAnnotations();
         if (newAnnotations != null) {
-            for (int i = newAnnotations.size() - 1; i >= 0; i--) {
+            int newAnnotationsSize = newAnnotations.size();
+            for (int i = newAnnotationsSize - 1; i >= 0; i--) {
                 AnnotationExpr annotationExpr = newAnnotations.get(i);
                 String annoName = annotationExpr.getNameAsString();
                 boolean checkAnnoInComments = checkAnnoInComments(oldCommentText, annoName);
@@ -246,7 +248,8 @@ class ASTHelper {
         if (CollectionUtil.isNotEmpty(oldAnnotationExprs)) {
             //TODO List怎么处理?
             Map<String, AnnotationExpr> tempMap = CollectionUtil.toMap(newAnnotations, AnnotationExpr::getNameAsString);
-            for (int i = oldAnnotationExprs.size() - 1; i >= 0; i--) {
+            int oldAnnotationExprsSize = oldAnnotationExprs.size();
+            for (int i = oldAnnotationExprsSize - 1; i >= 0; i--) {
                 AnnotationExpr oldAnnotationExpr = oldAnnotationExprs.get(i);
                 String annoName = oldAnnotationExpr.getNameAsString();
                 if (checkAnnoInComments(oldCommentText, annoName)) {
@@ -313,7 +316,7 @@ class ASTHelper {
             
 
 
-            if (newAnnotations == null && oldAnnotationExprs.size() > 0) {
+            if (newAnnotations == null && oldAnnotationExprsSize > 0) {
                 newDeclaration.setAnnotations(oldAnnotationExprs);
                 modified = true;
             }
@@ -321,7 +324,7 @@ class ASTHelper {
             if (newAnnotations!=null && oldAnnotationExprs!=null) {
                 Map<String, AnnotationExpr> newAnnoMap = CollectionUtil.toMap(newAnnotations, AnnotationExpr::getNameAsString);
                 int idx;
-                for (idx = 0; idx < oldAnnotationExprs.size(); idx++) {
+                for (idx = 0; idx < oldAnnotationExprsSize; idx++) {
                     AnnotationExpr annotationExpr = oldAnnotationExprs.get(idx);
                     String key =annotationExpr.getNameAsString();
                     AnnotationExpr removed = newAnnoMap.remove(key);

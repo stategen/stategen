@@ -239,7 +239,8 @@ public class Generator {
                 + BeanHelper.describe(this));
         List<File> processedTemplateRootDirs = processTemplateRootDirs();
 
-        for (int i = 0; i < processedTemplateRootDirs.size(); i++) {
+        int processedTemplateRootDirsSize = processedTemplateRootDirs.size();
+        for (int i = 0; i < processedTemplateRootDirsSize; i++) {
             File templateRootDir = (File) processedTemplateRootDirs.get(i);
             List<Exception> exceptions = scanTemplatesAndProcess(templateRootDir,
                     processedTemplateRootDirs, templateModel, filePathModel, isDelete,isTable);
@@ -264,7 +265,8 @@ public class Generator {
      **/
     private List<File> unzipIfTemplateRootDirIsZipFile() throws MalformedURLException {
         List<File> unzipIfTemplateRootDirIsZipFile = new ArrayList<File>();
-        for (int i = 0; i < this.templateRootDirs.size(); i++) {
+        int templateRootDirsSize = this.templateRootDirs.size();
+        for (int i = 0; i < templateRootDirsSize; i++) {
             File file = templateRootDirs.get(i);
             String templateRootDir = FileHelper.toFilePathIfIsURL(file);
 
@@ -305,7 +307,8 @@ public class Generator {
         List<File> srcFiles = FileHelper.searchAllNotIgnoreFile(templateRootDir);
 
         List<Exception> exceptions = new ArrayList<>();
-        for (int i = 0; i < srcFiles.size(); i++) {
+        int srcFilesSize = srcFiles.size();
+        for (int i = 0; i < srcFilesSize; i++) {
             File srcFile = (File) srcFiles.get(i);
             try {
                 if (isDelete) {
@@ -591,9 +594,9 @@ public class Generator {
                                                                String templateName)
                 throws IOException {
             Configuration conf = new Configuration();
-
-            FileTemplateLoader[] templateLoaders = new FileTemplateLoader[templateRootDirs.size()];
-            for (int i = 0; i < templateRootDirs.size(); i++) {
+            int templateRootDirsSize = templateRootDirs.size();
+            FileTemplateLoader[] templateLoaders = new FileTemplateLoader[templateRootDirsSize];
+            for (int i = 0; i < templateRootDirsSize; i++) {
                 templateLoaders[i] = new FileTemplateLoader((File) templateRootDirs.get(i));
             }
             MultiTemplateLoader multiTemplateLoader = new MultiTemplateLoader(templateLoaders);

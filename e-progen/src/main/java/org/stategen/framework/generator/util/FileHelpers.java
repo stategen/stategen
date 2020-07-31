@@ -103,7 +103,8 @@ public class FileHelpers {
     public static List<File> searchAllNotIgnoreFile(File dir, Set<String> extractFileName) {
         ArrayList<File> arrayList = new ArrayList<File>();
         searchAllNotIgnoreFile(dir, arrayList);
-        for (int i = arrayList.size() - 1; i >= 0; i--) {
+        int size = arrayList.size();
+        for (int i = size - 1; i >= 0; i--) {
             File file = arrayList.get(i);
             if (file.isDirectory()) {
                 arrayList.remove(i);

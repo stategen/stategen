@@ -1560,7 +1560,8 @@ public class PrettyPrintVisitor implements VoidVisitor<Void> {
         everything.addAll(parent.getChildNodes());
         sortByBeginPosition(everything);
         int positionOfTheChild = -1;
-        for (int i = 0; i < everything.size(); i++) {
+        int everythingSize = everything.size();
+        for (int i = 0; i < everythingSize; i++) {
             if (everything.get(i) == node) positionOfTheChild = i;
         }
         if (positionOfTheChild == -1) {

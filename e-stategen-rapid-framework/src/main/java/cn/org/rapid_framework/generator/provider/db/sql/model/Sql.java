@@ -369,17 +369,18 @@ public class Sql {
     }
 	   
     private String getSqlmap(List<String> params) {
-        if (params == null || params.size() == 0) {
+        if (params == null || params.isEmpty()) {
             return sqlmap;
         }
 
+        int size = params.size();
         String result = sqlmap;
 
-        if (params.size() == 1) {
+        if (size == 1) {
         	//FIXME: 与dalgen相比,修正是否将 ${param1} 的替换值是: value
             return StringHelper.replace(result, "${param1}", "value");
         } else {
-            for (int i = 0; i < params.size(); i++) {
+            for (int i = 0; i < size; i++) {
                 result = StringHelper.replace(result, "${param" + (i + 1) + "}", params.get(i));
             }
         }

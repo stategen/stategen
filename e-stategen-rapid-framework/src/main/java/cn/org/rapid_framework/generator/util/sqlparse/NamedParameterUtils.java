@@ -237,7 +237,8 @@ public abstract class NamedParameterUtils {
 		StringBuilder actualSql = new StringBuilder();
 		List<String> paramNames = parsedSql.getParameterNames();
 		int lastIndex = 0;
-		for (int i = 0; i < paramNames.size(); i++) {
+		int size = paramNames.size();
+		for (int i = 0; i < size; i++) {
 			int[] indexes = parsedSql.getParameterIndexes(i);
 			int startIndex = indexes[0];
 			int endIndex = indexes[1];

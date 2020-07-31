@@ -488,14 +488,16 @@ public class Inflector {
     public String pluralize(String word) {
 
         // Scan uncountables and leave alone
-        for (int i = 0; i < uncountables.size(); i++) {
+        int size = uncountables.size();
+        for (int i = 0; i < size; i++) {
             if (uncountables.get(i).equals(word)) {
                 return word;
             }
         }
 
         // Scan our patterns for a match and return the correct replacement
-        for (int i = 0; i < plurals.size(); i++) {
+        int pluralsSize = plurals.size();
+        for (int i = 0; i < pluralsSize; i++) {
             Replacer replacer = plurals.get(i);
             if (replacer.matches(word)) {
                 return replacer.replacement();
@@ -517,14 +519,16 @@ public class Inflector {
     public String singularize(String word) {
 
         // Scan uncountables and leave alone
-        for (int i = 0; i < uncountables.size(); i++) {
+        int uncountablesSize = uncountables.size();
+        for (int i = 0; i < uncountablesSize; i++) {
             if (uncountables.get(i).equals(word)) {
                 return word;
             }
         }
 
         // Scan our patterns for a match and return the correct replacement
-        for (int i = 0; i < singulars.size(); i++) {
+        int singularsSize = singulars.size();
+        for (int i = 0; i < singularsSize; i++) {
             Replacer replacer = singulars.get(i);
             if (replacer.matches(word)) {
                 return replacer.replacement();

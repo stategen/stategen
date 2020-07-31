@@ -246,7 +246,8 @@ public class GeneratorFacade {
         public void processByAllTable(boolean isDelete,TableConfigSet tableConfigSet) throws Exception {
             List<Table> tables = TableFactory.getInstance().getAllTables();
             List<Exception> exceptions = new ArrayList<>();
-            for (int i = 0; i < tables.size(); i++) {
+            int tablesSize = tables.size();
+            for (int i = 0; i < tablesSize; i++) {
                 try {
                     processByTable(getGenerator(), tables.get(i), isDelete,tableConfigSet);
                 } catch (GeneratorException ge) {
@@ -332,14 +333,15 @@ public class GeneratorFacade {
                                                   List<Exception> exceptions)
                 throws FileNotFoundException ,IOException{
             File errorFile = new File(outRoot, "generator_error.log");
-            if (exceptions != null && exceptions.size() > 0) {
+            if (exceptions != null && !exceptions.isEmpty()) {
+                int exceptionsSize = exceptions.size();
                 System.err.println("[Generate Error Summary] : " + msg);
                 errorFile.getParentFile().mkdirs();
                 @Cleanup
                 FileOutputStream fileOutputStream = new FileOutputStream(errorFile);
                 @Cleanup
                 PrintStream output = new PrintStream(fileOutputStream);
-                for (int i = 0; i < exceptions.size(); i++) {
+                for (int i = 0; i < exceptionsSize; i++) {
                     Exception e = exceptions.get(i);
                     System.err.println("[GENERATE ERROR]:" + e);
                     if (i == 0)
@@ -362,7 +364,8 @@ public class GeneratorFacade {
 
         public static void printAllTableNames(List<Table> tables) throws Exception {
             GLogger.println("\n----All TableNames BEGIN----");
-            for (int i = 0; i < tables.size(); i++) {
+            int tablesSize = tables.size();
+            for (int i = 0; i < tablesSize; i++) {
                 String sqlName = ((Table) tables.get(i)).getSqlName();
                 GLogger.println(sqlName);
             }

@@ -54,7 +54,8 @@ public class FunctionUtil {
             if (key!=null){
                 S source = sourceMap.get(key);
                 if (source!=null){
-                    for (int i=0 ;i<sourceMappers.size();i++)  {
+                    int size = sourceMappers.size();
+                    for (int i=0 ;i<size;i++)  {
                         Function<? super S, V> sourceMapper =sourceMappers.get(i);
                         BiConsumer<D, V> destConsumer=destConsumers.get(i);
                         V sourceValue = sourceMapper.apply(source);

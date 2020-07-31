@@ -74,8 +74,9 @@ public class TemplateHelpers {
         }
 
         Configuration conf = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
-        FileTemplateLoader[] templateLoaders = new FileTemplateLoader[templateRootDirs.size()];
-        for (int i = 0; i < templateRootDirs.size(); i++) {
+        int size = templateRootDirs.size();
+        FileTemplateLoader[] templateLoaders = new FileTemplateLoader[size];
+        for (int i = 0; i < size; i++) {
             templateLoaders[i] = new FileTemplateLoader((File) templateRootDirs.get(i));
         }
         MultiTemplateLoader multiTemplateLoader = new MultiTemplateLoader(templateLoaders);
