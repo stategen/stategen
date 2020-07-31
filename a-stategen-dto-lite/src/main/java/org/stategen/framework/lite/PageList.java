@@ -99,7 +99,7 @@ public class PageList<E> implements IPageList, Serializable {
     }
 
     public E first() {
-        if (items != null && items.size() > 0) {
+        if (items != null && !items.isEmpty()) {
             return items.get(0);
         }
         return null;

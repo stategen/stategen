@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.stategen.framework.lite.PageList;
+import org.stategen.framework.util.NumberUtil;
 
 /**
  * Ibatis的分页查询工具类. 将为分页查询提供附加的四个参数
@@ -69,7 +70,7 @@ public class PageQueryUtils {
 
         Number totalCount = (Number) sqlMapClientTemplate.selectOne(countStatementName,  parameterObject);
 
-        if (totalCount != null && totalCount.intValue() > 0) {
+        if (NumberUtil.isGreatZero(totalCount)) {
             Paginator paginator = new Paginator(page, pageSize, totalCount.intValue());
             Map<String, Integer> otherParams = new HashMap<String, Integer>();
             otherParams.put("offset", paginator.getOffset());

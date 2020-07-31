@@ -305,8 +305,9 @@ public class JavadocParanamer implements Paranamer {
 	private String[] getParameterNames(Class<?> klass,
 			String constructorOrMethodName, Class<?>[] types) throws IOException {
 		// silly request for names of a parameterless method/constructor!
-		if ((types != null) && (types.length == 0))
+		if ((types != null) && (types.length == 0)) {
 			return new String[0];
+		}
 
 		String path = getCanonicalName(klass).replace('.', '/');
 		if (isArchive) {

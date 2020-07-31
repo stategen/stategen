@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import org.stategen.framework.util.CollectionUtil;
+
 import cn.org.rapid_framework.generator.util.GLogger;
 import cn.org.rapid_framework.generator.util.PropertiesHelper;
 import cn.org.rapid_framework.generator.util.typemapping.DatabaseTypeUtils;
@@ -57,7 +59,7 @@ public class GeneratorProperties {
 	}
 
 	private static void setSepicalProperties(Properties p, String[] loadedFiles) {
-		if(loadedFiles != null && loadedFiles.length > 0) {
+		if(CollectionUtil.isNotEmpty(loadedFiles)) {
 			String basedir = p.getProperty("basedir");
 			if(basedir != null && basedir.startsWith(".")) {
 				p.setProperty("basedir", new File(new File(loadedFiles[0]).getParent(),basedir).getAbsolutePath());

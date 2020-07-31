@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.StringUtil;
 
 import cn.org.rapid_framework.generator.Generator.GeneratorModel;
@@ -333,7 +334,7 @@ public class GeneratorFacade {
                                                   List<Exception> exceptions)
                 throws FileNotFoundException ,IOException{
             File errorFile = new File(outRoot, "generator_error.log");
-            if (exceptions != null && !exceptions.isEmpty()) {
+            if (CollectionUtil.isNotEmpty(exceptions)) {
                 int exceptionsSize = exceptions.size();
                 System.err.println("[Generate Error Summary] : " + msg);
                 errorFile.getParentFile().mkdirs();

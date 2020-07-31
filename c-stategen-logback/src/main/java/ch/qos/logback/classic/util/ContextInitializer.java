@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.Set;
 
+import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.OSUtil;
 
 import ch.qos.logback.classic.BasicConfigurator;
@@ -234,7 +235,7 @@ public class ContextInitializer {
         } catch (IOException e) {
             sm.add(new ErrorStatus("Failed to get url list for resource [" + resourceName + "]", loggerContext, e));
         }
-        if (urlSet != null && urlSet.size() > 1) {
+        if (CollectionUtil.isNotEmpty(urlSet)) {
             sm.add(new WarnStatus("Resource [" + resourceName + "] occurs multiple times on the classpath.", loggerContext));
             for (URL url : urlSet) {
                 sm.add(new WarnStatus("Resource [" + resourceName + "] occurs at [" + url.toString() + "]", loggerContext));

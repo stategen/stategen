@@ -204,7 +204,7 @@ public class EnumUtil {
     @SuppressWarnings("rawtypes")
     public static void registValuedEnum(Class<? extends ValuedEnum> veClass) {
         Object[] enumConstants = veClass.getEnumConstants();
-        if (enumConstants != null && enumConstants.length > 0) {
+        if (CollectionUtil.isNotEmpty(enumConstants)) {
             for (Object object : enumConstants) {
                 ValuedEnum<?> valuedEnum = (ValuedEnum<?>) object;
                 EnumUtil.putToCache(valuedEnum);

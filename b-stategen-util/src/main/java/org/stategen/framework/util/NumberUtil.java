@@ -57,7 +57,7 @@ public class NumberUtil {
     }
 
     public static Long parseLong(String dest) {
-        if (dest != null && dest.length() > 0) {
+        if (StringUtil.isNotEmpty(dest)) {
             try {
                 return Long.parseLong(dest);
             } catch (NumberFormatException e) {
@@ -68,7 +68,7 @@ public class NumberUtil {
     }
 
     public static Integer parseInt(String dest) {
-        if (dest != null && dest.length() > 0) {
+        if (StringUtil.isNotEmpty(dest)) {
             try {
                 return Integer.parseInt(dest);
             } catch (NumberFormatException e) {

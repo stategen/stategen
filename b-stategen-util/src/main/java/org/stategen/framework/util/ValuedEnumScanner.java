@@ -30,7 +30,7 @@ import org.stategen.framework.lite.ValuedEnum;
 public class ValuedEnumScanner {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public  void setPackages(List<String> packages){
-        if (packages!=null && !packages.isEmpty()){
+        if (CollectionUtil.isNotEmpty(packages)){
             for (String packageName : packages) {
                 List<Class<?>> classes = ClassUtil.getClasses(packageName);
                 for (Class<?> clz : classes) {
