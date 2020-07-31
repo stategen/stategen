@@ -51,7 +51,7 @@ public class JavaPrimitiveTypeMapping {
         } else if (type.endsWith("Money")) {
             // special case
             return "0";
-        } else if (type.lastIndexOf(".") > 0) {
+        } else if (type.lastIndexOf('.') > 0) {
             return "null";
         } else if (Character.isUpperCase(type.charAt(0))) {
             return "null";

@@ -316,7 +316,7 @@ public class AntPathMatcher  {
 			}
 			else {
 				// /hotels/** + booking -> /hotels/**/booking
-				return pattern1 + "/" + pattern2;
+				return pattern1 + '/' + pattern2;
 			}
 		}
 		else {

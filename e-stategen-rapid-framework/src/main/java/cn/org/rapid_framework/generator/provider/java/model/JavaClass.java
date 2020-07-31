@@ -188,7 +188,7 @@ public class JavaClass {
 	 * 得到当前类父一级的包名称如 com.company.project包,将返回com.company
 	 * */
 	public String getParentPackageName() {
-		return getPackageName().substring(0,getPackageName().lastIndexOf("."));
+		return getPackageName().substring(0,getPackageName().lastIndexOf('.'));
 	}
 	/**
 	 * 得到当前类父一级的包名称对应的文件路径,如 com.company.project包,将返回com/company

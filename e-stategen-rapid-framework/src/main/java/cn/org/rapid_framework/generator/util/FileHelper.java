@@ -149,7 +149,7 @@ public class FileHelper {
             }
             
             String fileName=file.getName();
-            String prefix=fileName.substring(fileName.lastIndexOf(".")+1);
+            String prefix=fileName.substring(fileName.lastIndexOf('.')+1);
             GLogger.info(prefix);
             
             if (!extractFileName.contains(prefix)){

@@ -223,7 +223,7 @@ public class JavaMethod {
     		    return;
     		}
     		//是否是匿名方法
-    		if(method.getMethodName().indexOf("$") >= 0) {
+    		if(method.getMethodName().indexOf('$')>= 0) {
     		    return;
     		}
     		

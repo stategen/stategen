@@ -226,7 +226,7 @@ public class Sql {
      * 如getResultClass()=com.company.User,将返回User
      */	
 	public String getResultClassName() {
-		int lastIndexOf = getResultClass().lastIndexOf(".");
+		int lastIndexOf = getResultClass().lastIndexOf('.');
 		return lastIndexOf >= 0 ? getResultClass().substring(lastIndexOf+1) : getResultClass();
 	}
 
@@ -259,7 +259,7 @@ public class Sql {
      * 如getParameterClass()=com.company.UserQuery,将返回UserQuery
      */		
 	public String getParameterClassName() {
-		int lastIndexOf = getParameterClass().lastIndexOf(".");
+		int lastIndexOf = getParameterClass().lastIndexOf('.');
 		return lastIndexOf >= 0 ? getParameterClass().substring(lastIndexOf+1) : getParameterClass();
 	}
 	
@@ -499,7 +499,7 @@ public class Sql {
 	public String replaceWildcardWithColumnsSqlName(String sql) {
 	    String sqlLower =sql.toLowerCase();
 		if(SqlTypeChecker.isSelectSql(sql) 
-		        && SqlParseHelper.getSelect(SqlParseHelper.removeSqlComments(sqlLower)).indexOf("*") >= 0 
+		        && SqlParseHelper.getSelect(SqlParseHelper.removeSqlComments(sqlLower)).indexOf('*') >= 0 
 		        && SqlParseHelper.getSelect(SqlParseHelper.removeSqlComments(sqlLower)).indexOf("count(") < 0) {
 			return SqlParseHelper.getPrettySql("select " + joinColumnsSqlName() + " " + SqlParseHelper.removeSelect(sql));
 		}else {

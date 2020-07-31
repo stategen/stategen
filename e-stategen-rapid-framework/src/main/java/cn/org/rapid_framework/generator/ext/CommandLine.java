@@ -66,7 +66,7 @@ public class CommandLine {
 	private static String getIncludes(String[] args, int i) {
 		String includes = ArrayHelper.getValue(args, i);
 		if(includes == null) return null;
-		return includes.indexOf("*") >= 0 || includes.indexOf(",") >= 0 ? includes : includes+"/**";
+		return includes.indexOf('*') >= 0 || includes.indexOf(',') >= 0 ? includes : includes+"/**";
 	}
 	
 	private static String getTemplateRootDir() {

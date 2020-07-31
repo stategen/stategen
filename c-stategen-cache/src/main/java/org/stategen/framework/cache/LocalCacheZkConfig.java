@@ -32,7 +32,7 @@ public class LocalCacheZkConfig {
     public void setRootPath(String rootPath) {
         AssertUtil.mustNotBlank(rootPath, "rootPath can not be empty");
         if (!(rootPath.charAt(0)=='/')){
-            rootPath = "/"+rootPath;
+            rootPath = '/'+rootPath;
         }
         
         if (!rootPath.endsWith("/")) {

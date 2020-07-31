@@ -269,7 +269,7 @@ public class Generator {
             String templateRootDir = FileHelper.toFilePathIfIsURL(file);
 
             String subFolder = "";
-            int zipFileSeperatorIndexOf = templateRootDir.indexOf("!");
+            int zipFileSeperatorIndexOf = templateRootDir.indexOf('!');
             if (zipFileSeperatorIndexOf >= 0) {
                 subFolder = templateRootDir.substring(zipFileSeperatorIndexOf + 1);
                 templateRootDir = templateRootDir.substring(0, zipFileSeperatorIndexOf);

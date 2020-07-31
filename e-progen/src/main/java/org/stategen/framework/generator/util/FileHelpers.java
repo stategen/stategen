@@ -111,7 +111,7 @@ public class FileHelpers {
             }
 
             String fileName = file.getName();
-            String prefix = fileName.substring(fileName.lastIndexOf(".") + 1);
+            String prefix = fileName.substring(fileName.lastIndexOf('.') + 1);
             logger.info(prefix);
 
             if (!extractFileName.contains(prefix)) {
@@ -312,7 +312,7 @@ public class FileHelpers {
             return null;
         }
 
-        int index = filename.lastIndexOf(".");
+        int index = filename.lastIndexOf('.');
         //".git, .gitignore 不是"
         if (index <= 0) {
             return null;

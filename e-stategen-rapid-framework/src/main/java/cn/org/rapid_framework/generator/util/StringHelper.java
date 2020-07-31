@@ -882,8 +882,8 @@ public class StringHelper {
             prefix = pathToUse.substring(0, prefixIndex + 1);
             pathToUse = pathToUse.substring(prefixIndex + 1);
         }
-        if (pathToUse.startsWith(FOLDER_SEPARATOR)) {
-            prefix = prefix + FOLDER_SEPARATOR;
+        if (pathToUse.charAt(0)=='/') {
+            prefix = prefix + '/';
             pathToUse = pathToUse.substring(1);
         }
 
