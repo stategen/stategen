@@ -97,7 +97,7 @@ public class XMLHelper {
                         String text=null;
                         if (systemId.startsWith("file://")){
                             File entityFile =new File(systemId);
-                            String systemIdFileName = file.getParent()+"/"+entityFile.getName();
+                            String systemIdFileName = file.getParent()+'/'+entityFile.getName();
                             File systemIdFile =new File(systemIdFileName);
                             if (!systemIdFile.isFile() || !systemIdFile.exists()){
                                 throw new IOException(systemIdFile+" not exists");

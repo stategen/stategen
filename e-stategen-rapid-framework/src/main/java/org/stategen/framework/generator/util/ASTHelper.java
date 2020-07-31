@@ -242,6 +242,7 @@ class ASTHelper {
         }
 
         NodeList<AnnotationExpr> oldAnnotationExprs = oldDeclaration.getAnnotations();
+
         if (CollectionUtil.isNotEmpty(oldAnnotationExprs)) {
             //TODO List怎么处理?
             Map<String, AnnotationExpr> tempMap = CollectionUtil.toMap(newAnnotations, AnnotationExpr::getNameAsString);
@@ -302,18 +303,35 @@ class ASTHelper {
                         AnnotationExpr annotationExpr = tempMap.get(oldAnnoName);
                         if (annotationExpr != null) {
                             //TODO,如果备注中不需要那个标准，就不加进来，同时移除现有的标注
-                            int indexOf = newAnnotations.indexOf(annotationExpr);
-                            newAnnotations.remove(indexOf);
                             tempMap.remove(oldAnnoName);
-                            newAnnotations.add(indexOf, oldAnnotationExpr);
+                            newAnnotations.replace(annotationExpr, oldAnnotationExpr);
                             modified = true;
                         }
                     }
                 }
             }
+            
+
 
             if (newAnnotations == null && oldAnnotationExprs.size() > 0) {
                 newDeclaration.setAnnotations(oldAnnotationExprs);
+                modified = true;
+            }
+            //旧的顺序保持一致
+            if (newAnnotations!=null && oldAnnotationExprs!=null) {
+                Map<String, AnnotationExpr> newMap = CollectionUtil.toMap(newAnnotations, AnnotationExpr::getNameAsString);
+                int idx;
+                for (idx = 0; idx < oldAnnotationExprs.size(); idx++) {
+                    AnnotationExpr annotationExpr = oldAnnotationExprs.get(idx);
+                    String key =annotationExpr.getNameAsString();
+                    AnnotationExpr removed = newMap.remove(key);
+                    newAnnotations.set(idx, removed);
+                }
+                
+                for (Entry<String, AnnotationExpr> entry :newMap.entrySet()){
+                    idx++;
+                    newAnnotations.set(idx, entry.getValue());
+                }
                 modified = true;
             }
         }

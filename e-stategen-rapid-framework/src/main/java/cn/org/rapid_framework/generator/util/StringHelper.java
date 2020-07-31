@@ -560,7 +560,7 @@ public class StringHelper {
             return null;
 
         String filteredName = name;
-        int underIdx = filteredName.indexOf("_");
+        int underIdx = filteredName.indexOf('_');
         String filteredNameUpp = filteredName.toUpperCase();
         if (underIdx >= 0 && filteredName.equals(filteredNameUpp)) {
             filteredName = filteredName.toLowerCase();

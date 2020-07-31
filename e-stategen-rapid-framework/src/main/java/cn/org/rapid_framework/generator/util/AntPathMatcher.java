@@ -300,7 +300,7 @@ public class AntPathMatcher  {
 			return pattern2;
 		}
 		else if (pattern1.endsWith("/*")) {
-			if (pattern2.startsWith("/")) {
+			if (pattern2.charAt(0)=='/') {
 				// /hotels/* + /booking -> /hotels/booking
 				return pattern1.substring(0, pattern1.length() - 1) + pattern2.substring(1);
 			}
@@ -310,7 +310,7 @@ public class AntPathMatcher  {
 			}
 		}
 		else if (pattern1.endsWith("/**")) {
-			if (pattern2.startsWith("/")) {
+			if (pattern2.charAt(0)=='/') {
 				// /hotels/** + /booking -> /hotels/**/booking
 				return pattern1 + pattern2;
 			}
@@ -323,11 +323,11 @@ public class AntPathMatcher  {
 			int dotPos1 = pattern1.indexOf('.');
 			if (dotPos1 == -1) {
 				// simply concatenate the two patterns
-				if (pattern1.endsWith("/") || pattern2.startsWith("/")) {
+				if (pattern1.endsWith("/") || (pattern2.charAt(0)=='/')) {
 					return pattern1 + pattern2;
 				}
 				else {
-					return pattern1 + "/" + pattern2;
+					return pattern1 + '/' + pattern2;
 				}
 			}
 			String fileName1 = pattern1.substring(0, dotPos1);

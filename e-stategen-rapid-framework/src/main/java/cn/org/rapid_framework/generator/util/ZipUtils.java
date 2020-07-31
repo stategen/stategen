@@ -15,7 +15,7 @@ public class ZipUtils {
 	
 	public static File unzip2TempDir(File zipfile,String tempRootFolderName){
 		try {
-			File tempFolder = new File(System.getProperty("java.io.tmpdir"),tempRootFolderName+"/"+tempFileCount.incrementAndGet()+".tmp");
+			File tempFolder = new File(System.getProperty("java.io.tmpdir"),tempRootFolderName+'/'+tempFileCount.incrementAndGet()+".tmp");
 			if(!tempFolder.mkdirs()) {
 				throw new RuntimeException("cannot make temp folder:"+tempFolder);
 			}

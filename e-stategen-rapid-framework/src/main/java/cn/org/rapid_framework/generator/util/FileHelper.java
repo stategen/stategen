@@ -112,7 +112,7 @@ public class FileHelper {
     public static File getFileByClassLoader(String resourceName)
             throws IOException {
         String pathToUse = resourceName;
-        if (pathToUse.startsWith("/")) {
+        if (pathToUse.charAt(0)=='/') {
             pathToUse = pathToUse.substring(1);
         }
         Enumeration<URL> urls = ClassHelper.getDefaultClassLoader()

@@ -107,8 +107,7 @@ public class TableFactory {
     public List<Table> getAllTables() {
         try {
             @Cleanup
-            Connection conn = null;
-            conn = DataSourceProvider.getConnection();
+            Connection conn = DataSourceProvider.getConnection();
             List<Table> tables = new TableCreateProcessor(conn, getSchema(), getCatalog(), null).getAllTables();
             for (Table t : tables) {
                 dispatchOnTableCreatedEvent(t);

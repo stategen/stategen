@@ -36,7 +36,7 @@ public class JarUtil {
         //可执行jar包运行的结果里包含".jar"
         if (filePath.endsWith(JAR_) || filePath.endsWith(WAR_)) {
             //截取路径中的jar包名
-            filePath = filePath.substring(0, filePath.lastIndexOf("/") + 1);
+            filePath = filePath.substring(0, filePath.lastIndexOf('/') + 1);
         }
 
         return filePath;

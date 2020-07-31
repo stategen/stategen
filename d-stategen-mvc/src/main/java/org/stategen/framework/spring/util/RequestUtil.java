@@ -69,7 +69,7 @@ public class RequestUtil {
      */
     public static String getRequestAppName(){
         HttpServletRequest request =ServletContextUtil.getHttpServletRequest();
-       return request.getContextPath()+"/";
+       return request.getContextPath()+'/';
     }
     
     /**

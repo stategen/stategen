@@ -75,7 +75,7 @@ public class FileHelpers {
 
     public static File getFileByClassLoader(String resourceName) throws IOException {
         String pathToUse = resourceName;
-        if (pathToUse.startsWith("/")) {
+        if (pathToUse.charAt(0)=='/') {
             pathToUse = pathToUse.substring(1);
         }
         Enumeration<URL> urls = ClassHelpers.getDefaultClassLoader().getResources(pathToUse);
@@ -235,7 +235,7 @@ public class FileHelpers {
                             pathSB.append("../");
                         }
                         for (; i < targetPathArray.length; i++) {
-                            pathSB.append(targetPathArray[i] + "/");
+                            pathSB.append(targetPathArray[i] + '/');
                         }
                         break;
                     }

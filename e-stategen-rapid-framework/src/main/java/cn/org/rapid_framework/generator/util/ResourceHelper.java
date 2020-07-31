@@ -293,8 +293,8 @@ public abstract class ResourceHelper {
 			catch (MalformedURLException ex) {
 				// Probably no protocol in original jar URL, like "jar:C:/mypath/myjar.jar".
 				// This usually indicates that the jar file resides in the file system.
-				if (!jarFile.startsWith("/")) {
-					jarFile = "/" + jarFile;
+				if (!(jarFile.charAt(0)=='/')) {
+					jarFile = '/' + jarFile;
 				}
 				return new URL(FILE_URL_PREFIX + jarFile);
 			}

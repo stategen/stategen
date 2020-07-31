@@ -108,8 +108,8 @@ public class FacadeGenerator {
         
         //统计生成的Files
         List<String> outWholeFiles = new ArrayList<String>();
-        String       outPath       = FileHelpers.getFile(StringUtil.joinSLash(projectRootPath, outDir)).getAbsolutePath().replace("\\",
-                "/");
+        String       outPath       = FileHelpers.getFile(StringUtil.joinSLash(projectRootPath, outDir)).getAbsolutePath().replace('\\',
+                '/');
         
         //读取yaml文件，放置frontendPagckageName，flutter不支持本包下绝对路径有点愚蠢
         String yamlFileName = StringUtil.concatPath(new File(outPath + "/../../").getCanonicalPath(), "pubspec.yaml");

@@ -319,7 +319,7 @@ public class JavadocParanamer implements Paranamer {
 			InputStream input = archive.getInputStream(entry);
 			return getParameterNames2(input, constructorOrMethodName, types);
 		} else if (isDirectory) {
-			File file = new File(location.getPath() + "/" + path + ".html");
+			File file = new File(location.getPath() + '/' + path + ".html");
 			if (!file.isFile())
 				throw CLASS_NOT_SUPPORTED;
 			@Cleanup
@@ -327,7 +327,7 @@ public class JavadocParanamer implements Paranamer {
 			return getParameterNames2(input, constructorOrMethodName, types);
 		} else if (isURI) {
 			try {
-				URL url = new URL(location.toString() + "/" + path + ".html");
+				URL url = new URL(location.toString() + '/' + path + ".html");
 				@Cleanup
 				InputStream input = urlToInputStream(url);
 				return getParameterNames2(input, constructorOrMethodName, types);

@@ -105,7 +105,7 @@ public class IbatisSqlMapConfigParser {
 	private OpenCloseTag processOpenClose(StringBuffer sql,
 			OpenCloseTag openClose, String xmlTag,
 			Map<String, String> attributes) {
-		if(openClose != null && openClose.close != null && xmlTag.equals("/"+openClose.xmlTag)) {
+		if(openClose != null && openClose.close != null && xmlTag.equals('/'+openClose.xmlTag)) {
 		    sql.append(openClose.close);
 		    openClose = null;
 		}

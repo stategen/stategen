@@ -31,12 +31,12 @@ public class LocalCacheZkConfig {
     
     public void setRootPath(String rootPath) {
         AssertUtil.mustNotBlank(rootPath, "rootPath can not be empty");
-        if (!rootPath.startsWith("/")){
+        if (!(rootPath.charAt(0)=='/')){
             rootPath = "/"+rootPath;
         }
         
         if (!rootPath.endsWith("/")) {
-            rootPath += "/";
+            rootPath += '/';
         }
         LocalCacheZkConfig.rootPath = rootPath;
     }

@@ -74,7 +74,7 @@ public class BaseTargets extends HashMap<String, Object> {
         packageName        = pts.getProperty(Consts.packageName);
         cmdPath            = pts.getProperty(Consts.cmdPath);
         
-        tablesPath = GenProperties.getProjectsPath() + "/" + dir_table_configs;
+        tablesPath = GenProperties.getProjectsPath() + '/' + dir_table_configs;
         
         pojo_module_name       = genDir(GenProperties.getProjectsPath(), pts, Consts.pojo_module_name);
         dto_module_name        = genDir(GenProperties.getProjectsPath(), pts, Consts.dto_module_name);

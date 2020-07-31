@@ -181,7 +181,7 @@ public class JavaClass {
 	 * 得到当前类包名称对应的文件路径,如 com.company.project包,将返回 com/company/project
 	 * */
 	public String getPackagePath(){
-		return getPackageName().replace(".", "/");
+		return getPackageName().replace('.', '/');
 	}
 	
 	/**
@@ -194,7 +194,7 @@ public class JavaClass {
 	 * 得到当前类父一级的包名称对应的文件路径,如 com.company.project包,将返回com/company
 	 * */
 	public String getParentPackagePath() {
-		return getParentPackageName().replace(".", "/");
+		return getParentPackageName().replace('.', '/');
 	}
 	
 	/**

@@ -83,7 +83,7 @@ public class BaseProgen {
                         outFiles);
             } else {
                 String targetFileName = TemplateHelpers.processTemplitePath(root, relativeFileName);
-                String filePath       = StringUtil.concatPath(GenProperties.getProjectsPath(), targetFileName) + "/";
+                String filePath       = StringUtil.concatPath(GenProperties.getProjectsPath(), targetFileName) + '/';
                 filePath = FileHelpers.replaceUnOverridePath(filePath);
                 FileHelpers.parentMkdir(filePath);
                 folderCount++;
@@ -146,7 +146,7 @@ public class BaseProgen {
             String webType,
             String projectFolderName) throws IOException, TemplateException, DocumentException {
         String webTypePath = FileHelpers
-                .getCanonicalPath(GenProperties.dir_templates_root + "/java/frontend/" + webType + "/");
+                .getCanonicalPath(GenProperties.dir_templates_root + "/java/frontend/" + webType + '/');
         File   webTypeFile = new File(webTypePath);
         AssertUtil.mustTrue(webTypeFile.exists(), webType + " 类型不存在 ,请输入 gen.sh -h 查看具体类型");
         String currentProjectPath = StringUtil.concatPath(GenProperties.getProjectsPath(), projectFolderName);

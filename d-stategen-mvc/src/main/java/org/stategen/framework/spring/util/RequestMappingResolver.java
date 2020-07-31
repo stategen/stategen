@@ -66,8 +66,8 @@ public class RequestMappingResolver {
         if (requestMappingAnno != null) {
             String[] values = requestMappingAnno.value();
             String value =CollectionUtil.getFirst(values);
-            if (StringUtil.isNotEmpty(value) && !value.startsWith("/")) {
-                value = "/" + value;
+            if (StringUtil.isNotEmpty(value) && !(value.charAt(0)=='/')) {
+                value = '/' + value;
             }
             return value;
         }
