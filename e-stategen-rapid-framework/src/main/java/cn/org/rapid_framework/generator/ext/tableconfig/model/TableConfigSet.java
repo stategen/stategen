@@ -127,14 +127,20 @@ public class TableConfigSet implements Iterable<TableConfig>, TableFactoryListen
     }
 
     public TableConfig getRequiredBySqlName(String sqlName) {
-        TableConfig tc = getBySqlName(sqlName);
+        TableConfig tc;
+        try {
+            tc = getBySqlName(sqlName);
+        } catch (Exception e) {
+            GLogger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
         if (tc == null) {
             throw new IllegalArgumentException("not found TableConfig on TableConfigSet by sqlName:" + sqlName);
         }
         return tc;
     }
 
-    public TableConfig getBySqlName(String sqlName) {
+    public TableConfig getBySqlName(String sqlName) throws Exception {
         //延时加载sqlname会放这里
         File file = this.sqlNameXmlFileMap.remove(sqlName);
         if (file!=null) {
@@ -157,8 +163,8 @@ public class TableConfigSet implements Iterable<TableConfig>, TableFactoryListen
         try {
             tc = getBySqlName(table.getSqlName());
         } catch (Exception e) {
-            //文件解析不出来，xhtml.xml没有创建
-            GLogger.error("", e);
+            //文件解析不出来，xml.xhtml没有创建,这个在制作xml.xhtml时没有关系
+            GLogger.error(e.getMessage());
         }
         if (tc == null) {
             return;

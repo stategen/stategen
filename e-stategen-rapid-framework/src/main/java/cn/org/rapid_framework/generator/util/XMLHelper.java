@@ -3,6 +3,7 @@ package cn.org.rapid_framework.generator.util;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -100,7 +101,7 @@ public class XMLHelper {
                             String systemIdFileName = file.getParent()+'/'+entityFile.getName();
                             File systemIdFile =new File(systemIdFileName);
                             if (!systemIdFile.isFile() || !systemIdFile.exists()){
-                                throw new IOException(systemIdFile+" not exists");
+                                throw new FileNotFoundException(systemIdFile+" not exists");
                             }
                             String systemIdFileText = IOHelper.readFile(systemIdFile);
                             text =systemIdFileText;

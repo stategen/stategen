@@ -10,6 +10,8 @@ import org.stategen.framework.generator.util.GenProperties;
 import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.StringUtil;
 
+import cn.org.rapid_framework.generator.util.GLogger;
+
 import lombok.Cleanup;
 
 public class ConsoleGenerator {
@@ -83,7 +85,7 @@ public class ConsoleGenerator {
         } else if (executeTarget.equals("table")) {
             baseTargets.table();
         }
-        System.out.println(baseTargets+" "+tableName+" 执行完毕！");
+        GLogger.info(executeTarget+" "+tableName+" 执行完毕！");
     }
 
 }

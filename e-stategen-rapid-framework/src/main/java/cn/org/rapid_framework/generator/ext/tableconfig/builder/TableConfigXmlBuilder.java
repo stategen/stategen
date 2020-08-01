@@ -70,7 +70,13 @@ public class TableConfigXmlBuilder {
                    Map<String, File> sqlNameXmlFileMap = result.getSqlNameXmlFileMap();
                    sqlNameXmlFileMap.put(filepath.substring(0, filepath.length()-4), file);
                 } else {
-                    TableConfig tableConfig = parseTableConfig(file);
+                    TableConfig tableConfig;
+                    try {
+                        tableConfig = parseTableConfig(file);
+                    } catch (Exception e) {
+                        GLogger.error("parse file:"+file.getAbsolutePath()+" occer error",e);
+                        throw new RuntimeException("parse file:"+file.getAbsolutePath()+" occer error",e);
+                    }
                     result.addTableConfig(tableConfig);
                 }
             }
@@ -78,13 +84,13 @@ public class TableConfigXmlBuilder {
         return result;
     }
 
-    public static TableConfig parseTableConfig(File file) {
+    public static TableConfig parseTableConfig(File file) throws Exception  {
         TableConfig tableConfig = null;
         try {
             tableConfig = parseFromXML(file);
-        }catch(Throwable e) {
-            GLogger.error("parse file:"+file.getAbsolutePath()+" occer error",e);
-            throw new RuntimeException("parse file:"+file.getAbsolutePath()+" occer error",e);
+        }
+        catch (Exception e) {
+            throw e;
         }
         return tableConfig;
     }

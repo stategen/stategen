@@ -323,12 +323,15 @@ class ASTHelper {
             //旧的顺序保持一致
             if (newAnnotations!=null && oldAnnotationExprs!=null) {
                 Map<String, AnnotationExpr> newAnnoMap = CollectionUtil.toMap(newAnnotations, AnnotationExpr::getNameAsString);
-                int idx;
-                for (idx = 0; idx < oldAnnotationExprsSize; idx++) {
-                    AnnotationExpr annotationExpr = oldAnnotationExprs.get(idx);
+                int idx=-1;
+                for (int i = 0; i < oldAnnotationExprsSize; i++) {
+                    AnnotationExpr annotationExpr = oldAnnotationExprs.get(i);
                     String key =annotationExpr.getNameAsString();
                     AnnotationExpr removed = newAnnoMap.remove(key);
-                    newAnnotations.set(idx, removed);
+                    if (removed!=null) {
+                        idx++;
+                        newAnnotations.set(idx, removed);
+                    }
                 }
                 
                 for (Entry<String, AnnotationExpr> entry :newAnnoMap.entrySet()){

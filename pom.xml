@@ -68,11 +68,13 @@
 
 
     <distributionManagement>
+<!--     
          <repository>
             <id>thirdparty</id>
             <url>http://nexus:8081/content/repositories/thirdparty/</url>
         </repository>
-<!-- 
+        
+         -->
         <snapshotRepository>
             <id>oss</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
@@ -82,7 +84,6 @@
             <id>oss</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-         -->
     </distributionManagement>
 
     <modules>
@@ -238,13 +239,13 @@
                 <artifactId>lombok-maven-plugin</artifactId>
             </plugin>
 
-<!--             <plugin>
+            <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
 
             <plugin>
                 <artifactId>maven-gpg-plugin</artifactId>
-            </plugin> -->
+            </plugin>
 
         </plugins>
     </build>
