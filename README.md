@@ -287,7 +287,8 @@ trade
 ```
 ```xml
     <!-- user.xml中一条方法，这个是自动生成的，如果手工书写时，有提示帮助-->
-    <!-- a.username 不需要写 小驼峰名称，以及jdbctype参数， 不需要写返回值对照配置，由dalgenX生成User-sqlmap-mapping.xml自动生成>
+    <!-- a.username 不需要写 小驼峰名称，以及jdbctype参数，
+    不需要写返回值对照配置，由dalgenX生成User-sqlmap-mapping.xml自动生成>
     <operation name="getUserByUsername" multiplicity="one" remarks="">
         <sql>
            select
@@ -342,13 +343,16 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
 4. **dalgenx支持水平权限**生成规则。水平权限要完全做到绕开暴力尝试,或者避免在别的api中泄露id被利用,显然，采用复杂id(uid、随机)生成方式治标不治本。同时，要兼顾代码速度、迭代、人员权限调整、下面简要地阐述一种水平权限方案，可以直接由dalgenX生成器来生成，大大降低开发成本，非常适合产品需求上的迭代，代码可以做到以不变应万变.
 ```
    A.定一个组织架构表比如orgnization，树型数据 orgId, parentId
-   B.把用户（即水平权限中的数据操作员）人分配到组织上（org_user表）,用户登录后获取自己的orgId
+   B.把用户（即水平权限中的数据操作员）人分配到组织上（org_user表）,
+     用户登录后获取自己的orgId
    C.假设topic表需要水平权限控制，在表的备注中添加 -level(organization) -owner(user) 
       -level(organization) //水平权限中的组织架构表为organization 
       -owner(user) //水平权限中数据属于指定人员表为user
    D.运行 gen.sh table topic时，会生成 topic_level_h 和 topic_owner_h表创建sql语句，复制出来运行。dalgenX约定_h为水平权限相关的表    
-   E.用户生产数据时(比如topic表)，同时把数据添加中topic_level_h和topic_owner_h(由dalgenX显式生成相关的sql和调用java代码)
-   F.用户查询，删除，更新数据时，由由dalgenX显式生成相关的sql和调用java代码和参数：Boolean inclCurrOrgId, Long currOrgId, String currUserId
+   E.用户生产数据时(比如topic表)，同时把数据添加到
+     topic_level_h和topic_owner_h(由dalgenX显式生成相关的sql和调用java代码)
+   F.用户查询，删除，更新数据时，由由dalgenX显式生成相关的sql和调用java代码
+     和参数：Boolean inclCurrOrgId, Long currOrgId, String currUserId
    G.由程序员在调用service时，控制inclCurrOrgId，currOrgId，currUserId
 ```
 5. dalgenX兼顾避免一些开发习惯上的坑。比如
