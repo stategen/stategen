@@ -1,4 +1,14 @@
-##  你目前的团队是不是有以下问题？如果有的话，可以尝试stategen(QQ群：728343119)
+### 我非常赞同的
+  重复可能是软件中一切邪恶的根源。—— Robert C.Martin
+### 我的一些编程总结
+  硬编码和不可感知的字符串是项目迭代中的定时炸弹.  
+  写在规章制度里的开发规范是被人用来打破的，好的规范应该是从技术上直接框定。  
+  最好的沟通是避免沟通。  
+  
+### Stategen:前后端骨架代码生成器+Stategen架构（基于SpringMVC）+后端代码迭代生成器+前端代码生成器
+spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(可选)+react+antd(可选antd.mobile)+flutter(可选)
+
+### 你目前的团队是不是有以下问题？如果有的话，可以尝试stategen(QQ群：728343119)
 1. 前后端分离式导致前后端代码事实上脱节？ 
 1. 前端还在用postman,swagger,mockit这些效率极低的测试工具?
 1. 后端疲于撰写各api文档，而前端总是抱怨后端给的文档不完善？
@@ -13,45 +23,380 @@
 1. 从数据库到前后端代码的映射，各种变动不能全自动变更？
 1. 各种隐式代码，各种隐式配置？
 1. 发现迭代问题在测试阶段，时不时线上惊出一身冷汗，不能过早地在ide或编译阶段发现？
-1. 人是越来越多，推进越来越慢？
- 
+1. 人是越来越多，推进越来越慢？    
 
-##  一切为了迭代!!!  stategen,以一抵十的生产力
-spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(可选)+react+antd(可选antd.mobile)+flutter(可选)
-**全栈**骨架生成器+一键迭代开发生成器
-
-应用一个架构/生成器的成本应包括几个部分  
-
+### 开发成本的构成
 1. 开发业务代码的成本
 2. 维护、迭代、重构的成本
 3. 替换、升级框架中的某种技术的成本
 
-成本越高，开发风险越大。往往，大多数框架/脚手架能大大节约（1）中个成本，但是同时带来几倍于（1）中的成本来维持（2）、（3）中，使开发陷入泥潭和死扣，stateGen要做的就是解决这种风险。
+成本越高，开发风险越大。往往，大多数框架/脚手架能大大节约（1）中个成本，但是同时带来几倍于（1）中的成本来维持（2）、（3）中，使开发陷入泥潭和死扣，stateGen要做的就是减少这种风险，所以我开发了StateGen。
 
 ### 增加一篇论文介绍原理:[利用java反射和java-parser制作可以迭代、分布式、全栈代码生成器的研究](https://github.com/stategen/stategen/blob/master/%E5%88%A9%E7%94%A8java%E5%8F%8D%E5%B0%84%E5%92%8Cjava-parser%E5%88%B6%E4%BD%9C%E5%8F%AF%E4%BB%A5%E8%BF%AD%E4%BB%A3%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E3%80%81%E5%85%A8%E6%A0%88%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E7%A0%94%E7%A9%B6.md)    
+#### 关于Ibatis or MyBatis or hibernate 和dalgenX
+1.  SSH架构火了10年，其中hibernate支持自动生成sql的优势功不可没，但是再牛逼程序也不能满足复杂的sql自动生成,于是hibernate允许在java代码里掺杂hql和sql.
+1.  上面的本意是给编程带来方便,但是一旦这个大门打开，就不能阻止开发人员进入，当java代码中混入大量的sql或hql后，项目离死也就不远了，除了难以维护，DBA也无法参与后期优化.
+1.  当年，同期发展的ibatis被hibernate打得措手不及，由apache的顶级项目变成弃儿.但是正是ibatis的缺点：手写sql,解决了hibernate的先天不足，由是很多人在web2.0时代又重新转向了SSI架构。
+1.  但是ibatis需要大写的手写配置，特别是xml配置,于是又出现了MyBatis(我个人认为改名的很大原因是应对apache版权),稍微减轻了一些手写配置的开发工作量。   
+1. 后来又出现了MyBatis Plus（国人开发的？），不用写sql，但好像又回到了hibernate？噢耶！
 
 #### 市面上代码生成器分类  
 1. 一次性脚手架式：一次性生成/覆盖目标代码,用在项目初始化,如：maven初始化项目、各种网页配置生成。  
 2. 持续脚手架式：分步生成/覆盖目标代码,如：MyBatis/Ibatis/Hibernate/ generator、dalgen,各种网页配置生成。  
-3. 在已编辑的目标代码上再次生成。 如：StateGen(全网目前唯一?).
+3. 在已编辑的目标代码上再次生成。 如：StateGen(**全网目前唯一?**).
 目前市面上的代码生成器都是前2种，而StateGen三种都有，StateGen开发生成器属于第3种.    
 如果生成器只有前面2种，而为了不挖坑,要么只能做比较基本的生成，要么集成当时市面上所有时髦的技术，增加学习成本不说，
 很快这些时髦都成为不时髦而且甩不掉的累赘，形成更大的坑，维护成本巨大。 
-stategen采用第三种生成方式可以豪无限制地兼容其它技术，所以无需扯一些不需要的技术当噱头、还把挖坑还当卖点。  
+stategen采用第三种生成方式可以豪无限制地兼容其它技术，所以无需扯一些不需要的技术当噱头、还把挖坑还当卖点。 
 
+### StateGen后端骨架代码生成初始化StatGen架构的项目springMVC（web3.0）（也可再一键转换为springBoot)
+1. 遵从常用框架设计原则（单一职责、开闭、接口隔离、无环依赖），通过在gen_config.xml配置,也可以将几个jar包合并。**觉得springMVC项目从头到尾只需一个jar可以不用往下看**。
+```
+trade
+├── 1-trade-pojo
+├── 2-trade-facade
+├── 3-trade-intergrade
+├── 4-trade-dao
+├── 5-trade-service
+├── 6-trade-web-base
+├── 7-trade-web-app
+│   ├── app-frontend-flutter
+│   ├── app-frontend-h5
+│   └── WebRoot
+├── 7-trade-web-cms
+│   ├── cms-frontend-web
+│   └── WebRoot
+├── 7-trade-web-...
+├── opt
+│   └── config
+│       └── stategen
+└── tables
+```
+2. 无限个web(7-...)，共同依赖相同的dao,遵循一个数据库只能有一套crud代码（Martin大神的不重复规范），
+1. 文件夹以数字形式开头自上而下1-,2-,3-...，方便在eclipse|idea一目了然依赖关系（看到某大型商业架构dao跑到pojo的上面，每次打开项目都要花一定的时间开闭包原则，很不舒服）
+1. 微服务放在war包里，多微服务依赖时，依赖服务可以一起放在java(如tomcat)容器中，调试和发布方便，不用单独启动。
+1. facade对应的jar直接可以直接发布到本地公司仓库，它的远程配置自动生成，别的项目集成时，不需要写相关的配置，节约时间减少人工出错。
+1. 除1-pojo，2-facade外，其它jar包都以snapshot结尾，进一步避免将有业务代码的jar包发到maven仓库中
+1. 所有bean全部显式配置在xml中，项目进行很久管理上都不会乱
+1.  frontend采用git子项目管理的方式，迭代中接口和前端版本保持一致，后端可以直接输出相关前端api代码(我本人特烦给前端制作文档或者口头文档，1是文档同步很难，2是文档容易前后端扯皮，3是文档很花时间，与其扯皮不如直接给代码，stategen中的progen可以直接把后端api转换为前端相关的代码，一了百了，后端一行回车搞定前端相关的人工代码)
+1. 5-service-impl是对5-service（继承自2-facade中的service)的全部实现，本地service从在本地找，不至于像一些煞笔框架一样也从微服务中找，
+1. 2-facade中的service结尾可配置系统名（如UserSerivceTrade），这样可以清楚地理解是本地服务还是远程服务，服务出现问题也好定位或定位到项目owner,
+1. 有些情况下，微服务中渴望用到继承(如User属于一个微服务中，Teacher 是当前开发的服务，是对User的拓展，这时继承远比共同复用原则合适)，环顾一下各大型系统好像都没有这么解决,不是写convertor就是用BeanUtils复制到DTO中，但这很容易在迭代中出现版本兼容问题。目前stategen中采用fastjson+dalgenX很好解决远程bean继承问题，fastjson也能保证转换效率,一些依赖jdk版本中AST信息的远程序列化比如kryo（我没深入研究，只是测试没通过）是有问题的，json则不存在。
+1.  **stategen生成的后端骨架代码(springMVC)也可以一键转换为springboot**
+1. 架构方案全部在springMVC的技术范畴中解决，是技术整合，不是创造技术（我个人认为在非底层上，所谓创造技术有涉嫌重复造轮子和挖坑的嫌疑，我是不会干的!）  
+2. 
+### stategen对服务端代码的增强介绍
+1.  @Wrap对返回置封装
+```java
+    //1.warp也可以一次性配在Controller上
+    @Wrap
+    public class UserController{
+        //以前的代码是这样地恶心
+        @SuppressWarnings("unchecked")
+        @ResponseBody
+        @RequestMapping("getUserByUserId")
+        public Response<User> getUserByUserId(String userId){
+            User user = this.userService.getUserByUserId(userId);
+            if (user!=null) {
+               return new Response<User>(user);
+            } else {
+                return  (Response<User>) Response.error("用户不存在"); 
+            }
+        }
+        
+        //现在
+        /*配置一个bean后，随心所欲地返回，也会达到上面的效果
+        <bean id="response" class="com.mycompany.biz.domain.Response" scope="prototype"/>
+        */
+        @ResponseBody
+        @RequestMapping("getUserByUserId")
+        @Wrap
+        public User getUserByUserId(String userId){
+            User user = this.userService.getUserByUserId(userId);
+            BusinessAssert.mustNotNull(user, "用户不存在");
+            return user;
+        }
+    
 
-####  关于dalgenX   
+        @ResponseBody
+        @RequestMapping("deleteUserById")
+        //也不对返回值包装
+        @Wrap(exclude=true)
+        public String deleteUserById(String userId){
+            this.userService.delete(userId);
+            return userId;
+        }
+    }
+    
+```
+2. @ApiRequestMappingAutoWithMethodName对requestMapping硬编码的处理
+```java
+    @ResponseBody
+    //这里有硬编码而且与methodname不一致，前端反馈getUser有问题，后端还要搜一下代码，交接和team衔接先得跳坑
+    @RequestMapping("getUser") 
+    public User getUserByUserId(String userId){
+        User user = this.userService.getUserByUserId(userId);
+        return user;
+    }
+    //现在直接下面标注，它等于@RequestMapping("getUserByUserId") ,swagger2::@ApiOperation,@@ResponseBody
+    @ApiRequestMappingAutoWithMethodName
+    public User getUserByUserId(String userId){
+        User user = this.userService.getUserByUserId(userId);
+        return user;
+    }
+```
+3. 统一错误处理
+```java
+    //以前是这样地恶心
+   //@...省略
+    public Object getUserByUserId(String userId){
+        try {
+            User user = this.userService.getUserByUserId(userId);
+            return user;
+        } catch (Exception e) {
+            logger.error("", e);
+            return  Response.error("服务端异常"); 
+        }
+    }
+```
+```xml
+    <!-- 现在只需要配置一个bean ，在骨架xml中， 这里只是讲解，不需要再添加-->
+    <bean class="org.stategen.framework.spring.mvc.CollectExceptionJsonHandler">
+        <!-- 注意这里用Class可以避免硬编码，我真的讨厌硬编码，哈哈-->
+        <property name="responseStatusClzOfException" value="com.mycompany.biz.enums.ResponseStatus.ERROR" />
+    </bean>
+```
+```java
+    //然后，就不用关注异常和错误日志输出了,函数返回值也限定为User，异常和日志由CollectExceptionJsonHandler自动处理，错误也自动包装返回给前端
+   //@...省略
+    public User getUserByUserId(String userId){
+        User user = this.userService.getUserByUserId(userId);
+        return user;
+    }
+```
+4.方法鉴权和垂直权限
+```java
+    //以前是这样的校验,除了恶心之外，token很容易被截获，api被人破了后，得有人背锅跑路
+    //@...省略
+    public Object getUserByUserId(String userId,String token){
+        if (processToken(token)) {
+            return Response.error("没有登录")!
+        }
 
-1. 一些通用orm生成器各有优缺点，带来方便也带来麻烦，特别是二次生成、对开发和线上都是灾难，故统统不能达到我的要求。我个人觉得这其中最好的是支付宝的dalgen,由天才程序员**程立**博士(支付宝CTO/首席架构师,现阿里巴巴CTO)开发。可惜，除支付宝外，知名度不高，而且dalgen不开源.  
+        User user = this.userService.getUserByUserId(userId);
+        return user;
+    }
+    
+```
+```xml
+    <!--现在我们可以配一个bean统一处理方法鉴权和垂直权限  ，在骨架xml中， 这里只是讲解，不需要再添加-->
+    <bean id="authCheckerHandlerInterceptor" class="org.stategen.framework.spring.mvc.AuthCheckerHandlerInterceptor">
+        <!-- 用类不用字符串硬编码-->
+        <property name="responseStatusClzOfCheckFailDefault" value="com.mycompany.biz.enums.ResponseStatus.NOT_LOGIN" />
+    </bean>
+    
+    <bean class="com.mycompany.biz.checker.VisitChecker" />
+    <bean class="com.mycompany.biz.checker.LoginChecker" />
+```
+```java
+    //以前是这样的校验，token很容易被人截获，架构师背锅跑路
+    //@...省略
+    @LoginCheck //也可以配到Controller上统一处理,由于token不再时单一值，我们可以对token进行先进行防伪造签名校验...， @LoginCheck(exclude=true)例外
+    @VisiterCheck
+    ...想验证哪个实现哪个Checker
+    public Object getUserByUserId(String userId){
+        User user = this.userService.getUserByUserId(userId);
+        return user;
+    }
+```  
+5. Cookie校验.我刚写框架改造我们那个旧系统(每个url后都有个?token=xxxxxx,除了恶心就是不安全,hibernate还把token返回给所有用户，怕怕)，要用到Cookie,我的CTO（真来自国际大厂）反对说:Cookie不安全不能用，我对打他打了个比方，门不安全不等于连门都不设让小偷直接进来，我们要想法改造门让它变安全。实际上,cookie作http协议的一部分，无论是服务端或者客户端都非常成熟的实现，是会不会用的问题，活用cookie可以减少服务端和客户端非常大的工作理。打开大厂淘宝的cookie看看，它有一个cookie名叫_tb_token_，这个cookie是taobao对其站内其它cookie的签名。  
+stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由运维控制。考虑到cookie的多样性，cookie多的情况下，也不易控制，特意给Cookie做了分组，
+```xml
+    <!-- 验证cookie分组 ,该类可以多个，配置不同的分组 -->
+    <bean id="loginCookieGroup" class="org.stategen.framework.web.cookie.CookieGroup">
+        <property name="cookieTypeClz" value="com.mycompany.biz.enums.CookieType.Login" />
+        <property name="httpOnly" value="${loginCookieGroupHttpOnly}"/>
+    </bean>
+```  
+```java
+    //代码中这样注入，支持String或枚举拿放cookie，又枚举？哈哈，真的不喜欢字符串硬编码，而一个系统中，cookie名称是有限的，枚举远比static String更好地限定数据范围，
+    @Resource
+    private CookieGroup<LoginCookieNames> loginCookieGroup;
+    
+    
+    String userId = this.loginCookieGroup.getCookieValue(LoginCookieNames.userId);
+    loginCookieGroup.addCookie(LoginCookieNames.userId, loginUser.getUserId());
+```  
+Cookie校验是在filter中进行的，为啥不在springMVC中呢？打个比方，Cookie校验是防伪造校验，好比总入口大门的保安一眼就能识别来人是否合法，就没必要先搬来各种重型设备再一眼就能识别是否合法
+```java
+    //spring web3.0
+    @WebFilter(filterName = "CustomMultiFilter", urlPatterns = "/*")
+    public static class CustomMultiFilter extends org.stategen.framework.spring.mvc.MultiFilter {
+    }
+```    
+6. 环境配置与打包无关。环境配置是运维的冬冬，应该由运维来控制，还有一些是敏感数据，比如数据库密，这些是万万不能给到开发人员的，但常用的maven spring打包都不能避免这种坑，我是亲眼到我上一任打包像做贼一样，打完包还担心得要死（怕环境搞错了）就这么小心还是犯疏忽。stategen把环境变量和日志配置都放到/opt/config/stategen/,一劳永逸，同时支持windows上开发，linux运行，测试通过war直接手工或jekkins直接扔生产，而不用再打包，避免风险。
+```xml
+    <bean id="propertyPlaceholder" class="org.stategen.framework.spring.mvc.MultiPropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath*:application.properties</value>
+                <value>file://opt/config/stategen/stategen.xml</value>
+            </list>
+        </property>
+    </bean>
+```  
+```properties
+    #application.properties
+    logback.configfile.xml=file://opt/config/stategen/logback-config.xml
+```
+7. 支持分布式id生成器，目前默认是百度uid-generator,非强制性
+```xml
+    <!-- 启用baidu uid ,这里可以看出大厂也喜欢用xml显式配置bean,为啥，自己体会-->
+    <import resource="classpath*:uid/cached-uid-spring.xml" />
+    <bean id="idGenerator" class="com.mycompany.biz.service.impl.IdGeneratorImpl"/>
+```  
+8. 开关注册 dubbo服务
+```xml
+    <!-- 反注释 dubbo-provider-spring.xml 中的 -->
+    <!-- <import resource="classpath*:context/dubbo-provider-auto-*.xml" /> -->    
+    <!-- <import resource="classpath*:context/dubbo-provider-manual-*.xml" /> -->
+```
+    
+9. 国际化...以后再讲
+
+###  dalgenX后端代码生成器 vs 常用后端代码生成器，为什么要有dalgenX?
+1. 一些通用orm生成器各有优缺点，带来方便也带来麻烦，特别是二次迭代生成、对开发和线上都是灾难，故统统不能达到我的要求。我个人觉得这其中最好的是支付宝的dalgen,由天才程序员**程立**博士(支付宝CTO/首席架构师,现阿里巴巴CTO，太有钱)开发。可惜，除支付宝外，外界知名度不高，而且dalgen不开源.  
 1. 直到2015年前我在taocode找到dalgen的freemarker简单开源实现，作者是**badqiu**. 
 1. 上面的dalgen只能算demo,无法用于生产,但是思路完备，我结合工作中完善、改造升级，现在已很好地用于生产，实际使用效果比支持宝的dalgen还方便很多，特别是**支持迭代开发**，这是代码生成器史上质的飞跃。由是改名叫dalgenX,之所以没有用其它的名子，是向2位天才和前人致敬。     
-1.  dalgenX和dalgen一样，以及本架构内的前端生成器、脚手架，都属于开发阶段生成器，只生成预期的目标代码，不参与编译期和运行期， 
-##  StateGen构成:    
-###  后端+前端全栈架构   
+1.  dalgenX和dalgen一样，以及本架构内的前端生成器、脚手架，都属于开发阶段生成器，只生成预期的目标代码，**不参与编译期和运行期，生成的代码即为你的**
 
-1.  spring|springboot|ibatis|mybatis|dubbo 
-1. ​ 几种技术可以挑选，全部采用显示bean,离开架构师也能看得懂的架构 
-1.  每个web项目可以支持0-n个前端，前端为后端的git子项目。
+1. 考虑到任何一处理代码存在着经常修改和迭代，对于一个表sql分成二个,xml为自己的sql,能常没有或少量,xhtml为通用, 下表 user.xml引用user.xml.xhtml为作为自己的一部门，这样迭代时影响最小。
+```
+trade
+└── tables
+│   └── user.xml
+│   └── user.xml.xhtml
+```
+2. dalgenX支持ibatis和mybatis任选其一，需要说明是，ibatis(现在叫mybatis2)和mybatis在github上分二条线同时都有官方维护，并不是mybatis3对mybatis2升级的关系，我个人以为mybatis有一个不能接受的巨坑--ognl表达式，ssh流行的时候，mybatis急于想榜上struts2这条大腿，然后被struts2带沟里了。
+3. dalgenX采用与ibatis相似但比ibatis更为简单sql，一眼能看出效果，使用ibatis的isNotNull,isNotEmpty...当需要转换为mybatis3的ognl时，自动调用mybatis的官方转换工具转换.
+```xml 
+    <!-- gen_config.xml中 -->
+    <!-- ibatis,mybatis,最下面覆盖上面，最下面优先 ，修改顺序后，需要重新运行一次 ./dalbatch.sh 批量生成-->
+    <entry key="dao_type">mybatis</entry>
+    <entry key="dao_type">ibatis</entry>
+```
+```xml
+    <!-- user.xml中一条方法，这个是自动生成的，如果手工书写时，有提示帮助-->
+    <!-- a.username 不需要写 小驼峰名称，以及jdbctype参数， 不需要写返回值对照配置，由dalgenX生成User-sqlmap-mapping.xml自动生成>
+    <operation name="getUserByUsername" multiplicity="one" remarks="">
+        <sql>
+           select
+             a.user_id,
+             a.username,
+             a.password,
+             a.role_type,
+             a.name,
+             a.nickName,
+             a.inter_code,
+             a.mobile,
+             a.age,
+             a.address,
+             a.avatar_img_id,
+             a.email,
+             a.vali_datetime,
+             a.birthday_date,
+             a.work_time,
+             a.province_id,
+             a.city_id,
+             a.status,
+             a.grade,
+             a.sex,
+             a.post_address_id,
+             a.remark,
+             a.update_time,
+             a.create_time,
+             a.delete_flag
+           from user a
+           where
+             a.delete_flag = 0
+             and a.username = ?
+        </sql>
+    </operation>
+```
+3. dalgenX生成mybatis文件时，也完整地实现daoImpl,襾不是采用mybatis的java代理方式，原因2个，反正生成的代码不需要维护，显式代码安全，2，显式代码调式跟踪方便，调试中方便打断点。
+```
+public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
+	/**
+	 * sql:...略
+	 * a.username 对应的参数自动生成小驼峰名称，以及参数类型，函数返囲值 
+	 */
+	public User getUserByUsername(String username) throws DataAccessException {
+		Map<String,Object> params = new HashMap<String,Object>(1);
+		params.put("username",username);
+		//下面User.getUserByUsername自动插入到生成的sql /*User.getUserByUsername*/中,方便druid中跟踪sql的执行效率即时优化
+		return (User)super.selectOne("User.getUserByUsername",params);
+	}
+	...
+```	
+4. **dalgenx支持水平权限**生成规则。水平权限要完全做到绕开暴力尝试,或者避免在别的api中泄露id被利用,显然，采用复杂id(uid、随机)生成方式治标不治本。同时，要兼顾代码速度、迭代、人员权限调整、下面简要地阐述一种水平权限方案，可以直接由dalgenX生成器来生成，大大降低开发成本，非常适合产品需求上的迭代，代码可以做到以不变应万变.
+```
+   A.定一个组织架构表比如orgnization，树型数据 orgId, parentId
+   B.把用户（即水平权限中的数据操作员）人分配到组织上（org_user表）,用户登录后获取自己的orgId
+   C.假设topic表需要水平权限控制，在表的备注中添加 -level(organization) -owner(user) 
+      -level(organization) //水平权限中的组织架构表为organization 
+      -owner(user) //水平权限中数据属于指定人员表为user
+   D.运行 gen.sh table topic时，会生成 topic_level_h 和 topic_owner_h表创建sql语句，复制出来运行。dalgenX约定_h为水平权限相关的表    
+   E.用户生产数据时(比如topic表)，同时把数据添加中topic_level_h和topic_owner_h(由dalgenX显式生成相关的sql和调用java代码)
+   F.用户查询，删除，更新数据时，由由dalgenX显式生成相关的sql和调用java代码和参数：Boolean inclCurrOrgId, Long currOrgId, String currUserId
+   G.由程序员在调用service时，控制inclCurrOrgId，currOrgId，currUserId
+```
+5. dalgenX兼顾避免一些开发习惯上的坑。比如
+```java
+   //根据主键查询，一般dao中的方法名是getById,
+   //我们在很多遗留的代码中，经常看到是下面这样的，这是开发调用ide自动代码完成功能后，没有改变量名
+   User byId = userService.getById(id);
+   ...
+   ...
+   byId.method1();
+   byId.method2();
+   byId.method3();
+   //上面的byId没法扯皮，吵不过人家
+   
+   //dalgenX根据主键查询，dao中的方法名是getUserById,
+   //就算开发偷懒，生成变量名
+   User userById = userService.getById(id); 
+   ...
+   //好吧，就算开发不改，无论什么时候阅读到下面的代码，看到userById也知道其类型是User 
+   userById.method1();
+   userById.method2();
+   userById.method3();   
+```
+6. dalgenX在Service中生成一些符合合成/复用原则（CARP）的java代码,节约业务层大量开发
+```java
+public class UserServiceImpl implements UserService {
+    
+    //收集Bean上的userId,把查询到的user赋值到Bean的User上
+    public <D> void assignBeanTo(Collection<D> dests, Function<? super D, String> destGetMethod, BiConsumer<D, User> destSetMethod) {
+        ...
+    }
+    //收集Bean上的userIds,把查询到的users赋值到Bean的List<User>上
+    public <D, G> void assignBeansTo(Collection<D> dests, Function<? super D, G> destGetMethod, BiConsumer<D, List<User>> destSetMethod, BiConsumer<User, List<G>> resultSetQueryIdsFun, Function<? super User, G> resultGetGoupIdFun) {
+        ...
+    }
+
+    //收到UserId,比如合并到List<Teacher>要
+    public <D> void mergeBeanTo(Collection<D> dests, Function<? super D, String> destGetMethod) {
+        ...
+    }
+    ...
+}
+
+   //调用非常简单，没有循环处理，没有硬编码码，如给List<Topic>每条Topic赋值作者
+   userService.assignBeanTo(topics, Topic::getAuthorId, Topic::setAuthor);
+
+```
+
+
 ###  关于前端生成器及原理
    >1. 生成器适合响应式前端，不是旧式的mvc的jsp,jquery,easyui或者类似的冬冬.  
    >1.  对于后端一个任意给定的api,其对应的前端网络调用、数据状态化、交互代码基本都是确定和没有歧义的，既然是确定的，说明是规有律性的，找到规律就可以实现机器来生成，
@@ -71,13 +416,13 @@ stategen采用第三种生成方式可以豪无限制地兼容其它技术，所
      StateGen直接通过java反射硬解析后端java代码来生成前端代码，没有任何多余工作环节或学习,不改变开发流程.当然也不存在挖坑  
 
 
-### 关于后端生成器
    >1. 对于任意一个sql,其配置、对应的java代码，参数个数，类型，返回值类型、字段都是确定的，这些以前都是手工或半手工撸出来.
    >2. 业务逻辑都是由调用一个或多个sql组成的
    >3. 市面上代码生成器都覆盖式生成代码,其生成的代码无法预先指定继承、实现接口、类型指定,无法保护已有业务代码成果,
        比如要多写功能相同逻辑的DTO绕开限制，但这违背单一职责框架设置原理，欲使用先入坑.StateGen采用解析已有java
        代码的方式解决上述问题
- ### 代码生成器难以解决的是问题迭代和增量开发,但是实际的项目开发都是不断地迭代功能和新功能叠加，而stategen非常适合迭代开发    
+### 代码生成器难以解决的是问题迭代和增量开发,但是实际的项目开发都是不断地迭代功能和新功能叠加，而stategen非常适合迭代开发   
+
 
 # StateGen已经支持flutter   
   采用google 2019 i/o大会上推荐的provider
@@ -266,73 +611,6 @@ gen.sh api teacher cms|app
 ```
 mvn package 
 ```
-### 2.2.0.realse
->增加1. 水平权限（不是通过随机ID隔离数据）
->>1. 水平权限指当前用户的属性（1.级别level:树型组织结构,2.用户ID）对数据（1.属于级别level,2.所有者们ID）的筛选操作
->>2. 参数1：可选: 数据是否属于当前用户的下级level 
->>>补充1: 参数2.可选，数据的所有者中是否有当前用户  
->>>补充2: 参数3.可选，当前用户是否可以浏览本级数据  
->>and (参数1 or 参数2 or 参数3) ,参数为空时，不参与筛选
->>>一张表的只需在备注中 有"-level(组织架构表如orgnization)"和(或)"-owner(用户表如user)"将生成相应的辅助sql(不改变原业务表，只增加新表)以及对应的操作sql(ibatis|mybatis)   
-
->增加2. 全局ID生成器支持(目前用百度的,可以改成你自己的)
-
-
-### 其它
-#### 开启 dubbo服务
->反注释 dubbo-provider-spring.xml 中的
-```
-    <!-- <import resource="classpath*:context/dubbo-provider-auto-*.xml" /> -->    
-    <!-- <import resource="classpath*:context/dubbo-provider-manual-*.xml" /> -->
-```
-### Stategen中 spring bean都是显示配置的 
-### StategenMvc框架几处用法,可以避免在业务中频繁地写与业务无关的代码，这些用法是自定义配置的
-#### MultiFilter.java 配置在web.xml，它对客户端的请求CookieGroup检测是否伪造,CookieGroup可以配置多个,便于业务分组.每个CookieGroup下的所有cookie都有一个离伪造的token签名，
-```
-<filter>
-    <filter-name>frameworkMultiFilter</filter-name>
-    <filter-class>org.stategen.framework.spring.mvc.MultiFilter</filter-class>
-</filter>
-```
-```
-<!-- 验证cookie分组 ,该类可以多个，配置不同的分组 -->
-<bean id="loginCookieGroup" class="org.stategen.framework.web.cookie.CookieGroup">
-    <property name="cookieTypeClz" value="com.mycompany.biz.enums.CookieType.Login" />
-    <property name="httpOnly" value="${loginCookieGroupHttpOnly}"/>
-</bean>
-```
-
-#### @Wrap 对Spring Controller中@Requestbody 返回值按指定的类再包装,便于前端兼容
-比如:
-```
-    <bean id="response" class="com.mycompany.biz.domain.Response" scope="prototype">
-    </bean>
-```
-包装后的
-```
-{
-message:'成功'
-success:true,
-data:xxxx
-...
-}
-```
-
-#### CollectExceptionJsonHandler.java 对业务异常、运行异常统一处理
-```
-    <bean class="org.stategen.framework.spring.mvc.CollectExceptionJsonHandler">
-        <property name="responseStatusClzOfException" value="com.mycompany.biz.enums.ResponseStatus.ERROR" />
-    </bean>
-```
-
-####各种自定义的标注如 @LoginCheck .... 按指定的方式检查权限
-```
-    <bean class="com.mycompany.biz.checker.VisitChecker" />
-    <bean class="com.mycompany.biz.checker.LoginChecker" />
-```
-
-####@ApiRequestMappingAutoWithMethodName
-在SpringMvc,以方法名作为路径，避免写路径硬编码，
 
 [Stategen快速调试开发运行精简教程](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)  
 ### 详细视频 共6小时
