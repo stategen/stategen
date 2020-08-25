@@ -192,9 +192,9 @@ trade
     
 ```
 ```xml
-    <!--现在我们可以配一个bean统一处理方法鉴权和垂直权限  ，在骨架xml中， 这里只是讲解，不需要再添加-->
+    <!--现在我们可以配一个bean统一处理方法鉴权和垂直权限  ，在骨架xml中， 这里只是讲解，不需要再添加 -->
     <bean id="authCheckerHandlerInterceptor" class="org.stategen.framework.spring.mvc.AuthCheckerHandlerInterceptor">
-        <!-- 用类不用字符串硬编码-->
+        <!-- 用类不用字符串硬编码 -->
         <property name="responseStatusClzOfCheckFailDefault" value="com.mycompany.biz.enums.ResponseStatus.NOT_LOGIN" />
     </bean>
     
@@ -258,7 +258,7 @@ stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由
 ```
 7. 支持分布式id生成器，目前默认是百度uid-generator,非强制性
 ```xml
-    <!-- 启用baidu uid ,这里可以看出大厂也喜欢用xml显式配置bean,为啥，自己体会-->
+    <!-- 启用baidu uid ,这里可以看出大厂也喜欢用xml显式配置bean,为啥，自己体会 -->
     <import resource="classpath*:uid/cached-uid-spring.xml" />
     <bean id="idGenerator" class="com.mycompany.biz.service.impl.IdGeneratorImpl"/>
 ```  
@@ -295,7 +295,7 @@ trade
 ```xml
     <!-- user.xml中一条方法，这个是自动生成的，如果手工书写时，有提示帮助-->
     <!-- a.username 不需要写 小驼峰名称，以及jdbctype参数，
-    不需要写返回值对照配置，由dalgenX生成User-sqlmap-mapping.xml自动生成>
+    不需要写返回值对照配置，由dalgenX生成User-sqlmap-mapping.xml自动生成 -->
     <operation name="getUserByUsername" multiplicity="one" remarks="">
         <sql>
            select
