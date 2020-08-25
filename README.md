@@ -50,7 +50,7 @@ spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(
 stategen采用第三种生成方式可以豪无限制地兼容其它技术，所以无需扯一些不需要的技术当噱头、还把挖坑还当卖点。 
 
 ### StateGen后端骨架代码生成初始化StatGen架构的项目springMVC（web3.0）（也可再一键转换为springBoot)
-1. 遵从常用框架设计原则（单一职责、开闭、接口隔离、无环依赖），通过在gen_config.xml配置,也可以将几个jar包合并。**觉得springMVC项目从头到尾只需一个jar可以不用往下看**。
+1. 遵从常用架构设计原则（单一职责、开闭、接口隔离、无环依赖），通过在gen_config.xml配置,也可以将几个jar包合并。**觉得springMVC项目从头到尾只需一个jar可以不用往下看**。
 ```
 trade
 ├── 1-trade-pojo
@@ -72,7 +72,7 @@ trade
 │       └── stategen
 └── tables
 ```
-2. 无限个web(7-...)，共同依赖相同的dao,遵循一个数据库只能有一套crud代码（Martin大神的不重复规范），
+2. 无限个web(7-...)，共同依赖相同的dao,遵循一个数据库只能有一套crud代码（Martin大神的不重复规范。实际开发中，当需求变了导致表变化时，假如有多套代码操作相同的表，那简直是找死，更何况假如有些代码还不属于当前开发负责管，那扯皮吧，拖死项目），
 1. 文件夹以数字形式开头自上而下1-,2-,3-...，方便在eclipse|idea一目了然依赖关系（看到某大型商业架构dao跑到pojo的上面，每次打开项目都要花一定的时间开闭包原则，很不舒服）
 1. 微服务放在war包里，多微服务依赖时，依赖服务可以一起放在java(如tomcat)容器中，调试和发布方便，不用单独启动。
 1. facade对应的jar直接可以直接发布到本地公司仓库，它的远程配置自动生成，别的项目集成时，不需要写相关的配置，节约时间减少人工出错。
@@ -132,7 +132,7 @@ trade
 2. @ApiRequestMappingAutoWithMethodName对requestMapping硬编码的处理
 ```java
     @ResponseBody
-    //这里有硬编码而且与methodname不一致，前端反馈getUser有问题，后端还要搜一下代码，交接和team衔接先得跳坑
+    //这里有硬编码而且允许与methodname不一致，当前端反馈getUser有问题，后端还要搜一下代码，交接和team衔接时先得跳坑
     @RequestMapping("getUser") 
     public User getUserByUserId(String userId){
         User user = this.userService.getUserByUserId(userId);
@@ -209,7 +209,7 @@ trade
         return user;
     }
 ```  
-5. Cookie校验.我刚写框架改造我们那个旧系统(每个url后都有个?token=xxxxxx,除了恶心就是不安全,hibernate还把token返回给所有用户，怕怕)，要用到Cookie,我的CTO（真来自国际大厂）反对说:Cookie不安全不能用，我对打他打了个比方，门不安全不等于连门都不设让小偷直接进来，我们要想法改造门让它变安全。实际上,cookie作http协议的一部分，无论是服务端或者客户端都非常成熟的实现，是会不会用的问题，活用cookie可以减少服务端和客户端非常大的工作理。打开大厂淘宝的cookie看看，它有一个cookie名叫_tb_token_，这个cookie是taobao对其站内其它cookie的签名。  
+5. Cookie校验.我刚写框架改造我们那个旧系统(每个url后都有个?token=xxxxxx,除了恶心就是不安全,hibernate还把token返回给所有用户，怕怕)，要用到Cookie,我的CTO（真来自国际大厂）反对说:Cookie不安全不能用，我对他打了个比方，门不安全不等于连门都不设让小偷直接进来，我们要想法改造门让它变安全。实际上,cookie作为http协议的一部分，无论是服务端或者客户端都非常成熟的实现，是会不会用的问题，活用cookie可以减少服务端和客户端非常大的工作理。浏览器打开大厂淘宝的cookie看看，它有一个cookie名叫_tb_token_，这个cookie是taobao对其站内其它cookie的签名。  
 stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由运维控制。考虑到cookie的多样性，cookie多的情况下，也不易控制，特意给Cookie做了分组，
 ```xml
     <!-- 验证cookie分组 ,该类可以多个，配置不同的分组 -->
@@ -227,14 +227,14 @@ stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由
     String userId = this.loginCookieGroup.getCookieValue(LoginCookieNames.userId);
     loginCookieGroup.addCookie(LoginCookieNames.userId, loginUser.getUserId());
 ```  
-Cookie校验是在filter中进行的，为啥不在springMVC中呢？打个比方，Cookie校验是防伪造校验，好比总入口大门的保安一眼就能识别来人是否合法，就没必要先搬来各种重型设备再一眼就能识别是否合法
+需要说明的是：Cookie校验是在filter中进行的。那为啥不在springMVC中呢？打个比方，Cookie校验是防伪造校验，好比总入口大门的保安一眼就能识别来人是否合法，就没必要先搬来各种重型设备再一眼就能识别是否合法，对系统资源利用上的浪费
 ```java
     //spring web3.0
     @WebFilter(filterName = "CustomMultiFilter", urlPatterns = "/*")
     public static class CustomMultiFilter extends org.stategen.framework.spring.mvc.MultiFilter {
     }
 ```    
-6. 环境配置与打包无关。环境配置是运维的冬冬，应该由运维来控制，还有一些是敏感数据，比如数据库密，这些是万万不能给到开发人员的，但常用的maven spring打包都不能避免这种坑，我是亲眼到我上一任打包像做贼一样，打完包还担心得要死（怕环境搞错了）就这么小心还是犯疏忽。stategen把环境变量和日志配置都放到/opt/config/stategen/,一劳永逸，同时支持windows上开发，linux运行，测试通过war直接手工或jekkins直接扔生产，而不用再打包，避免风险。
+6. 环境配置与打包无关。环境配置是运维的冬冬，应该由运维来控制，还有一些是敏感数据，比如**数据库密码**，这些是万万不能给到开发人员的，网上远程删库跑路的悲剧又不是一回两回了，但常用的maven spring打包都不能避免这种坑，我是亲眼到我上一任架构师打个包像做贼一样，打完包还担心得要死（怕环境搞错了）就这么小心还是犯疏忽。stategen把环境变量和日志配置都放到/opt/config/stategen/，由运维控制,一劳永逸，同时支持windows上开发，linux运行，测试通过war还可以直接由手工或jekkins直接扔生产，而不用再打包，避免风险。这期间，开发、测式、运维和气生财。大厂antx.xml也这么处理的，不是我独创
 ```xml
     <bean id="propertyPlaceholder" class="org.stategen.framework.spring.mvc.MultiPropertyPlaceholderConfigurer">
         <property name="locations">
@@ -262,23 +262,23 @@ Cookie校验是在filter中进行的，为啥不在springMVC中呢？打个比�
     <!-- <import resource="classpath*:context/dubbo-provider-manual-*.xml" /> -->
 ```
     
-9. 国际化...以后再讲
+9. 国际化...以后再讲，我觉得也很屌
 
 ###  dalgenX后端代码生成器 vs 常用后端代码生成器，为什么要有dalgenX?
-1. 一些通用orm生成器各有优缺点，带来方便也带来麻烦，特别是二次迭代生成、对开发和线上都是灾难，故统统不能达到我的要求。我个人觉得这其中最好的是支付宝的dalgen,由天才程序员**程立**博士(支付宝CTO/首席架构师,现阿里巴巴CTO，太有钱)开发。可惜，除支付宝外，外界知名度不高，而且dalgen不开源.  
-1. 直到2015年前我在taocode找到dalgen的freemarker简单开源实现，作者是**badqiu**. 
-1. 上面的dalgen只能算demo,无法用于生产,但是思路完备，我结合工作中完善、改造升级，现在已很好地用于生产，实际使用效果比支持宝的dalgen还方便很多，特别是**支持迭代开发**，这是代码生成器史上质的飞跃。由是改名叫dalgenX,之所以没有用其它的名子，是向2位天才和前人致敬。     
-1.  dalgenX和dalgen一样，以及本架构内的前端生成器、脚手架，都属于开发阶段生成器，只生成预期的目标代码，**不参与编译期和运行期，生成的代码即为你的**
+1. 一些通用orm生成器各有优缺点，带来方便也带来麻烦，**特别是二次迭代生成、对开发和线上都是灾难**，故统统不能达到我的要求。我个人觉得这其中最好的是支付宝的dalgen,由天才程序员**程立**博士(支付宝CTO/首席架构师,现阿里巴巴CTO，太有钱)开发。可惜，除支付宝外，外界知名度和使用率不高，可能是dalgen不开源吧.  
+1. 直到2015年前我在taocode找到dalgen的freemarker简单开源实现，作者是**badqiu**. GMAVEN项目(可以通过简单的groovy语句直接调用)，我喜欢。
+1. 上面的dalgen只能算demo,无法用于生产,但是思路完备，我结合工作中完善、改造升级，现在已很好地用于生产，实际使用效果比支持宝的dalgen还方便，特别是**支持迭代开发**，这是代码生成器史上质的飞跃。由是改名叫dalgenX,之所以没有用其它的名子，是向2位天才和前人致敬。     
+1.  dalgenX和dalgen一样，以及本架构内的前端生成器、脚手架，都属于开发阶段生成器，只生成预期的目标代码，**不参与编译期和运行期，所见即所得，离开dalgenx生成后的项目也是完整的**，里氏替换原则都不需要。
 
-1. 考虑到任何一处理代码存在着经常修改和迭代，对于一个表sql分成二个,xml为自己的sql,能常没有或少量,xhtml为通用, 下表 user.xml引用user.xml.xhtml为作为自己的一部门，这样迭代时影响最小。
+1. 考虑到项目经常迭代导致表会更改，特意反sql分成二个部门,xml文件中为开发手工书写的sql,没有或者没有或少量,xhtml为通用,被引用在xml文件中, 以user表为例 user.xml引用user.xml.xhtml为作为自己的一部分，这样迭代时维护的代码量最小最安全。
 ```
 trade
 └── tables
 │   └── user.xml
 │   └── user.xml.xhtml
 ```
-2. dalgenX支持ibatis和mybatis任选其一，需要说明是，ibatis(现在叫mybatis2)和mybatis在github上分二条线同时都有官方维护，并不是mybatis3对mybatis2升级的关系，我个人以为mybatis有一个不能接受的巨坑--ognl表达式，ssh流行的时候，mybatis急于想榜上struts2这条大腿，然后被struts2带沟里了。
-3. dalgenX采用与ibatis相似但比ibatis更为简单sql，一眼能看出效果，使用ibatis的isNotNull,isNotEmpty...当需要转换为mybatis3的ognl时，自动调用mybatis的官方转换工具转换.
+2. dalgenX支持ibatis和mybatis任选其一作为生成目标代码，需要说明是，ibatis(现在叫mybatis2)和mybatis在github上分二条线同时都有官方维护，并不是mybatis3对mybatis2升级的关系，我个人以为mybatis有一个不能接受的巨坑--ognl表达式，那是ssh特别流行的时候，mybatis急于想榜上struts2这条大腿，然后被struts2带沟里了。另外mybatis3比mybatis2慢20%（我自己测过，不算权威数据）。
+3. dalgenX采用与ibatis相似但比ibatis更为简单sql，一眼能看出效果，使用ibatis的isNotNull,isNotEmpty...等标签，当需要转换为mybatis3的ognl时，自动调用mybatis的官方转换规则转换.
 ```xml 
     <!-- gen_config.xml中 -->
     <!-- ibatis,mybatis,最下面覆盖上面，最下面优先 ，修改顺序后，需要重新运行一次 ./dalbatch.sh 批量生成-->
@@ -323,7 +323,7 @@ trade
         </sql>
     </operation>
 ```
-3. dalgenX生成mybatis文件时，也完整地实现daoImpl,襾不是采用mybatis的java代理方式，原因2个，反正生成的代码不需要维护，显式代码安全，2，显式代码调式跟踪方便，调试中方便打断点。
+3. dalgenX生成mybatis文件时，也完整地实现daoImpl,襾不是采用mybatis的java代理方式，原因2个，反正生成的代码不需要维护，显式代码安全，2，显式代码调试跟踪断点日志都方便。
 ```
 public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
 	/**
@@ -331,9 +331,10 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
 	 * a.username 对应的参数自动生成小驼峰名称，以及参数类型，函数返囲值 
 	 */
 	public User getUserByUsername(String username) throws DataAccessException {
+	    //HashMap初始化时，大小都自动确定了，节约内存，提高效率。
 		Map<String,Object> params = new HashMap<String,Object>(1);
 		params.put("username",username);
-		//下面User.getUserByUsername自动插入到生成的sql /*User.getUserByUsername*/中,方便druid中跟踪sql的执行效率即时优化
+		//下面User.getUserByUsername自动插入到生成的sql中 select /*User.getUserByUsername*/ ... from ...,方便druid中跟踪sql的执行效率,巴结DBA,哈哈
 		return (User)super.selectOne("User.getUserByUsername",params);
 	}
 	...
