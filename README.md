@@ -106,7 +106,8 @@ trade
         
         //现在
         /*配置一个bean后，随心所欲地返回，也会达到上面的效果
-        <bean id="response" class="com.mycompany.biz.domain.Response" scope="prototype"/>
+        <bean id="response" class="com.mycompany.biz.domain.Response" 
+        scope="prototype"/>
         */
         @ResponseBody
         @RequestMapping("getUserByUserId")
@@ -132,7 +133,8 @@ trade
 2. @ApiRequestMappingAutoWithMethodName对requestMapping硬编码的处理
 ```java
     @ResponseBody
-    //这里有硬编码而且允许与methodname不一致，当前端反馈getUser有问题，后端还要搜一下代码，交接和team衔接时先得跳坑
+    //这里有硬编码而且允许与methodname不一致，当前端反馈getUser有问题，
+    //后端还要搜一下代码，交接和team衔接时先得跳坑
     @RequestMapping("getUser") 
     public User getUserByUserId(String userId){
         User user = this.userService.getUserByUserId(userId);
@@ -167,8 +169,9 @@ trade
     </bean>
 ```
 ```java
-    //然后，就不用关注异常和错误日志输出了,函数返回值也限定为User，异常和日志由CollectExceptionJsonHandler自动处理，错误也自动包装返回给前端
-   //@...省略
+    //然后，就不用关注异常和错误日志输出了,函数返回值也限定为User，
+    //异常和日志由CollectExceptionJsonHandler自动处理，错误也自动包装返回给前端
+    //@...省略
     public User getUserByUserId(String userId){
         User user = this.userService.getUserByUserId(userId);
         return user;
@@ -201,7 +204,10 @@ trade
 ```java
     //以前是这样的校验，token很容易被人截获，架构师背锅跑路
     //@...省略
-    @LoginCheck //也可以配到Controller上统一处理,由于token不再时单一值，我们可以对token进行先进行防伪造签名校验...， @LoginCheck(exclude=true)例外
+    /*也可以配到Controller上统一处理,由于token不再时单一值，
+    我们可以对token进行先进行防伪造签名校验...， @LoginCheck(exclude=true)例外
+    */
+    @LoginCheck 
     @VisiterCheck
     ...想验证哪个实现哪个Checker
     public Object getUserByUserId(String userId){
@@ -219,7 +225,8 @@ stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由
     </bean>
 ```  
 ```java
-    //代码中这样注入，支持String或枚举拿放cookie，又枚举？哈哈，真的不喜欢字符串硬编码，而一个系统中，cookie名称是有限的，枚举远比static String更好地限定数据范围，
+    //代码中这样注入，支持String或枚举拿放cookie，又枚举？哈哈，
+    //真的不喜欢字符串硬编码，而一个系统中，cookie名称是有限的，枚举远比static String更好地限定数据范围，
     @Resource
     private CookieGroup<LoginCookieNames> loginCookieGroup;
     
@@ -335,7 +342,9 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
 	    //HashMap初始化时，大小都自动确定了，节约内存，提高效率。
 		Map<String,Object> params = new HashMap<String,Object>(1);
 		params.put("username",username);
-		//下面User.getUserByUsername自动插入到生成的sql中 select /*User.getUserByUsername*/ ... from ...,方便druid中跟踪sql的执行效率,巴结DBA,哈哈
+		/*下面User.getUserByUsername自动插入到生成的sql中 
+		select /*User.getUserByUsername*/ ... from ...,方便druid中跟踪sql的执行效率,巴结DBA,哈哈
+		*/
 		return (User)super.selectOne("User.getUserByUsername",params);
 	}
 	...
@@ -357,8 +366,9 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
 ```
 5. dalgenX兼顾避免一些开发习惯上的坑。比如
 ```java
-   //根据主键查询，一般dao中的方法名是getById,
-   //我们在很多遗留的代码中，经常看到是下面这样的，这是开发调用ide自动代码完成功能后，没有改变量名
+   /*根据主键查询，一般dao中的方法名是getById,
+   我们在很多遗留的代码中，经常看到是下面这样的，
+   这是开发调用ide自动代码完成功能后，没有改变量名 */
    User byId = userService.getById(id);
    ...
    ...
@@ -367,11 +377,12 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
    byId.method3();
    //上面的byId没法扯皮，吵不过人家
    
-   //dalgenX根据主键查询，dao中的方法名是getUserById,
-   //就算开发偷懒，生成变量名
+   /*dalgenX根据主键查询，dao中的方法名是getUserById,
+   简定开发忘记不改变量名 */
    User userById = userService.getById(id); 
    ...
-   //好吧，就算开发不改，无论什么时候阅读到下面的代码，看到userById也知道其类型是User 
+   /*好吧，无论什么时候阅读到下面的代码，
+   看到userById也知道其类型是User */
    userById.method1();
    userById.method2();
    userById.method3();   
