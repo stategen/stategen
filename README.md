@@ -362,7 +362,7 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
      topic_level_h和topic_owner_h(由dalgenX显式生成相关的sql和调用java代码)
    F.用户查询，删除，更新数据时，由由dalgenX显式生成相关的sql和调用java代码
      和参数：Boolean inclCurrOrgId, Long currOrgId, String currUserId
-   G.由程序员在调用service时，控制inclCurrOrgId，currOrgId，currUserId
+   G.由程序员在调用topicService的方法时，自由控制inclCurrOrgId，currOrgId，currUserId
 ```
 5. dalgenX兼顾避免一些开发习惯上的坑。比如
 ```java
