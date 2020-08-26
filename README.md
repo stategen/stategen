@@ -238,8 +238,9 @@ trade
         return user;
     }
 ```  
-5. Cookie校验.我刚写框架改造我们那个旧系统(每个url后都有个?token=xxxxxx,除了恶心就是不安全,hibernate还把token返回给所有用户，怕怕)，要用到Cookie,我的CTO（真来自国际大厂）反对说:Cookie不安全不能用，我对他打了个比方，门不安全不等于连门都不设让小偷直接进来，我们要想法改造门让它变安全。实际上,cookie作为http协议的一部分，无论是服务端或者客户端都非常成熟的实现，是会不会用的问题，活用cookie可以减少服务端和客户端非常大的工作理。浏览器打开大厂淘宝的cookie看看，它有一个cookie名叫_tb_token_，这个cookie是taobao对其站内其它cookie的签名。  
-stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由运维控制。考虑到cookie的多样性，cookie多的情况下，也不易控制，特意给Cookie做了分组，
+5. Cookie校验.我刚写框架改造我们那个旧系统(每个url后都有个?token=xxxxxx,除了恶心就是不安全,hibernate还把token返回给所有用户，怕怕)，要用到Cookie,我的CTO（真来自国际大厂）反对说:Cookie不安全不能用，我对他打了个比方，门不安全不等于连门都不设让小偷直接进来，我们要想法改造门让它变安全。实际上,cookie作为http协议的一部分，无论是服务端或者客户端都非常成熟的实现，是会不会用的问题，活用cookie可以减少服务端和客户端非常大的工作量。浏览器打开大厂淘宝的cookies看看，它有一个cookie名叫_tb_token_，这个cookie是taobao对其站内其它cookie的签名。  
+stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由运维控制。考虑到cookie的多样性，cookie多的情况下，也不易控制，特意给Cookie做了分组，  
+以上只是讲把一些值放在cookie里，当然放在head里也可以（放head里生命周期要自己管理），但最好不要拼在url后面或form里
 ```xml
     <!-- 验证cookie分组 ,该类可以多个，配置不同的分组 -->
     <bean id="loginCookieGroup" class="org.stategen.framework.web.cookie.CookieGroup">
