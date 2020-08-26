@@ -125,7 +125,7 @@ trade
     
 ```
 ```javascript
- /*api返回值*/
+ /*api返回值,实现Response类就可以自定义*/
 {
     message:'成功'
     success:true,
@@ -143,27 +143,32 @@ trade
             return userId;
         }
 ```     
-2. @ApiRequestMappingAutoWithMethodName对requestMapping硬编码的处理
+2. @ApiRequestMappingAutoWithMethodName 对 @RequestMapping硬编码的处理
 ```java
     @ResponseBody
-    //这里有硬编码而且允许与methodname不一致，当前端反馈getUser有问题，
-    //后端还要搜一下代码，交接和team衔接时先得跳坑
+    /*这里有硬编码而且允许与methodname不一致，review时，看到里而全是xxxNew,xxxOld,xxxV1,xxxV2
+    真有想打人的冲动。
+    再比如，当前端反馈getUser有问题，
+    后端还要搜一下代码才能定位，代码交接和team衔接时先得跳坑 */
     @RequestMapping("getUser") 
     public User getUserByUserId(String userId){
         User user = this.userService.getUserByUserId(userId);
         return user;
     }
-    //现在直接下面标注，它等于@RequestMapping("getUserByUserId") ,swagger2::@ApiOperation,@@ResponseBody
+```
+```java
+    /*现在直接下面标注，它等于@RequestMapping("getUserByUserId")，
+    但是不用写硬编码，直接跟方法名走,同时有swagger2::@ApiOperation,@@ResponseBody*/
     @ApiRequestMappingAutoWithMethodName
     public User getUserByUserId(String userId){
         User user = this.userService.getUserByUserId(userId);
         return user;
     }
-```
+```    
 3. 统一错误处理
 ```java
     //以前是这样地恶心
-   //@...省略
+    //@...省略
     public Object getUserByUserId(String userId){
         try {
             User user = this.userService.getUserByUserId(userId);
