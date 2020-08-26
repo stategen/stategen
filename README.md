@@ -49,7 +49,7 @@ spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(
 很快这些时髦都成为不时髦而且甩不掉的累赘，形成更大的坑，维护成本巨大。 
 stategen采用第三种生成方式可以豪无限制地兼容其它技术，所以无需扯一些不需要的技术当噱头、还把挖坑还当卖点。 
 
-### StateGen后端骨架代码生成初始化StatGen架构的项目springMVC（web3.0）（也可再一键转换为springBoot)
+## 一：StateGen后端骨架代码生成初始化StatGen架构的项目springMVC（web3.0）（也可再一键转换为springBoot)
 1. 遵从常用架构设计原则（单一职责、开闭、接口隔离、无环依赖），通过在gen_config.xml配置,也可以将几个jar包合并。**觉得springMVC项目从头到尾只需一个jar可以不用往下看**。
 ```
 trade
@@ -85,12 +85,9 @@ trade
 1.  **stategen生成的后端骨架代码(springMVC)也可以一键转换为springboot**
 1. 架构方案全部在springMVC的技术范畴中解决，是技术整合，不是创造技术（我个人认为在非底层上，所谓创造技术有涉嫌重复造轮子和挖坑的嫌疑，我是不会干的!）  
 2. 
-### stategen对服务端代码的增强介绍
+## 二、stategen对服务端代码的增强介绍
 1.  @Wrap对返回置封装
 ```java
-    //1.warp也可以一次性配在Controller上
-    @Wrap
-    public class UserController{
         //以前的代码是这样地恶心
         @SuppressWarnings("unchecked")
         @ResponseBody
@@ -103,33 +100,49 @@ trade
                 return  (Response<User>) Response.error("用户不存在"); 
             }
         }
-        
+``` 
+上面的java代码里到处对返回值封装，现在可以通过以下方式让spring自动封装返回值
+```xml
+    <!-- Response可以自定义，也即自定义封装 -->
+    <bean id="response" class="com.mycompany.biz.domain.Response" 
+    scope="prototype"/>
+```        
+```java
+    //@warp也可以一次性配在Controller上
+    @Wrap
+    public class UserController{
         //现在
-        /*配置一个bean后，随心所欲地返回，也会达到上面的效果
-        <bean id="response" class="com.mycompany.biz.domain.Response" 
-        scope="prototype"/>
-        */
         @ResponseBody
         @RequestMapping("getUserByUserId")
+        //@warp也可以一次性配在Controller上
         @Wrap
         public User getUserByUserId(String userId){
             User user = this.userService.getUserByUserId(userId);
             BusinessAssert.mustNotNull(user, "用户不存在");
             return user;
         }
+    }
     
-
+```
+```javascript
+ /*api返回值*/
+{
+    message:'成功'
+    success:true,
+    data:{username:'张三',nickname:'zhangsan',...}
+    ...
+}
+```
+```java
+        //当@wrap一次性配到controller上时，也可以把个别api除外
+        @Wrap(exclude=true)
         @ResponseBody
         @RequestMapping("deleteUserById")
-        //也不对返回值包装
-        @Wrap(exclude=true)
         public String deleteUserById(String userId){
             this.userService.delete(userId);
             return userId;
         }
-    }
-    
-```
+```     
 2. @ApiRequestMappingAutoWithMethodName对requestMapping硬编码的处理
 ```java
     @ResponseBody
@@ -271,7 +284,7 @@ stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由
     
 9. 国际化...以后再讲，我觉得也很屌
 
-###  dalgenX后端代码生成器 vs 常用后端代码生成器，为什么要有dalgenX?
+## 三、  dalgenX后端代码生成器 vs 常用后端代码生成器，为什么要有dalgenX?
 1. 一些通用orm生成器各有优缺点，带来方便也带来麻烦，**特别是二次迭代生成、对开发和线上都是灾难**，故统统不能达到我的要求。我个人觉得这其中最好的是支付宝的dalgen,由天才程序员**程立**博士(支付宝CTO/首席架构师,现阿里巴巴CTO，太有钱)开发。可惜，除支付宝外，外界知名度和使用率不高，可能是dalgen不开源吧.  
 1. 直到2015年前我在taocode找到dalgen的freemarker简单开源实现，作者是**badqiu**. GMAVEN项目(可以通过简单的groovy语句直接调用)，我喜欢。
 1. 上面的dalgen只能算demo,无法用于生产,但是思路完备，我结合工作中完善、改造升级，现在已很好地用于生产，实际使用效果比支持宝的dalgen还方便，特别是**支持迭代开发**，这是代码生成器史上质的飞跃。由是改名叫dalgenX,之所以没有用其它的名子，是向2位天才和前人致敬。     
@@ -413,7 +426,7 @@ public class UserServiceImpl implements UserService {
 ```
 
 
-###  关于前端生成器及原理
+## 四 、前端生成器
    >1. 生成器适合响应式前端，不是旧式的mvc的jsp,jquery,easyui或者类似的冬冬.  
    >1.  对于后端一个任意给定的api,其对应的前端网络调用、数据状态化、交互代码基本都是确定和没有歧义的，既然是确定的，说明是规有律性的，找到规律就可以实现机器来生成，
    stategen在不增加学习和额外开发成本的情况下找到了这种规律，它避免了以往手工或半手工导致的不规范而增加开发、维护成本。现在stategen可以自动秒撸  
@@ -440,9 +453,279 @@ public class UserServiceImpl implements UserService {
 ### 代码生成器难以解决的是问题迭代和增量开发,但是实际的项目开发都是不断地迭代功能和新功能叠加，而stategen非常适合迭代开发   
 
 
-# StateGen已经支持flutter   
-  采用google 2019 i/o大会上推荐的provider
-##  最好的沟通是避免沟通   
+#### StateGen已经支持flutter   
+  采用google 2019 i/o大会上推荐的provider   
+  
+1. 在maven deploy｜package阶段，不要附带 ~~ -Dmaven.test.skip=true ~~  
+  或者开发时，直接运行调用src/java/test/xxxxxxFacadeProcessor.java也可以直接生成前端代码.
+```java
+public class FlutterFacadeProcessor extends BaseGenFacadeProcessor {
+    public static void main(String[] args) {
+        FlutterFacadeProcessor flutterFacadeProcessor = new FlutterFacadeProcessor();
+        try {
+            logger.info("================== flutter 前端代码生成开始===========================");
+            flutterFacadeProcessor.genFacade();
+            logger.info("================== flutter 前端代码生成结束===========================");
+        } catch (Exception e) {
+            logger.error("生成前端代码时出错:", e);
+        }
+    }
+    //...
+}    
+```    
+```xml
+    <!-- pom.xml -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id><![CDATA[>>>>>>>>>>>>>>>>tradeApp auto generate flutter frondend files  生成 flutter 前端代码 &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;]]></id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>FlutterFacadeProcessor</mainClass>
+                            <classpathScope>test</classpathScope>
+                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>    
+```
+
+2. 支持任意api、任意返回值、任意参数,不是那种市面上简单的增删除修改。  
+```java
+@ApiConfig
+public class TopicController extends TopicControllerBase {
+    
+    @ApiRequestMappingAutoWithMethodName
+    @State(init = true, dataOpt = DataOpt.APPEND_OR_UPDATE)
+    @GenRefresh
+    public AntdPageList<Topic> getTopicPageList(
+            TopicType topicType,
+            Boolean mdrender,
+            @ApiParam(hidden = true) Topic topic,
+            Pagination pagination) {
+        topic.setCreateTimeMax(DatetimeUtil.current());
+        PageList<Topic> topicPageList = this.topicService.getPageList(topic, pagination.getPageSize(), pagination.getPage());
+        topicService.assignTopicExtraProperties(topicPageList.getItems());
+        return new AntdPageList<Topic>(topicPageList);
+    }
+```
+以下以typescript和dart为例（Stategen采用freemark模版，也可以生成其它语言样式,懂rxSwift或rxAndroid的朋友也可以协助制作相关代码）.
+特别说明，Stategen前端代码生成器,主要功能是通过对前端integrade文件夹的自动托管，让前端的工作量尽量集中在排版和美工上,前端龙骨代码是一次性的，程序员可以自行修改（龙骨代码并非我擅长，再说再好的龙骨代码也不是永久都是最好，所以没有写死，也不把前端朋友限定死,原则就是不挖坑）。  
+以下代码都是在integrade文件夹内.
+```typescript
+//typescript
+export default class TopicApis {
+
+  /**
+   * POST /api/topic/getTopicPageList
+   */
+  static getTopicPageList(params: { topicType?: TopicType, mdrender?: boolean, page?: number, pageSize?: number }): AntdPageList<Topic> {
+    let requestInit: RequestInitEx = <RequestInitEx>{};
+    //tradeAppBaseUrlKey相当于http://domain,这里不写死，方便配置和用fiddler测试
+    requestInit.apiUrlKey = tradeAppBaseUrlKey;
+    //url永远都跟着后端走，别的团队出文件，咱直接出代码，准确,下同
+    requestInit.url = '/api/topic/getTopicPageList';
+    requestInit.mediaType = MediaType.FORM;
+    requestInit.data = params;
+    requestInit.method = Method.POST;
+    return Net.fetch(requestInit);
+  }
+  ...
+}
+```
+```dart
+///dart语言
+class TopicApis {
+  /// POST /api/topic/getTopicPageList
+  /// 
+  static Future<AntdPageList<Topic>> getTopicPageList({Map<String, dynamic> payload, TopicType topicType, bool mdrender, int page, int pageSize }) async {
+    var requestInit = RequestInit();
+     //tradeAppBaseUrlKey相当于http://domain,这里不写死，方便配置和用fiddler测试
+    requestInit.apiUrlKey = tradeAppBaseUrlKey;
+    //url永远都跟着后端走，别的团队出文件，咱直接出代码，准确,下同
+    requestInit.path = '/api/topic/getTopicPageList';
+    requestInit.mediaType = MediaType.FORM;
+    payload ??= {};
+    if (topicType != null) {
+      payload['topicType'] = topicType;
+    }
+    if (mdrender != null) {
+      payload['mdrender'] = mdrender;
+    }
+    requestInit.data = payload;
+    requestInit.method = Method.POST;
+    var dest = await NetUtil.fetch(requestInit);
+    return AntdPageList.fromJson(dest, Topic.fromJsonList);
+  }
+  ...
+｝
+```
+包括以上api所依赖的bean,enum,泛型同时生成  
+对于flutter,支持多云序列化、反序列化，比flutter插件准备，节省时间，快速迭代
+```dart
+///dart语言
+class Topic with FrontBean {
+  /// topicId
+  static const String Topic_ID = 'topicId';
+
+  /// 主题ID
+  String topicId;
+
+  /// author
+  User author;
+  //... 
+  static Topic fromJson(Map<String, dynamic> json) {
+    if (json == null) {
+      return null;
+    }
+    return Topic(
+      //多层自动调用反序列化
+      author: User.fromJson(json['author']),
+      //基本类型采用依赖倒置原则(DIP),不留搞，不挖坑
+      authorId: JsonUtil.parseString(json['authorId']),
+      //...
+    );
+  }  
+  
+  @override
+  Map<String, dynamic> toJson() {
+    var result = new Map<String, dynamic>();
+    if (this.author != null) {
+      //多层自动调用序列化
+      result['author'] = author.toJson();
+    }
+
+    if (this.topicId != null) {
+      //基本类型采用依赖倒置原则(DIP),不留搞，不挖坑
+      result['topicId'] = JsonUtil.stringToJson(topicId);
+    }
+    //...
+}
+
+/*对于dart语言，它的枚举值实际对应的是数字，表示后端enum值没有意义，不知道写dart的人脑袋是不是进水了,没有java一样的枚举算什么快速开发？stategen也完美地避开这个坑 */
+class TopicType extends ClassAsEnum<TopicType> {
+  const TopicType(value, title) : super(value, title);
+
+  /// 精华
+  static const good = TopicType("good", '精华');
+
+  /// 分享
+  static const share = TopicType("share", '分享');
+  //...
+  static Map<String, TopicType> _map = {
+    good.value: good,
+    share.value: share,
+     //...
+  };
+
+  static TopicType fromJson(dynamic value) {
+    return _map[value];
+  }
+
+  static List<TopicType> fromJsonList(List<dynamic> values){
+    return JsonUtil.parseList(values, TopicType.fromJson);
+  }
+
+  static Map<String, Option> topicTypeOptions ={
+    /// 精华
+    'good': Option(
+      value: TopicType.good,
+      label: '精华',
+    ),
+
+    /// 分享
+    'share': Option(
+      value: TopicType.share,
+      label: '分享',
+    ),
+    //...
+
+  };
+}
+```
+前端生成响应式状态管理
+```ts
+//typescript语言，采用支付宝umi,dva(redux + react-router + redux-saga)
+export const topicModel: TopicModel = topicInitModel;
+/**  */
+topicModel.effects.getTopicPageList = function* ({payload}, {call, put, select}) {
+  //为啥不把TopicCommand中的方法直接生成到这里？
+  //因为，考虑到方法override时，不过是代码再次组装，而不是再写一遍，这样搞是不是周到、体贴？
+  const newPayload = yield TopicCommand.getTopicPageList_effect({payload}, {call, put, select});
+  yield put(TopicCommand.getTopicPageList_success_type(newPayload));
+};
+
+export class TopicCommand extends BaseCommand {
+  /**  */
+  static * getTopicPageList_effect({payload}, {call, put, select}) {
+    const oldTopicArea = yield select((_) => _.topic.topicArea);
+    payload = {page: DEFAULT_PAGE_NUM, pageSize: DEFAULT_PAGE_SIZE, ...payload};
+    const topicPageList: AntdPageList<Topic> = yield call(TopicApis.getTopicPageList, payload);
+    const pagination =topicPageList!.pagination;
+    //对上次state,跟据设置前端在状态里自动crud,牛不牛？
+    const topics = updateArray(oldTopicArea.list, topicPageList!.list, "topicId");
+
+    const newPayload: TopicState = {
+      topicArea: {
+        list: topics,
+        pagination,
+        queryRule: payload,
+      },
+    };
+    return newPayload;
+  };
+```
+```dart
+///dat语言，采用目录google官方推荐的provider作为状态管理
+abstract class TopicAbstractProvider with ChangeNotifier, BaseProvider, TopicBaseState {
+  /// 
+  Future<void> getTopicPageList(BuildContext context, {Map<String, dynamic> payload, TopicType topicType, bool mdrender, int page, int pageSize }) async {
+  //为啥不把TopicCommand中的方法直接生成到这里？
+  //因为，考虑到方法override时，不过是代码再次组装，而不是再写一遍，这样搞是不是周到、体贴？
+    var newState = await TopicCommand.getTopicPageList(this, payload: payload, topicType: topicType, mdrender: mdrender, page: page, pageSize: pageSize);
+    mergeState(context, newState);
+  }
+  //...
+}
+  
+abstract class TopicCommand {
+
+  /// 
+  static Future<TopicBaseState> getTopicPageList(TopicAbstractProvider topicState, {Map<String, dynamic> payload, TopicType topicType, bool mdrender, int page, int pageSize }) async {
+    var oldTopicArea = topicState.topicArea;
+    payload ??= {};
+    payload = {'pageNum': DEFAULT_PAGE_NUM, 'pageSize': DEFAULT_PAGE_SIZE,  ...payload};
+    AntdPageList<Topic> topicPageList = await TopicApis.getTopicPageList(payload: payload, topicType: topicType, mdrender: mdrender, page: page, pageSize: pageSize);
+    var pagination = topicPageList?.pagination;
+    //对上次state,跟据设置前端在状态里自动crud,牛不牛？
+    var topicMap = CollectionUtil.appendOrUpdateMap(oldTopicArea?.clone()?.valueMap,  Topic.toIdMap(topicPageList.list));
+
+    var newState = _TopicState(
+      topicArea: AreaState(
+        fetched: true,
+        valueMap: topicMap,
+        pagination: pagination,
+        queryRule: payload,
+      ),
+    );
+    return newState;
+  }
+  ...
+}
+
+```
+前端的同学，不懂后端的话，拼老命写mock（有空开发mock还不如直接告诉后端你想要啥，自己敲后端也行，在stategen中敲后端也是分分钟的事）, 你能保证你写的mock与后端一致吗？有了stategen,这些工作是不是完美地解决了?而且，迭代时，直接给你出代码，假如前端排版代码里有兼容问题，**编译器和ide都能帮你发现**。   
+还有:stategen也可以跟据设置，生成前端对应的状态初始化，刷新、上一页，下一页的前端代码.      
+还有：我真的非常讨厌字符串硬编码，我是亲眼见过同事为了个大小写问题，节假日加班找bug，有了stategen,不要说节假日省了，都没有996了    
+还有:...
+
+
+## 五、截图  
 <p float="left">
 <img src="https://github.com/stategen/docs/blob/master/javaCodeDemo.png" width="600" alt="drawing" />
 <img src="https://github.com/stategen/docs/blob/master/typescriptCodeDemo.png" width="600" alt="drawing" />
@@ -463,7 +746,7 @@ web端
 本说明视频演示请移步[Stategen快速调试开发运行精简教程](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)  
 视频中的相关文档，请见 https://github.com/stategen/docs    
 
-### Stategen快速调试运行
+## 六、 Stategen快速调试运行
 
 #### 运行环境
 >1.	服务端/windows
@@ -627,7 +910,7 @@ gen.sh api teacher cms|app
 ```
 mvn package 
 ```
-
+## 七、早期视频
 [Stategen快速调试开发运行精简教程](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)  
 ### 详细视频 共6小时
 [1.stategen之前 微博 趣图](https://v.youku.com/v_show/id_XNDIwODcxNzk2OA==.html?spm=a2h3j.8428770.3416059.1)          
@@ -642,7 +925,7 @@ mvn package
 [10.stategen前端dva](https://v.youku.com/v_show/id_XNDIwOTkxNDg2MA==.html?spm=a2h3j.8428770.3416059.1)          
 [11.stategen前端form 生成和实现](https://v.youku.com/v_show/id_XNDIwOTkxNDgzNg==.html?spm=a2h3j.8428770.3416059.1)          
 [12.stategen运行前后端和开发](https://v.youku.com/v_show/id_XNDIwOTk1Mzc4NA==.html?spm=a2h3j.8428770.3416059.1)          
-### 鸣谢
+## 鸣谢
    [react] https://github.com/facebook/react，   
    [ant-design] https://github.com/ant-design/ant-design   
    [dva] https://github.com/dvajs/dva   
