@@ -183,7 +183,8 @@ trade
     <!-- 现在只需要配置一个bean ，在骨架xml中， 这里只是讲解，不需要再添加-->
     <bean class="org.stategen.framework.spring.mvc.CollectExceptionJsonHandler">
         <!-- 注意这里用Class可以避免硬编码，我真的讨厌硬编码，哈哈-->
-        <property name="responseStatusClzOfException" value="com.mycompany.biz.enums.ResponseStatus.ERROR" />
+        <property name="responseStatusClzOfException" 
+            value="com.mycompany.biz.enums.ResponseStatus.ERROR" />
     </bean>
 ```
 ```java
@@ -211,9 +212,11 @@ trade
 ```
 ```xml
     <!--现在我们可以配一个bean统一处理方法鉴权和垂直权限  ，在骨架xml中， 这里只是讲解，不需要再添加 -->
-    <bean id="authCheckerHandlerInterceptor" class="org.stategen.framework.spring.mvc.AuthCheckerHandlerInterceptor">
+    <bean id="authCheckerHandlerInterceptor"
+        class="org.stategen.framework.spring.mvc.AuthCheckerHandlerInterceptor">
         <!-- 用类不用字符串硬编码 -->
-        <property name="responseStatusClzOfCheckFailDefault" value="com.mycompany.biz.enums.ResponseStatus.NOT_LOGIN" />
+        <property name="responseStatusClzOfCheckFailDefault"
+            value="com.mycompany.biz.enums.ResponseStatus.NOT_LOGIN" />
     </bean>
     
     <bean class="com.mycompany.biz.checker.VisitChecker" />
@@ -261,7 +264,8 @@ stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由
 ```    
 6. 环境配置与打包无关。环境配置是运维的冬冬，应该由运维来控制，还有一些是敏感数据，比如**数据库密码**，这些是万万不能给到开发人员的，网上远程删库跑路的悲剧又不是一回两回了，但常用的maven spring打包都不能避免这种坑，我是亲眼到我上一任架构师打个包像做贼一样，打完包还担心得要死（怕环境搞错了）就这么小心还是犯疏忽。stategen把环境变量和日志配置都放到/opt/config/stategen/，由运维控制,一劳永逸，同时支持windows上开发，linux运行，测试通过war还可以直接由手工或jekkins直接扔生产，而不用再打包，避免风险。这期间，开发、测式、运维和气生财。大厂antx.xml也这么处理的，不是我独创
 ```xml
-    <bean id="propertyPlaceholder" class="org.stategen.framework.spring.mvc.MultiPropertyPlaceholderConfigurer">
+    <bean id="propertyPlaceholder"
+        class="org.stategen.framework.spring.mvc.MultiPropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
                 <value>classpath*:application.properties</value>
@@ -375,7 +379,8 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
    C.假设topic表需要水平权限控制，在表的备注中添加 -level(organization) -owner(user) 
       -level(organization) //水平权限中的组织架构表为organization 
       -owner(user) //水平权限中数据属于指定人员表为user
-   D.运行 gen.sh table topic时，会生成 topic_level_h 和 topic_owner_h表创建sql语句，复制出来运行。dalgenX约定_h为水平权限相关的表    
+   D.运行 gen.sh table topic时，会生成 topic_level_h 和 topic_owner_h表创建sql语句，复制出来运行。
+   （dalgenX约定后缀为"_h"为水平权限相关的表）   
    E.用户生产数据时(比如topic表)，同时把数据添加到
      topic_level_h和topic_owner_h(由dalgenX显式生成相关的sql和调用java代码)
    F.用户查询，删除，更新数据时，由由dalgenX显式生成相关的sql和调用java代码
@@ -410,16 +415,20 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
 public class UserServiceImpl implements UserService {
     
     //收集Bean上的userId,把查询到的user赋值到Bean的User上
-    public <D> void assignBeanTo(Collection<D> dests, Function<? super D, String> destGetMethod, BiConsumer<D, User> destSetMethod) {
+    public <D> void assignBeanTo(Collection<D> dests, Function<? super D, String>
+        destGetMethod, BiConsumer<D, User> destSetMethod) {
         ...
     }
     //收集Bean上的userIds,把查询到的users赋值到Bean的List<User>上
-    public <D, G> void assignBeansTo(Collection<D> dests, Function<? super D, G> destGetMethod, BiConsumer<D, List<User>> destSetMethod, BiConsumer<User, List<G>> resultSetQueryIdsFun, Function<? super User, G> resultGetGoupIdFun) {
+    public <D, G> void assignBeansTo(Collection<D> dests, Function<? super D, G>
+        destGetMethod, BiConsumer<D, List<User>> destSetMethod, 
+        BiConsumer<User, List<G>> resultSetQueryIdsFun, Function<? super User, G> resultGetGoupIdFun) {
         ...
     }
 
     //收到UserId,比如合并到List<Teacher>要
-    public <D> void mergeBeanTo(Collection<D> dests, Function<? super D, String> destGetMethod) {
+    public <D> void mergeBeanTo(Collection<D> dests, Function<? super D, String>
+        destGetMethod) {
         ...
     }
     ...
@@ -485,7 +494,8 @@ public class FlutterFacadeProcessor extends BaseGenFacadeProcessor {
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id><![CDATA[>>>>>>>>>>>>>>>>tradeApp auto generate flutter frondend files  生成 flutter 前端代码 &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;]]></id>
+                        <id><![CDATA[>>>>>>>>>>>>>>>>tradeApp auto generate flutter frondend
+                        files  生成 flutter 前端代码 &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;]]></id>
                         <phase>test</phase>
                         <goals>
                             <goal>java</goal>
@@ -514,7 +524,8 @@ public class TopicController extends TopicControllerBase {
             @ApiParam(hidden = true) Topic topic,
             Pagination pagination) {
         topic.setCreateTimeMax(DatetimeUtil.current());
-        PageList<Topic> topicPageList = this.topicService.getPageList(topic, pagination.getPageSize(), pagination.getPage());
+        PageList<Topic> topicPageList = this.topicService.getPageList(topic,
+            pagination.getPageSize(), pagination.getPage());
         topicService.assignTopicExtraProperties(topicPageList.getItems());
         return new AntdPageList<Topic>(topicPageList);
     }
@@ -529,7 +540,8 @@ export default class TopicApis {
   /**
    * POST /api/topic/getTopicPageList
    */
-  static getTopicPageList(params: { topicType?: TopicType, mdrender?: boolean, page?: number, pageSize?: number }): AntdPageList<Topic> {
+  static getTopicPageList(params: { topicType?: TopicType, mdrender?: boolean, 
+    page?: number, pageSize?: number }): AntdPageList<Topic> {
     let requestInit: RequestInitEx = <RequestInitEx>{};
     //tradeAppBaseUrlKey相当于http://domain,这里不写死，方便配置和用fiddler测试
     requestInit.apiUrlKey = tradeAppBaseUrlKey;
@@ -548,7 +560,8 @@ export default class TopicApis {
 class TopicApis {
   /// POST /api/topic/getTopicPageList
   /// 
-  static Future<AntdPageList<Topic>> getTopicPageList({Map<String, dynamic> payload, TopicType topicType, bool mdrender, int page, int pageSize }) async {
+  static Future<AntdPageList<Topic>> getTopicPageList({Map<String, dynamic> payload,
+    TopicType topicType, bool mdrender, int page, int pageSize }) async {
     var requestInit = RequestInit();
      //tradeAppBaseUrlKey相当于http://domain,这里不写死，方便配置和用fiddler测试
     requestInit.apiUrlKey = tradeAppBaseUrlKey;
@@ -612,7 +625,9 @@ class Topic with FrontBean {
     //...
 }
 
-/*对于dart语言，它的枚举值实际对应的是数字，表示后端enum值没有意义，不知道写dart的人脑袋是不是进水了,没有java一样的枚举算什么快速开发？stategen也完美地避开这个坑 */
+/*对于dart语言，它的枚举值实际对应的是数字，表示后端enum值没有意义，
+不知道写dart的人脑袋是不是进水了,没有java一样的枚举算什么快速开发？
+stategen也完美地避开这个坑 */
 class TopicType extends ClassAsEnum<TopicType> {
   const TopicType(value, title) : super(value, title);
 
@@ -670,7 +685,8 @@ export class TopicCommand extends BaseCommand {
   static * getTopicPageList_effect({payload}, {call, put, select}) {
     const oldTopicArea = yield select((_) => _.topic.topicArea);
     payload = {page: DEFAULT_PAGE_NUM, pageSize: DEFAULT_PAGE_SIZE, ...payload};
-    const topicPageList: AntdPageList<Topic> = yield call(TopicApis.getTopicPageList, payload);
+    const topicPageList: AntdPageList<Topic> = yield call(TopicApis.getTopicPageList,
+        payload);
     const pagination =topicPageList!.pagination;
     //对上次state,跟据设置前端在状态里自动crud,牛不牛？
     const topics = updateArray(oldTopicArea.list, topicPageList!.list, "topicId");
@@ -689,10 +705,12 @@ export class TopicCommand extends BaseCommand {
 ///dat语言，采用目录google官方推荐的provider作为状态管理
 abstract class TopicAbstractProvider with ChangeNotifier, BaseProvider, TopicBaseState {
   /// 
-  Future<void> getTopicPageList(BuildContext context, {Map<String, dynamic> payload, TopicType topicType, bool mdrender, int page, int pageSize }) async {
+  Future<void> getTopicPageList(BuildContext context, {Map<String, dynamic> payload,
+    TopicType topicType, bool mdrender, int page, int pageSize }) async {
   //为啥不把TopicCommand中的方法直接生成到这里？
   //因为，考虑到方法override时，不过是代码再次组装，而不是再写一遍，这样搞是不是周到、体贴？
-    var newState = await TopicCommand.getTopicPageList(this, payload: payload, topicType: topicType, mdrender: mdrender, page: page, pageSize: pageSize);
+    var newState = await TopicCommand.getTopicPageList(this, payload: payload, topicType:
+        topicType, mdrender: mdrender, page: page, pageSize: pageSize);
     mergeState(context, newState);
   }
   //...
@@ -701,14 +719,17 @@ abstract class TopicAbstractProvider with ChangeNotifier, BaseProvider, TopicBas
 abstract class TopicCommand {
 
   /// 
-  static Future<TopicBaseState> getTopicPageList(TopicAbstractProvider topicState, {Map<String, dynamic> payload, TopicType topicType, bool mdrender, int page, int pageSize }) async {
+  static Future<TopicBaseState> getTopicPageList(TopicAbstractProvider topicState,
+    {Map<String, dynamic> payload, TopicType topicType, bool mdrender, int page, int pageSize }) async {
     var oldTopicArea = topicState.topicArea;
     payload ??= {};
     payload = {'pageNum': DEFAULT_PAGE_NUM, 'pageSize': DEFAULT_PAGE_SIZE,  ...payload};
-    AntdPageList<Topic> topicPageList = await TopicApis.getTopicPageList(payload: payload, topicType: topicType, mdrender: mdrender, page: page, pageSize: pageSize);
+    AntdPageList<Topic> topicPageList = await TopicApis.getTopicPageList(payload: payload,
+        topicType: topicType, mdrender: mdrender, page: page, pageSize: pageSize);
     var pagination = topicPageList?.pagination;
     //对上次state,跟据设置前端在状态里自动crud,牛不牛？
-    var topicMap = CollectionUtil.appendOrUpdateMap(oldTopicArea?.clone()?.valueMap,  Topic.toIdMap(topicPageList.list));
+    var topicMap = CollectionUtil.appendOrUpdateMap(oldTopicArea?.clone()?.valueMap, 
+        Topic.toIdMap(topicPageList.list));
 
     var newState = _TopicState(
       topicArea: AreaState(
