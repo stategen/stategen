@@ -239,7 +239,8 @@ trade
     @LoginCheck 
     @VisiterCheck
     ...想验证哪个实现哪个Checker
-    public Object getUserByUserId(String userId){
+    //返回值是具体的类，比如User
+    public User getUserByUserId(String userId){
         User user = this.userService.getUserByUserId(userId);
         return user;
     }
@@ -311,14 +312,14 @@ stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由
 1. 上面的dalgen只能算demo,无法用于生产,但是思路完备，我结合工作中完善、改造升级，现在已很好地用于生产，实际使用效果比支持宝的dalgen还方便，特别是**支持迭代开发**，这是代码生成器史上质的飞跃。由是改名叫dalgenX,之所以没有用其它的名子，是向2位天才和前人致敬。     
 1.  dalgenX和dalgen一样，以及本架构内的前端生成器、脚手架，都属于开发阶段生成器，只生成预期的目标代码，**不参与编译期和运行期，所见即所得，离开dalgenx生成后的项目也是完整的**，里氏替换原则都不需要。
 
-1. 考虑到项目经常迭代导致表会更改，特意反sql分成二个部门,xml文件中为开发手工书写的sql,没有或者没有或少量,xhtml为通用,被引用在xml文件中, 以user表为例 user.xml引用user.xml.xhtml为作为自己的一部分，这样迭代时维护的代码量最小最安全。
+1. 考虑到项目经常迭代导致表会更改，特意把一个表的sqls分成2个文件,xml文件中为开发手工书写的sql,没有或者没有或少量,xhtml为常用crud及一些便利的sqls,被引用在xml文件中, 以user表为例 user.xml引用user.xml.xhtml为作为自己的一部分，这样迭代时维护的代码量最小最安全。
 ```
 trade
 └── tables
 │   └── user.xml
 │   └── user.xml.xhtml
 ```
-2. dalgenX支持ibatis和mybatis任选其一作为生成目标代码，需要说明是，ibatis(现在叫mybatis2)和mybatis在github上分二条线同时都有官方维护，并不是mybatis3对mybatis2升级的关系，我个人以为mybatis有一个不能接受的巨坑--ognl表达式，那是ssh特别流行的时候，mybatis急于想榜上struts2这条大腿，然后被struts2带沟里了。另外mybatis3比mybatis2慢20%（我自己测过，不算权威数据）。
+2. dalgenX支持ibatis和mybatis任选其一作为生成目标代码，需要说明是，ibatis(现在叫mybatis2)和mybatis3在github上分二条线同时一直都有官方维护，并不是mybatis3对mybatis2升级的关系，我个人以为mybatis3有一个不能接受的巨坑--ognl表达式，那是ssh特别流行的时候，mybatis急于想榜上struts2这条大腿，然后被struts2带沟里了。另外，mybatis3比mybatis2慢20%（我自己测过，不算权威数据）。
 3. dalgenX采用与ibatis相似但比ibatis更为简单sql，一眼能看出效果，使用ibatis的isNotNull,isNotEmpty...等标签，当需要转换为mybatis3的ognl时，自动调用mybatis的官方转换规则转换.
 ```xml 
     <!-- gen_config.xml中 -->
@@ -365,7 +366,7 @@ trade
         </sql>
     </operation>
 ```
-3. dalgenX生成mybatis文件时，也完整地实现daoImpl,襾不是采用mybatis的java代理方式，原因2个，反正生成的代码不需要维护，显式代码安全，2，显式代码调试跟踪断点日志都方便。
+3. dalgenX生成mybatis文件时，也完整地实现mapper/daoImpl,襾不是采用mybatis的java代理方式，原因2个，反正生成的代码不需要维护，显式代码安全，2，显式代码调试跟踪断点日志都方便。
 ```
 public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
 	/**
@@ -385,24 +386,25 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
 ```	
 4. **dalgenx支持水平权限**生成规则。水平权限要完全做到绕开暴力尝试,或者避免在别的api中泄露id被利用,显然，采用复杂id(uid、随机)生成方式治标不治本。同时，要兼顾代码速度、迭代、人员权限调整、下面简要地阐述一种水平权限方案，可以直接由dalgenX生成器来生成，大大降低开发成本，非常适合产品需求上的迭代，代码可以做到以不变应万变.
 ```
-   A.定一个组织架构表比如orgnization，树型数据 orgId, parentId
+   A.定义一个组织架构表比如orgnization，树型数据 orgId, parentId
    B.把用户（即水平权限中的数据操作员）人分配到组织上（org_user表）,
-     用户登录后获取自己的orgId
+     用户登录后获取自己的orgId即currOrgId,
    C.假设topic表需要水平权限控制，在表的备注中添加 -level(organization) -owner(user) 
+      ,让dalgenX识别。
       -level(organization) //水平权限中的组织架构表为organization 
       -owner(user) //水平权限中数据属于指定人员表为user
    D.运行 gen.sh table topic时，会生成 topic_level_h 和 topic_owner_h表创建sql语句，复制出来运行。
    （dalgenX约定后缀为"_h"为水平权限相关的表）   
    E.用户生产数据时(比如topic表)，同时把数据添加到
      topic_level_h和topic_owner_h(由dalgenX显式生成相关的sql和调用java代码)
-   F.用户查询，删除，更新数据时，由由dalgenX显式生成相关的sql和调用java代码
+   F.用户查询，删除，更新数据时，由dalgenX显式生成相关的sql和调用java代码
      和参数：Boolean inclCurrOrgId, Long currOrgId, String currUserId
    G.由程序员在调用topicService的方法时，自由控制inclCurrOrgId，currOrgId，currUserId
 ```
 5. dalgenX兼顾避免一些开发习惯上的坑。比如
 ```java
    /*根据主键查询，一般dao中的方法名是getById,
-   我们在很多遗留的代码中，经常看到是下面这样的，
+   我们在很多遗留的代码中，经常review到下面这样的代码，，
    这是开发调用ide自动代码完成功能后，没有改变量名 */
    User byId = userService.getById(id);
    ...
@@ -413,7 +415,7 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
    //上面的byId没法扯皮，吵不过人家
    
    /*dalgenX根据主键查询，dao中的方法名是getUserById,
-   简定开发忘记不改变量名 */
+   简定开发忘记不改变量名，ide自动完成的变量名： */
    User userById = userService.getById(id); 
    ...
    /*好吧，无论什么时候阅读到下面的代码，
@@ -422,7 +424,7 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
    userById.method2();
    userById.method3();   
 ```
-6. dalgenX在Service中生成一些符合合成/复用原则（CARP）的java代码,节约业务层大量开发
+6. dalgenX在Service中生成一些符合合成/复用原则（CARP）的java代码，这种开发规范好理解也节约业务层大量开发
 ```java
 public class UserServiceImpl implements UserService {
     
@@ -446,7 +448,7 @@ public class UserServiceImpl implements UserService {
     ...
 }
 
-   //调用非常简单，没有循环处理，没有硬编码码，如给List<Topic>每条Topic赋值作者
+   //调用非常简单，没有循环处理，没有硬编码码，如给List<Topic>每条Topic赋值作者信息
    userService.assignBeanTo(topics, Topic::getAuthorId, Topic::setAuthor);
 
 ```
