@@ -249,14 +249,17 @@ stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由
     </bean>
 ```  
 ```java
-    //代码中这样注入，支持String或枚举拿放cookie，又枚举？哈哈，
-    //真的不喜欢字符串硬编码，而一个系统中，cookie名称是有限的，枚举远比static String更好地限定数据范围，
+    /*代码中这样注入，支持String或枚举拿放cookie，又枚举？哈哈，
+    我是真的不喜欢字符串硬编码。系统中，cookie名称是有限的，枚举远比static String更好地限定数据范围，*/
     @Resource
     private CookieGroup<LoginCookieNames> loginCookieGroup;
     
-    
-    String userId = this.loginCookieGroup.getCookieValue(LoginCookieNames.userId);
+    //放置简单，直接放，签名是由CookieGroup内部自动完成的
     loginCookieGroup.addCookie(LoginCookieNames.userId, loginUser.getUserId());
+    
+    /*cookie值是有签名的(xx_token)，客户端无法伪造这个值。开发人员也不能反算这个值，
+      因为混淆码读取stategen.xml中的，由运维控制的*/
+    String userId = this.loginCookieGroup.getCookieValue(LoginCookieNames.userId);
 ```  
 需要说明的是：Cookie校验是在filter中进行的。那为啥不在springMVC中呢？打个比方，Cookie校验是防伪造校验，好比总入口大门的保安一眼就能识别来人是否合法，就没必要先搬来各种重型设备再一眼就能识别是否合法，对系统资源利用上的浪费
 ```java
