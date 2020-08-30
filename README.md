@@ -50,10 +50,10 @@ spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(
 很快这些时髦都成为不时髦而且甩不掉的累赘，形成更大的坑，维护成本巨大。 
 stategen采用第三种生成方式可以豪无限制地兼容其它技术，所以无需扯一些不需要的技术当噱头、还把挖坑还当卖点。 
 
-## 一：StateGen后端骨架代码生成初始化StatGen架构的项目springMVC（web3.0）（也可再一键转换为springBoot)
+## 一：StateGen后端骨架代码初始化、StatGen架构的项目(springMVC，web3.0,也可再一键转换为springBoot)
 1. 遵从常用架构设计原则（单一职责、开闭、接口隔离、无环依赖），通过在gen_config.xml配置,也可以将几个jar包合并。**觉得springMVC项目从头到尾只需一个jar可以不用往下看**。
 ```
-trade
+trade (trade相当于微服务中当前服务名、系统名)
 ├── 1-trade-pojo
 ├── 2-trade-facade
 ├── 3-trade-intergrade
