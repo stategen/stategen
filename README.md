@@ -1,3 +1,22 @@
+## 截图  
+<p float="left">
+<img src="https://github.com/stategen/docs/blob/master/javaCodeDemo.png" width="600" alt="drawing" />
+<img src="https://github.com/stategen/docs/blob/master/typescriptCodeDemo.png" width="600" alt="drawing" />
+<img src="https://github.com/stategen/docs/blob/master/flutterCodeDemo.png" width="600" alt="drawing" />
+</p>
+<p float="left">
+<img src="https://github.com/stategen/docs/blob/master/category.png" width="400" alt="drawing" />
+<img src="https://github.com/stategen/docs/blob/master/homeApis.png" width="400" alt="drawing" />
+<img src="https://github.com/stategen/docs/blob/master/category_json.png" width="400" alt="drawing" />
+<img src="https://github.com/stategen/docs/blob/master/dva_react_model.png" width="400" alt="drawing" />
+<img src="https://github.com/stategen/docs/blob/master/flutter_goods_provider.png" width="400" alt="drawing" />
+<img src="https://github.com/stategen/docs/blob/master/stategenAppSnapshort.png" width="400" alt="drawing" />
+</p>   
+mobile端    
+<img src="https://github.com/stategen/docs/blob/master/stategenWebSnapShort1.png" width="400" alt="drawing" />  
+web端    
+上面2张图，按通常的开发量需要上千行代码，现在只需要开发10多行代码
+
 ### 我非常赞同的
   重复可能是软件中一切邪恶的根源。—— Robert C.Martin
 ### 我的一些编程总结
@@ -768,24 +787,7 @@ abstract class TopicCommand {
 还有:...
 
 
-## 五、截图  
-<p float="left">
-<img src="https://github.com/stategen/docs/blob/master/javaCodeDemo.png" width="600" alt="drawing" />
-<img src="https://github.com/stategen/docs/blob/master/typescriptCodeDemo.png" width="600" alt="drawing" />
-<img src="https://github.com/stategen/docs/blob/master/flutterCodeDemo.png" width="600" alt="drawing" />
-</p>
-<p float="left">
-<img src="https://github.com/stategen/docs/blob/master/category.png" width="400" alt="drawing" />
-<img src="https://github.com/stategen/docs/blob/master/homeApis.png" width="400" alt="drawing" />
-<img src="https://github.com/stategen/docs/blob/master/category_json.png" width="400" alt="drawing" />
-<img src="https://github.com/stategen/docs/blob/master/dva_react_model.png" width="400" alt="drawing" />
-<img src="https://github.com/stategen/docs/blob/master/flutter_goods_provider.png" width="400" alt="drawing" />
-<img src="https://github.com/stategen/docs/blob/master/stategenAppSnapshort.png" width="400" alt="drawing" />
-</p>
-mobile端  
-<img src="https://github.com/stategen/docs/blob/master/stategenWebSnapShort1.png" width="400" alt="drawing" />  
-web端  
-**上面2张图，按通常的开发量需要上千行代码，现在只需要开发10多行代码**  
+ 
 本说明视频演示请移步[Stategen快速调试开发运行精简教程](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)  
 视频中的相关文档，请见 https://github.com/stategen/docs    
 
