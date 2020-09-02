@@ -33,7 +33,7 @@ spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(
 成本越高，开发风险越大。往往，大多数框架/脚手架能大大节约（1）中个成本，但是同时带来几倍于（1）中的成本来维持（2）、（3）中，使开发陷入泥潭和死扣，stateGen要做的就是减少这种风险，所以我开发了StateGen。
 
 ### 增加一篇论文介绍原理:[利用java反射和java-parser制作可以迭代、分布式、全栈代码生成器的研究](https://github.com/stategen/stategen/blob/master/%E5%88%A9%E7%94%A8java%E5%8F%8D%E5%B0%84%E5%92%8Cjava-parser%E5%88%B6%E4%BD%9C%E5%8F%AF%E4%BB%A5%E8%BF%AD%E4%BB%A3%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E3%80%81%E5%85%A8%E6%A0%88%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E7%A0%94%E7%A9%B6.md)    
-#### 关于Ibatis or MyBatis or hibernate 和dalgenX
+### 关于Ibatis or MyBatis or hibernate 和dalgenX
 1.  SSH架构火了10年，其中hibernate支持自动生成sql的优势功不可没，但是再牛逼程序也不能满足复杂的sql自动生成,于是hibernate允许在java代码里掺杂hql和sql.
 1.  上面的本意是给编程带来方便,但是一旦这个大门打开，就不能阻止开发人员进入，当java代码中混入大量的sql或hql后，项目离死也就不远了，除了难以维护，DBA也无法参与后期优化.
 1.  当年，同期发展的ibatis被hibernate打得措手不及，由apache的顶级项目变成弃儿.但是正是ibatis的缺点：手写sql,解决了hibernate的先天不足，由是很多人在web2.0时代又重新转向了SSI架构。
@@ -41,7 +41,7 @@ spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(
 1. 后来又出现了MyBatis Plus（国人开发的？），不用写sql，但好像又回到了hibernate？噢耶！
 1. 除非有StateGen中的dalgenX... 
 
-#### 市面上代码生成器分类  
+### 市面上代码生成器分类
 1. 一次性脚手架式：一次性生成/覆盖目标代码,用在项目初始化,如：maven初始化项目、各种网页配置生成。  
 2. 持续脚手架式：分步生成/覆盖目标代码,如：MyBatis/Ibatis/Hibernate/ generator、dalgen,各种网页配置生成。  
 3. 在已编辑的目标代码上再次生成。 如：StateGen(**全网目前唯一?**).
@@ -50,6 +50,9 @@ spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(
 很快这些时髦都成为不时髦而且甩不掉的累赘，形成更大的坑，维护成本巨大。 
 stategen采用第三种生成方式可以豪无限制地兼容其它技术，所以无需扯一些不需要的技术当噱头、还把挖坑还当卖点。 
 
+### 开发人员对前端代码生成器的担忧
+1.  很多crud前端代码生成器是基于后端配置的，也把很多公司拖到坑里，以致于一些前端开发人员一听到名称就害怕和抵触。
+1.  原因是这些生成的前端代码没有遵从软件设计原则，也限死前端开发人员。而StateGen前端代码生成器开发目的是作为前端开发人员辅助工具，其中最重要的一条，始终遵守依赖倒置原则(DIP)，它给了开发人员最大的灵活度实现倒置部分代码，因此不会限死前端开发。
 ## 一：StateGen后端骨架代码初始化、StatGen架构的项目(springMVC，web3.0,也可再一键转换为springBoot)
 1. 遵从常用架构设计原则（单一职责、开闭、接口隔离、无环依赖），通过在gen_config.xml配置,也可以将几个jar包合并。**觉得springMVC项目从头到尾只需一个jar可以不用往下看**。
 ```
@@ -93,7 +96,7 @@ trade (trade相当于微服务中当前服务名、系统名)
 1. 架构方案全部在springMVC的技术范畴中解决，是技术整合，不是创造技术（我个人认为在非底层上，所谓创造技术有涉嫌重复造轮子和挖坑的嫌疑，我是不会干的!）  
 2. 
 ## 二、stategen对服务端代码的增强介绍
-  Stategen尽量想做的事，尽量地合理实现一个商业框架（不是开源后阉割版的那种），一些过时的技术比如osgi摈弃，尽量在spring技术范围内解决。一些拓展点技术（非spring）我个人觉得对业务代码没有帮助而是挖坑（大牛一走，项目搞不下去了）
+  Stategen要做的事，尽量地合理实现一个商业框架（不是开源后阉割版的那种）。一些过时的技术比如osgi摈弃，尽量在spring技术范围内解决。一些拓展点技术（非spring）我个人觉得对业务代码没有帮助而是挖坑（大牛一走，项目搞不下去了）
 1.  @Wrap对返回置封装
 ```java
         //以前的代码是这样地恶心
@@ -133,11 +136,11 @@ trade (trade相当于微服务中当前服务名、系统名)
     
 ```
 ```javascript
- /*api返回值,实现Response类就可以自定义*/
+ /*api返回值,自定义实现Response.java类就可以自定义实现封装*/
 {
-    message:'成功'
+    message:'成功',
     success:true,
-    data:{username:'张三',nickname:'zhangsan',...}
+    data:{username:'张三',nickname:'zhangsan',...},
     ...
 }
 ```
