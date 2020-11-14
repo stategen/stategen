@@ -25,7 +25,7 @@ web端
   最好的沟通是避免沟通。  
   
 ### Stategen:前后端骨架代码生成器+Stategen架构（基于SpringMVC）+后端代码迭代生成器+前端代码生成器
-spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(可选)+react+antd(可选antd.mobile)+flutter(可选)
+spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(zookeeper|nacos)+react+antd(可选antd.mobile)+flutter(可选)
 
 ### 你目前的团队是不是有以下问题？如果有的话，可以尝试stategen(QQ群：728343119)
 1. 前后端分离式导致前后端代码事实上脱节？ 
@@ -116,7 +116,7 @@ trade (trade相当于微服务中当前服务名、系统名)
 2. 
 ## 二、stategen对服务端代码的增强介绍
   Stategen要做的事，尽量地合理实现一个商业框架（不是开源后阉割版的那种）。一些过时的技术比如osgi摈弃，尽量在spring技术范围内解决。一些拓展点技术（非spring）我个人觉得对业务代码没有帮助而是挖坑（大牛一走，项目搞不下去了）
-1.  @Wrap对返回置封装
+1.  @Wrap对返回值封装
 ```java
         //以前的代码是这样地恶心
         @SuppressWarnings("unchecked")

@@ -347,10 +347,11 @@ public class Column implements java.io.Serializable,Cloneable{
 	 * @todo-javadoc Write javadocs for return value
 	 */
 	public int hashCode() {
+        //TODO xia 这块很慢,确认是否可以不要，生成器不是长期运行，牺牲这点内存值得    
 		if(getTable() != null) {
-			return (getTable().getSqlName() + "#" + getSqlName()).hashCode();
+			return new StringBuilder( getTable().getSqlName()).append("#").append(getSqlName()).toString().hashCode();
 		}else {
-			return (getSqlName()).hashCode();
+			return getSqlName().hashCode();
 		}
 	}
 

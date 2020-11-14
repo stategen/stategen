@@ -304,7 +304,13 @@ public class TableConfig {
         private Sql processOperation(OperationConfig op, TableConfig tableConfig) {
             try {
                 IbatisSqlMapConfigParser ibatisSqlMapConfigParser = new IbatisSqlMapConfigParser();
-                String sqlString = ibatisSqlMapConfigParser.parse(op.getSql(), toMap(tableConfig.includeSqls));
+                String destSql =op.getSql();
+                
+                String sqlWithIn2Iterate =SqlParseHelper.replaceInWithIterateLabel(destSql);
+                sqlWithIn2Iterate =SqlParseHelper.replaceInWithIterateLabelHasParamName(sqlWithIn2Iterate);
+                
+                op.setSqlWithIn2Iterate(sqlWithIn2Iterate);
+                String sqlString = ibatisSqlMapConfigParser.parse(sqlWithIn2Iterate, toMap(tableConfig.includeSqls));
                 String namedSql = SqlParseHelper.convert2NamedParametersSql(sqlString, ":", ""); // TODO 确认要删除本行?,因为与SqlFactory里面的代码重复
                 SqlFactory sqlFactory = new SqlFactory();
                 sqlFactory.setTable(tableConfig);
@@ -319,7 +325,7 @@ public class TableConfig {
                 String ibatisSql = getIbatisSql(op, sql);
                 sql.setIbatisSql(ibatisSql);
                 sql.setMybatisSql(
-                    sql.replaceWildcardWithColumnsSqlName(SqlParseHelper.convert2NamedParametersSql(op.getSql(), "#{", "}")) + " " + op.getAppend()); // FIXME 修正ibatis3的问题
+                    sql.replaceWildcardWithColumnsSqlName(SqlParseHelper.convert2NamedParametersSql(sqlWithIn2Iterate, "#{", "}")) + " " + op.getAppend()); // FIXME 修正ibatis3的问题
 
                 sql.setOperation(op.getName());
                 sql.setParameterClass(op.getParameterClass());
@@ -357,7 +363,7 @@ public class TableConfig {
         }
 
         private static String getIbatisSql(OperationConfig op, Sql sql) {
-            String convert2NamedParametersSql = SqlParseHelper.convert2NamedParametersSql(op.getSql(), "#", "#");
+            String convert2NamedParametersSql = SqlParseHelper.convert2NamedParametersSql(op.getSqlWithIn2Iterate(), "#", "#");
             String ibatisNamedSql = sql.replaceWildcardWithColumnsSqlName(convert2NamedParametersSql) + " "
                                     + StringHelper.defaultString(op.getAppend());
             String ibatisSql = processSqlForMoneyParam(ibatisNamedSql, sql.getParams());
@@ -575,7 +581,11 @@ public class TableConfig {
         public String remarks;
         public String multiplicity;
         public String paramtype;
-        public String sql;
+        /***原始sql*/
+        private String sql;
+        /***原始sql中的“in ?”被替换为标签&lt;/iterate>*/
+        private String sqlWithIn2Iterate;
+        
         public String sqlmap;
         public Sql parsedSql;
         //        public boolean paging = false;
@@ -635,6 +645,14 @@ public class TableConfig {
 
         public String getSql() {
             return sql;
+        }
+        
+        public void setSqlWithIn2Iterate(String sqlWithIn2Iterate) {
+            this.sqlWithIn2Iterate = sqlWithIn2Iterate;
+        }
+        
+        public String getSqlWithIn2Iterate() {
+            return sqlWithIn2Iterate;
         }
 
         public void setSql(String sql) {

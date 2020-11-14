@@ -228,6 +228,57 @@ public class SqlParseHelper {
     public static String convert2NamedParametersSql(String sql, String prefix, String suffix) {
         return new NamedSqlConverter(prefix, suffix).convert2NamedParametersSql(sql);
     }
+    
+    
+
+    public static String replaceInWithIterateLabel(String sql) {
+//        Pattern p = Pattern.compile("(\\w+)\\s*" + "in\\s+\\?|(#w+#)", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+        Pattern p = Pattern.compile("(\\w+)\\s+" + "in\\s+\\?", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(sql);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            String segment = m.group(0);
+            String columnSqlName = m.group(1);
+
+            String paramName = StringHelper.uncapitalize(StringHelper.makeAllWordFirstLetterUpperCase(columnSqlName));
+            String listParamName =paramName+"s";
+            
+            surroundWithIterate(m, sb, segment, listParamName);
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
+
+    private static void surroundWithIterate(Matcher m, StringBuffer sb, String segment, String listParamName) {
+        String replacedSegment = segment.replaceAll("\\?|#\\w+#", "\n            <iterate property=\""+listParamName+"\" conjunction=\",\" open=\"(\" close=\")\">\n            #"+ listParamName +"[]#\n            </iterate>");
+        m.appendReplacement(sb, replacedSegment);
+    }
+    
+    
+    
+    public static String replaceInWithIterateLabelHasParamName(String sql) {
+        Pattern p = Pattern.compile("(\\w+)\\s+" + "in\\s+#\\w+#", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(sql);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            String segment = m.group(0); //inter_code in #interCodeList#
+            Pattern paramPattern =Pattern.compile("#\\w+#", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+            Matcher paramMather =paramPattern.matcher(segment);
+            String listParamName =null;
+            if (paramMather.find()) {
+                listParamName =paramMather.group(0);
+            }
+            
+            if (StringUtil.isNotEmpty(listParamName)) {
+                listParamName =listParamName.substring(1,listParamName.length()-1);
+                surroundWithIterate(m, sb, segment, listParamName);
+            }
+        
+        }
+        m.appendTail(sb);
+        String result = sb.toString();
+        return result;
+    }
 
     /**
     * 将sql从占位符转换为命名参数,如 select * from user where id =? ,将返回: select * from user where id = #id#
@@ -259,6 +310,7 @@ public class SqlParseHelper {
 
         private String replace2NamedParameters(String sql) {
             //String replacedSql = replace2NamedParametersByOperator(sql,"[(=<>!]{1,2}"); //缺少oracle的^=运算符:  !=,<>,^=:不等于 
+                                                                       //"[=<>!]{0,}"
             String replacedSql = replace2NamedParametersByOperator(sql, common_operator); //缺少oracle的^=运算符:  !=,<>,^=:不等于 
             replacedSql = replace2NamedParametersByOperator(replacedSql, "\\s+like\\s+"); // like
 

@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.stategen.framework</groupId>
         <artifactId>stategen-parent</artifactId>
-        <version>stg.2.2.0.RELEASE</version>
+        <version>stg.2.2.1.RELEASE</version>
         <relativePath>../</relativePath>
     </parent>
 
@@ -34,19 +34,19 @@
         <dependency>
             <groupId>org.stategen.framework</groupId>
             <artifactId>stategen-dto-lite</artifactId>
-            <version>stg.2.2.0.RELEASE</version>
+            <version>stg.2.2.1.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.stategen.framework</groupId>
             <artifactId>stategen-util</artifactId>
-            <version>stg.2.2.0.RELEASE</version>
+            <version>stg.2.2.1.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.stategen.framework</groupId>
             <artifactId>progen</artifactId>
-            <version>stg.2.2.0.RELEASE</version>
+            <version>stg.2.2.1.RELEASE</version>
         </dependency>
 
 

@@ -25,6 +25,8 @@ import java.util.Enumeration;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.stategen.framework.util.StringUtil;
+
 /**
  * The listener interface for receiving driversShutdown events.
  * The class that is interested in processing a driversShutdown
@@ -37,26 +39,19 @@ import javax.servlet.ServletContextListener;
  * @see DriversShutdownEvent
  */
 public class DriversShutdownListener implements ServletContextListener {
+    
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DriversShutdownListener.class);
-
+    
     @Override
     public void contextInitialized(ServletContextEvent sce) {
     }
-
+    
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         sce.getServletContext().log("DubboShutDownListener.contextDestroyed called!");
-       try {
-//           final Class protocolConfig = Class.forName("com.alibaba.dubbo.config.ProtocolConfig");
-           final Class<?> dubboShutdownHook = Class.forName("org.apache.dubbo.config.DubboShutdownHook");
-           final Method method = dubboShutdownHook.getMethod("destroyAll");
-           
-           method.invoke(dubboShutdownHook);
-       } catch (Exception e){
-            sce.getServletContext().log("destory dubbo failed:"+e.getMessage(), e);
-
-       }
-       
+        shutdownDubbo(sce, "org.apache.dubbo.config.DubboShutdownHook", "destroyAll", null);
+        shutdownDubbo(sce, "org.apache.dubbo.qos.server.Server", "getInstance", "stop");
+        
         Enumeration<Driver> drivers = DriverManager.getDrivers();
         while (drivers.hasMoreElements()) {
             Driver driver = drivers.nextElement();
@@ -69,7 +64,32 @@ public class DriversShutdownListener implements ServletContextListener {
             }
         }
         
-        
     }
-
+    
+    private void shutdownDubbo(ServletContextEvent sce, String className, String methodName, String subMethodName) {
+        try {
+            //           final Class protocolConfig = Class.forName("com.alibaba.dubbo.config.ProtocolConfig");
+            final Class<?> dubboShutdownHook = Class.forName(className);
+            if (dubboShutdownHook == null) {
+                return;
+            }
+            final Method method = dubboShutdownHook.getMethod(methodName);
+            if (method == null) {
+                return;
+            }
+            Object subObj = method.invoke(dubboShutdownHook);
+            if (StringUtil.isNotBlank(subMethodName)) {
+                final Method subMethod = subObj.getClass().getMethod(subMethodName);
+                if (subMethod == null) {
+                    return;
+                }
+                subMethod.invoke(subObj);
+            }
+            
+        } catch (Exception e) {
+            sce.getServletContext().log("destory dubbo failed:" + e.getMessage(), e);
+            
+        }
+    }
+    
 }

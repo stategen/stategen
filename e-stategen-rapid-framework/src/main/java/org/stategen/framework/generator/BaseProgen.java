@@ -51,14 +51,19 @@ public class BaseProgen {
     
     static String springboot_plugin       = "<!-- springboot_plugin --> ";
     
+    static String ROLE ="role";
+    
     public BaseProgen(Object global) {
         
     }
+    
     
     protected Properties getRootProperties() throws IOException {
         String     genConfigXmlIfRunTest = GenProperties.getGenConfigXmlIfRunTest();
         Properties root                  = GenProperties.getAllMergedProps(genConfigXmlIfRunTest);
         root.put("generator_tools_class", "org.stategen.framework.util.StringUtil");
+        String demo = root.getProperty(ROLE);
+        root.put(ROLE, StringUtil.equals("true", demo));
         
         GenProperties.systemName  = root.getProperty(GenNames.systemName);
         GenProperties.packageName = root.getProperty(GenNames.packageName);
