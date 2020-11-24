@@ -21,13 +21,18 @@ import java.io.StringReader;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.StringUtil;
 
+import cn.org.rapid_framework.generator.GeneratorProperties;
+import cn.org.rapid_framework.generator.provider.db.sql.model.SqlParameter;
 import cn.org.rapid_framework.generator.provider.db.table.TableFactory.DatabaseMetaDataUtils;
 import cn.org.rapid_framework.generator.util.GLogger;
 import cn.org.rapid_framework.generator.util.IOHelper;
@@ -92,6 +97,21 @@ public class SqlParseHelper {
     public static Pattern insert = Pattern.compile("(\\s*insert\\s+into\\s+)(\\w+)", Pattern.CASE_INSENSITIVE);
 
     public final static String common_operator = "[=<>!]{0,}";
+    
+    static Pattern SHARP_PATTERN=Pattern.compile("#\\w+#", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+    static Pattern COLUMNNAME_PATTERN=Pattern.compile("\\s*\\w+\\s+", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+    
+    static String orAndToTableAliasRex ="\\s*(or|(and))*\\s*(\\w+\\.)*";
+    static String columnNameRex="\\w+\\s+";
+    static String operatorRex ="((&lt;)?(&gt;)?[=<>!]{0,2}\\s*)";
+    static String workdOperatorRex="(like\\s+)|(not\\s+like\\s+)|(in\\s+)|(not\\s+in\\s+)";
+    
+    static String orAndToQueryMarkRex=orAndToTableAliasRex+columnNameRex+"("+operatorRex+"|"+workdOperatorRex+")\\?";
+    static Pattern columnPattern=Pattern.compile("\\s*"+columnNameRex+"?",Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+    static Pattern inPattern =Pattern.compile("\\s+in\\s+",Pattern.DOTALL | Pattern.CASE_INSENSITIVE);    
+    
+    static String isNotNullStr="isNotNull";
+    static String isNotEmptyStr="isNotEmpty";
 
     /** 从一条sql中解释中包含的表  */
     public static Set<NameWithAlias> getTableNamesByQuery(String sql) {
@@ -173,19 +193,31 @@ public class SqlParseHelper {
         return null;
     }
 
+//    public static String getColumnNameByRightCondition(String sql, String column) {
+//        //		String operator = "[=<>!]{1,2}";
+//        String allOperator = "("+operatorRex+"|"+workdOperatorRex+")";
+//        String result = getColumnNameByRightCondition(sql, column, allOperator);
+//        return result;
+//    }
+    
+    
     public static String getColumnNameByRightCondition(String sql, String column) {
         //		String operator = "[=<>!]{1,2}";
         String operator = "\\s*[=<>!]{1,2}\\s*";
         String result = getColumnNameByRightCondition(sql, column, operator);
-
+        
+        if (result == null) {
+            result = getColumnNameByRightCondition(sql, column, "\\s+?not\\s+?like\\s+(.(?!like)){1,}?");
+        }
+        
         if (result == null) {
             result = getColumnNameByRightCondition(sql, column, "\\s+?like\\s+(.(?!like)){1,}?");
         }
-
+        
         if (result == null) {
             result = getColumnNameByRightCondition(sql, column, "\\s+like\\s+");
         }
-
+        
         if (result == null) {
             result = getColumnNameByRightCondition(sql, column, "\\s+between\\s+");
         }
@@ -201,17 +233,19 @@ public class SqlParseHelper {
         if (result == null) {
             result = getColumnNameByRightConditionWithFunction(sql, column, operator);
         }
-
+        
         return result;
     }
+    
 
     private static String getColumnNameByRightCondition(String sql, String column, String operator) {
         Pattern p = Pattern.compile("(\\w+)" + operator + "[:#$&\\{]?" + column + "[\\}#$]?", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(sql);
+        String columnName=null;
         if (m.find()) {
-            return m.group(1);
+            columnName =m.group(1);
         }
-        return null;
+        return columnName;
     }
 
     //有函数的表达式提取
@@ -229,41 +263,50 @@ public class SqlParseHelper {
         return new NamedSqlConverter(prefix, suffix).convert2NamedParametersSql(sql);
     }
     
-    
 
-    public static String replaceInWithIterateLabel(String sql) {
+
+    public static String replaceInWithIterateLabel(String destSql) {
 //        Pattern p = Pattern.compile("(\\w+)\\s*" + "in\\s+\\?|(#w+#)", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-        Pattern p = Pattern.compile("(\\w+)\\s+" + "in\\s+\\?", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-        Matcher m = p.matcher(sql);
+        Pattern p = Pattern.compile("\\w+\\s+" + "(not\\s+in|(in))\\s+\\?", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(destSql);
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
             String segment = m.group(0);
-            String columnSqlName = m.group(1);
-
-            String paramName = StringHelper.uncapitalize(StringHelper.makeAllWordFirstLetterUpperCase(columnSqlName));
-            String listParamName =paramName+"s";
-            
-            surroundWithIterate(m, sb, segment, listParamName);
+            Matcher matcher = COLUMNNAME_PATTERN.matcher(segment);
+            if (matcher.find()) {
+                String columnSqlName = matcher.group(0).trim();
+    
+                String paramName = StringHelper.uncapitalize(StringHelper.makeAllWordFirstLetterUpperCase(columnSqlName));
+                String listParamName =addListSubfix(paramName);;
+                
+                surroundWithIterate(m, sb, segment, listParamName);
+            }
         }
         m.appendTail(sb);
         return sb.toString();
     }
+    
+    static String  ibatisParamRex ="#\\w+#";
+    static Pattern  ibatisParamPattern =Pattern.compile(ibatisParamRex);
 
     private static void surroundWithIterate(Matcher m, StringBuffer sb, String segment, String listParamName) {
-        String replacedSegment = segment.replaceAll("\\?|#\\w+#", "\n            <iterate property=\""+listParamName+"\" conjunction=\",\" open=\"(\" close=\")\">\n            #"+ listParamName +"[]#\n            </iterate>");
+        String replacedSegment = segment.replaceFirst("\\?|"+ibatisParamRex, 
+                "\n                 <iterate property=\""+listParamName+"\" conjunction=\",\" open=\"(\" close=\")\">"
+               +"\n                     #"+ listParamName +"[]#"
+               +"\n                 </iterate>");
         m.appendReplacement(sb, replacedSegment);
     }
     
     
+
     
-    public static String replaceInWithIterateLabelHasParamName(String sql) {
-        Pattern p = Pattern.compile("(\\w+)\\s+" + "in\\s+#\\w+#", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-        Matcher m = p.matcher(sql);
+    public static String replaceInWithIterateLabelHasParamName(String destSql) {
+        Pattern p = Pattern.compile("(\\w+)\\s+" + "in\\s+"+ibatisParamRex, Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(destSql);
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
             String segment = m.group(0); //inter_code in #interCodeList#
-            Pattern paramPattern =Pattern.compile("#\\w+#", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-            Matcher paramMather =paramPattern.matcher(segment);
+            Matcher paramMather =SHARP_PATTERN.matcher(segment);
             String listParamName =null;
             if (paramMather.find()) {
                 listParamName =paramMather.group(0);
@@ -279,6 +322,121 @@ public class SqlParseHelper {
         String result = sb.toString();
         return result;
     }
+    
+    
+    private static String getIsNotNullWithParamName(String paramName) {
+        return isNotNullStr+"_____"+paramName;
+    }
+    
+    /***把&gt;isNotNull____xxxxx标签根据字符串，interger或List进行相应的替换isNotNull,isNotEmppty*/
+    public static String replaceQuestionMarkLabel(String ibatisSql, LinkedHashSet<SqlParameter> finalParameters,Set<String> paramNameSet) {
+        if (CollectionUtil.isNotEmpty(paramNameSet)) {
+            Map<String, SqlParameter> sqlParameterMap = CollectionUtil.toMap(finalParameters, SqlParameter::getParamName);
+            for (String paramName : paramNameSet) {
+                SqlParameter sqlParameter = sqlParameterMap.get(paramName);
+                if (sqlParameter!=null) {
+                    String forRepLabel=getIsNotNullWithParamName(paramName);
+                    if (sqlParameter.getIsStringColumn() || sqlParameter.isListParam()) {
+                        ibatisSql=ibatisSql.replace(forRepLabel, isNotEmptyStr);
+                    } else {
+                        ibatisSql=ibatisSql.replace(forRepLabel, isNotNullStr); 
+                    }
+                    
+                }
+            }
+        }
+        return ibatisSql;
+    }
+    
+    static String replaceIsNotNullLabelTemp(Matcher m,String rePlacedSegment, String paramName,String orAnd  ,Set<String> paramNameSet) {
+        String result =null;
+        if (StringUtil.isNotEmpty(paramName)) {
+            rePlacedSegment =rePlacedSegment.replaceFirst("(?i)(or|(and))", "");
+            paramNameSet.add(paramName);
+            StringBuilder sBuilder =new StringBuilder();
+            String isNotNullWithParamName = getIsNotNullWithParamName(paramName); 
+            sBuilder.append("\n             <"+isNotNullWithParamName+" property=\""+paramName+"\"");
+            if (StringUtil.isNotBlank(orAnd)) {
+                sBuilder.append(" prepend=\"").append(orAnd).append("\"");
+            }
+            sBuilder.append(">");
+            sBuilder.append("\n                 ").append(rePlacedSegment);
+            sBuilder.append("\n             </"+isNotNullWithParamName+">");
+            result =sBuilder.toString();
+        }
+        return result;
+    }
+    
+    private static String addListSubfix(String name) {
+        Properties pts = GeneratorProperties.getProperties();
+        String list_subfix = (String) pts.get("list_subfix");
+        String result=null;
+        if (StringUtil.isNotBlank(list_subfix)) {
+            result =new StringBuilder(name).append(list_subfix).toString();
+        }
+        else {
+            result=StringHelper.pluralize(name);
+        }
+        return result;
+    }
+    
+    public static String replaceWithDubbleQuestionMark(String destSql,Set<String> paramNameSet) {
+        Pattern p = Pattern.compile(orAndToQueryMarkRex+"\\?\\s*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(destSql);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            String segment = m.group(0); //or a.mobile in ??
+            
+            String orAnd = m.group(1); //and or
+            String noOrorAndSeg = segment.replaceFirst("(?i)"+orAndToTableAliasRex, ""); //mobile in ??
+            Matcher matcher = columnPattern.matcher(noOrorAndSeg);
+            String paramName =null;
+            if (matcher.find()) {
+                String  columName= matcher.group(0);
+                columName =columName.trim();
+                paramName =StringHelper.firstLowerCase(StringHelper.makeAllWordFirstLetterUpperCase(columName));
+                //判断是否有in 则是复数型式
+                if (inPattern.matcher(segment).find()) {
+                    paramName=addListSubfix(paramName);
+                }
+                //本来??替换要替换为?，但是后面早期代码有bug
+                String rpSegment =segment.replace("??", "#"+paramName+"#").trim();
+                String repString=replaceIsNotNullLabelTemp(m, rpSegment, paramName, orAnd, paramNameSet);
+                m.appendReplacement(sb, repString);
+            }
+            
+            
+        }
+        m.appendTail(sb);
+        String result =sb.toString();
+        return result;
+    }
+    
+    public static String replaceWithQuestionMarkAndName(String destSql,Set<String> paramNameSet) {
+        Pattern p = Pattern.compile(orAndToQueryMarkRex+ibatisParamRex+"\\s*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(destSql);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            String segment = m.group(0); //or a.mobile in ?#xxxx#
+            
+            String orAnd = m.group(1); //and or
+            Matcher matcher = ibatisParamPattern.matcher(segment);
+            String paramName =null;
+            if (matcher.find()) {
+                paramName = matcher.group(0);
+                paramName =paramName.substring(1,paramName.length()-1);
+                String rpSegment =segment.replace("?", "").trim();
+                
+                String repString=replaceIsNotNullLabelTemp(m, rpSegment, paramName, orAnd, paramNameSet);
+                m.appendReplacement(sb, repString);
+            }
+            
+        }
+        m.appendTail(sb);
+        String result =sb.toString();
+        return result;
+    }
+    
 
     /**
     * 将sql从占位符转换为命名参数,如 select * from user where id =? ,将返回: select * from user where id = #id#

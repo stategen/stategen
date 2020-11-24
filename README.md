@@ -25,7 +25,7 @@ web端
   最好的沟通是避免沟通。  
   
 ### Stategen:前后端骨架代码生成器+Stategen架构（基于SpringMVC）+后端代码迭代生成器+前端代码生成器
-spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(zookeeper|nacos)+react+antd(可选antd.mobile)+flutter(可选)
+spring(可选springboot)+springmvc+ibatis(mybatis2|可选mybatis3)+apache.dubbo(可选)+react+antd(可选antd.mobile)+flutter(可选)
 
 ### 你目前的团队是不是有以下问题？如果有的话，可以尝试stategen(QQ群：728343119)
 1. 前后端分离式导致前后端代码事实上脱节？ 
@@ -116,7 +116,7 @@ trade (trade相当于微服务中当前服务名、系统名)
 2. 
 ## 二、stategen对服务端代码的增强介绍
   Stategen要做的事，尽量地合理实现一个商业框架（不是开源后阉割版的那种）。一些过时的技术比如osgi摈弃，尽量在spring技术范围内解决。一些拓展点技术（非spring）我个人觉得对业务代码没有帮助而是挖坑（大牛一走，项目搞不下去了）
-1.  @Wrap对返回值封装
+1.  @Wrap对返回置封装
 ```java
         //以前的代码是这样地恶心
         @SuppressWarnings("unchecked")
@@ -388,24 +388,72 @@ trade
         </sql>
     </operation>
 ```
+#####  借鉴了dart或typescript等先进语言, 有几个语法糖如下，可以减少where条件书写工作量，使sql简洁明了  
+1. a.mobile in ?  或 a.mobile in #mobiles#   等同于   
+mybatis2|ibatis:   
+```xml
+    a.mobile in
+    <iterate property="mobiles" conjunction="," open="(" close=")">
+        #mobiles[]#
+    </iterate>
+```   
+mybatis3:
+```xml
+    a.mobile in 
+    <foreach collection="mobiles" item="item" separator="," close=")" open="(">
+        #{item}
+    </foreach>
+```
+2. and a.address =?? 或 and a.address =?#address# 等同于 string或list用 isNotEmpty 标签,其它用isNotNull， 操作符支持 =、!=、<>、>=、<=、like、not like、in、not in,   
+mybatis2|ibatis: 
+```xml
+    <isNotEmpty property="address" prepend="and">
+        a.address =#address#
+    </isNotEmpty>
+```   
+mybatis3:
+```xml
+    <if test="address != null and @org.stategen.Util@isNotEmpty(address)">
+        and a.address =#{address}
+    </if>
+```
+3. 以上2个合在一起写也可以,如 and a.mobile in ?? 等同于以下xml,如果         在gen_config.xml中配置 <entry key="list_subfix">List</entry>，则mobiles-->mobileList  
+mybatis2|ibatis: 
+```xml
+<isNotEmpty property="mobiles" prepend="and">
+    a.mobile in 
+    <iterate property="mobiles" conjunction="," open="(" close=")">
+        #mobiles[]#
+    </iterate>
+</isNotEmpty>
+```   
+mybatis3
+```xml
+    <if test="mobiles != null and @org.stategen.Util@isNotEmpty(mobiles)">
+        and a.mobile in 
+        <foreach collection="mobiles" item="item" separator="," close=")" open="(">
+            #{item}
+        </foreach>
+    </if>
+```
 3. dalgenX生成mybatis文件时，也完整地实现mapper/daoImpl,襾不是采用mybatis的java代理方式，原因2个，反正生成的代码不需要维护，显式代码安全，2，显式代码调试跟踪断点日志都方便。
 ```
 public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
-	/**
-	 * sql:...略
-	 * a.username 对应的参数自动生成小驼峰名称，以及参数类型，函数返囲值 
-	 */
-	public User getUserByUsername(String username) throws DataAccessException {
-	    //HashMap初始化时，大小都自动确定了，节约内存，提高效率。
-		Map<String,Object> params = new HashMap<String,Object>(1);
-		params.put("username",username);
-		/*下面User.getUserByUsername自动插入到生成的sql中 
-		select /*User.getUserByUsername*/ ... from ...,方便druid中跟踪sql的执行效率,巴结DBA,哈哈
-		*/
-		return (User)super.selectOne("User.getUserByUsername",params);
-	}
-	...
-```	
+  /**
+   * sql:...略
+   * a.username 对应的参数自动生成小驼峰名称，以及参数类型，函数返囲值 
+   */
+  public User getUserByUsername(String username) throws DataAccessException {
+      //HashMap初始化时，大小都自动确定了，节约内存，提高效率。
+    Map<String,Object> params = new HashMap<String,Object>(1);
+    params.put("username",username);
+    /*下面User.getUserByUsername自动插入到生成的sql中 
+    select /*User.getUserByUsername*/ ... from ...,方便druid中跟踪sql的执行效率,巴结DBA,哈哈
+    */
+    return (User)super.selectOne("User.getUserByUsername",params);
+  }
+  ...
+``` 
 4. **dalgenx支持水平权限**生成规则。水平权限要完全做到绕开暴力尝试,或者避免在别的api中泄露id被利用,显然，采用复杂id(uid、随机)生成方式治标不治本。同时，要兼顾代码速度、迭代、人员权限调整、下面简要地阐述一种水平权限方案，可以直接由dalgenX生成器来生成，大大降低开发成本，非常适合产品需求上的迭代，代码可以做到以不变应万变.
 ```
    A.定义一个组织架构表比如orgnization，树型数据 orgId, parentId
@@ -794,14 +842,14 @@ abstract class TopicCommand {
 ## 六、 Stategen快速调试运行
 
 #### 运行环境
->1.	服务端/windows
->>A.	java 1.8  
-B.	maven 3  （3.5.0有bug,请使用3.5.2+）
-C.	mysql5.7  
-D.	gitbash(安装git2.0 自带)  
-E.	nodejs8+yarn  
->2.	只开发前端/客户端   
->>A.	nodejs8+yarn｜andriod studio| flutter
+>1. 服务端/windows
+>>A.  java 1.8  
+B.  maven 3  （3.5.0有bug,请使用3.5.2+）
+C.  mysql5.7  
+D.  gitbash(安装git2.0 自带)  
+E.  nodejs8+yarn  
+>2. 只开发前端/客户端   
+>>A.  nodejs8+yarn｜andriod studio| flutter
   因为stg工程是git管理的， 前端是一个整个git项目的子项目
 
 #### 开发环境安装
@@ -836,7 +884,7 @@ gen.sh project cms web –e
 >>cms 项目名称
 >>web 以web(模版所在的文件夹生成前端) ，目前提供2个模版web|app，不要这个参数，即没有前端
 
-4.  创建shedule项目,不带前端 (可选)	
+4.  创建shedule项目,不带前端 (可选) 
 ```
 gen.sh project schedule –e  
 ```
@@ -860,7 +908,7 @@ cd app-frontend-flutter
 sh git_add_to_parent_as_sub.sh
 ```
 
-6.	环境及表  
+6.  环境及表  
 >> 创建trade数据库并运行 运行 trade.sql
 >>把opt复制到同盘(tomcat所以盘)根目录下,修改stategen.xml中的数据库配置
 >>修改gen_config.xml中的数据库配置  
@@ -923,14 +971,14 @@ gen.sh dal teacher –e
 ```
 gen.sh api teacher cms|app
 ```
->5.	eclipse打开查看是否有代码错误
+>5. eclipse打开查看是否有代码错误
 
 
 #### 生成前端代码，开发前端
->1.	运行test/UmiFacadeProcessor.java   
->2.	webstorm打开前端代码 ，配置webpack解读代码  
->3.	yarn 下载前端依赖  
->4.	fiddler 脚本设置 onBeforeRequest 函数中        
+>1. 运行test/UmiFacadeProcessor.java   
+>2. webstorm打开前端代码 ，配置webpack解读代码  
+>3. yarn 下载前端依赖  
+>4. fiddler 脚本设置 onBeforeRequest 函数中        
 
 ```
         var url:String=oSession.PathAndQuery;
@@ -947,8 +995,8 @@ gen.sh api teacher cms|app
         }
 ```
 
->5.	后端发布到eclipse tomcat中,运行  
->6.	yarn run dev  
+>5. 后端发布到eclipse tomcat中,运行  
+>6. yarn run dev  
 >7. 后端代码变化后， 直接运行对应的 XXXFacadeProcessor.java，前端可实时开发编译
 
 #### 打包 前后端 （注意：因为stategen编译前端是在maven test阶段，所以不能添加参数 -Dmaven.test.skip=true）

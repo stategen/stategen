@@ -424,7 +424,7 @@
 			<xsl:if test="substring-before(@property, '.')">
 				<xsl:value-of select="substring-before(@property, '.')" /><xsl:text> != null and </xsl:text>
 			</xsl:if>
-      <xsl:value-of select="@property" /><xsl:text> != null and @org.stategen.Util@isNotEmpty(</xsl:text>
+      <xsl:value-of select="@property" /><xsl:text> != null and ${mybatis_isNotEmpty}(</xsl:text>
       <xsl:value-of select="@property" /><xsl:text>)</xsl:text>  
 		</xsl:attribute>
 		<xsl:value-of select="@prepend" />
@@ -438,7 +438,7 @@
 			<xsl:if test="substring-before(@property, '.')">
 				<xsl:value-of select="substring-before(@property, '.')" /><xsl:text> != null and </xsl:text>
 			</xsl:if>
-			<xsl:value-of select="@property" /><xsl:text> == null or @org.stategen.Util@isEmpty(</xsl:text>
+			<xsl:value-of select="@property" /><xsl:text> == null or ${mybatis_isEmpty}(</xsl:text>
       <xsl:value-of select="@property" /><xsl:text>)</xsl:text>      
 		</xsl:attribute>
 		<xsl:value-of select="@prepend" />

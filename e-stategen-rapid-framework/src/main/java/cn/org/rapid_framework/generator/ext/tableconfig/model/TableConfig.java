@@ -20,10 +20,12 @@ package cn.org.rapid_framework.generator.ext.tableconfig.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.StringUtil;
@@ -300,12 +302,18 @@ public class TableConfig {
                 throw new IllegalArgumentException("not found operation with name:" + operationName);
             return processOperation(operation, table);
         }
+        
 
         private Sql processOperation(OperationConfig op, TableConfig tableConfig) {
             try {
                 IbatisSqlMapConfigParser ibatisSqlMapConfigParser = new IbatisSqlMapConfigParser();
                 String destSql =op.getSql();
+                Set<String> paramNameSet =new HashSet<String>();
+                //?? 或者 ？#xxxx# 变为为<isNotNullxxx 标签 
+                destSql =SqlParseHelper.replaceWithDubbleQuestionMark(destSql,paramNameSet);
+                destSql =SqlParseHelper.replaceWithQuestionMarkAndName(destSql,paramNameSet);
                 
+                //in ? 或者 in #xxxList# 变为迭代
                 String sqlWithIn2Iterate =SqlParseHelper.replaceInWithIterateLabel(destSql);
                 sqlWithIn2Iterate =SqlParseHelper.replaceInWithIterateLabelHasParamName(sqlWithIn2Iterate);
                 
@@ -321,9 +329,15 @@ public class TableConfig {
                 LinkedHashSet<SqlParameter> finalParameters = addExtraParams2SqlParams(op.getExtraparams(), sql);
                 sql.setParams(finalParameters);
                 sql.setColumns(processWithCustomColumns(getCustomColumns(tableConfig), sql.getColumns()));
-
+                
+                
+                
                 String ibatisSql = getIbatisSql(op, sql);
+                //上面获取了参数的类型，再替换为isNotNull或isNotEmpty
+                ibatisSql=SqlParseHelper.replaceQuestionMarkLabel(ibatisSql, finalParameters, paramNameSet);
                 sql.setIbatisSql(ibatisSql);
+                
+                //TODO   这个不要了,由dalgen自动转换?
                 sql.setMybatisSql(
                     sql.replaceWildcardWithColumnsSqlName(SqlParseHelper.convert2NamedParametersSql(sqlWithIn2Iterate, "#{", "}")) + " " + op.getAppend()); // FIXME 修正ibatis3的问题
 

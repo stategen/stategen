@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.stategen.framework</groupId>
         <artifactId>stategen-parent</artifactId>
-        <version>stg.2.2.1.RELEASE</version>
+        <version>stg.2.2.2.RELEASE</version>
         <relativePath>../</relativePath>
     </parent>
     <artifactId>stategen-cache</artifactId>
