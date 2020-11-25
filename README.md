@@ -388,7 +388,7 @@ trade
         </sql>
     </operation>
 ```
-#####  注：dalgenx借鉴了dart和typescript等先进语言, 有几个语法糖如下，可以减少where条件书写工作量，使sql简洁易懂
+#####  注：dalgenx借鉴了dart和typescript等先进语言, 有几个语法糖如下，可以减少where条件书写工作量，使sql简洁易懂(注：语法糖会被编译成最终sql，不参与运行期)
 1. in语法糖: 
 ```sql
  a.mobile in ?
@@ -442,7 +442,8 @@ mybatis3: （@org.stategen.Util@isNotEmpty可以gen_config.xml自由配置其它
 ```sql
  and a.mobile in ?#mobiles#
 ``` 
-等同于以下形式:
+等同于以下形式:    
+mybatis2|ibatis: 
 ```xml
 <isNotEmpty property="mobiles" prepend="and">
     a.mobile in 
@@ -451,7 +452,7 @@ mybatis3: （@org.stategen.Util@isNotEmpty可以gen_config.xml自由配置其它
     </iterate>
 </isNotEmpty>
 ```   
-mybatis3
+mybatis3:
 ```xml
     <if test="mobiles != null and @org.stategen.Util@isNotEmpty(mobiles)">
         and a.mobile in 
