@@ -80,10 +80,10 @@ public @interface ApiRequestMappingAutoWithMethodName {
      * @ApiOperation
      * ***************************/
 
-    @AliasFor(annotation = ApiOperation.class, attribute = "value")
+    @AliasFor(annotation = ApiOperation.class, attribute="value")
     String name() default "";
-
-    @AliasFor(attribute = "name")
+    /*** spring 5.2.x中,@AliasFor(value="name") 会报错 */
+    @AliasFor(annotation = ApiOperation.class, attribute="value")
     String value() default "";
 
     @AliasFor(annotation = ApiOperation.class)

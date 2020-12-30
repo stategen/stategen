@@ -57,7 +57,6 @@ public class Consts {
     public final static String service="_service";
     public final static String serviceImpl="_serviceImpl";
     public final static String controller="_controller";
-    public final static String api="_api";
     public final static String provider="_provider";
     public final static String consummer="_consummer";
     public final static String date_long_field_to_date="date_long_field_to_date";

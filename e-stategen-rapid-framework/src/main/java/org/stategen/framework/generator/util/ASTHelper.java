@@ -141,12 +141,12 @@ class ASTHelper {
      * @param container the container
      */
     static void printSelfAndChildren(Node container) {
-        GLogger.println("当前类为:" + container.getClass() + "...................");
+         GLogger.info("当前类为:" + container.getClass() + "...................");
         for (Node child : container.getChildNodes()) {
             GLogger.info("第一级子类为：" + child.getClass() + "..................." + child);
         }
-        GLogger.println("打印结束");
-        GLogger.println("\n\n\n");
+         GLogger.info("打印结束");
+         GLogger.info("\n\n\n");
     }
 
     /**
@@ -523,7 +523,7 @@ class ASTHelper {
             switch (javaType) {
                 case isControllerBase:
                 case isController:
-                case isService:
+                case isServiceFacade:
                 case isServiceInternal:
                 case isServiceImpl: {
                     CompilationUnit temp = lastCompilationUnit;
@@ -586,7 +586,7 @@ class ASTHelper {
 
                             nowClassDeclaration.getMembers().add(fieldIdx, oldFieldDeclaration);
                             replaced = true;
-                            GLogger.println("属性(field)被保留或增加:" + fieldName + "  被保留<<<<<<<<<<<<<<<<<<<<<<");
+                             GLogger.info("属性(field)被保留或增加:" + fieldName + "  被保留<<<<<<<<<<<<<<<<<<<<<<");
                         }
                     }
 
@@ -625,7 +625,7 @@ class ASTHelper {
                         if (!nowMethodDeclarationMap.containsKey(methodName)) {
                             nowClassDeclaration.getMembers().add(oldEntry.getValue());
                             replaced = true;
-                            GLogger.println("方法(Method):" + methodName + "  被保留<<<<<<<<<<<<<<<<<<<<<<");
+                             GLogger.info("方法(Method):" + methodName + "  被保留<<<<<<<<<<<<<<<<<<<<<<");
                         }
                     }
 
@@ -677,5 +677,15 @@ class ASTHelper {
             }
         }
         return nameSet;
+    }
+    
+    public static Integer getUnitMethodCount(CompilationUnit lastCompilationUnit) {
+        ClassOrInterfaceDeclaration oldClassDeclaration = ASTHelper.getOneNodesByType(lastCompilationUnit, ClassOrInterfaceDeclaration.class);
+        if (oldClassDeclaration!=null) {
+            Map<String, MethodDeclaration> oldMethodDeclarationMap = getBodyDeclarationMap(oldClassDeclaration, MethodDeclaration.class);
+            //TODO 是否要判断里面有没有静态方法
+            return oldMethodDeclarationMap.size();
+        }
+        return 0;
     }
 }

@@ -44,10 +44,9 @@ public class CookieTokenGeneratorDefault implements CookieTokenGenerator ,Initia
      */
     @Override
     public String genToken(Map<String, Cookie> reuestCookieMap) {
-        StringBuilder sb = new StringBuilder();
-        
-        int filteredCount =0;
         if (CollectionUtil.isNotEmpty(reuestCookieMap)){
+            int filteredCount =0;
+            StringBuilder sb = new StringBuilder(512);
             for (Cookie cookie : reuestCookieMap.values()) {
                 int cookieMaxAge = cookie.getMaxAge();
                 if (NumberUtil.isNullOrZero(cookieMaxAge)) {
@@ -57,14 +56,15 @@ public class CookieTokenGeneratorDefault implements CookieTokenGenerator ,Initia
                 String cookieValue = cookie.getValue();
                 sb.append(cookieValue);
             }
+            
+            if (NumberUtil.isGreatZero(filteredCount)){
+                sb.append(Configration.COOKIE_TOKEN_MIX);
+                String tokenValue = MD5Util.md5(sb.toString());
+                return tokenValue;
+            } 
         }
-        
-        if (NumberUtil.isGreatZero(filteredCount)){
-            sb.append(Configration.COOKIE_TOKEN_MIX);
-            String tokenValue = MD5Util.md5(sb.toString());
-            return tokenValue;
-        } 
-        
+
+        //没有带令牌，由到method方法根绝CookieCheck看是否请求合
         return null;
     }
 

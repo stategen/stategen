@@ -242,7 +242,7 @@ public class BaseTargets extends HashMap<String, Object> {
         GLogger.info(controllerTempPath);
         
         //api ，这个必须在最前面，并且执行
-        Setting.current_gen_name = Consts.api;
+        Setting.current_gen_name = Consts.controller;
         GLogger.info(controllerTempPath);
         GLogger.info(dir_tmpl_share);
         GenUtils.genByTableConfig(Helper.createGeneratorFacade(cmdPath, controllerTempPath, dir_tmpl_share),

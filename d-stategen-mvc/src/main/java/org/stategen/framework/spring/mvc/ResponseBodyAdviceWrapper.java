@@ -152,8 +152,7 @@ public class ResponseBodyAdviceWrapper extends ResponseStatusTypeHandler impleme
                 IResponseStatus responseStatus = (IResponseStatus) data;
                 data = ResponseUtil.buildResponse(null, responseStatus);
             } else {
-                IResponseStatus responseStatus = IResponseStatus.getResponseStatus(this.getResponseStatusClz());
-                data = ResponseUtil.buildResponse(data, responseStatus);
+                data = ResponseUtil.buildResponse(data, getResponseStatus());
             }
         }
         
@@ -187,8 +186,8 @@ public class ResponseBodyAdviceWrapper extends ResponseStatusTypeHandler impleme
 
     }
 
-    public void setResponseStatusClzOfResult(Class<? extends IResponseStatus> responseStatusClzOfResult) {
-        super.setResponseStatusClz(responseStatusClzOfResult);
+    public <T extends Enum<T> & IResponseStatus> void setResponseStatusOfResult(T responseStatusOfResult) {
+        super.setResponseStatus(responseStatusOfResult);
     }
 
 }

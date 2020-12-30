@@ -16,18 +16,14 @@
  */
 package org.stategen.framework.lite;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * *
  * 请用枚举实现
  * message整个当成key从国际化文件中查找，如果没有找到跟据spring设置返回key或not found exception.
  *
  */
-public interface IResponseStatus {
+public interface IResponseStatus extends ClassedEnum<IResponseStatus>  {
     
-    static Map<Class<? extends IResponseStatus>, IResponseStatus> RESPONSE_STATUS_CACHEMAP = new HashMap<Class<? extends IResponseStatus>, IResponseStatus>();
     
     Integer getStatus();
     
@@ -38,16 +34,6 @@ public interface IResponseStatus {
     String getErrorPage();
     
     boolean isRedirect();
-    
-    Class<? extends IResponseStatus> _getResonseStatusClz();
-    
-    public default void regist(){
-        RESPONSE_STATUS_CACHEMAP.put(this._getResonseStatusClz(), this);
-    }
-    
-    public static IResponseStatus getResponseStatus(Class<? extends IResponseStatus> errorStatusClz) {
-        return RESPONSE_STATUS_CACHEMAP.get(errorStatusClz);
-    }
     
     
 }

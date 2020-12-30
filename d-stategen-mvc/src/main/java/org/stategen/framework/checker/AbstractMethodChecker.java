@@ -34,7 +34,7 @@ public abstract class AbstractMethodChecker<A extends Annotation> implements Ini
     /**用HashMap,这个在运行后只读取，没有写入*/
     public static Map<Class<? extends Annotation>, AbstractMethodChecker<?>> CHECKER_CACHE =new HashMap<Class<? extends Annotation>, AbstractMethodChecker<?>>();
     
-    public abstract IResponseStatus  doCheck(Method method ,A checkAnno,Class<? extends IResponseStatus> defaultResponseStatusTypeClzOfCheckFail);
+    public abstract <T extends Enum<T> & IResponseStatus> T doCheck(Method method ,A checkAnno, Class<? extends IResponseStatus> defaultResponseStatusTypeClzOfCheckFail);
     
     public abstract Class<A> getCheckAnnoClz();
     

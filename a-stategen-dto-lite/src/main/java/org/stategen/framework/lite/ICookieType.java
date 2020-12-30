@@ -16,33 +16,22 @@
  */
 package org.stategen.framework.lite;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * The Interface ICookieGroup.
  *
  * @author niaoge
  * @version $Id: ICookieGroup.java.java, v 0.1 2018-5-3 5:10:32 niaoge Exp \$
  */
-public interface ICookieType {
-
-    static Map<Class<? extends ICookieType>, ICookieType> CookieTypeCacheMap = new HashMap<Class<? extends ICookieType>, ICookieType>();
-
+public interface ICookieType extends ClassedEnum<ICookieType> {
+    
     String getCookiePrefixName();
-
-    Class<? extends ICookieType> _getCookieTypeClz();
     
-    Class<? extends IResponseStatus> getResponseStatusClzOfTokenError();
-
-    public default void register() {
-        CookieTypeCacheMap.put(this._getCookieTypeClz(), this);
+    IResponseStatus getResponseStatusOfTokenError();
+    
+    @SuppressWarnings("unchecked")
+    public static <T extends Enum<T> & IResponseStatus> T getResponseStatusOfTokenError(Class<? extends ICookieType> cookieTypeClz) {
+        ICookieType errorCookieType =  (ICookieType) ClassedEnum.getEnum( cookieTypeClz);
+        return (T) errorCookieType.getResponseStatusOfTokenError();
     }
     
-    public static ICookieType getCookieType(Class<? extends ICookieType> cookieTypeClz){
-        return CookieTypeCacheMap.get(cookieTypeClz);
-    }
-
-    
-
 }

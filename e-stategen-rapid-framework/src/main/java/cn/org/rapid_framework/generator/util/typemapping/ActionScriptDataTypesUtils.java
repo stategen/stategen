@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.org.rapid_framework.generator.util.GLogger;
+
 /**
  * 描述java类型和as类型对应关系
  * 
@@ -90,7 +92,7 @@ public class ActionScriptDataTypesUtils {
 
 	public static void main(String[] args) {
 		String bb = ActionScriptDataTypesUtils.getPreferredAsType(List.class.getName());
-		System.out.println(bb);
+		GLogger.info(bb);
 	}
 
 }

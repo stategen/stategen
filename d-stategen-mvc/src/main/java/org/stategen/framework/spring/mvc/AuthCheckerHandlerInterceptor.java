@@ -80,8 +80,7 @@ public class AuthCheckerHandlerInterceptor extends ResponseStatusTypeHandler imp
                 Class<? extends Annotation> checkAnnoClz = checkAnno.annotationType();
                 AbstractMethodChecker<Annotation> abstractMethodChecker = AbstractMethodChecker.getChecker(checkAnnoClz);
                 AssertUtil.mustNotNull(abstractMethodChecker, new StringBuilder("标注:").append(checkAnnoClz).append(" 没有找到相应的校验器").toString());
-                Class<? extends IResponseStatus> responseStatusClzOfCheckFailDefault = this.getResponseStatusClz();
-                IResponseStatus errorResponseStatus = abstractMethodChecker.doCheck(method, checkAnno, responseStatusClzOfCheckFailDefault);
+                IResponseStatus errorResponseStatus = abstractMethodChecker.doCheck(method, checkAnno, getResponseStatus().getRegisterClass());
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 if (errorResponseStatus != null) {
                     if (responseBodyAnno != null) {
@@ -147,8 +146,8 @@ public class AuthCheckerHandlerInterceptor extends ResponseStatusTypeHandler imp
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
     }
 
-    public void setResponseStatusClzOfCheckFailDefault(Class<IResponseStatus> responseStatusClzOfCheckFailDefault) {
-        this.setResponseStatusClz(responseStatusClzOfCheckFailDefault);
+    public <T extends Enum<T> & IResponseStatus> void setResponseStatusOfCheckFailDefault(T responseStatusOfCheckFailDefault) {
+        this.setResponseStatus(responseStatusOfCheckFailDefault);
     }
 
 }

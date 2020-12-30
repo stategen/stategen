@@ -74,7 +74,7 @@ public class ConsoleGenerator {
         }
 
         Properties mergedProps = GenProperties.getAllMergedProps(GenProperties.getGenConfigXmlIfRunTest());
-        GenProperties.putStatics(mergedProps);
+        GenProperties.genStaticFiles(mergedProps);
         Properties pts = GeneratorProperties.getProperties();
         pts.putAll(mergedProps);
 

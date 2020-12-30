@@ -18,6 +18,7 @@ package org.stategen.framework.web.cookie;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.Cookie;
@@ -41,9 +42,8 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CookieGroup.class);
 
     //iCookieGroup与CookieGroupValidator的对应关系
-    private static Map<Class<? extends ICookieType>, CookieGroup<?>> COOKIE_GROUP_MAP = new ConcurrentHashMap<Class<? extends ICookieType>, CookieGroup<?>>(
-        2);
-
+    private static Map<ICookieType, CookieGroup<?>> COOKIE_GROUP_MAP = new ConcurrentHashMap<ICookieType, CookieGroup<?>>(2);
+    
     private String _cookieNamePrefix = null;
     //校验的cookie名称
     private static String TOKEN_COOKIE_NAME = "_token_";
@@ -54,8 +54,11 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
     //cookie的生命
     private Integer secondsOfCookieAge = Configration.COOKIE_DEFAULT_AGE;
 
-    //该项校验对的组别
-    private Class<? extends ICookieType> cookieTypeClz;
+    //该项校验对的组别 TODO 要springboot 内部类先加载时，导致CookieType不能先加载，regist方法没有被调用，因此采用枚举方式，@see cookieType
+//    @Deprecated
+//    private Class<? extends ICookieType> cookieTypeClz;
+    
+    private ICookieType cookieType;
 
     //栓查token
     private boolean checkCookieFake = true;
@@ -66,21 +69,32 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
     //生成cookie是否是服务端cookie,如果是，则客户端脚本不能读取，该项设置为true,可防止XSS
     private boolean httpOnly = true;
 
-    public static Map<Class<? extends ICookieType>, CookieGroup<?>> getCookieGroupMap() {
+    public static Map<ICookieType, CookieGroup<?>> getCookieGroupMap() {
         return COOKIE_GROUP_MAP;
     }
 
+    public static CookieGroup<?> getCookieGroup(ICookieType cookieType) {
+        return COOKIE_GROUP_MAP.get(cookieType);
+    }
+    
     public static CookieGroup<?> getCookieGroup(Class<? extends ICookieType> cookieTypeClz) {
-        return COOKIE_GROUP_MAP.get(cookieTypeClz);
+        if (CollectionUtil.isEmpty(COOKIE_GROUP_MAP)) {
+            return null;
+        }
+        
+        for (Entry<ICookieType, CookieGroup<?>> entry :COOKIE_GROUP_MAP.entrySet()){
+            ICookieType key = entry.getKey();
+            if (key.getRegisterClass()==cookieTypeClz) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
-    public ICookieType getCookieType() {
-        return ICookieType.getCookieType(cookieTypeClz);
-    }
 
     public String getCookieNamePrefix() {
         if (_cookieNamePrefix == null) {
-            _cookieNamePrefix = getCookieType().getCookiePrefixName();
+            _cookieNamePrefix = cookieType.getCookiePrefixName();
         }
 
         return _cookieNamePrefix;
@@ -150,8 +164,7 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
                         .debug(new StringBuilder(requestPath).append("输出info信息: 请求被拦截:").append(requestPath).toString());
                 }
                 //验证没有通过，返回json对象
-                IResponseStatus responseStatusOfTokenError = IResponseStatus
-                    .getResponseStatus(this.getResponseStatusClz());
+                IResponseStatus responseStatusOfTokenError = getResponseStatus();
                 ResponseUtil.writhResponse(true,null, responseStatusOfTokenError);
                 return false;
             } else {
@@ -304,38 +317,43 @@ public class CookieGroup<E extends Enum<E>> extends ResponseStatusTypeHandler {
         this.strong = strong;
     }
 
-    public void setCookieTypeClz(Class<? extends ICookieType> cookieGroupClz) {
-        this.cookieTypeClz = cookieGroupClz;
-    }
+
 
     public void setHttpOnly(boolean httpOnly) {
         this.httpOnly = httpOnly;
     }
+    
+    public <T extends Enum<T> & ICookieType> void setCookieType(T cookieType) {
+        this.cookieType = cookieType;
+    }
+    
+    
+    public ICookieType getCookieType() {
+        return cookieType;
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        AssertUtil.mustNotNull(cookieTypeClz, "cookieTypeClz can not be null");
+        AssertUtil.mustTrue(cookieType!=null, "one of cookieTypeClz or cookieTypeEnum can not be null");
+        
 
-        ICookieType cookieType = ICookieType.getCookieType(cookieTypeClz);
+        CookieGroup<?> cookieGroup = COOKIE_GROUP_MAP.get(cookieType);
+        AssertUtil.mustNull(cookieGroup, "cookieGroup has bean register:" + cookieType);
 
-        AssertUtil.mustNotNull(cookieType, "no enum instance of :" + cookieTypeClz);
-
-        CookieGroup<?> cookieGroup = COOKIE_GROUP_MAP.get(cookieTypeClz);
-        AssertUtil.mustNull(cookieGroup, "cookieGroup has bean register:" + cookieTypeClz);
-
-        setResponseStatusClz(cookieType.getResponseStatusClzOfTokenError());
+        setResponseStatus(cookieType.getResponseStatusOfTokenError());
         String cookiePrefixName = cookieType.getCookiePrefixName();
+        
+        
         for (CookieGroup<?> cg : COOKIE_GROUP_MAP.values()) {
-            ICookieType ct = cg.getCookieType();
-            AssertUtil.mustFalse(cookiePrefixName.equals(ct.getCookiePrefixName()),
+            ICookieType cooType = cg.getCookieType();
+            AssertUtil.mustFalse(cookiePrefixName.equals(cooType.getCookiePrefixName()),
                 "prefix cookieType has bean used:" + cookiePrefixName);
         }
 
-        COOKIE_GROUP_MAP.put(cookieTypeClz, this);
+        COOKIE_GROUP_MAP.put(cookieType, this);
         _tokenCookieName = new StringBuilder(cookiePrefixName).append(TOKEN_COOKIE_NAME).toString();
 
         super.afterPropertiesSet();
     }
-
 
 }

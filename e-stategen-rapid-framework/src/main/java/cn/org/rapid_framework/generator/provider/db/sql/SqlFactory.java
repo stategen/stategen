@@ -331,7 +331,7 @@ public class SqlFactory {
                 params.add(param);
                 allParams.add(param);
             }
-            GLogger.perf("parseForSqlParameters() cost:"+(System.currentTimeMillis()- start));
+            GLogger.trace("parseForSqlParameters() cost:"+(System.currentTimeMillis()- start));
         }
 
         public boolean isMatchListParam(String sql, String paramName) {

@@ -27,6 +27,7 @@ import com.alibaba.druid.support.http.StatViewServlet;
  * @version $Id: DruidServlet.java, v 0.1 2020年8月1日 上午12:51:35 XiaZhengsheng Exp $
  */
 public class DruidServlet extends StatViewServlet {
+    final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(DruidServlet.class);
     
     /**  */
     private static final long serialVersionUID = 1L;
@@ -36,8 +37,12 @@ public class DruidServlet extends StatViewServlet {
         super.init();
         //如果startonload=0,将获取不到DruidLoginConfig.CONFIG
         if (DruidConfig.CONFIG != null) {
-            this.username = DruidConfig.CONFIG.getLoginUsername();
-            this.password = DruidConfig.CONFIG.getLoginPassword();
+            if (this.username == null) {
+                this.username = DruidConfig.CONFIG.getLoginUsername();
+            }
+            if (this.password == null) {
+                this.password = DruidConfig.CONFIG.getLoginPassword();
+            }
         }
     }
 }

@@ -23,30 +23,22 @@ import org.stategen.framework.util.AssertUtil;
 /**
  * The Class ResponseStatusTypeHandler.
  */
-public abstract class ResponseStatusTypeHandler  implements InitializingBean {
-    /***用枚举实现*/
-    private Class<? extends IResponseStatus> responseStatusClz = null;   
-
-    public Class<? extends IResponseStatus> getResponseStatusClz() {
-        return responseStatusClz;
-    }
+public abstract class ResponseStatusTypeHandler implements InitializingBean {
     
-    protected void setResponseStatusClz(Class<? extends IResponseStatus> responseStatusClz) {
-        this.responseStatusClz = responseStatusClz;
-    }
+    /***用枚举实现*/
+    private IResponseStatus responseStatus = null;
     
     public IResponseStatus getResponseStatus() {
-        IResponseStatus responseStatus = IResponseStatus.getResponseStatus(this.getResponseStatusClz());
         return responseStatus;
     }
-
+    
+    protected void setResponseStatus(IResponseStatus responseStatus) {
+        this.responseStatus = responseStatus;
+    }
+    
     @Override
     public void afterPropertiesSet() throws Exception {
-        AssertUtil.mustNotNull(responseStatusClz);
+        AssertUtil.mustNotNull(responseStatus);
     }
-
-
     
-
-
 }

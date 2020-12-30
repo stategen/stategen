@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.stategen.framework</groupId>
         <artifactId>stategen-parent</artifactId>
-        <version>stg.2.2.2.RELEASE</version>
+        <version>stg.2.2.3.RELEASE</version>
         <relativePath>../</relativePath>
     </parent>
 
@@ -22,6 +22,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- 编译时的编码 -->
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <argLine>-Dfile.encoding=UTF-8</argLine> 
     </properties>
 
     <dependencies>
@@ -34,19 +35,19 @@
         <dependency>
             <groupId>org.stategen.framework</groupId>
             <artifactId>stategen-dto-lite</artifactId>
-            <version>stg.2.2.2.RELEASE</version>
+            <version>stg.2.2.3.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.stategen.framework</groupId>
             <artifactId>stategen-util</artifactId>
-            <version>stg.2.2.2.RELEASE</version>
+            <version>stg.2.2.3.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.stategen.framework</groupId>
             <artifactId>progen</artifactId>
-            <version>stg.2.2.2.RELEASE</version>
+            <version>stg.2.2.3.RELEASE</version>
         </dependency>
 
 
@@ -61,6 +62,12 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.8.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -77,11 +84,7 @@
             <artifactId>commons-io</artifactId>
             <version>1.4</version>
         </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1.1</version>
-        </dependency>
+
         <!-- apache-commons END -->
 
         <!-- logging BEGIN -->
@@ -139,12 +142,7 @@
             <version>1.6.1</version>
         </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
+
     </dependencies>
 
     <build>
@@ -159,7 +157,6 @@
             </resource>
         </resources>
 
-        <plugins>
-        </plugins>
+
     </build>
 </project>

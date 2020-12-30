@@ -21,12 +21,14 @@ import java.lang.annotation.Annotation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.google.common.base.Predicate;
 
 import configs.Configration;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -37,14 +39,14 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * The Class SwaggerConfig.
  */
 @Configuration
-//@EnableWebMvc
+@EnableWebMvc
 @EnableSwagger2
 //@ComponentScan(basePackages ={"com.albert.swagger"})
+@Slf4j
 public class SwaggerConfig {
     
-
     private static Class<?> declaringClass(RequestHandler input) {
-      return input.getHandlerMethod().getMethod().getDeclaringClass();
+        return input.getHandlerMethod().getMethod().getDeclaringClass();
     }
     
     /**
@@ -54,13 +56,16 @@ public class SwaggerConfig {
      * @return this
      */
     public static Predicate<RequestHandler> isAnnotated(final Class<? extends Annotation> annotation) {
-      return new Predicate<RequestHandler>() {
-        @Override
-        public boolean apply(RequestHandler input) {
-          return AnnotatedElementUtils.isAnnotated(declaringClass(input),annotation);
-        }
-      };
+        return new Predicate<RequestHandler>() {
+            
+            @Override
+            public boolean apply(RequestHandler r) {
+                return AnnotatedElementUtils.isAnnotated(declaringClass(r), annotation);
+            }
+
+        };
     }
+    
     /**
      * Every Docket bean is picked up by the swagger-mvc framework - allowing for multiple
      * swagger groups i.e. same code base multiple swagger resource listings.
@@ -68,7 +73,14 @@ public class SwaggerConfig {
     @Bean
     public Docket customDocket() {
         //        return new Docket(DocumentationType.SWAGGER_2);
-        return new Docket(DocumentationType.SWAGGER_2).select().apis(isAnnotated(Api.class))
-            .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class)).build().enable(Configration.enableSwagger);//<--- Flag to enable or disable possibly loaded using a property file
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(isAnnotated(Api.class))
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                .build()
+                .enable(Configration.enableSwagger);//<--- Flag to enable or disable possibly loaded using a property file
     }
+    
+
+    
 }

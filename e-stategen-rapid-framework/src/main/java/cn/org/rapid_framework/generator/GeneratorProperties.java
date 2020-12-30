@@ -45,10 +45,10 @@ public class GeneratorProperties {
 	
 	public static void reload() {
 		try {
-			GLogger.println("Start Load GeneratorPropeties from classpath:"+Arrays.toString(PROPERTIES_FILE_NAMES));
+			 GLogger.info("Start Load GeneratorPropeties from classpath:"+Arrays.toString(PROPERTIES_FILE_NAMES));
 			Properties p = new Properties();
 			String[] loadedFiles = PropertiesHelper.loadAllPropertiesFromClassLoader(p,PROPERTIES_FILE_NAMES);
-			GLogger.println("GeneratorPropeties Load Success,files:"+Arrays.toString(loadedFiles));
+			 GLogger.info("GeneratorPropeties Load Success,files:"+Arrays.toString(loadedFiles));
 			
 			setSepicalProperties(p, loadedFiles);
 			
@@ -165,7 +165,7 @@ public class GeneratorProperties {
 //            assertPropertyKey(entry.getKey().toString());
             GLogger.debug("[Property] "+entry.getKey()+"="+entry.getValue());
         }
-        GLogger.println("");
+         GLogger.info("");
         
 	}
 

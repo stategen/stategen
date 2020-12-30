@@ -54,7 +54,7 @@ public class AntiCookieFakeResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public void filterRequestCookies() {
-         Map<Class<? extends ICookieType>, CookieGroup<?>> cookieGroupMap = CookieGroup.getCookieGroupMap();
+         Map<ICookieType, CookieGroup<?>> cookieGroupMap = CookieGroup.getCookieGroupMap();
         if (CollectionUtil.isEmpty(cookieGroupMap)){
             return;
         }
@@ -74,7 +74,7 @@ public class AntiCookieFakeResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public boolean checkTokens() {
-        Map<Class<? extends ICookieType>, CookieGroup<?>> cookieGroupMap = CookieGroup.getCookieGroupMap();
+        Map<ICookieType, CookieGroup<?>> cookieGroupMap = CookieGroup.getCookieGroupMap();
         if (CollectionUtil.isEmpty(cookieGroupMap)){
             return true;
         }

@@ -38,8 +38,9 @@ public class GeneratorContext {
         context.set(map);
     }
     
-    public static void put(String key,Object value) {
+    public static boolean put(String key,Object value) {
         getContext().put(key, value);
+        return true;
     }
     
     public static Properties getGeneratorProperties() {

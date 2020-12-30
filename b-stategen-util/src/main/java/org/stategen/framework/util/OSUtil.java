@@ -23,74 +23,79 @@ package org.stategen.framework.util;
  * @author XiaZhengsheng
  */
 public class OSUtil {
-    final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OSUtil.class);
-    public static final String filePrefix = "file:";
-    private static final String windows_lower = "windows";
-    private static final String os_name = "os.name";
-
+    
+    final static org.slf4j.Logger logger        = org.slf4j.LoggerFactory.getLogger(OSUtil.class);
+    
+    public static final String    filePrefix    = "file:";
+    
+    private static final String   windows_lower = "windows";
+    
+    private static final String   os_name       = "os.name";
+    
     /**
      * The Class OsPath.
      *
      * @version $Id: CompatibilityPathUtil.java, v 0.1 2016-3-16 14:17:36 xiazhengsheng Exp $
      */
     public static class OsPath {
-
+        
         /**
          * *  The is windows.
          */
         boolean isWindows = false;
-
+        
         /**
          * *  The disk path.
          */
         String diskPath = null;
-
+        
         /**
          * *  The web context path.
          */
         String webContextPath = null;
     }
-
+    
     public static OsPath getOsPath() {
         OsPath result = new OsPath();
-
+        
         String osName = System.getProperties().getProperty(os_name);
         if (StringUtil.isNotEmpty(osName)) {
-            osName = osName.toLowerCase();
+            osName           = osName.toLowerCase();
             result.isWindows = osName.indexOf(windows_lower) > -1;
         }
-
+        
         if (result.isWindows) {
-
-//            String threadPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-            String jarPath = JarUtil.getPath(null);
-
-            result.webContextPath = jarPath;
+            
+            String threadPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+            //如果在windows上运行mvn package,则jar为 maven的localRepository存放在路径，maven并没有把jar复制到target中
+            //            String jarPath = JarUtil.getPath();
+            
+            result.webContextPath = threadPath;
             int idx = result.webContextPath.indexOf(':');
-
+            
             if (idx > -1) {
-                result.diskPath = filePrefix + result.webContextPath.substring(0, idx + 1);
+                result.diskPath       = filePrefix + result.webContextPath.substring(0, idx + 1);
                 result.webContextPath = filePrefix + result.webContextPath;
             }
         }
-
+        
         return result;
     }
-
+    
     public static String getRealUriPathByOs(String fileName, OsPath osPath) {
         if (osPath.isWindows && StringUtil.isNotEmpty(osPath.diskPath) && fileName.startsWith(filePrefix)
-            && !fileName.startsWith(osPath.webContextPath) && !fileName.startsWith(osPath.diskPath)) {
+                && !fileName.startsWith(osPath.webContextPath) && !fileName.startsWith(osPath.diskPath)) {
             //file:
             fileName = fileName.substring(filePrefix.length());
             fileName = new StringBuilder(fileName.length() + osPath.diskPath.length()).append(osPath.diskPath)
-                .append(fileName).toString();
-
-        } else if (!osPath.isWindows && fileName.startsWith(filePrefix+"//") &&  !fileName.startsWith(filePrefix+"///")){
-            fileName =new StringBuilder(filePrefix+"///").append(fileName.substring(filePrefix.length()+2)).toString();
+                    .append(fileName).toString();
+            
+        } else if (!osPath.isWindows && fileName.startsWith(filePrefix + "//") && !fileName.startsWith(filePrefix + "///")) {
+            fileName = new StringBuilder(filePrefix + "///").append(fileName.substring(filePrefix.length() + 2)).toString();
         }
         return fileName;
     }
-
+    
     public static String getRealUriPathByOs(String fileName) {
         OsPath osPath = getOsPath();
         return getRealUriPathByOs(fileName, osPath);

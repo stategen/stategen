@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import javax.servlet.http.Cookie;
 
 import org.stategen.framework.annotation.CookieCheck;
+import org.stategen.framework.lite.ClassedEnum;
 import org.stategen.framework.lite.ICookieType;
 import org.stategen.framework.lite.IResponseStatus;
 import org.stategen.framework.web.cookie.CookieGroup;
@@ -31,8 +32,8 @@ import org.stategen.framework.web.cookie.CookieGroup;
 public class DefaultCookieCheckChecker extends AbstractMethodChecker<CookieCheck> {
 
     @Override
-    public IResponseStatus doCheck(Method method, CookieCheck anno, Class<? extends IResponseStatus> defaultResponseStatusTypeClzOfCheckFail) {
-        CookieCheck cookieCheck=(CookieCheck)anno;
+    public <T extends Enum<T> & IResponseStatus> T doCheck(Method method ,CookieCheck checkAnno, Class<? extends IResponseStatus> defaultResponseStatusTypeClzOfCheckFail) {
+        CookieCheck cookieCheck=(CookieCheck)checkAnno;
         Class<? extends ICookieType> cookieTypeClz =cookieCheck.cookieTypeClz();
         String cookieName = cookieCheck.cookieName();
         CookieGroup<?> cookieGroup = CookieGroup.getCookieGroup(cookieTypeClz);
@@ -40,12 +41,13 @@ public class DefaultCookieCheckChecker extends AbstractMethodChecker<CookieCheck
         //如果相应的cookie不存在
         Cookie cookie = cookieGroup.getCookie(cookieName);
         if (cookie == null) {
-            Class<? extends IResponseStatus> responseStatusClzOfCheckFail = cookieCheck.responseStatusClzOfCheckFail();
-            if (responseStatusClzOfCheckFail==null){
-                responseStatusClzOfCheckFail=defaultResponseStatusTypeClzOfCheckFail;
+            T responseStatusOfCheckFail = ICookieType.getResponseStatusOfTokenError(cookieTypeClz);
+            if (responseStatusOfCheckFail==null) {
+                responseStatusOfCheckFail =ClassedEnum.getEnum(defaultResponseStatusTypeClzOfCheckFail);
             }
-            IResponseStatus responseStatus = IResponseStatus.getResponseStatus(responseStatusClzOfCheckFail);
-            return responseStatus;
+            return responseStatusOfCheckFail;
+            
+
         }
         
         return null;

@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
+import org.springframework.util.StringUtils;
 import org.stategen.framework.util.BusinessAssert;
+import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.StringUtil;
 
 public class GenProperties {
@@ -53,8 +55,25 @@ public class GenProperties {
         return genConfigXml;
     }
     
-    public static void putStatics(Properties properties) {
-        properties.put("generator_tools_class","cn.org.rapid_framework.generator.util.StringHelper,org.apache.commons.lang.StringUtils,org.stategen.framework.util.CollectionUtil,org.stategen.framework.util.Setting,org.stategen.framework.generator.util.CompatibleHelper,org.stategen.framework.util.StringUtil,org.stategen.framework.generator.util.TableHelper");
+    public static void genStaticFiles(Properties properties,String...addtionalStatics) {
+
+        String staticFiles[] = {"cn.org.rapid_framework.generator.util.StringHelper",
+                "org.apache.commons.lang.StringUtils",
+                "org.stategen.framework.util.CollectionUtil",
+                "org.stategen.framework.util.Setting",
+                "org.stategen.framework.generator.util.CompatibleHelper",
+                "org.stategen.framework.util.StringUtil",
+                "org.stategen.framework.generator.util.TableHelper",
+                "org.stategen.framework.util.Context"
+        };
+            
+        if (CollectionUtil.isNotEmpty(addtionalStatics)){
+            staticFiles=StringUtils.concatenateStringArrays(staticFiles, addtionalStatics);
+        }
+        
+        String joinedFiles = StringUtil.concat(",", staticFiles);
+        properties.put("generator_tools_class",joinedFiles);
+//        properties.put("generator_tools_class","cn.org.rapid_framework.generator.util.StringHelper,org.apache.commons.lang.StringUtils,org.stategen.framework.util.CollectionUtil,org.stategen.framework.util.Setting,org.stategen.framework.generator.util.CompatibleHelper,org.stategen.framework.util.StringUtil,org.stategen.framework.generator.util.TableHelper");
     }
 
     public static Properties getAllMergedProps(String genConfigXml) throws IOException {

@@ -41,7 +41,9 @@ import java.util.Map;
 
 import org.stategen.framework.generator.util.FmHelper;
 import org.stategen.framework.generator.util.GenProperties;
+import org.stategen.framework.generator.util.JavaType;
 import org.stategen.framework.generator.util.TemplateHelpers;
+import org.stategen.framework.util.Context;
 import org.stategen.framework.util.StringUtil;
 
 import cn.org.rapid_framework.generator.util.AntPathMatcher;
@@ -190,7 +192,7 @@ public class Generator {
     public void deleteOutRootDir() throws IOException {
         if (StringUtil.isBlank(getOutRootDir()))
             throw new IllegalStateException("'outRootDir' property must be not null.");
-        GLogger.println("[delete dir]    " + getOutRootDir());
+        GLogger.info("[delete dir]    " + getOutRootDir());
         FileHelper.deleteDirectory(new File(getOutRootDir()));
     }
 
@@ -300,7 +302,7 @@ public class Generator {
             throws Exception {
         if (templateRootDir == null)
             throw new IllegalStateException("'templateRootDir' must be not null");
-        GLogger.println("[load template] \ntemplateRootDir = "
+        GLogger.info("[load template] \ntemplateRootDir = "
                 + templateRootDir.getAbsolutePath() + "\noutRootDir:"
                 + new File(outRootDir).getAbsolutePath());
 
@@ -318,7 +320,7 @@ public class Generator {
                     long start = System.currentTimeMillis();
                     new TemplateProcessor(templateRootDirs).executeGenerate(templateRootDir,
                             templateModel, filePathModel, srcFile,isTable);
-                    GLogger.perf("genereate by tempate cost time:"
+                    GLogger.trace("genereate by tempate cost time:"
                             + (System.currentTimeMillis() - start) + "ms");
                 }
             } catch (Exception e) {
@@ -365,7 +367,7 @@ public class Generator {
             
             if (isCopyBinaryFile && FileHelper.isBinaryFile(srcFile)) {
                 File outputFile = new File(getOutRootDir(), outputFilePath);
-                GLogger.println("[copy binary file by extention] from:" + srcFile + " => "
+                GLogger.info("[copy binary file by extention] from:" + srcFile + " => "
                         + outputFile);
                 FileHelper.parentMkdir(outputFile);
                 @Cleanup
@@ -376,16 +378,21 @@ public class Generator {
                 return;
             }
             
+            //制作之前，删除空间关于javaType的设置
+            Context.pop(JavaType.javaTypeKey);
             initGeneratorControlProperties(srcFile, outputFilePath);
+            
+            //这里把模版解析过一次了
             processTemplateForGeneratorControl(templateModel, templateFile);
 
             if (gg.isIgnoreOutput()) {
-                GLogger.println("[not generate] by gg.isIgnoreOutput()=true on template:"
+                GLogger.info("[not generate] by gg.isIgnoreOutput()=true on template:"
                         + templateFile);
                 return;
             }
 
             if (StringUtil.isNotBlank(gg.getOutputFile())) {
+                //这里把模版再解析过一次
                 generateNewFileOrInsertIntoFile(templateFile, gg.getOutputFile(), templateModel,isTable);
             }
         }
@@ -422,7 +429,7 @@ public class Generator {
             initGeneratorControlProperties(srcFile, outputFilePath);
             gg.deleteGeneratedFile = true;
             processTemplateForGeneratorControl(templateModel, templateFile);
-            GLogger.println("[delete file] file:" + new File(gg.getOutputFile()).getAbsolutePath());
+            GLogger.info("[delete file] file:" + new File(gg.getOutputFile()).getAbsolutePath());
             new File(gg.getOutputFile()).delete();
         }
 
@@ -463,7 +470,7 @@ public class Generator {
 //                    return null;
 //                }
 //                if (!"true".equals(String.valueOf(expressionValue))) {
-//                    GLogger.println("[not-generate]\t test expression '@" + testExpressionKey
+//                    GLogger.info("[not-generate]\t test expression '@" + testExpressionKey
 //                            + "' is false,template:" + templateFile);
 //                    return null;
 //                }
@@ -504,13 +511,14 @@ public class Generator {
             }
             
             File absoluteOutputFilePath = FileHelper.parentMkdir(outputFilePath);
+            JavaType javaType =JavaType.getJavaType(absoluteOutputFilePath.getName());
             
             if (absoluteOutputFilePath.exists()) {
                 @Cleanup
                 StringWriter newFileContentCollector = new StringWriter();
                 if (GeneratorHelper.isFoundInsertLocation(gg, template, templateModel,
                         absoluteOutputFilePath, newFileContentCollector)) {
-                    GLogger.println("[insert]\t generate content into:" + outputFilePath);
+                    GLogger.info("[insert]\t generate content into:" + outputFilePath);
                     IOHelper.saveFile(absoluteOutputFilePath, newFileContentCollector.toString(),
                             gg.getOutputEncoding());
                     return;
@@ -518,20 +526,27 @@ public class Generator {
             }
 
             if (absoluteOutputFilePath.exists() && !gg.isOverride()) {
-                GLogger.println("[not generate]\t by gg.isOverride()=false and outputFile exist:"
+                GLogger.info("[not generate]\t by gg.isOverride()=false and outputFile exist:"
                         + outputFilePath);
                 return;
             }
 
             if (absoluteOutputFilePath.exists()) {
-                GLogger.println("[override] template:\n" + templateFile + "\n===> " + outputFilePath);
+                GLogger.info("[override] template:\n" + templateFile + "\n===> " + outputFilePath);
             } else {
-                GLogger.println("[generate] template:\n" + templateFile + "\n===> " + outputFilePath);
+                GLogger.info("[generate] template:\n" + templateFile + "\n===> " + outputFilePath);
             }
-            FmHelper.processTemplate(template, templateModel, absoluteOutputFilePath,
-                    gg.getOutputEncoding(),isTable, hasAtNotRelace);
+            FmHelper.processTemplate(template, templateModel, absoluteOutputFilePath,  gg.getOutputEncoding(),isTable, hasAtNotRelace,javaType);
+            
+            //把里面所的有service文件做个统计,javaParser
+            if (JavaType.isServiceFacade == javaType) {
+
+               FmHelper.parserDirAllJavaInterfaceMethodCount(absoluteOutputFilePath);
+            }
         }
     }
+    
+    
 
     static class GeneratorHelper {
 
@@ -542,11 +557,11 @@ public class Generator {
             if (templateFile.trim().equals(""))
                 return true;
             if (srcFile.getName().toLowerCase().endsWith(".include")) {
-                GLogger.println("[skip]\t\t endsWith '.include' template:" + templateFile);
+                GLogger.info("[skip]\t\t endsWith '.include' template:" + templateFile);
                 return true;
             }
             if (srcFile.getName().toLowerCase().endsWith(".include.ftl")) {
-                GLogger.println("[skip]\t\t endsWith '.include' template:" + templateFile);
+                GLogger.info("[skip]\t\t endsWith '.include' template:" + templateFile);
                 return true;
             }
             templateFile = templateFile.replace('\\', '/');

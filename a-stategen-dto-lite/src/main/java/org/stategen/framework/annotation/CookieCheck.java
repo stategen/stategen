@@ -25,7 +25,6 @@ import java.lang.annotation.Target;
 
 import org.stategen.framework.annotation.CookieCheck.List;
 import org.stategen.framework.lite.ICookieType;
-import org.stategen.framework.lite.IResponseStatus;
 
 /**
  * *
@@ -33,25 +32,30 @@ import org.stategen.framework.lite.IResponseStatus;
  *
  * @author XiaZhengsheng
  */
-@Target({ElementType.METHOD,ElementType.TYPE})
+@Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Repeatable(value=List.class)
-public @interface  CookieCheck {
+@Repeatable(value = List.class)
+public @interface CookieCheck {
+    
     /***cookieGroupClzs与cookieNames长度相等*/
-    Class<? extends ICookieType>  cookieTypeClz() ;
-    Class<? extends IResponseStatus> responseStatusClzOfCheckFail();
-    String cookieName() ;
+    Class<? extends ICookieType> cookieTypeClz();
+    
+    /***由cookieTypeClz找到枚举中的failResponse
+     ** @Deprecated Class<? extends IResponseStatus> responseStatusClzOfCheckFail();
+     */
+    String cookieName();
     
     /**
      * The Interface List.
      */
-    @Target({ElementType.METHOD,ElementType.TYPE})
+    @Target({ ElementType.METHOD, ElementType.TYPE })
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
     @Check
     @interface List {
+        
         CookieCheck[] value();
     }
-
+    
 }

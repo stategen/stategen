@@ -84,8 +84,8 @@ public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler imple
         return modelAndView;
     }
     
-    public void setResponseStatusClzOfException(Class<? extends IResponseStatus> responseStatusClzOfException) {
-        super.setResponseStatusClz(responseStatusClzOfException);
+    public <T extends Enum<T> & IResponseStatus> void setResponseStatusOfException(T responseStatusOfException) {
+        super.setResponseStatus(responseStatusOfException);
     }
     
     @Override

@@ -6,6 +6,7 @@ import java.util.Scanner;
 import cn.org.rapid_framework.generator.GeneratorFacade;
 import cn.org.rapid_framework.generator.GeneratorProperties;
 import cn.org.rapid_framework.generator.util.ArrayHelper;
+import cn.org.rapid_framework.generator.util.GLogger;
 import cn.org.rapid_framework.generator.util.StringHelper;
 import cn.org.rapid_framework.generator.util.SystemHelper;
 /**
@@ -24,7 +25,7 @@ public class CommandLine {
 
 	private static void startProcess() throws Exception {
 		Scanner sc = new Scanner(System.in);
-		System.out.println("templateRootDir:"+new File(getTemplateRootDir()).getAbsolutePath());
+        GLogger.info("templateRootDir:"+new File(getTemplateRootDir()).getAbsolutePath());
 		printUsages();
 		while(sc.hasNextLine()) {
 			try {
@@ -74,14 +75,14 @@ public class CommandLine {
 	}
 
 	private static void printUsages() {
-		System.out.println("Usage:");
-		System.out.println("\tgen table_name [include_path]: generate files by table_name");
-		System.out.println("\tdel table_name [include_path]: delete files by table_name");
-		System.out.println("\tgen * [include_path]: search database all tables and generate files");
-		System.out.println("\tdel * [include_path]: search database all tables and delete files");
-		System.out.println("\tquit : quit");
-		System.out.println("\t[include_path] subdir of templateRootDir,example: 1. dao  2. dao/**,service/**");
-		System.out.print("please input command:");
+        GLogger.info("Usage:\n"+
+		"\tgen table_name [include_path]: generate files by table_name\n"+
+		"\tdel table_name [include_path]: delete files by table_name\n"+
+		"\tgen * [include_path]: search database all tables and generate files\n"+
+		"\tdel * [include_path]: search database all tables and delete files\n"+
+		"\tquit : quit\n"+
+		"\t[include_path] subdir of templateRootDir,example: 1. dao  2. dao/**,service/**\n"+
+		"please input command:");
 	}
 	
 	private static String[] nextArguments(Scanner sc) {

@@ -31,8 +31,8 @@ public class MultiLocaleResolver extends CookieLocaleResolver{
     @Override
     public Locale resolveLocale(HttpServletRequest request) {
         Locale LocaleResolved = super.resolveLocale(request);
-        if (logger.isInfoEnabled()) {
-            logger.info(new StringBuilder("输出info信息: LocaleResolved:").append(LocaleResolved).toString());
+        if (logger.isDebugEnabled()) {
+            logger.debug(new StringBuilder("输出info信息: LocaleResolved:").append(LocaleResolved).toString());
         }
         return LocaleResolved;
     }

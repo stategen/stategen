@@ -6,7 +6,7 @@
     <groupId>org.stategen.framework</groupId>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>stategen-parent</artifactId>
-    <version>stg.2.2.2.RELEASE</version>
+    <version>stg.2.2.3.RELEASE</version>
     <packaging>pom</packaging>
     <name>a_stategen-parent</name>
     <description>spring+springmvc+mybatis|ibatis+apache.dubbo framework with gernerator and dev generator</description>
@@ -15,12 +15,15 @@
 
     <properties>
         <!-- 当项目转会为spring-boot后，这个值必须与spring-boot内的值相同，否则会有兼容问题 -->
-        <spring.version>5.1.10.RELEASE</spring.version>
+        <spring.version>5.2.3.RELEASE</spring.version>
         <spring-data-redis-version>2.1.10.RELEASE</spring-data-redis-version>
 
-        <swagger.springfox.verion>2.4.0</swagger.springfox.verion>
-        <stategen-version>stg.2.2.2.RELEASE</stategen-version>
-        <spring-orm-version>3.1.4.RELEASE</spring-orm-version>
+        <!-- <swagger.springfox.version>2.10.5</swagger.springfox.version> -->
+        <!-- <swagger.springfox.version>2.9.2</swagger.springfox.version> -->
+        <swagger.springfox.version>2.4.0</swagger.springfox.version>
+
+        <swagger-annotations-version>1.5.20</swagger-annotations-version>
+        <stategen-version>stg.2.2.3.RELEASE</stategen-version>
 
         <DI-tbSchedule-version>3.3.3.2</DI-tbSchedule-version>
 
@@ -34,7 +37,6 @@
         <spring.boot.version>2.1.9.RELEASE</spring.boot.version>
         <mybatis2.version>2.4.4</mybatis2.version>
         <mybatis.version>3.5.3</mybatis.version>
-        <spring-data-redis-version>2.1.10.RELEASE</spring-data-redis-version>
 
 
         <!-- 文件拷贝时的编码 -->
@@ -42,6 +44,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- 编译时的编码 -->
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <licenses>
@@ -85,6 +88,7 @@
         <module>DISchedule</module>
         <!-- 不发布到maven仓库 -->
         <module>DISchedule/src</module>
+        <module>j-layers</module>
     </modules>
 
     <dependencies>
@@ -92,8 +96,15 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.4</version>
+            <scope>compile</scope>
             <optional>true</optional>
-            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.5</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -112,29 +123,98 @@
                 <version>${fastjson-version}</version>
                 <scope>provided</scope>
             </dependency>
+
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger-annotations-version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-common</artifactId>
+                <version>${swagger.springfox.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-aop</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger.springfox.version}</version>
+                <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-aop</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.swagger</groupId>
+                        <artifactId>swagger-annotations</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-    
-    <distributionManagement>
-    
-<!--         <repository>
-            <id>thirdparty</id>
-            <url>http://nexus:8081/content/repositories/thirdparty/</url>
-        </repository>
-        
-         -->
-         <snapshotRepository>
-            <id>oss</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
 
-        <repository>
-            <id>oss</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-        
+
     <profiles>
+        <!--开发和测试 -->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <repository.id>dev</repository.id>
+                <repository.name>dev Repository</repository.name>
+                <repository.url>http://nexus:8081/content/repositories/thirdparty/</repository.url>
+            </properties>
+        </profile>
+
+        <!--正式 -->
+        <profile>
+            <id>oss</id>
+            <properties>
+                <repository.id>oss</repository.id>
+                <repository.name>oss Repository</repository.name>
+                <repository.url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</repository.url>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <profile>
             <id>disable-javadoc-doclint</id>
             <activation>
@@ -145,6 +225,15 @@
             </properties>
         </profile>
     </profiles>
+    <distributionManagement>
+        <repository>
+            <!--suppress UnresolvedMavenProperty -->
+            <id>${repository.id}</id>
+            <url>${repository.url}</url>
+            <name>${repository.name}</name>
+            <layout>default</layout>
+        </repository>
+    </distributionManagement>
 
     <build>
         <pluginManagement>
@@ -154,6 +243,7 @@
                     <configuration>
                         <source>1.8</source>
                         <target>1.8</target>
+                        <encoding>UTF-8</encoding>
                     </configuration>
                 </plugin>
 
@@ -204,7 +294,7 @@
                         <doclint>none</doclint>
                         <additionalparam>${javadoc.opts}</additionalparam>
                         <aggregate>true</aggregate>
-                        <show>public</show><!--在哪里设置访问级别就OK了-->
+                        <show>public</show><!--在哪里设置访问级别就OK了 -->
                     </configuration>
                 </plugin>
 
@@ -239,15 +329,26 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok-maven-plugin</artifactId>
             </plugin>
-
-            <plugin>
+            <!-- 以下2个插件地profile内 -->
+            <!-- <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
+                </plugin>
 
-            <plugin>
+                <plugin>
                 <artifactId>maven-gpg-plugin</artifactId>
-            </plugin>
+                </plugin> -->
 
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 </project>

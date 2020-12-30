@@ -256,7 +256,7 @@ public class TableFactory {
             } catch (SQLException e) {
                 throw new RuntimeException("create table object error,tableName:" + tableName, e);
             } finally {
-                GLogger.perf("createTable() cost:" + (System.currentTimeMillis() - start) + " tableName:" + tableName);
+                GLogger.trace("createTable() cost:" + (System.currentTimeMillis() - start) + " tableName:" + tableName);
             }
         }
         

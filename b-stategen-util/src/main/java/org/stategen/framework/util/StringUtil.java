@@ -42,6 +42,13 @@ public class StringUtil {
     public static final String emptyString = "";
     public static final String UTF_8       = "utf-8";
 
+
+    public static void logInfo(Object o){
+        if (logger.isInfoEnabled()) {
+            logger.info(o != null ? o.toString() : "null");
+        }
+    }
+
     /**
      * Equals.
      *

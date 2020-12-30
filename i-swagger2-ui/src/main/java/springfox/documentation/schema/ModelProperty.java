@@ -19,9 +19,10 @@
 
 package springfox.documentation.schema;
 
+import java.util.Optional;
+import java.util.function.Function;
+
 import com.fasterxml.classmate.ResolvedType;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 
 import springfox.documentation.service.AllowableValues;
 
@@ -92,7 +93,7 @@ public class ModelProperty {
   public String getDescription() {
       //枚举中的描述 
       if (enumDesc==null){
-          enumDesc=Optional.fromNullable(EnumUtil.getDescIfIsEnum(type)).or("");
+          enumDesc=Optional.ofNullable(EnumUtil.getDescIfIsEnum(type)).orElse("");
       }
       if (enumDesc==null){
           return description;

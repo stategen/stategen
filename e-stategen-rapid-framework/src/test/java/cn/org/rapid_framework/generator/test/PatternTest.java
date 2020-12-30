@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
+import cn.org.rapid_framework.generator.util.GLogger;
 import cn.org.rapid_framework.generator.util.StringHelper;
 
 public class PatternTest {
@@ -41,7 +42,7 @@ public class PatternTest {
             m.appendReplacement(sb, replacedSegment);
         }
         m.appendTail(sb);
-        System.out.println(sb.toString());
+        GLogger.info(sb.toString());
     }
 
 
@@ -65,7 +66,7 @@ public class PatternTest {
                 sb.append(StringHelper.getJavaClassSimpleName(subname));
             }
         }
-        System.out.println(sb.toString());
+        GLogger.info(sb.toString());
     }
 //    @Test
     public void testMax(){
@@ -77,19 +78,19 @@ public class PatternTest {
                 
         Pattern compile = Pattern.compile("//\\s*@Max",   Pattern.DOTALL);
         Matcher matcher = compile.matcher(maxAnno);
-        System.out.println("matcher.end()<===========>:" + matcher.find());
+        GLogger.info("matcher.end()<===========>:" + matcher.find());
         
         compile = Pattern.compile("//\\s*@Id",   Pattern.DOTALL);
         matcher = compile.matcher(maxAnno);
-        System.out.println("matcher.end()<===========>:" + matcher.find());
+        GLogger.info("matcher.end()<===========>:" + matcher.find());
         
         compile = Pattern.compile("!@Id",   Pattern.DOTALL);
         matcher = compile.matcher(maxAnno);
-        System.out.println("matcher.end()<===========>:" + matcher.find());
+        GLogger.info("matcher.end()<===========>:" + matcher.find());
         
         compile = Pattern.compile("!@Max",   Pattern.DOTALL);
         matcher = compile.matcher(maxAnno);
-        System.out.println("matcher.end()<===========>:" + matcher.find());
+        GLogger.info("matcher.end()<===========>:" + matcher.find());
         
     }
     
@@ -98,9 +99,6 @@ public class PatternTest {
         String str ="abcdesfg";
         StringBuffer sb1=new StringBuffer().append(str.substring(1));
         StringBuffer sb2=new StringBuffer().append(str,1,str.length());
-        System.out.println(sb1.toString()+"<===========>:" + sb2.toString());
-        
-        System.out.println('0'<'9');
-        
+        GLogger.info(sb1.toString()+"<===========>:" + sb2.toString());
     }
 }

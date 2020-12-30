@@ -10,7 +10,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.stategen.framework.util.CollectionUtil;
-import org.stategen.framework.util.OSUtil;
 
 import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.LoggerContext;
@@ -143,7 +142,11 @@ public class ContextInitializer {
             }
             sm.add(new InfoStatus(applicationPropertiesPath+" 文件中键："+logback_config_xml_key+" 值为:"+logbackFile, loggerContext) );
 
-            logbackFile = OSUtil.getRealUriPathByOs(logbackFile);
+            //logbackFile = OSUtil.getRealUriPathByOs(logbackFile);
+            String filePre ="file:/";
+            if (logbackFile.startsWith(filePre+"/")) {
+                logbackFile =logbackFile.replace(filePre+"/", filePre);
+            }
             sm.add(new InfoStatus("Found logback configration :"+logbackFile, loggerContext) );
             sm.add(new InfoStatus("加载真正的Logback配置文件:"+logbackFile, loggerContext));
             URL url = new URL(logbackFile);

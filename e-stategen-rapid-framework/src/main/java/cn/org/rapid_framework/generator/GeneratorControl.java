@@ -139,12 +139,12 @@ public class GeneratorControl {
             }
             
             if(deleteGeneratedFile) {
-                GLogger.println("[delete gg.generateFile()] file:"+realOutputFile+" by template:"+getSourceFile());
+                 GLogger.info("[delete gg.generateFile()] file:"+realOutputFile+" by template:"+getSourceFile());
                 new File(realOutputFile).delete();
             }else {
                 File file = new File(realOutputFile);
                 FileHelper.parentMkdir(file);
-                GLogger.println("[gg.generateFile()] outputFile:"+realOutputFile+" append:"+append+" by template:"+getSourceFile());
+                 GLogger.info("[gg.generateFile()] outputFile:"+realOutputFile+" append:"+append+" by template:"+getSourceFile());
                 IOHelper.saveFile(file, content,getOutputEncoding(),append);
             }
         } catch (Exception e) {

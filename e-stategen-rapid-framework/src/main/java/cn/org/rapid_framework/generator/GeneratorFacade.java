@@ -43,7 +43,6 @@ import cn.org.rapid_framework.generator.util.BeanHelper;
 import cn.org.rapid_framework.generator.util.ClassHelper;
 import cn.org.rapid_framework.generator.util.GLogger;
 import cn.org.rapid_framework.generator.util.GeneratorException;
-
 import lombok.Cleanup;
 
 /**
@@ -349,28 +348,26 @@ public class GeneratorFacade {
                         e.printStackTrace();
                     e.printStackTrace(output);
                 }
-                System.err
-                        .println("***************************************************************");
-                System.err.println("* " + "* 输出目录已经生成generator_error.log用于查看错误 ");
-                System.err
-                        .println("***************************************************************");
+                GLogger.error("***************************************************************\n"+
+                              "* " + "* 输出目录已经生成generator_error.log用于查看错误 \n"+
+                              "***************************************************************");
             }
         }
 
         private static void printBeginProcess(String displayText, boolean isDatele) {
-            GLogger.println("***************************************************************");
-            GLogger.println("* BEGIN " + (isDatele ? " delete by " : " generate by ") + displayText);
-            GLogger.println("***************************************************************");
+             GLogger.info("***************************************************************");
+             GLogger.info("* BEGIN " + (isDatele ? " delete by " : " generate by ") + displayText);
+             GLogger.info("***************************************************************");
         }
 
         public static void printAllTableNames(List<Table> tables) throws Exception {
-            GLogger.println("\n----All TableNames BEGIN----");
+             GLogger.info("\n----All TableNames BEGIN----");
             int tablesSize = tables.size();
             for (int i = 0; i < tablesSize; i++) {
                 String sqlName = ((Table) tables.get(i)).getSqlName();
-                GLogger.println(sqlName);
+                 GLogger.info(sqlName);
             }
-            GLogger.println("----All TableNames END----");
+             GLogger.info("----All TableNames END----");
         }
     }
 

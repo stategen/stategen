@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.GenericFilterBean;
 import org.stategen.framework.spring.util.RequestUtil;
-import org.stategen.framework.util.NumberUtil;
 import org.stategen.framework.util.ThreadLocalUtil;
 import org.stategen.framework.web.cookie.AntiCookieFakeResponseWrapper;
 import org.stategen.framework.web.cookie.ServletContextUtil;
@@ -74,14 +73,13 @@ public class MultiFilter extends GenericFilterBean {
                 httpServletResponse.filterRequestCookies();
                 //前后将线程池中的refMap设为null
         
-                //DDOS防范
-                if (NumberUtil.isGreatZero(Configration.MAX_REQUEST_PER_IP_SECOND)) {
-                    //该实现可以减少恶意的大批量的访问请求，暂时没实现该功能
-                }
+                /*
+                 * //DDOS防范 TODO if (NumberUtil.isGreatZero(Configration.MAX_REQUEST_PER_IP_SECOND)) { //该实现可以减少恶意的大批量的访问请求，暂时没实现该功能 }
+                 */
         
                 //cookie或令牌伪造，生成的都是json
                 boolean passed =httpServletResponse.checkTokens();              
-                if (!passed) {
+                if (passed==false) {
                     if (logger.isDebugEnabled()) {
                         logger.debug(new StringBuilder(requestMapping).append("被拦截").toString());
                     }

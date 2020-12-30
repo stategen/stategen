@@ -1,0 +1,124 @@
+/*
+ *
+ *  Copyright 2015-2019 the original author or authors.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *
+ */
+
+package springfox.documentation.swagger.readers.parameter;
+
+import static com.google.common.base.Strings.emptyToNull;
+import static org.springframework.util.StringUtils.isEmpty;
+import static springfox.documentation.swagger.common.SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER;
+import static springfox.documentation.swagger.common.SwaggerPluginSupport.pluginDoesApply;
+import static springfox.documentation.swagger.readers.parameter.Examples.examples;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+import org.stategen.framework.util.StringUtil;
+
+import com.fasterxml.classmate.ResolvedType;
+import com.google.common.base.Optional;
+
+import io.swagger.annotations.ApiParam;
+import springfox.documentation.schema.Collections;
+import springfox.documentation.schema.EnumUtil;
+import springfox.documentation.schema.Enums;
+import springfox.documentation.schema.Example;
+import springfox.documentation.service.AllowableValues;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.schema.EnumTypeDeterminer;
+import springfox.documentation.spi.service.ParameterBuilderPlugin;
+import springfox.documentation.spi.service.contexts.ParameterContext;
+import springfox.documentation.spring.web.DescriptionResolver;
+import springfox.documentation.swagger.schema.ApiModelProperties;
+
+@Component("swaggerParameterDescriptionReader")
+@Order(SWAGGER_PLUGIN_ORDER)
+public class ApiParamParameterBuilder implements ParameterBuilderPlugin {
+  private final DescriptionResolver descriptions;
+  private final EnumTypeDeterminer enumTypeDeterminer;
+
+  @Autowired
+  public ApiParamParameterBuilder(
+      DescriptionResolver descriptions,
+      EnumTypeDeterminer enumTypeDeterminer) {
+    this.descriptions = descriptions;
+    this.enumTypeDeterminer = enumTypeDeterminer;
+  }
+  
+//  private static String emptyToNull(String value) {
+//      String result = ofNullable(value)
+//      .filter(((Predicate<String>) String::isEmpty).negate())
+//      .orElse(null);
+//      return result;
+//  }
+
+  @Override
+  public void apply(ParameterContext context) {
+    Optional<ApiParam> apiParam = context.resolvedMethodParameter().findAnnotation(ApiParam.class);
+    context.parameterBuilder()
+        .allowableValues(allowableValues(
+            context.alternateFor(context.resolvedMethodParameter().getParameterType()),
+            apiParam.transform(ApiParam::allowableValues).or("")));
+    if (apiParam.isPresent()) {
+       ApiParam annotation = apiParam.get();
+       /***枚举中的描述 xia*/  
+       Optional<ResolvedType> typeOptional = context.parameterBuilder().build().getType();
+       ResolvedType resolvedType = typeOptional.get();
+       String enumDescs = EnumUtil.getDescIfIsEnum(resolvedType);
+       String descr = emptyToNull(descriptions.resolve(annotation.value()));
+       
+       if (StringUtil.isNotEmpty(enumDescs)){
+           descr =descr+":"+enumDescs;
+       }
+       /***枚举中的描述 xia 结束*/
+      
+      context.parameterBuilder().name(emptyToNull(annotation.name()))
+          .description(descr)
+          .parameterAccess(emptyToNull(annotation.access()))
+          .defaultValue(emptyToNull(annotation.defaultValue()))
+          .allowMultiple(annotation.allowMultiple())
+          .allowEmptyValue(annotation.allowEmptyValue())
+          .required(annotation.required())
+          .scalarExample(new Example(annotation.example()))
+          .complexExamples(examples(annotation.examples()))
+          .hidden(annotation.hidden())
+          .collectionFormat(annotation.collectionFormat())
+          .order(SWAGGER_PLUGIN_ORDER);
+    }
+  }
+
+  private AllowableValues allowableValues(ResolvedType parameterType, String allowableValueString) {
+    AllowableValues allowableValues = null;
+    if (!isEmpty(allowableValueString)) {
+      allowableValues = ApiModelProperties.allowableValueFromString(allowableValueString);
+    } else {
+      if (enumTypeDeterminer.isEnum(parameterType.getErasedType())) {
+        allowableValues = Enums.allowableValues(parameterType.getErasedType());
+      }
+      if (Collections.isContainerType(parameterType)) {
+        allowableValues = Enums.allowableValues(Collections.collectionElementType(parameterType).getErasedType());
+      }
+    }
+    return allowableValues;
+  }
+
+  @Override
+  public boolean supports(DocumentationType delimiter) {
+    return pluginDoesApply(delimiter);
+  }
+}
