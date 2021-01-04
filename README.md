@@ -428,9 +428,9 @@ mybatis2|ibatis:
         a.address =#address#
     </isNotEmpty>
 ```   
-mybatis3: （@org.stategen.Util@isNotEmpty可以gen_config.xml自由配置其它判空函数）
+mybatis3: （@util.Check@isNotEmpty可以gen_config.xml自由配置其它判空函数）
 ```xml
-    <if test="address != null and @org.stategen.Util@isNotEmpty(address)">
+    <if test="address != null and @util.Check@isNotEmpty(address)">
         and a.address =#{address}
     </if>
 ```
@@ -454,7 +454,7 @@ mybatis2|ibatis:
 ```   
 mybatis3:
 ```xml
-    <if test="mobiles != null and @org.stategen.Util@isNotEmpty(mobiles)">
+    <if test="mobiles != null and @util.Check@isNotEmpty(mobiles)">
         and a.mobile in 
         <foreach collection="mobiles" item="item" separator="," close=")" open="(">
             #{item}

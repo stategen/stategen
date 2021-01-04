@@ -82,14 +82,14 @@ public class IbatisXmlToMybatis {
         
         Properties properties = GeneratorProperties.getProperties();
         /*
-         * <entry key="mybatis_isNotEmpty">@org.stategen.Util@isNotEmpty</entry> <entry
-         * key="mybatis_isEmpty">@org.stategen.Util@isEmpty</entry>
+         * <entry key="mybatis_isNotEmpty">@util.Check@isNotEmpty</entry> <entry
+         * key="mybatis_isEmpty">@util.Check@isEmpty</entry>
          */
         String mybatis_isNotEmpty = "mybatis_isNotEmpty";
         String mybatis_isEmpty    = "mybatis_isEmpty";
         
-        String mybatis_isNotEmptyV = properties.getProperty(mybatis_isNotEmpty, "@org.stategen.Util@isNotEmpty");
-        String mybatis_isEmptyV    = properties.getProperty(mybatis_isEmpty, "@org.stategen.Util@isEmpty");
+        String mybatis_isNotEmptyV = properties.getProperty(mybatis_isNotEmpty, "@util.Check@isNotEmpty");
+        String mybatis_isEmptyV    = properties.getProperty(mybatis_isEmpty, "@util.Check@isEmpty");
         migrateText = migrateText.replace("${" + mybatis_isNotEmpty + "}", mybatis_isNotEmptyV);
         migrateText = migrateText.replace("${" + mybatis_isEmpty + "}", mybatis_isEmptyV);
         return migrateText;
