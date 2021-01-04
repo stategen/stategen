@@ -6,7 +6,7 @@
     <groupId>org.stategen.framework</groupId>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>stategen-parent</artifactId>
-    <version>stg.2.2.3.RELEASE</version>
+    <version>stg.2.3.0.RELEASE</version>
     <packaging>pom</packaging>
     <name>a_stategen-parent</name>
     <description>spring+springmvc+mybatis|ibatis+apache.dubbo framework with gernerator and dev generator</description>
@@ -14,6 +14,7 @@
     <url>https://github.com/stategen</url>
 
     <properties>
+            
         <!-- 当项目转会为spring-boot后，这个值必须与spring-boot内的值相同，否则会有兼容问题 -->
         <spring.version>5.2.3.RELEASE</spring.version>
         <spring-data-redis-version>2.1.10.RELEASE</spring-data-redis-version>
@@ -23,7 +24,7 @@
         <swagger.springfox.version>2.4.0</swagger.springfox.version>
 
         <swagger-annotations-version>1.5.20</swagger-annotations-version>
-        <stategen-version>stg.2.2.3.RELEASE</stategen-version>
+        <stategen-version>stg.2.3.0.RELEASE</stategen-version>
 
         <DI-tbSchedule-version>3.3.3.2</DI-tbSchedule-version>
 
@@ -45,6 +46,13 @@
         <!-- 编译时的编码 -->
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <maven.compiler.target>1.8</maven.compiler.target>
+        
+        <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
+        <sentinel.version>1.8.0</sentinel.version>
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+        <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
+        <!-- 解决eclipse中第一行报错 error line 1 -->
+        <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>          
     </properties>
 
     <licenses>

@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.stategen.framework.layers</groupId>
         <artifactId>stategen-layers-parent-pom</artifactId>
-        <version>stg.2.2.3.RELEASE</version>
+        <version>stgp.1.0-stg.2.3.0.RELEASE</version>
         <relativePath>../</relativePath>
     </parent>
 
@@ -48,10 +48,10 @@
             <artifactId>gson</artifactId>
         </dependency>
 
-<!--         <dependency>
+        <!-- <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
-        </dependency> -->
+            </dependency> -->
 
         <dependency>
             <groupId>joda-time</groupId>
@@ -63,10 +63,10 @@
             <artifactId>guava</artifactId>
         </dependency>
 
-<!--         <dependency>
+        <!-- <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
-        </dependency> -->
+            </dependency> -->
 
         <dependency>
             <groupId>org.apache.lucene</groupId>
@@ -97,15 +97,48 @@
             <groupId>de.javakaffee</groupId>
             <artifactId>kryo-serializers</artifactId>
         </dependency>
-        
-       <!-- 百度uidgenerator 唯一ID生成器
-             这个jar包maven仓库里面没有上传，需要自己把源码拉下来本地打包
-             源码地址：https://github.com/baidu/uid-generator 
-             再把Snapshort改成RELEASE,当然你可以用其它生成器-->
+
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-spring-boot-starter</artifactId>
+            <version>${seata.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-spring-boot-starter</artifactId>
+             <version>${seata.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-webmvc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-beans</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-aop</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- 百度uidgenerator 唯一ID生成器
+            这个jar包maven仓库里面没有上传，需要自己把源码拉下来本地打包
+            源码地址：https://github.com/baidu/uid-generator
+            再把Snapshort改成RELEASE,当然你可以用其它生成器 -->
         <dependency>
             <groupId>com.baidu.fsg</groupId>
             <artifactId>uid-generator</artifactId>
-        </dependency>    
+        </dependency>
 
     </dependencies>
 

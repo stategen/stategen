@@ -32,6 +32,7 @@ import org.stategen.framework.generator.util.GenProperties;
 import org.stategen.framework.generator.util.PropertiesHelpers;
 import org.stategen.framework.spring.mvc.ResponseBodyAdviceWrapper;
 import org.stategen.framework.util.CollectionUtil;
+import org.stategen.framework.util.StringUtil;
 
 import freemarker.template.TemplateException;
 
@@ -59,9 +60,11 @@ public class BaseGenFacadeProcessor {
         
         Properties appProperties = PropertiesHelpers.load(GenProperties.projectPath+"/src/main/resources/application.properties");
         
-        Object projectName = appProperties.get("project.name");
+        String projectName = appProperties.getProperty("project.name");
         mergedPros.put("projectName", projectName);
-        
+
+        putAppName(mergedPros, projectName);
+
         mergedPros.putAll(GenContext.Properties);
         
         GenContext.tempRootPath=GenProperties.dir_templates_root;
@@ -98,7 +101,12 @@ public class BaseGenFacadeProcessor {
         }
         facadeGenerator.genFacades(allcClasses, mergedPros);
     }
-    
+
+    private void putAppName(Properties mergedPros, String projectName) {
+        String systemName = mergedPros.getProperty("systemName");
+        String appName = StringUtil.capfirst(systemName)+StringUtil.capfirst(projectName);
+        mergedPros.put("appName", appName);
+    }
 
 
 }

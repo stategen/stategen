@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.stategen.framework.layers</groupId>
         <artifactId>stategen-layers-parent-pom</artifactId>
-        <version>stg.2.2.3.RELEASE</version>
+        <version>stgp.1.0-stg.2.3.0.RELEASE</version>
         <relativePath>../</relativePath>
     </parent>
 
@@ -125,7 +125,7 @@
         <!-- <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-        </dependency> -->
+            </dependency> -->
 
         <dependency>
             <groupId>commons-beanutils</groupId>
@@ -254,6 +254,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+
         <!-- Spring Boot End -->
 
         <!-- Spring Cloud Begin -->

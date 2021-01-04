@@ -42,7 +42,8 @@ public class BaseProgen {
     final static Logger logger = LoggerFactory.getLogger(BaseProgen.class);
     
     static String   APPEND_TAG_DO_NOT_CHANGE = "<!--APPEND_TAG_DO_NOT_CHANGE-->";
-    
+    static String   APPEND_TAG_DO_NOT_CHANGE_REG = "\\s*<\\!--\\s*APPEND_TAG_DO_NOT_CHANGE\\s*-->";
+
     static String[] springbootForReplaces    = { "springboot_import", "springboot_dependencies", "springboot_plugin" };
     
     static String springboot_import       = "<!-- springboot_import -->";
@@ -114,6 +115,8 @@ public class BaseProgen {
     public void project() throws IOException, TemplateException, DocumentException {
         Properties root = getRootProperties();
         GenProperties.projectName = System.getProperty("projectName");
+
+        putAppName(root,GenProperties.projectName);
         
         root.putAll(StringHelper.getDirValuesMap((Map)root));
         
@@ -167,15 +170,16 @@ public class BaseProgen {
         
         if (!pomToReplaceFileOldExists) {
             String mavenPluginExcutionText = IOHelpers.readFile(new File(pomToReplaceFileName), StringUtil.UTF_8);
-            mavenPluginExcutionText += "\n                    " + APPEND_TAG_DO_NOT_CHANGE;
+            mavenPluginExcutionText += "\n                            " + APPEND_TAG_DO_NOT_CHANGE;
             
             String projectPomXml  = StringUtil.concatPath(currentProjectPath, "pom.xml");
             String projectPomText = IOHelpers.readFile(new File(projectPomXml), StringUtil.UTF_8);
-            projectPomText = projectPomText.replace(APPEND_TAG_DO_NOT_CHANGE, mavenPluginExcutionText);
+            projectPomText = projectPomText.replaceFirst(APPEND_TAG_DO_NOT_CHANGE_REG, mavenPluginExcutionText);
             IOHelpers.saveFile(new File(projectPomXml), projectPomText, StringUtil.UTF_8);
         }
     }
-    
+
+
     protected String processProjectFolder(Properties root, String commandName) {
         String projectFolderName = StringUtil.trimLeftFormRightTo(GenProperties.cmdPath, StringUtil.SLASH);
         String projectFrefix     = "7-" + GenProperties.systemName + "-web-";
@@ -183,10 +187,20 @@ public class BaseProgen {
                 commandName + " 命令必须在" + "7-" + GenProperties.systemName + "-web-xxx 执行");
         
         GenProperties.projectName = StringUtil.trimePrefixIgnoreCase(projectFolderName, projectFrefix);
-        root.put("projectName", GenProperties.projectName);
+        String projectName =GenProperties.projectName;
+        root.put("projectName", projectName);
+
+        putAppName(root, projectName);
+
         return projectFolderName;
     }
-    
+
+    private void putAppName(Properties root, String projectName) {
+        String systemName = root.getProperty("systemName");
+        String appName = StringUtil.capfirst(systemName)+StringUtil.capfirst(projectName);
+        root.put("appName", appName);
+    }
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void boot() throws IOException, TemplateException {
         Properties root = getRootProperties();
