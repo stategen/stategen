@@ -11,10 +11,10 @@
     </parent>
 
     <groupId>org.stategen.framework.layers</groupId>
-    <artifactId>stategen-layers-parent-pom</artifactId>
+    <artifactId>stategen-layer-parent-pom</artifactId>
     <version>stgp.1.0-stg.2.3.0.RELEASE</version>
     <packaging>pom</packaging>
-    <name>j-0-stategen-layers-parent-pom</name>
+    <name>j-0-stategen-layer-parent-pom</name>
 
     <modules>
         <module>1-pojo</module>

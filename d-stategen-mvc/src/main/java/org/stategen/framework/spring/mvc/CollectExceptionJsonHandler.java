@@ -13,6 +13,7 @@
 package org.stategen.framework.spring.mvc;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 
 import javax.org.stategen.framework.lite.BaseBusinessException;
 import javax.servlet.http.HttpServletRequest;
@@ -46,13 +47,30 @@ public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler imple
             Exception ex) {
         String        failMessage = ex.getMessage();
         StringBuilder sb          = new StringBuilder(httpServletRequest.getRequestURI()).append(" ");
+        Throwable throwable =ex;
         if (ex instanceof BaseBusinessException) {
-            logger.error(sb.append("业务异常：").append("\n").append(failMessage).toString(), ex);
+            sb.append("业务异常：").append("\n").append(failMessage);
+        } else if (ex instanceof UndeclaredThrowableException) {
+            //sentinel没有配置 handleException时，被拦截
+            //1.查看SentinelResource是否家配置msg
+            throwable = ((UndeclaredThrowableException) ex).getUndeclaredThrowable();
+            String blockMsg = throwable.getMessage();
+            if (StringUtil.isEmpty(blockMsg)) {
+                //从缓存中拿,这个消息是 配置 bean SentinelBlockHandler 后才有的
+                blockMsg = ResponseUtil.BLOCK_MAP.get(throwable.getClass());
+            }
+            
+            if (StringUtil.isNotEmpty(blockMsg)) {
+                failMessage =blockMsg;
+            }
+            
+            sb.append("请求截获一个限流异常:").append("\n").append(failMessage).append(" ").append(ex.getMessage());
+            
         } else {
-            logger.error(
-                    sb.append("请求产生了一个错误:").append("\n").append(failMessage).append(" ").append(ex.getMessage()).append(" \n").toString(),
-                    ex);
+            sb.append("请求产生了一个错误:").append("\n").append(failMessage).append(" ").append(ex.getMessage()).append(" \n");
         }
+        
+        logger.error(sb.toString(), ex);
         
         ModelAndView modelAndView = new ModelAndView();
         if (!(handler instanceof HandlerMethod)) {
@@ -69,7 +87,7 @@ public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler imple
             ResponseBody responseBodyAnno = AnnotationUtil.getMethodOrOwnerAnnotation(method, ResponseBody.class);
             if (responseBodyAnno != null) {
                 BaseResponse<?> errorResponse = ResponseUtil.buildResponse(null, errorResponseStatus);
-                errorResponse.setExeptionClass(ex.getClass().getSimpleName());
+                errorResponse.setExeptionClass(throwable.getClass().getSimpleName());
                 errorResponse.setMessage(failMessage);
                 httpServletResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
                 boolean supportMethod = ResponseBodyAdviceWrapper.supportMethod(method);

@@ -40,12 +40,12 @@
             <scope>provided</scope>
         </dependency>
 
-<!--         <dependency>
+        <!-- <dependency>
             <groupId>org.stategen.framework</groupId>
             <artifactId>stategen-logback</artifactId>
             <version>${stategen-version}</version>
             <scope>provided</scope>
-        </dependency> -->
+            </dependency> -->
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -81,13 +81,13 @@
             <scope>provided</scope>
         </dependency>
 
-        
+
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-common</artifactId>
@@ -105,6 +105,20 @@
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>1.0.16</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-spring-webmvc-adapter</artifactId>
+            <version>${sentinel.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-parameter-flow-control</artifactId>
+            <version>${sentinel.version}</version>
             <scope>provided</scope>
         </dependency>
 

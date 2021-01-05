@@ -5,15 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.stategen.framework.layers</groupId>
-        <artifactId>stategen-layers-parent-pom</artifactId>
+        <artifactId>stategen-layer-parent-pom</artifactId>
         <version>stgp.1.0-stg.2.3.0.RELEASE</version>
         <relativePath>../</relativePath>
     </parent>
 
 
-    <artifactId>stategen-layers-pojo-pom</artifactId>
+    <artifactId>stategen-layer-pojo-pom</artifactId>
     <packaging>pom</packaging>
-    <name>j-1-stategen-layers-pojo-pom</name>
+    <name>j-1-stategen-layer-pojo-pom</name>
 
     <dependencies>
         <dependency>

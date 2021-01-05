@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.stategen.framework.layers</groupId>
-        <artifactId>stategen-layers-parent-pom</artifactId>
+        <artifactId>stategen-layer-parent-pom</artifactId>
         <version>stgp.1.0-stg.2.3.0.RELEASE</version>
         <relativePath>../</relativePath>
     </parent>
 
-    <artifactId>stategen-layers-intergrade-pom</artifactId>
+    <artifactId>stategen-layer-intergrade-pom</artifactId>
     <packaging>pom</packaging>
-    <name>j-3-stategen-layers-intergrade-pom</name>
+    <name>j-3-stategen-layer-intergrade-pom</name>
 
 
     <dependencies>

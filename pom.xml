@@ -38,6 +38,7 @@
         <spring.boot.version>2.1.9.RELEASE</spring.boot.version>
         <mybatis2.version>2.4.4</mybatis2.version>
         <mybatis.version>3.5.3</mybatis.version>
+        <sentinel.version>1.8.0</sentinel.version>
 
 
         <!-- 文件拷贝时的编码 -->

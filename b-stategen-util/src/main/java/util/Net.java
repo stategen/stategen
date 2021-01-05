@@ -30,7 +30,7 @@ public class Net {
             bindPort(InetAddress.getLocalHost().getHostAddress(), port);
             return true;
         } catch (Exception e) {
-            log.info("Port can't use!", "" + port);
+            log.error("Port can't use!", "" + port);
         }
         return false;
     }
@@ -39,12 +39,15 @@ public class Net {
         int s = start < end ? start : end;
         int e = start > end ? start : end;
         
-        for (int i = s; i < e; i++) {
-            if (isPortAvailable(i)) {
-                return i;
+        for (int port = s; port < e; port++) {
+            if (isPortAvailable(port)) {
+                if (log.isInfoEnabled()) {
+                    log.info(new StringBuilder("port:").append(port).append(" will be selected as a free port").toString());
+                }
+                return port;
             }
         }
-        AssertUtil.throwException(String.format("从{}开始查找,没有可用的随机端口", start));
+        AssertUtil.throwException(String.format("no port is free from %d to %d", start, end));
         return -1;
     }
     

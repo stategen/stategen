@@ -203,6 +203,7 @@ public class BaseProgen {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void boot() throws IOException, TemplateException {
+        AssertUtil.throwException("现在的StateGen就是一个Springboot+springcloud+alibaba项目，支持war和jar两种打包形式，不需要再转换");
         Properties root = getRootProperties();
         root.putAll(StringHelper.getDirValuesMap((Map)root));
 
