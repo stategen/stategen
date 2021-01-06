@@ -122,7 +122,7 @@ public class ResponseBodyAdviceWrapper extends ResponseStatusTypeHandler impleme
                 return needWrapFlag;
             }
             
-            boolean exclude = wrapAnno.exclude();
+            boolean exclude = wrapAnno.value() == false;
             if (exclude){
                 return needWrapFlag;
             }

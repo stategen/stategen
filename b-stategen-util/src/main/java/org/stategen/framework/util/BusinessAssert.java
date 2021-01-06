@@ -35,6 +35,7 @@ public class BusinessAssert {
         throw new BusinessException(elseMessage,cause);
     }
     
+    
     public static boolean mustTrue(boolean expression, String elseMessage) {
         if (!expression) {
             BusinessAssert.throwException(elseMessage);
@@ -42,7 +43,6 @@ public class BusinessAssert {
         return expression;
     }
     
-
     
     public static boolean mustFalse(boolean expression, String elseMessage) {
         if (expression) {

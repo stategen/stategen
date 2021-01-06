@@ -39,10 +39,6 @@ import org.stategen.framework.util.Context;
 import org.stategen.framework.util.PropUtil;
 import org.stategen.framework.util.StringUtil;
 
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.ParseException;
-import com.github.javaparser.ast.CompilationUnit;
-
 import cn.org.rapid_framework.generator.GenUtils;
 import cn.org.rapid_framework.generator.GeneratorProperties;
 import cn.org.rapid_framework.generator.provider.db.sql.model.Sql;
@@ -50,6 +46,11 @@ import cn.org.rapid_framework.generator.provider.db.sql.model.SqlParameter;
 import cn.org.rapid_framework.generator.provider.db.table.model.Column;
 import cn.org.rapid_framework.generator.provider.db.table.model.Table;
 import cn.org.rapid_framework.generator.util.GLogger;
+
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseException;
+import com.github.javaparser.ast.CompilationUnit;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.Cleanup;
@@ -62,7 +63,6 @@ public class FmHelper {
     
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FmHelper.class);
     
-
     public static void readTxtFile(String filePath) {
         try {
             File file = new File(filePath);
@@ -127,7 +127,7 @@ public class FmHelper {
             String encoding,
             boolean isTable,
             boolean hasAtNotRelace,
-            JavaType javaType ) throws Exception {
+            JavaType javaType) throws Exception {
         
         //可以同时用来判断是否需要做java文件
         CompilationUnit lastCompilationUnit = null;
@@ -163,9 +163,9 @@ public class FmHelper {
                 GLogger.info("DTO文件已存在，将不会覆盖:" + canonicalFile);
                 return;
             }
-            if (javaType !=null) {
-            //if (outFileName.endsWith(".java") && !outFileName.endsWith("SqlDaoSupportBase.java")) {
-            //    javaType = getJavaType(outFileName);
+            if (javaType != null) {
+                //if (outFileName.endsWith(".java") && !outFileName.endsWith("SqlDaoSupportBase.java")) {
+                //    javaType = getJavaType(outFileName);
                 GLogger.info(javaType + "<===========>:" + outFileName);
                 lastCompilationUnit = parserJava2Unit(canonicalFile);
             }
@@ -179,30 +179,33 @@ public class FmHelper {
                 return;
             }
             
-            Map<String, String> oldFieldMap = ASTHelper.getFieldMap(lastCompilationUnit);
-            CompatibleHelper.OLD_FIELDS.clear();
-            if (CollectionUtil.isNotEmpty(oldFieldMap)) {
-                CompatibleHelper.OLD_FIELDS.putAll(oldFieldMap);
-            }
-            
-            //替换为pojo的大小写格式
-            Table                 table   = GenUtils.globalTableConfig.getTable();
-            LinkedHashSet<Column> columns = table.getColumns();
-            changeCaseColumnName(columns, oldFieldMap);
-            
-            List<Sql> sqls = GenUtils.globalTableConfig.getSqls();
-            //替换参数的大小写
-            if (CollectionUtil.isNotEmpty(sqls)) {
-                for (Sql sql : sqls) {
-                    changeCaseColumnName(sql.getColumns(), oldFieldMap);
-                    LinkedHashSet<SqlParameter> params = sql.getParams();
-                    
-                    if (CollectionUtil.isNotEmpty(params)) {
-                        for (SqlParameter sqlParameter : params) {
-                            String destColumnName = sqlParameter.getParamName();
-                            String newColumnName  = oldFieldMap.get(destColumnName);
-                            if (newColumnName != null) {
-                                sqlParameter.setParamName(newColumnName);
+            if (lastCompilationUnit != null) {
+                Map<String, String> oldFieldMap = ASTHelper.getFieldMap(lastCompilationUnit);
+                
+                CompatibleHelper.OLD_FIELDS.clear();
+                if (CollectionUtil.isNotEmpty(oldFieldMap)) {
+                    CompatibleHelper.OLD_FIELDS.putAll(oldFieldMap);
+                }
+                
+                //替换为pojo的大小写格式
+                Table                 table   = GenUtils.globalTableConfig.getTable();
+                LinkedHashSet<Column> columns = table.getColumns();
+                changeCaseColumnName(columns, oldFieldMap);
+                
+                List<Sql> sqls = GenUtils.globalTableConfig.getSqls();
+                //替换参数的大小写
+                if (CollectionUtil.isNotEmpty(sqls)) {
+                    for (Sql sql : sqls) {
+                        changeCaseColumnName(sql.getColumns(), oldFieldMap);
+                        LinkedHashSet<SqlParameter> params = sql.getParams();
+                        
+                        if (CollectionUtil.isNotEmpty(params)) {
+                            for (SqlParameter sqlParameter : params) {
+                                String destColumnName = sqlParameter.getParamName();
+                                String newColumnName  = oldFieldMap.get(destColumnName);
+                                if (newColumnName != null) {
+                                    sqlParameter.setParamName(newColumnName);
+                                }
                             }
                         }
                     }
@@ -223,7 +226,6 @@ public class FmHelper {
             newFileError = true;
             return;
         }
-        
         
         if (lastCompilationUnit == null || !newFileError) {
             //如果是table xml文件，如果文件已存在
@@ -259,22 +261,24 @@ public class FmHelper {
         }
         
     }
-
-    private static CompilationUnit parserJava2Unit(File canonicalFile)  {
-        CompilationUnit javaUnit =null;
-        try {
-            javaUnit = JavaParser.parse(canonicalFile, Charset.forName(StringUtil.UTF_8));
-        } catch (Exception e) {
-            String javaFileText;
+    
+    private static CompilationUnit parserJava2Unit(File canonicalFile) {
+        CompilationUnit javaUnit = null;
+        if (canonicalFile.exists() && canonicalFile.isFile()) {
             try {
-                javaFileText = IOHelpers.readFile(canonicalFile, StringUtil.UTF_8, true);
-            } catch (IOException e1) {
-                throw new IllegalArgumentException("read file error"+canonicalFile,e);
+                javaUnit = JavaParser.parse(canonicalFile, Charset.forName(StringUtil.UTF_8));
+            } catch (Exception e) {
+                String javaFileText;
+                try {
+                    javaFileText = IOHelpers.readFile(canonicalFile, StringUtil.UTF_8, true);
+                } catch (IOException e1) {
+                    throw new IllegalArgumentException("read file error" + canonicalFile, e);
+                }
+                GLogger.error(
+                        new StringBuilder("java文件:").append(canonicalFile).append(" \n").append(javaFileText).toString(),
+                        e);
+                throw new IllegalArgumentException("parser file error:" + canonicalFile, e);
             }
-            GLogger.error(
-                    new StringBuilder("java文件:").append(canonicalFile).append(" \n").append(javaFileText).toString(),
-                    e);
-            throw new IllegalArgumentException("parser file error:"+canonicalFile,e);
         }
         return javaUnit;
     }
@@ -322,17 +326,17 @@ public class FmHelper {
         }
     }
     
-    public static void parserDirAllJavaInterfaceMethodCount(File javaFile)  {
+    public static void parserDirAllJavaInterfaceMethodCount(File javaFile) {
         GLogger.info("absoluteOutputFilePath<===========>:" + javaFile.getParent());
-        File dir  =new File(javaFile.getParent());
-        File[] listFiles = dir.listFiles(  (File pathname) ->{
-            return !pathname.isDirectory() && pathname.getName().endsWith(".java");
-        });
+        File   dir       = new File(javaFile.getParent());
+        File[] listFiles = dir.listFiles((File pathname) -> {
+                             return !pathname.isDirectory() && pathname.getName().endsWith(".java");
+                         });
         
         if (CollectionUtil.isNotEmpty(listFiles)) {
             for (File file : listFiles) {
                 CompilationUnit compilationUnit = parserJava2Unit(file);
-                Integer unitMethodCount = ASTHelper.getUnitMethodCount(compilationUnit);
+                Integer         unitMethodCount = ASTHelper.getUnitMethodCount(compilationUnit);
                 Context.FACADE_SERIVCES_METHOD_COUNT.put(file.getName(), unitMethodCount);
             }
         }

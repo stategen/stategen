@@ -156,6 +156,7 @@ public class EnumUtil {
         return CollectionUtil.newEmptyList();
     }
 
+    /***与旧的系统兼容，将1,2,3等信息，如果是ValuedEnum,则转化为枚举，其它走Enum.valueOf*/
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <T> T valueOf(Class<T> enumType, String source) {
         if (source == null) {

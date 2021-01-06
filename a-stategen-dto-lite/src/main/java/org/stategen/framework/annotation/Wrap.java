@@ -31,5 +31,7 @@ import java.lang.annotation.Target;
 @Inherited
 @Documented
 public @interface Wrap {
-    boolean exclude() default false;
+//    boolean exclude() default false;
+    
+    boolean value() default true;
 }

@@ -12,6 +12,7 @@
  */
 package org.stategen.framework.spring.mvc;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,6 +32,8 @@ import org.stategen.framework.util.OptionalUtil;
 
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.util.IOUtils;
+
+import lombok.Cleanup;
 
 /**
  * The Class FastJsonHttpMessageConverter.
@@ -72,26 +75,33 @@ public class FastJsonHttpMessageConverter extends com.alibaba.fastjson.support.s
             Object obj,
             HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
         
-        //fastjson直接写入String plainString =>plainString 而不是 "plainString"
+        //fastjson设置为plainString时，直接写入String 张三 =>张三 而不是 "张三"
         if (plainString && obj != null && obj instanceof String) {
             //string 直接写入string,不加双引号
             FastJsonConfig fastJsonConfig = getFastJsonConfig();
             
-            String text = (String)obj;
+            String                text   = (String) obj;
+            @Cleanup
+            ByteArrayOutputStream outnew = new ByteArrayOutputStream();
+            outnew.write(text.getBytes(fastJsonConfig.getCharset()));
             
             //headers先获得
             HttpHeaders  headers = outputMessage.getHeaders();
             OutputStream out     = outputMessage.getBody();
             
             if (fastJsonConfig.isWriteContentLength()) {
-                headers.setContentLength(text.length());
+                int len = text.length();
+                headers.setContentLength(len);
             }
             
-            out.write(text.getBytes(fastJsonConfig.getCharset()));
+            //chrome中的response可以看到,swagger2中不展示，应该不是bug 
+            outnew.writeTo(out);
             
             if (logger.isDebugEnabled()) {
-                logger.debug(new StringBuilder("==>fastjson write plain text\n").append(text).toString());
+                //不能打印text,否则有泄密的风险
+                logger.debug(new StringBuilder("==>fastjson write plain text\n,len:").append(text.length()).toString());
             }
+            
             //clean
             text = null;
             return;

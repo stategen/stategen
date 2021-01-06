@@ -51,7 +51,7 @@ public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler imple
         if (ex instanceof BaseBusinessException) {
             sb.append("业务异常：").append("\n").append(failMessage);
         } else if (ex instanceof UndeclaredThrowableException) {
-            //sentinel没有配置 handleException时，被拦截
+            //sentinel没有配置,会走异常：BlockException的子类，会被Stategen拦截，然后封装异常为配置的json给前端
             //1.查看SentinelResource是否家配置msg
             throwable = ((UndeclaredThrowableException) ex).getUndeclaredThrowable();
             String blockMsg = throwable.getMessage();
@@ -83,7 +83,7 @@ public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler imple
         HandleError     handleError         = AnnotationUtil.getMethodOrOwnerAnnotation(method, HandleError.class);
         IResponseStatus errorResponseStatus = this.getResponseStatus();
         
-        if (handleError == null || !handleError.exclude()) {
+        if (handleError == null || handleError.value()) {
             ResponseBody responseBodyAnno = AnnotationUtil.getMethodOrOwnerAnnotation(method, ResponseBody.class);
             if (responseBodyAnno != null) {
                 BaseResponse<?> errorResponse = ResponseUtil.buildResponse(null, errorResponseStatus);

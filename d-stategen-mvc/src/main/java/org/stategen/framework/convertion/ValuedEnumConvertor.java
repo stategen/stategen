@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2018  niaoge<78493244@qq.com>
+/**
+ * Copyright (C) 2021  StateGen.org niaoge<78493244@qq.com>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,19 +14,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+
 package org.stategen.framework.convertion;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
+import org.stategen.framework.lite.ValuedEnum;
 import org.stategen.framework.util.EnumUtil;
 
 /**
- * The Class ValuedEnumConvertor.
+ * 
+ * @author niaoge
+ * @version $Id: ValuedEnumConvertor.java, v 0.1 2021年1月6日 上午5:03:49 XiaZhengsheng Exp $
  */
-@SuppressWarnings("rawtypes")
-public class ValuedEnumConvertor implements ConverterFactory<String, Enum> {
+public class ValuedEnumConvertor implements ConverterFactory<String, ValuedEnum<?>> {
 
-    public <T extends Enum> Converter<String, T> getConverter(Class<T> targetType) {
+    public <T extends ValuedEnum<?>> Converter<String, T> getConverter(Class<T> targetType) {
         return new StringToValuedEnum<T>(targetType);
     }
 
@@ -35,7 +39,7 @@ public class ValuedEnumConvertor implements ConverterFactory<String, Enum> {
      *
      * @param <T> the generic type
      */
-    private class StringToValuedEnum<T extends Enum> implements Converter<String, T> {
+    private class StringToValuedEnum<T extends ValuedEnum<?>> implements Converter<String, T> {
 
         private final Class<T> enumType;
 
