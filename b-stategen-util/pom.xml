@@ -9,7 +9,6 @@
         <relativePath>../</relativePath>
     </parent>
     <artifactId>stategen-util</artifactId>
-    <version>${stategen-version}</version>
     <name>b-stategen-util</name>
 
 

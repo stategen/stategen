@@ -10,7 +10,6 @@
         <relativePath>../</relativePath>
     </parent>
 
-    <version>${stategen-version}</version>
     <artifactId>stategen-rapid-framework</artifactId>
     <name>e-stategen-rapid-framework</name>
 

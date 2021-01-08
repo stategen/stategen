@@ -8,8 +8,6 @@
     </parent>
 
     <artifactId>progen</artifactId>
-    <version>${stategen-version}</version>
-
     <name>e-progen</name>
     <packaging>jar</packaging>
 

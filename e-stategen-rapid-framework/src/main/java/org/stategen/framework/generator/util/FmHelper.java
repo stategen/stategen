@@ -16,15 +16,9 @@
  */
 package org.stategen.framework.generator.util;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.CharArrayWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
@@ -63,29 +57,29 @@ public class FmHelper {
     
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FmHelper.class);
     
-    public static void readTxtFile(String filePath) {
-        try {
-            File file = new File(filePath);
-            //判断文件是否存在
-            if (file.isFile() && file.exists()) {
-                //考虑到编码格式
-                @Cleanup
-                FileInputStream   fileInputStream = new FileInputStream(file);
-                @Cleanup
-                InputStreamReader read            = new InputStreamReader(fileInputStream, StringUtil.UTF_8);
-                @Cleanup
-                BufferedReader    bufferedReader  = new BufferedReader(read);
-                String            lineTxt         = null;
-                while ((lineTxt = bufferedReader.readLine()) != null) {
-                    GLogger.info(lineTxt);
-                }
-            } else {
-                GLogger.error("找不到指定的文件");
-            }
-        } catch (Exception e) {
-            GLogger.error("读取文件内容出错", e);
-        }
-    }
+//    public static void readTxtFile(String filePath) {
+//        try {
+//            File file = new File(filePath);
+//            //判断文件是否存在
+//            if (file.isFile() && file.exists()) {
+//                //考虑到编码格式
+//                @Cleanup
+//                FileInputStream   fileInputStream = new FileInputStream(file);
+//                @Cleanup
+//                InputStreamReader read            = new InputStreamReader(fileInputStream, StringUtil.UTF_8);
+//                @Cleanup
+//                BufferedReader    bufferedReader  = new BufferedReader(read);
+//                String            lineTxt         = null;
+//                while ((lineTxt = bufferedReader.readLine()) != null) {
+//                    GLogger.info(lineTxt);
+//                }
+//            } else {
+//                GLogger.error("找不到指定的文件");
+//            }
+//        } catch (Exception e) {
+//            GLogger.error("读取文件内容出错", e);
+//        }
+//    }
     
     protected static void changeCaseColumnName(LinkedHashSet<Column> columns, Map<String, String> oldFieldMap) {
         if (CollectionUtil.isEmpty(columns)) {
@@ -246,16 +240,8 @@ public class FmHelper {
                 }
                 oldFileText = null;
             }
-            @Cleanup
-            FileOutputStream fileOutputStream = new FileOutputStream(canonicalFile);
-            
-            @Cleanup
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream, encoding);
-            
-            @Cleanup
-            BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
-            charArrayWriter.writeTo(bufferedWriter);
-            
+
+            IOHelpers.saveFile(canonicalFile, charArrayWriter, encoding);
             gerneratedText = null;
             
         }

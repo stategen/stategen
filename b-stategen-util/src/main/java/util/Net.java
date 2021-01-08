@@ -30,7 +30,7 @@ public class Net {
             bindPort(InetAddress.getLocalHost().getHostAddress(), port);
             return true;
         } catch (Exception e) {
-            log.error("Port can't use!", "" + port);
+            log.error(String.format("Port %d can't use!", port));
         }
         return false;
     }

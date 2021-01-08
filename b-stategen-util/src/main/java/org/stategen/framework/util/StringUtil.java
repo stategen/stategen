@@ -40,7 +40,7 @@ public class StringUtil {
     public static final String COLON      = ":";
 
     public static final String emptyString = "";
-    public static final String UTF_8       = "utf-8";
+    public static final String UTF_8       = "UTF-8";
 
 
     public static void logInfo(Object o){

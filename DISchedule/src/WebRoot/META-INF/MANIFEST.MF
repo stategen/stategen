@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
-Built-By: niaoge
-Build-Jdk: 14.0.2
+Build-Jdk-Spec: 11
 Created-By: Maven Integration for Eclipse
 

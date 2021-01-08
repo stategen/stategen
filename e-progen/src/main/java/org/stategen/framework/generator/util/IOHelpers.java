@@ -17,6 +17,7 @@
 package org.stategen.framework.generator.util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.CharArrayWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,11 +42,12 @@ import lombok.Cleanup;
  * The Class IOHelpers.
  */
 public class IOHelpers {
+    
     public static Writer NULL_WRITER = new NullWriter();
-
+    
     public static void copy(Reader reader, Writer writer) {
         char[] buf = new char[8192];
-        int n = 0;
+        int    n   = 0;
         try {
             while ((n = reader.read(buf)) != -1) {
                 writer.write(buf, 0, n);
@@ -54,11 +56,11 @@ public class IOHelpers {
             throw new RuntimeException(e);
         }
     }
-
+    
     public static void copy(InputStream in, OutputStream out) {
         try {
             byte[] buf = new byte[8192];
-            int n = 0;
+            int    n   = 0;
             while ((n = in.read(buf)) != -1) {
                 out.write(buf, 0, n);
             }
@@ -66,13 +68,13 @@ public class IOHelpers {
             throw new RuntimeException(e);
         }
     }
-
+    
     public static List<String> readLines(Reader input) {
         try {
             @Cleanup
             BufferedReader reader = new BufferedReader(input);
-            List<String> list = new ArrayList<String>();
-            String line = reader.readLine();
+            List<String>   list   = new ArrayList<String>();
+            String         line   = reader.readLine();
             while (line != null) {
                 list.add(line);
                 line = reader.readLine();
@@ -82,7 +84,7 @@ public class IOHelpers {
             throw new RuntimeException(e);
         }
     }
-
+    
     public static String toString(Reader in) {
         try {
             @Cleanup
@@ -90,42 +92,41 @@ public class IOHelpers {
             copy(in, out);
             return out.toString();
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(),e);
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
-
+    
     public static String readFile(File file, String encoding) throws IOException {
         return readFile(file, encoding, false);
     }
     
-    public static List<String> splitStringToLine(String dest){
-        if (null!=dest ){
+    public static List<String> splitStringToLine(String dest) {
+        if (null != dest) {
             String lines[] = dest.split("\\r?\\n");
             return Arrays.asList(lines);
         }
         return new ArrayList<String>(0);
     }
     
-    public static String addLineNumber(String dest){
-        List<String> lines =splitStringToLine(dest);
-        StringBuilder sb =new StringBuilder();
-        int lineNum = 0;
+    public static String addLineNumber(String dest) {
+        List<String>  lines   = splitStringToLine(dest);
+        StringBuilder sb      = new StringBuilder();
+        int           lineNum = 0;
         for (String line : lines) {
-            appendWithLineNum(true, line, lineNum, sb); 
+            appendWithLineNum(true, line, lineNum, sb);
             lineNum++;
         }
         return sb.toString();
     }
     
-
     public static String readFile(File file, String encoding, boolean writeLineNum) throws IOException {
         @Cleanup
-        InputStreamReader isr = new InputStreamReader(new FileInputStream(file), StringUtil.UTF_8);
+        InputStreamReader isr  = new InputStreamReader(new FileInputStream(file), StringUtil.UTF_8);
         @Cleanup
-        BufferedReader read = new BufferedReader(isr);
-
-        String line = null;
-        StringBuilder sb = new StringBuilder(1024 * 256);
+        BufferedReader    read = new BufferedReader(isr);
+        
+        String        line = null;
+        StringBuilder sb   = new StringBuilder(1024 * 256);
         if (writeLineNum) {
             int lineNum = 0;
             while ((line = read.readLine()) != null) {
@@ -138,7 +139,7 @@ public class IOHelpers {
         }
         return sb.toString();
         //System.out.println(str);//此时str就保存了一行字符串
-
+        
         //        StringBuilder sb = new StringBuilder();
         //        Reader reader = null;
         //        try {
@@ -158,7 +159,7 @@ public class IOHelpers {
         //            }
         //        }
     }
-
+    
     private static void appendWithLineNum(boolean writeLineNum, String line, int lineNum, StringBuilder sb) {
         if (lineNum > 0) {
             sb.append('\n');
@@ -177,24 +178,24 @@ public class IOHelpers {
         }
         sb.append(line);
     }
-
+    
     public static String toString(InputStream inputStream) {
         try {
             @Cleanup
             InputStreamReader reader = new InputStreamReader(inputStream);
             @Cleanup
-            StringWriter writer = new StringWriter();
+            StringWriter      writer = new StringWriter();
             copy(reader, writer);
             return writer.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
+    
     public static String toString(String encoding, InputStream inputStream) {
         try {
             @Cleanup
-            Reader reader = new InputStreamReader(inputStream, encoding);
+            Reader       reader = new InputStreamReader(inputStream, encoding);
             @Cleanup
             StringWriter writer = new StringWriter();
             copy(reader, writer);
@@ -203,44 +204,59 @@ public class IOHelpers {
             throw new RuntimeException(e);
         }
     }
-
+    
     public static void saveFile(File file, String content) {
         saveFile(file, content, null, false);
     }
-
+    
     public static void saveFile(File file, String content, boolean append) {
         saveFile(file, content, null, append);
     }
-
+    
     public static void saveFile(File file, String content, String encoding) {
         saveFile(file, content, encoding, false);
     }
-
+    
     public static void saveFile(File file, String content, String encoding, boolean append) {
+        @Cleanup
+        CharArrayWriter charArrayWriter = new CharArrayWriter(content.length());
         try {
-            @Cleanup
-            FileOutputStream output = new FileOutputStream(file, append);
-            @Cleanup
-            CharArrayWriter charArrayWriter =new CharArrayWriter(content.length());
-            @Cleanup
-            Writer writer = StringUtil.isBlank(encoding) ? new OutputStreamWriter(output) : new OutputStreamWriter(output, encoding);
             charArrayWriter.write(content);
-            charArrayWriter.writeTo(writer);
+            saveFile(file, charArrayWriter, encoding, append);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        
     }
-
+    
     public static void saveFile(File file, InputStream in) {
         try {
             @Cleanup
             FileOutputStream output = new FileOutputStream(file);
+            
             copy(in, output);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
+    
+    public static void saveFile(File file, CharArrayWriter charArrayWriter, String encoding, boolean append) throws IOException {
+        @Cleanup
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        
+        @Cleanup
+        OutputStreamWriter outputStreamWriter = StringUtil.isBlank(encoding) ? new OutputStreamWriter(fileOutputStream)
+                : new OutputStreamWriter(fileOutputStream, encoding);
+        
+        @Cleanup
+        BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
+        charArrayWriter.writeTo(outputStreamWriter);
+    }
+    
+    public static void saveFile(File file, CharArrayWriter charArrayWriter, String encoding) throws IOException {
+        saveFile(file, charArrayWriter, encoding, false);
+    }
+    
     /**
      * The Class NullWriter.
      *
@@ -248,15 +264,15 @@ public class IOHelpers {
      * @version $Id: IOHelper.java, v 0.1 2017-1-3 21:24:09 Xia zhengsheng Exp $
      */
     private static class NullWriter extends Writer {
+        
         public void close() throws IOException {
         }
-
+        
         public void flush() throws IOException {
         }
-
+        
         public void write(char[] cbuf, int off, int len) throws IOException {
         }
     }
-
-
+    
 }

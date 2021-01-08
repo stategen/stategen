@@ -8,7 +8,6 @@
     </parent>
 
     <artifactId>aa-stategen-logback</artifactId>
-    <version>${stategen-version}</version>
     <name>c-stategen-logback</name>
 
     <dependencies>

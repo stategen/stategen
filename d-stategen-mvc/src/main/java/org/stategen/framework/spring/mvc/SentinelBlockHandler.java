@@ -64,11 +64,11 @@ public class SentinelBlockHandler extends ResponseStatusTypeHandler implements B
     
     @Override
     public void afterPropertiesSet() throws Exception {
-        ResponseUtil.BLOCK_MAP.putIfAbsent(FlowException.class, msgFlowException);
-        ResponseUtil.BLOCK_MAP.putIfAbsent(DegradeException.class, msgDegradeException);
-        ResponseUtil.BLOCK_MAP.putIfAbsent(ParamFlowException.class, msgParamFlowException);
-        ResponseUtil.BLOCK_MAP.putIfAbsent(SystemBlockException.class, msgSystemBlockException);
-        ResponseUtil.BLOCK_MAP.putIfAbsent(AuthorityException.class, msgAuthorityException);
+        ResponseUtil.BLOCK_MAP.putIfAbsent(FlowException.class.getSimpleName(), msgFlowException);
+        ResponseUtil.BLOCK_MAP.putIfAbsent(DegradeException.class.getSimpleName(), msgDegradeException);
+        ResponseUtil.BLOCK_MAP.putIfAbsent(ParamFlowException.class.getSimpleName(), msgParamFlowException);
+        ResponseUtil.BLOCK_MAP.putIfAbsent(SystemBlockException.class.getSimpleName(), msgSystemBlockException);
+        ResponseUtil.BLOCK_MAP.putIfAbsent(AuthorityException.class.getSimpleName(), msgAuthorityException);
         super.afterPropertiesSet();
     }
     

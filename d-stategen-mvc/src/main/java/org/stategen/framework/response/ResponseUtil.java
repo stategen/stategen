@@ -37,7 +37,7 @@ import configs.Constant;
 public class ResponseUtil {
     final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ResponseUtil.class);
     /***限流类和msg对应关系，TODO 是否返回ResponseStatus更好?*/
-    public final static Map<Class<? extends Exception>, String> BLOCK_MAP =new ConcurrentHashMap<Class<? extends Exception>, String>(5);
+    public final static Map<String, String> BLOCK_MAP =new ConcurrentHashMap<String, String>(5);
 
     @SuppressWarnings("unchecked")
     public static <T> BaseResponse<T> buildResponse(T data, IResponseStatus responseStatus) {

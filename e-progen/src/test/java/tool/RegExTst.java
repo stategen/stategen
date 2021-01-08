@@ -35,12 +35,24 @@ public class RegExTst {
     //
     //    }
     
+//    @Test
+//    public void testLevel() {
+//        String  str = "主题  -level(demo_organization)";
+//        Matcher mat = Pattern.compile("(?<=(-level)\\()[^\\)]+").matcher(str);//此处是中文输入的（）
+//        while (mat.find()) {
+//            System.out.println(mat.group());
+//        }
+//    }
+    final static Pattern remoteBlockPatter =Pattern.compile(".+SentinelBlockException.+\\s+");
     @Test
-    public void testLevel() {
-        String  str = "主题  -level(demo_organization)";
-        Matcher mat = Pattern.compile("(?<=(-level)\\()[^\\)]+").matcher(str);//此处是中文输入的（）
-        while (mat.find()) {
-            System.out.println(mat.group());
+    public void testSentinelBlockException() {
+        String  str = "xxSentinelBlockException  : DegradeException ";
+        Matcher matcher = remoteBlockPatter.matcher(str);
+        
+        while (matcher.find()) {
+            
+            System.out.println(matcher.group(0));
+            System.out.println(matcher.groupCount());
         }
     }
 }

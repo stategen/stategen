@@ -7,7 +7,6 @@
         <relativePath>../</relativePath>
     </parent>
     <artifactId>aa-stategen-ibatis-util</artifactId>
-    <version>${stategen-version}</version>
     <name>c-stategen-ibatis-util</name>
 
 
@@ -110,6 +109,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven-shade-plugin.versiion}</version>
                 <executions>
                     <execution>
                         <phase>package</phase>

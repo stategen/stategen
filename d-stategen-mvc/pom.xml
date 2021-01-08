@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>stategen-mvc</artifactId>
-    <version>${stategen-version}</version>
     <name>d-stategen-mvc</name>
 
     <dependencies>

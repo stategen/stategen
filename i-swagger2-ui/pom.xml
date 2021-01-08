@@ -74,6 +74,7 @@
             <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven-shade-plugin.versiion}</version>
                 <executions>
                     <execution>
                         <phase>package</phase>

@@ -28,7 +28,6 @@
 
 
     <properties>
-        <stategen-version>stg.2.3.0.RELEASE</stategen-version>
         <!-- 发到公司私有maven仓库中，即pojo和facade(dubbo服务的版本)，这个版本跟着pom.version一致 -->
 
 
@@ -94,6 +93,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-data-redis</artifactId>
                 <version>${spring.boot.version}</version>
+                <type>pom</type>
                 <scope>import</scope>
                 <exclusions>
                     <exclusion>

@@ -7,7 +7,6 @@
         <relativePath>../</relativePath>
     </parent>
     <artifactId>stategen-cache</artifactId>
-    <version>${stategen-version}</version>
     <name>c-stategen-cache</name>
 
 

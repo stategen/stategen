@@ -9,7 +9,6 @@
         <relativePath>../</relativePath>
     </parent>
     <artifactId>stategen-dto-lite</artifactId>
-    <version>${stategen-version}</version>
     <name>a-stategen-dto-lite</name>
 
     <build>
