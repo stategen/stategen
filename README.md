@@ -1,4 +1,5 @@
-### 截图  
+- ### 截图  
+
 
 <p float="left">
 <img src="https://github.com/stategen/docs/blob/master/javaCodeDemo.png" width="600" alt="drawing" />
@@ -20,285 +21,53 @@ web端
 
 
 
-### 我非常赞同的
+- ### 我非常赞同的
+  - 重复可能是软件中一切邪恶的根源。—— Robert C.Martin
 
-- 重复可能是软件中一切邪恶的根源。—— Robert C.Martin
+- ### 我的一些编程总结
+  - 硬编码和不可感知的字符串是项目迭代中的定时炸弹.  
+  - 写在规章制度里的开发规范是被人用来打破的，好的规范应该是从技术上直接框定。 
+  - 最好的沟通是避免沟通。 不应该把一些约定、常话浪费在会议室里 
 
-### 我的一些编程总结
+- ### StateGen把重复性前后端代码生成器生成
+  - 轻代码?  **NO**; 
+  - 用可视化界面配置生成?  **NO**
+  - StateGen开变原开发模式?  **NO**
 
-- 硬编码和不可感知的字符串是项目迭代中的定时炸弹.  
-- 写在规章制度里的开发规范是被人用来打破的，好的规范应该是从技术上直接框定。 
-- 最好的沟通是避免沟通。 不应该把一些约定、常话浪费在会议室里 
+- ### Stategen构成
+  - springboot
 
-### StateGen把重复性前后端代码生成器生成
+    - 直接支持 jar war打包模式
 
-- 轻代码?  **NO**; 
-- 用可视化界面配置生成?  **NO**
-- StateGen开变原开发模式?  **NO**
+  - spring cloud alibaba
 
-### Stategen构成
-- springboot
+    - nacos,seata,sentinel,dubbo,开箱即用
+    - 分布式  微服务+**本地服务**
 
-  - 直接支持 jar war打包模式
+  - 后端骨架生成器
 
-- spring cloud alibaba
+  - 前端骨架生成器
+
+  - 后端可迭代开发生器(dalgen演化而来dalgenX，全网唯一可支持迭代开发??)
+
+  - 前端开发生成器，可把后端所有任意java api随时一键导出为前端的交互代码(mvvm,reactive,react(umi,dva,saga),flutter(provider),依据模版种类)
+
+- ### 骨架代码生成流程图
+
+  - 虚线为人工参与点
   
-  - nacos,seata,sentinel,dubbo
-  - 分布式  微服务+**本地服务**
+- 实线为maven或系统自动装配
+  - 粗实线为StateGen自动生成的线路
+  - 系统骨架和项目骨架生成器运行是**幂等**，在已有的项目上重新运行只会追加，不会覆盖.
   
-- 后端骨架生成器
+- "trade"为演示时，指stategen中的系统,app|cms|xxx指项目
 
-- 前端骨架生成器
-
-- 后端可迭代开发生器(dalgen演化而来dalgenX，全网唯一可支持迭代开发??)
-
-- 前端开发生成器，可把后端所有任意java api随时一键导出为前端的交互代码(mvvm,reactive,react(umi,dva,saga),flutter(provider),依据模版种类)
-
-### 骨架代码生成流程图
-
-- 虚线为人工参与点
-
-- 实线为maven或系统自动装配
-- 粗实线为StateGen自动生成的线路
-
-- 系统骨架和项目骨架生成器运行是**幂等**，在已有的项目上重新运行只会追求，不会覆盖.
-
-```mermaid
-graph TB
-开始-."gen.sh system com.mycompany.biz trade".->systemGen
-systemGen==>TradePojo
-systemGen==>TradeFacade
-systemGen==>TradeIntergrade
-systemGen==>TradeDao
-systemGen==>TradeService
-systemGen==>TradeWebBase
-TradePojo-->TradeFacade
-TradeFacade-->TradeDao
-TradeIntergrade-->TradeService
-TradeDao-->TradeService
-TradeService--"目的：遵从同一个数据库<br>只有一个套crud服务的法则"-->TradeWebBase
-TradeWebBase-."step2.(3个参数) <br>gen.sh project cms|app|xxx".->projectGen
-projectGen==>TradeCms
-projectGen==>TradeApp
-projectGen==>TradeXxx
-TradeApp-."gen.sh client h5|flutter|web".->clientGen
-projectGen=="或step2.(4个参数) <br>gen.sh project app h5|flutter|web"==>clientGen
-TradeApp-."手工添加或者<br>运行gitinit.sh".->tradeGit
-clientGen==>AppH5Front
-AppH5Front-."手工添加或者<br>运行git_add_to_parent_as_sub.sh".->AppH5FrontGit
-AppH5FrontGit==>tradeSubGit
-tradeSubGit=="目的，当发布时前后端版本一致"==>tradeGit
-systemGen>"StateGen后端系统骨架生成器"]
-projectGen>"StateGen后端项目生成器"]
-clientGen>"StateGen前端架构骨架生成器"]
-AppH5Front>"AppH5前端项目"]
-tradeGit[Trade系统git项目]
-AppH5FrontGit[AppH5前端git项目]
-tradeSubGit[Trade子git项目]
-```
-
-### 开始迭代流程图
-
-- 虚线为人工代码参与点
-
-- 实线为maven或系统自动装配
-- 粗实线为dalgenX自动生成和迭代的线路
-- 从流行程上来看，
-  - **dalgenX没有改变原开发模式**
-  - **自动迭代**
-  - **人工编写的代码可以做到仅限业务**
-
-```mermaid
-graph TD
-sqlUser-."需求技术分析后<br>增添或修改字段".->sqlUser
-sqlUser-.->tableCmd
-tableCmd==>dalgenXtable
-dalgenXtable=="生成后不再覆盖"==>userXml
-dalgenXtable=="自动生成覆盖"==>userXthml
-userXthml--"xml引用装配给"-->userXml
-userXml-."少量自定义sql<br>ibatis语法+辅助提示<br>借鉴Typescript判空语法糖".->userXml
-
-userXml-.->dalCmd
-
-dalCmd=="sql 通过"==>dalgenXDal
-dalCmd=="sql 失败"==>userXml
-dalgenXDal==>dalAutoFacade
-dalgenXDal==>dalAutoDao
-dalgenXDal==>dalAutoCtrollerBase
-dalgenXDal==>dalAutoService
-
-dalAutoFacade=="生成"==>dubboRefXml
-dalAutoFacade=="自动保留自定方法"==>UserServiceTrade
-UserServiceTrade-."添加方法".->UserServiceTrade
-dalAutoFacade=="自动保留自定义字段和方法<br>无DDD模式失忆问题<br>并归类到不同的代码区域<br>自定义代码一目了然"==>UserJava
-
-dalAutoDao=="自动保留import"==>UserDao
-dalAutoDao=="自动保留import"==>UserDaoImpl
-dalAutoDao=="生成"==>daoXml
-dalAutoDao=="生成"==>userBatisMapping
-
-dalAutoService=="自动保留自定义方法"==>UserService
-dalAutoService=="自动保留自定义方法和字段<br>自动保留修改过的方法<br>只增量追加新的方法"==>UserServiceImpl
-dalAutoService=="生成"==>serviceXml
-dalAutoService=="统计全部ServiceTrade<br>有方法的FacadeSerive会被保留"==>dubboProviderXml
-
-dalAutoCtrollerBase=="自动保留自定义方法和字段<br>自动保留修改过的方法<br>只增量追加新的方法"==>UserControlerBase
-
-UserJava-->TradePojoJar
-OtherJojo-->TradePojoJar
-enums-->TradePojoJar
-
-TradePojoJar-->TradeFacadeJar
-dubboRefMenulXml--> TradeFacadeJar 
-dubboRefXml-->TradeFacadeJar
-UserServiceTrade-->TradeFacadeJar
-otherFacadeFiles-->TradeFacadeJar
-
-TradePojoJar-.->MavenCmd
-TradeFacadeJar-.->MavenCmd
-MavenCmd-->MavenPrivateResp
-
-TradeFacadeJar-->TradeDaoJar
-UserDao-->TradeDaoJar
-UserDaoImpl-->TradeDaoJar
-daoXml-->TradeDaoJar
-userBatisMapping-->TradeDaoJar
-
-TradeDaoJar-->MavenNotCmd
-MavenNotCmd--"X 不会被发布"-->MavenPrivateResp
-otherFacaeJar-->intergradeJar
-
-TradeDaoJar-->TradeSeriveJar
-UserService-->TradeSeriveJar
-serviceXml-->TradeSeriveJar
-UserServiceImpl-->TradeSeriveJar
-dubboProviderXml-->TradeSeriveJar
-serviceManualXml-->TradeSeriveJar
-intergradeJar-->TradeSeriveJar
-otherServiceJava-->TradeSeriveJar
-otherServiceJava-."IDE或编译器<br>发现兼容bug并修正".->otherServiceJava
-TradeSeriveJar-->MavenNotCmd
-
-TradeSeriveJar--"遵从同一个数据库<br>只有一个套crud服务的法则"-->TradeWebBaseJar
-commonControllers-->TradeWebBaseJar
-UserControlerBase-->TradeWebBaseJar
-UserControlerBase-."增加自定义方法和字段".->UserControlerBase
-commonControllers-."IDE或编译器<br>发现兼容bug并修正".->commonControllers
-TradeWebBaseJar-->MavenNotCmd
-H5FacadeGernerator-->ScrTextJava
-ScrTestJava--->TradeApp
-TradeWebBaseJar--->TradeApp
-
-TradeWebBaseJar-->TradeCms
-TradeWebBaseJar-->TradeXxx
-TradeApp-."IDE或编译器<br>发现兼容bug并修正".->TradeApp
-TradeCms-."IDE或编译器<br>发现兼容bug并修正".->TradeCms
-TradeXxx-."IDE或编译器<br>发现兼容bug并修正".->TradeXxx
-TradeApp-.->MavenNotCmd
-TradeCms-.->MavenNotCmd
-TradeXxx-.->MavenNotCmd
-TradeApp-."开发时手动调用".->H5FacadeGernerator
-
-MavenNotCmd-->tradeAppTarget
-MavenNotCmd--"maven插件调用"-->H5FacadeGernerator
-
-H5FacadeGernerator==>H5Progen
-H5Progen==>H5FontEndReactCode
-H5FontEndReactCode-.->H5GitPush
-H5GitPush-->H5FrontCode
-H5FrontCode-."IDE或编译器<br>发现兼容bug并修正".->H5FrontCode
-
-UserDao--impliments-->UserDaoImpl
-UserServiceTrade--extends-->UserService
-UserService--impliments-->UserServiceImpl
-
-UserJava-."添加自定义字段和方法<br>增加缺失的import".->UserJava
-UserServiceImpl-."添加自定义字段和方法".->UserServiceImpl
-UserService-."添加自定义方法".->UserService
-
-
-sqlUser(user sql table)
-dalgenXtable>"dalgenX table xml生成器"]
-tableCmd>"gen.sh table user<br>或运行DevGenerator.java"]
-dalCmd>"gen.sh dal user<br>或运行DevGenerator.java<br>parser和运行sqls"]
-dalgenXDal>"dalgenX dal生成器"]
-
-userXml["自定义sql<br>(user.xml)"]
-userXthml["基本crud sql<br>(use.xml.xhtml"]
-
-UserJava[User.java]
-UserServiceTrade[UserServiceTrade.java<br>外部接口标名系统名]
-dubboRefXml[dubbo<br>refrence xml配置]
-dubboRefMenulXml[手动dubbo<br>refrence xml配置]
-
-UserDao[UserDao.java]
-UserDaoImpl[UserDaoImpl.java]
-userBatisMapping[user batis<br>Mapping配置文件]
-UserService[UserService.java]
-UserServiceImpl[UserServiceImpl.java]
-serviceManualXml["手动 service xml"]
-serviceXml["Service xml"]
-
-TradeXxx["后端项目TradeXxx<br>springboot<br>spring cloud alibaba<br>nacos,sentinel,seata,dubbbo"]
-TradeCms["后端项目TradeCms<br>springboot<br>spring cloud alibaba<br>nacos,sentinel,seata,dubbbo"]
-TradeApp["后端项目TradeApp<br>springboot<br>spring cloud alibaba<br>nacos,sentinel,seata,dubbbo"]
-
-otherFacadeFiles["其它表Facade文件"]
-TradeFacadeJar["TradeFacade.jar"]
-H5Progen>"前端生成器<br>自动收集项目中的Controller<br>加载对应的模版<br>H5|Flutter|Web"]
-
-H5FontEndReactCode["前端交互代码<br>H5|Flutter|Web"]
-
-dalAutoFacade>"自动生成<br>迭代Facade层<br>非粗暴覆盖"]
-dalAutoDao>"自动生成<br>迭代Dao层<br>非粗暴覆盖"]
-dalAutoCtrollerBase>"自动生成<br>WebBase层<br>非粗暴覆盖"]
-dalAutoService>"自动生成<br>迭代Service层<br>非粗暴覆盖"]
-
-commonControllers["通用Controller如:<br>LoginContorller<br>DefaultController<br>..."]
-
-tradeAppTarget>生成可运行<br>jar或war]
-
-H5GitPush>git push]
-MavenCmd["mvn<br>|install<br>|deploy"]
-MavenPrivateResp>"私有Maven仓库<br>本地Maven仓库"]
-MavenNotCmd["mvn<br>|install<br>|deploy<br>|package"]
-H5FacadeGernerator["运行<br>H5|Flutter|Web<br>FacadeGenerator.java"]
-ScrTestJava["src/test/java"]
-
-```
+- ![骨架代码生成流程图](https://github.com/stategen/stategen/blob/master/system_gen_flow.svg)
 
 
 
+- ​	直观文件夹树型图:
 
-
-### 帮助
-
-- StateGen(QQ群：728343119)
-
-- 增加一篇论文介绍原理:[利用java反射和java-parser制作可以迭代、分布式、全栈代码生成器的研究](https://github.com/stategen/stategen/blob/master/%E5%88%A9%E7%94%A8java%E5%8F%8D%E5%B0%84%E5%92%8Cjava-parser%E5%88%B6%E4%BD%9C%E5%8F%AF%E4%BB%A5%E8%BF%AD%E4%BB%A3%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E3%80%81%E5%85%A8%E6%A0%88%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E7%A0%94%E7%A9%B6.md)    
-
-### 关于Ibatis or MyBatis or hibernate 和dalgenX
-1.  SSH架构火了10年，其中hibernate支持自动生成sql的优势功不可没，但是再牛逼程序也不能满足复杂的sql自动生成,于是hibernate允许在java代码里掺杂hql和sql.
-1.  上面的本意是给编程带来方便,但是一旦这个大门打开，就不能阻止开发人员进入，当java代码中混入大量的sql或hql后，项目离死也就不远了，除了难以维护，DBA也无法参与后期优化.
-1.  当年，同期发展的ibatis被hibernate打得措手不及，由apache的顶级项目变成弃儿.但是正是ibatis的缺点：手写sql,解决了hibernate的先天不足，由是很多人在web2.0时代又重新转向了SSI架构。
-1.  但是ibatis需要大写的手写配置，特别是xml配置,于是又出现了MyBatis(我个人认为改名的很大原因是应对apache版权),稍微减轻了一些手写配置的开发工作量。   
-1. 后来又出现了MyBatis Plus（国人开发的？），不用写sql，但好像又回到了hibernate？噢耶！
-1. 除非有StateGen中的dalgenX... 
-
-### 市面上代码生成器分类
-1. 一次性脚手架式：一次性生成/覆盖目标代码,用在项目初始化,如：maven初始化项目、各种网页配置生成。  
-2. 持续脚手架式：分步生成/覆盖目标代码,如：MyBatis/Ibatis/Hibernate/ generator、dalgen,各种网页配置生成。  
-3. 在已编辑的目标代码上再次生成。 如：StateGen(**全网目前唯一?**).
-目前市面上的代码生成器都是前2种，而StateGen三种都有，StateGen开发生成器属于第3种.    
-如果生成器只有前面2种，而为了不挖坑,要么只能做比较基本的生成，要么集成当时市面上所有时髦的技术，增加学习成本不说，
-很快这些时髦都成为不时髦而且甩不掉的累赘，形成更大的坑，维护成本巨大。 
-stategen采用第三种生成方式可以豪无限制地兼容其它技术，所以无需扯一些不需要的技术当噱头、还把挖坑还当卖点。 
-
-### 开发人员对前端代码生成器的担忧
-1.  很多crud前端代码生成器是基于后端配置的，也把很多公司拖到坑里，以致于一些前端开发人员一听到名称就害怕和抵触。
-1.  原因是这些生成的前端代码没有遵从软件设计原则，也限死前端开发人员。而StateGen前端代码生成器开发目的是作为前端开发人员辅助工具，其中最重要的一条，始终遵守依赖倒置原则(DIP)，它给了开发人员最大的灵活度实现倒置部分代码，因此不会限死前端开发。
-## 一：StateGen后端骨架代码初始化、StatGen架构的项目(springMVC，web3.0,也可再一键转换为springBoot)
-1. 遵从常用架构设计原则（单一职责、开闭、接口隔离、无环依赖），通过在gen_config.xml配置,也可以将几个jar包合并。**觉得springMVC项目从头到尾只需一个jar可以不用往下看**。
 ```
 trade (trade相当于微服务中当前服务名、系统名)
 ├── 1-trade-pojo
@@ -320,29 +89,209 @@ trade (trade相当于微服务中当前服务名、系统名)
 │       └── stategen
 └── tables
 ```
-2. 无限个web(7-...)，共同依赖相同的dao,遵循一个数据库只能有一套crud代码（**Martin大神的不重复规范**，支付宝框架的也是如此。实际开发中，当需求变了导致表变化时，假如有多套代码操作相同的表，那简直是找死，更何况假如有些代码还不属于当前开发管理,找人吧，开会吧，扯皮吧，最后拖死项目,据说有项目1天的工期因此排了半年），
-1. 文件夹以数字形式开头自上而下1-,2-,3-...，方便在eclipse或idea中在项目结构上一目了然依赖关系（看到某大型商业架构dao跑到pojo的上面，每次打开项目都要花一定的时间开闭包原则，很不舒服）
-1. 微服务放在war包里，多微服务依赖时，依赖服务可以一起放在java(如tomcat)容器中，调试和发布方便，不用单独启动。
-1. facade对应的jar直接可以直接发布到本地公司仓库，它的远程配置自动生成，别的项目集成时，不需要写相关的配置，节约时间减少人工出错。
-1. 除1-pojo，2-facade外，其它jar包都以snapshot结尾，进一步避免将有业务代码的jar包发到maven仓库中
-1. 所有bean全部显式配置在xml中，项目进行很久管理上都不会乱
-   骨架代码中的xml,涉及到bean,通常有2个,通常*-manual-*.xml里面内容为空（满足开发者自定义）,而auto不需要手工修改,每次新bean由dalgenX自动添加.
+-  #### 迭代开发流程图
+    - 虚线为人工代码参与点
+
+    - 实线为maven或系统自动装配
+    - 粗实线为dalgenX自动生成和迭代的线路
+    - 从流行程上来看，
+      - **dalgenX没有改变原开发模式**
+      - **保留之前工作代码成果，新生成代码增量添加**
+      - **人工编写的代码可以做到仅限业务**
+
+![迭代开发流程图](https://github.com/stategen/stategen/blob/master/dalgenx_gen_flow.svg)
+
+- #### 快速开始
+  - ##### 运行环境
+
+>  服务端/windows(linux类似)
+>  > A.	java 1.8+  
+>  > B.	maven 3  （3.5.0有bug,请使用3.5.2+）
+>  > C.	mysql5.7  
+>  > D.	gitbash(安装git2.0 自带,目的是可在windows上执行bash脚本)  
+>  > E.	 nacos-server-1.3.2 (因为目前架构中用到的spring cloud alibaba denpencies版本为2.2.3,其中限定nacos client为1.3.3,它与nacos1.4.0-server通信有障碍，本架构用于生产，不在尝鲜版上纠缠，等他们稳定了再升级)
+>  > F.	sentinel dashboard-1.8.0    ps：因为在dashboard上操作不能反向持久化到nacos中，有大神制了了nacos反向持久化版，我稍微忧化，欢迎下载使用,https://github.com/stategen/sentinel-dashboard-nacos,它的启动方式是这样的:
+>  >
+>  > ```
+>  > java -Dnacos.server-addr=localhost:8848 -Dserver.port=8880 -Dcsp.sentinel.dashboard.server=localhost:8880 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard-nacos-1.8.0.jar
+>  > ```
+>  > G.	seata-server-1.4.0
+
+- ##### 开发环境安装
+
+因项目依赖jars我已经发布maven中央仓库了，不需要使用者再辛苦自行编译，只需要下载 dalgenX,这是一个GMAVEN项目,
+1.  配置 dalgenX
 ```
-├── src/main/resources
-│   ├── *-auto-*.xml
-│   ├── *-manual-*.xml
+git clone https://github.com/stategen/dalgenx.git
 ```
-1.  frontend采用git子项目管理的方式，迭代中接口和前端版本保持一致，后端可以直接输出相关前端api代码(我本人特烦给前端制作文档或者口头文档，1是文档同步很难，2是文档容易前后端扯皮，3是文档很花时间，与其扯皮不如直接给代码，stategen中的progen可以直接把后端api转换为前端相关的代码，一了百了，后端一行回车搞定前端相关的人工代码)
-1. 5-service-impl是对5-service（继承自2-facade中的service)的全部实现，本地service从在本地找，不至于像一些煞笔框架一样也从微服务中找，
-1. 2-facade中的service结尾可配置系统名（如UserSerivceTrade），这样可以清楚地理解是本地服务还是远程服务，服务出现问题也好定位或定位到项目owner,
-1. 有些情况下，微服务中渴望用到继承(如User属于一个微服务中，Teacher 是当前开发的服务，是对User的拓展，这时继承远比共同复用原则合适)，环顾一下各大型系统好像都没有这么解决,不是写convertor就是用BeanUtils复制到DTO中，但这很容易在迭代中出现版本兼容问题。目前stategen中采用fastjson+dalgenX很好解决远程bean继承问题，fastjson也能保证转换效率,一些依赖jdk版本中AST信息的远程序列化比如kryo（我没深入研究，只是测试没通过）是有问题的，json则不存在。
-1.  **stategen生成的后端骨架代码(springMVC)也可以一键转换为springboot**
-1. 架构方案全部在springMVC的技术范畴中解决，是技术整合，不是创造技术（我个人认为在非底层上，所谓创造技术有涉嫌重复造轮子和挖坑的嫌疑，我是不会干的!）  
-2. 
-## 二、stategen对服务端代码的增强介绍
+2. 设置 DALGENX_HOME 环境变量为 dalgenx所在目录  
+3. 将 %DALGENX_HOME% 添加至 PATH 中  
+
+4. Ide中配置（eclipse|myeclipse|idea）xml文件，方便开发时，打字提示.
+
+>>location: {DALGENX_HOME}\gen.schemas-1.0.dtd  
+>>key type: system Id  
+>>key: https://github.com/stategen/dalgenx/blob/master/gen.schemas-1.0.dtd
+
+- ##### 用命令初始化系统及项目/范例
+
+1.  帮助
+```
+gen.sh -h
+```
+2.  创建系统骨架,注意，骨架|脚手架生成器操作是幂等的，可以多次执行. -e 是当有错误时，输出错误信息.
+```
+gen.sh system com.mycompany.biz trade -e  
+```
+>>com.mycompany.biz 为包名   
+>>trade 系统名 /数据库名 dubbo 系统名  
+至些，一个StateGen系统创建完成,接下来添加项目，可以无限添加项目，它们尊从同一个数据库只有一套crud服务的原则.减少扯皮，减少在泡在会议室的时间，改完了表，必须改想关的影响点(因为在同一个系统中，ide会帮你发现兼容bug)
+
+3.  创建app web api 项目  (可选) ,
+```
+gen.sh project app h5 –e  //创建后端项目时，同时创建前端,前端目前有3个模版 h5,web,flutter 
+也可以,
+//**h5和web对应的前端是nodojs项目，ssr模式，因此打包时,maven插件会编译前端，因些需要安装nojs和yarn,也可到7-tradeApp的pom.xml中，把编译注释掉**
+gen.sh project app –e    //不生成前端 ,以后再运行上面命令也可以,无需担心已有的代码会被覆盖.
+// **视频里是旧版，gen.sh project app app –e ,要把后一个app改为h5 **
+
+gen.sh project app flutter –e  //因为app项目止面已创建，生成器会判断，它只创建了一个flutter 前端
+
+//或者时入子目录
+cd 7-trade-web-app
+gen.sh client flutter -e //这样也可以创建flutter前端
+```
+
+4.  创建cms web 项目  (可选,也可以以后再创建)
+```
+gen.sh project cms web –e 
+也可以 
+gen.sh project cms –e 
+```
+>>cms 项目名称
+>>web 以web(模版所在的文件夹生成前端) ，目前提供2个模版web|app，不要这个参数，即没有前端
+
+5.  创建shedule项目,不带前端  (可选,也可以以后再创建)	
+```
+gen.sh project schedule –e  //无前端，可以跑定时任务
+```
+
+//变为git版本控制, trade 为git 项目，app-frontend-flutter为trade的子项目 
+cd app-frontend-flutter
+sh git_add_to_parent_as_sub.sh
+```
+
+6.	环境及表  
+>> 创建trade数据库并运行 运行 trade.sql 也可以建一个空表.
+>>把opt复制到同盘(tomcat所以盘或者你的ide同盘，这样目的是保持开发和运行环境一致。windows下/opt指的容器同盘目录)根目录下,修改stategen.xml中的数据库配置,只需要关注mysql,nacos，相关配置，zookeeper和redis可以不用管
+>>7-xxx下的stategen.xml相关的内容合并到/opt/config/stategen/stategen.xml中
+>>修改gen_config.xml中的开发数据库配置  
+>>因为一些文件可以用生成器获取，所以不在版本控制里，先后在 gitbatsh中运行 tablebatch.sh 和 dalbatch.sh ,空表的不需要
+```
+
+```
+sh ./tablebatch.sh 
+sh ./dalbatch.sh 
+```
+
+
+
+```
+8.  sourceTree查看,修改项目提交地址，提交  
+
+#### 一个典型Stategen 系统 结构图
+![Image](https://github.com/stategen/docs/blob/master/stg-fm-bbr.png) 
+
+
+#### 演示Teacher需求开发 (一键开发，一键迭代,显式代码，所见即所得)
+```
+DROP TABLE IF EXISTS `teacher`;
+CREATE TABLE `teacher` (
+  `teacher_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '老师ID',
+  `teacher_name` varchar(64) DEFAULT NULL COMMENT '老师名',
+  `password` varchar(64) DEFAULT NULL COMMENT '密码，测试，明文',
+  `role_type` varchar(32) DEFAULT NULL COMMENT '老师角色 ADMIN,DEFAULT,DEVELOPER',
+  `name` varchar(64) DEFAULT NULL COMMENT '姓名',
+  `nickName` varchar(32) DEFAULT NULL COMMENT '别名',
+  `age` int(11) DEFAULT NULL COMMENT '年龄',
+  `address` varchar(255) DEFAULT NULL COMMENT '详细地址',
+  `avatar_img_id` varchar(64) DEFAULT NULL COMMENT '头像 ID',
+  `email` varchar(128) DEFAULT NULL COMMENT '邮箱',
+  `vali_datetime` datetime DEFAULT NULL COMMENT '认证时间',
+  `birthday_date` date DEFAULT NULL COMMENT '出生日期',
+  `work_time` time DEFAULT NULL COMMENT '工作时间',
+  `province_id` varchar(64) DEFAULT NULL COMMENT '省份 ID',
+  `city_id` varchar(64) DEFAULT NULL COMMENT '城市 ID',
+  `status` varchar(64) DEFAULT NULL COMMENT '状态 enum',
+  `grade` bigint(2) DEFAULT NULL COMMENT '级别',
+  `sex` tinyint(1) DEFAULT NULL COMMENT '性别',
+  `post_address_id` bigint(20) DEFAULT NULL COMMENT '邮寄地址 ID',
+  `remark` text,
+  `create_time` datetime(6) DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime(6) DEFAULT NULL COMMENT '更新时间',
+  `delete_flag` int(1) DEFAULT NULL COMMENT '是否删除 (0:正常，1删除)',
+  PRIMARY KEY (`teacher_id`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `teacher_name` (`teacher_name`),
+  KEY `province_id` (`province_id`),
+  KEY `city_id` (`city_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+```
+>1.运行命令生成表sql配置和java代码 (或者在6-${systemName}-web-base/test下运行 DevGennerator.java)
+```
+gen.sh table teacher –e
+```
+>2.检查teacher.xml对应的java类是否正确，去掉?及一行空格
+```
+gen.sh dal teacher –e
+```
+>3.F5刷新eclipse 检查import是否完整  
+>4.手动做一个controller或者用命令初始化一个controller
+```
+gen.sh api teacher cms|app
+```
+>5.	eclipse打开查看是否有代码错误
+
+
+#### 生成前端代码，开发前端
+>1.	运行test/UmiFacadeProcessor.java   
+>2.	webstorm打开前端代码 ，配置webpack解读代码  
+>3.	yarn 下载前端依赖  
+>4.	fiddler 脚本设置 onBeforeRequest 函数中        
+
+```
+        var url:String=oSession.PathAndQuery;
+      
+        if (oSession.host=="localhost:8000") {         
+            if ( url.StartsWith("/tradeCms/api/") || url.StartsWith("/tradeCms/uploads/") ) {
+                oSession.host="localhost:8080";
+            }            
+        } 
+        else if (oSession.host=="localhost:8001") {
+            if ( url.StartsWith("/tradeApp/api/") || url.StartsWith("/tradeApp/uploads/") ) {
+                oSession.host="localhost:8080";
+            }            
+        }
+```
+
+>5.	后端发布到eclipse tomcat中,运行  
+>6.	yarn run dev  
+>7. 后端代码变化后， 直接运行对应的 XXXFacadeProcessor.java，前端可实时开发编译
+
+
+
+
+#### 帮助
+
+- StateGen(QQ群：728343119)
+
+- 增加一篇论文介绍原理:[利用java反射和java-parser制作可以迭代、分布式、全栈代码生成器的研究](https://github.com/stategen/stategen/blob/master/%E5%88%A9%E7%94%A8java%E5%8F%8D%E5%B0%84%E5%92%8Cjava-parser%E5%88%B6%E4%BD%9C%E5%8F%AF%E4%BB%A5%E8%BF%AD%E4%BB%A3%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E3%80%81%E5%85%A8%E6%A0%88%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E7%A0%94%E7%A9%B6.md)    
+
+#### stategen对服务端代码的增强介绍
   Stategen要做的事，尽量地合理实现一个商业框架（不是开源后阉割版的那种）。一些过时的技术比如osgi摈弃，尽量在spring技术范围内解决。一些拓展点技术（非spring）我个人觉得对业务代码没有帮助而是挖坑（大牛一走，项目搞不下去了）
-1.  @Wrap对返回置封装
-```java
+1.  @Wrap对返回置封装,对业务代码**零侵入**
+​```java
         //以前的代码是这样地恶心
         @SuppressWarnings("unchecked")
         @ResponseBody
@@ -390,7 +339,7 @@ trade (trade相当于微服务中当前服务名、系统名)
 ```
 ```java
         //当@wrap一次性配到controller上时，也可以把个别api除外
-        @Wrap(exclude=true)
+        @Wrap(false)
         @ResponseBody
         @RequestMapping("deleteUserById")
         public String deleteUserById(String userId){
@@ -533,6 +482,7 @@ stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由
             </list>
         </property>
     </bean>
+    <!-- stg.2.3.0.RELEASE配在bootstrap.yml中 -->
 ```
 ```properties
     #application.properties
@@ -544,7 +494,7 @@ stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由
     <import resource="classpath*:uid/cached-uid-spring.xml" />
     <bean id="idGenerator" class="com.mycompany.biz.service.impl.IdGeneratorImpl"/>
 ```
-8. 开关注册 dubbo服务
+8. 开关注册 dubbo provider服务。默认是开启的，但有些小系统比如跑定时任务的，它只是微服务的消费者可以不是生产者，这种配置可以做到，配在application.yml则不行.
 ```xml
     <!-- 反注释 dubbo-provider-spring.xml 中的 -->
     <!-- <import resource="classpath*:context/dubbo-provider-auto-*.xml" /> -->    
@@ -553,68 +503,48 @@ stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由
 
 9. 国际化...以后再讲，我觉得也很屌
 
-## 三、  dalgenX后端代码生成器 vs 常用后端代码生成器，为什么要有dalgenX?
-1. 一些通用orm生成器各有优缺点，带来方便也带来麻烦，**特别是二次迭代生成、对开发和线上都是灾难**，故统统不能达到我的要求。我个人觉得这其中最好的是支付宝的dalgen,由天才程序员**程立**博士(支付宝CTO/首席架构师,现阿里巴巴CTO，太有钱)开发。可惜，除支付宝外，外界知名度和使用率不高，可能是dalgen不开源吧.  
-1. 直到2015年前我在taocode找到dalgen的freemarker简单开源实现，作者是**badqiu**. GMAVEN项目(可以通过简单的groovy语句直接调用)，我喜欢。
-1. 上面的dalgen只能算demo,无法用于生产,但是思路完备，我结合工作中完善、改造升级，现在已很好地用于生产，实际使用效果比支持宝的dalgen还方便，特别是**支持迭代开发**，这是代码生成器史上质的飞跃。由是改名叫dalgenX,之所以没有用其它的名子，是向2位天才和前人致敬。     
-1.  dalgenX和dalgen一样，以及本架构内的前端生成器、脚手架，都属于开发阶段生成器，只生成预期的目标代码，**不参与编译期和运行期，所见即所得，离开dalgenx生成后的项目也是完整的**，里氏替换原则都不需要。
+## 
+11. dalgenX生成器支持在ibatis和mybatis语言两种orm之间切换:
 
-1. 考虑到项目经常迭代导致表会更改，特意把一个表的sqls分成2个文件,xml文件中为开发手工书写的sql,没有或者没有或少量,xhtml为常用crud及一些便利的sqls,被引用在xml文件中, 以user表为例 user.xml引用user.xml.xhtml为作为自己的一部分，这样迭代时维护的代码量最小最安全。
-```
-trade
-└── tables
-│   └── user.xml
-│   └── user.xml.xhtml
-```
-2. dalgenX支持ibatis和mybatis任选其一作为生成目标代码，需要说明是，ibatis(现在叫mybatis2)和mybatis3在github上分二条线同时一直都有官方维护，并不是mybatis3对mybatis2升级的关系，我个人以为mybatis3有一个不能接受的巨坑--ognl表达式，那是ssh特别流行的时候，mybatis急于想榜上struts2这条大腿，然后被struts2带沟里了。另外，mybatis3比mybatis2慢20%（我自己测过，不算权威数据）。
-3. dalgenX采用与ibatis相似但比ibatis更为简单sql，一眼能看出效果，使用ibatis的isNotNull,isNotEmpty...等标签，当需要转换为mybatis3的ognl时，自动调用mybatis的官方转换规则转换.
 ```xml 
     <!-- gen_config.xml中 -->
     <!-- ibatis,mybatis,最下面覆盖上面，最下面优先 ，修改顺序后，需要重新运行一次 ./dalbatch.sh 批量生成-->
     <entry key="dao_type">mybatis</entry>
     <entry key="dao_type">ibatis</entry>
 ```
+12. dalgenx借鉴了dart和typescript等先进语言, 有几个语法糖如下，可以减少where条件书写工作量，使sql简洁易懂(注：语法糖会被编译成最终sql，不参与运行期)
 ```xml
     <!-- user.xml中一条方法，这个是自动生成的，如果手工书写时，有提示帮助-->
     <!-- a.username 不需要写 小驼峰名称，以及jdbctype参数，
     不需要写返回值对照配置，由dalgenX生成User-sqlmap-mapping.xml自动生成 -->
-    <operation name="getUserByUsername" multiplicity="one" remarks="">
+    <operation name="..." remarks="">
         <sql>
-           select
-             a.user_id,
-             a.username,
-             a.password,
-             a.role_type,
-             a.name,
-             a.nickName,
-             a.inter_code,
-             a.mobile,
-             a.age,
-             a.address,
-             a.avatar_img_id,
-             a.email,
-             a.vali_datetime,
-             a.birthday_date,
-             a.work_time,
-             a.province_id,
-             a.city_id,
-             a.status,
-             a.grade,
-             a.sex,
-             a.post_address_id,
-             a.remark,
-             a.update_time,
-             a.create_time,
-             a.delete_flag
-           from user a
-           where
-             a.delete_flag = 0
-             and a.username = ?
+            select
+            a.user_id,
+            a.username,
+            a.name,
+            a.nickName,
+            a.code,
+            a.grade,
+            a.status
+            from user a
+            where
+            a.delete_flag = 0
+            and a.username=? /*必选条件,省略参数名*/
+            and a.name like #cstmName# /*必选条件*/
+            and a.username=?? /*动态条件,省略参数名*/
+            and a.nickName=?#nkName# /*动态条件*/
+            and a.code > ? /*必选条件,省略参数名*/
+            and a.grade &lt; #gradeList# /*必选条件*/
+            and a.grade in ?? /*动态条件,省略参数名*/
+            and a.status not in ?#statusList#  /*动态条件*/
         </sql>
+
     </operation>
 ```
-#####  注：dalgenx借鉴了dart和typescript等先进语言, 有几个语法糖如下，可以减少where条件书写工作量，使sql简洁易懂(注：语法糖会被编译成最终sql，不参与运行期)
+#####  
 1. in语法糖: 
+
 ```sql
  a.mobile in ?
 ```
@@ -704,7 +634,9 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
 	}
 	...
 ```
-4. **dalgenx支持水平权限**生成规则。水平权限要完全做到绕开暴力尝试,或者避免在别的api中泄露id被利用,显然，采用复杂id(uid、随机)生成方式治标不治本。同时，要兼顾代码速度、迭代、人员权限调整、下面简要地阐述一种水平权限方案，可以直接由dalgenX生成器来生成，大大降低开发成本，非常适合产品需求上的迭代，代码可以做到以不变应万变.
+- ##### dalgenx将水平权限（数据权限）融入架构中解决
+
+1. 生成规则。水平权限要完全做到绕开暴力尝试,或者避免在别的api中泄露id被利用,显然，采用复杂id(uid、随机)生成方式治标不治本。同时，要兼顾代码速度、迭代、人员权限调整、下面简要地阐述一种水平权限方案，可以直接由dalgenX生成器来生成，大大降低开发成本，非常适合产品需求上的迭代，代码可以做到以不变应万变.
 ```
    A.定义一个组织架构表比如orgnization，树型数据 orgId, parentId
    B.把用户（即水平权限中的数据操作员）人分配到组织上（org_user表）,
@@ -721,7 +653,7 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
      和参数：Boolean inclCurrOrgId, Long currOrgId, String currUserId
    G.由程序员在调用topicService的方法时，自由控制inclCurrOrgId，currOrgId，currUserId
 ```
-5. dalgenX兼顾避免一些开发习惯上的坑。比如
+- ##### dalgenX兼顾避免一些开发习惯上的坑。比如
 ```java
    /*根据主键查询，一般dao中的方法名是getById,
    我们在很多遗留的代码中，经常review到下面这样的代码，，
@@ -744,7 +676,7 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
    userById.method2();
    userById.method3();   
 ```
-6. dalgenX在Service中生成一些符合合成/复用原则（CARP）的java代码，这种开发规范好理解也节约业务层大量开发
+- ##### dalgenX在Service中生成一些符合合成/复用原则（CARP）的java代码，这种开发规范好理解也节约业务层大量开发
 ```java
 public class UserServiceImpl implements UserService {
     
@@ -774,7 +706,7 @@ public class UserServiceImpl implements UserService {
 ```
 
 
-## 四 、前端生成器
+#### 四 、前端生成器
    >1. 生成器适合响应式前端，不是旧式的mvc的jsp,jquery,easyui或者类似的冬冬.  
    >1.  对于后端一个任意给定的api,其对应的前端网络调用、数据状态化、交互代码基本都是确定和没有歧义的，既然是确定的，说明是规有律性的，找到规律就可以实现机器来生成，
    stategen在不增加学习和额外开发成本的情况下找到了这种规律，它避免了以往手工或半手工导致的不规范而增加开发、维护成本。现在stategen可以自动秒撸  
@@ -1089,165 +1021,7 @@ abstract class TopicCommand {
 本说明视频演示请移步[Stategen快速调试开发运行精简教程](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)  
 视频中的相关文档，请见 https://github.com/stategen/docs    
 
-## 六、 Stategen快速调试运行
 
-#### 运行环境
->1.	服务端/windows
->>A.	java 1.8  
-B.	maven 3  （3.5.0有bug,请使用3.5.2+）
-C.	mysql5.7  
-D.	gitbash(安装git2.0 自带)  
-E.	nodejs8+yarn  
->2.	只开发前端/客户端   
->>A.	nodejs8+yarn｜andriod studio| flutter
-  因为stg工程是git管理的， 前端是一个整个git项目的子项目
-
-#### 开发环境安装
-因项目依赖jar已经在maven中央仓库，只需要 git dalgenX即可
-1.  配置 dalgenX
-```
-git clone https://github.com/stategen/dalgenx.git
-```
->>设置 DALGENX_HOME 环境变量为 dalgenx所在目录  
->>将 %DALGENX_HOME% 添加至 PATH 中  
-#### Ide中配置（eclipse\idea）
->>1.  location: {DALGENX_HOME}\gen.schemas-1.0.dtd  
-key type: system Id  
-key: https://github.com/stategen/dalgenx/blob/master/gen.schemas-1.0.dtd
-
-#### 用命令初始化系统及项目/范例
-1.  帮助
-```
-gen.sh -h
-```
-2.  创建系统骨架,注意，骨架|脚手架生成器重复运行，不会覆盖已有文件，但会补充不存在的文件
-```
-gen.sh system com.mycompany.biz trade -e  
-```
->>com.mycompany.biz 为包名   
->>trade 系统名 /数据库名 dubbox 系统名    
-
-3.  创建cms web 项目  (可选)
-```
-gen.sh project cms web –e  
-```
->>cms 项目名称
->>web 以web(模版所在的文件夹生成前端) ，目前提供2个模版web|app，不要这个参数，即没有前端
-
-4.  创建shedule项目,不带前端 (可选)	
-```
-gen.sh project schedule –e  
-```
-
-5.  创建app web api 项目  (可选)
-```
-gen.sh project app h5 –e  
-// **视频里是旧版，gen.sh project app app –e ,要把后一个app改为h5 **
-//再创建一个客户端 比如 flutter
-gen.sh project app flutter –e 
-
-//或者时入子目录
-cd 7-trade-web-app
-gen.sh client flutter -e
-
-//把项目转换为sprintboot 
-gen.sh boot -e
-
-//变为git版本控制, trade 为git 项目，app-frontend-flutter为trade的子项目 
-cd app-frontend-flutter
-sh git_add_to_parent_as_sub.sh
-```
-
-6.	环境及表  
->> 创建trade数据库并运行 运行 trade.sql
->>把opt复制到同盘(tomcat所以盘)根目录下,修改stategen.xml中的数据库配置
->>修改gen_config.xml中的数据库配置  
->>因为一些文件可以用生成器获取，所以不在版本控制里，先后在 gitbatsh中运行 tablebatch.sh 和 dalbatch.sh  
-```
-./tablebatch.sh 
-./dalbatch.sh 
-```
-8.  sourceTree查看,修改项目提交地址，提交  
-
-#### 一个典型Stategen 系统 结构图
-![Image](https://github.com/stategen/docs/blob/master/stg-fm-bbr.png) 
-
-
-#### 演示Teacher需求开发 (一键开发，一键迭代,显式代码，所见即所得)
-```
-DROP TABLE IF EXISTS `teacher`;
-CREATE TABLE `teacher` (
-  `teacher_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '老师ID',
-  `teacher_name` varchar(64) DEFAULT NULL COMMENT '老师名',
-  `password` varchar(64) DEFAULT NULL COMMENT '密码，测试，明文',
-  `role_type` varchar(32) DEFAULT NULL COMMENT '老师角色 ADMIN,DEFAULT,DEVELOPER',
-  `name` varchar(64) DEFAULT NULL COMMENT '姓名',
-  `nickName` varchar(32) DEFAULT NULL COMMENT '别名',
-  `age` int(11) DEFAULT NULL COMMENT '年龄',
-  `address` varchar(255) DEFAULT NULL COMMENT '详细地址',
-  `avatar_img_id` varchar(64) DEFAULT NULL COMMENT '头像 ID',
-  `email` varchar(128) DEFAULT NULL COMMENT '邮箱',
-  `vali_datetime` datetime DEFAULT NULL COMMENT '认证时间',
-  `birthday_date` date DEFAULT NULL COMMENT '出生日期',
-  `work_time` time DEFAULT NULL COMMENT '工作时间',
-  `province_id` varchar(64) DEFAULT NULL COMMENT '省份 ID',
-  `city_id` varchar(64) DEFAULT NULL COMMENT '城市 ID',
-  `status` varchar(64) DEFAULT NULL COMMENT '状态 enum',
-  `grade` bigint(2) DEFAULT NULL COMMENT '级别',
-  `sex` tinyint(1) DEFAULT NULL COMMENT '性别',
-  `post_address_id` bigint(20) DEFAULT NULL COMMENT '邮寄地址 ID',
-  `remark` text,
-  `create_time` datetime(6) DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime(6) DEFAULT NULL COMMENT '更新时间',
-  `delete_flag` int(1) DEFAULT NULL COMMENT '是否删除 (0:正常，1删除)',
-  PRIMARY KEY (`teacher_id`),
-  UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `teacher_name` (`teacher_name`),
-  KEY `province_id` (`province_id`),
-  KEY `city_id` (`city_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
-```
->1.运行命令生成表sql配置和java代码 (或者在6-${systemName}-web-base/test下运行 DevGennerator.java)
-```
-gen.sh table teacher –e
-```
->2.检查teacher.xml对应的java类是否正确，去掉?及一行空格
-```
-gen.sh dal teacher –e
-```
->3.F5刷新eclipse 检查import是否完整  
->4.手动做一个controller或者用命令初始化一个controller
-```
-gen.sh api teacher cms|app
-```
->5.	eclipse打开查看是否有代码错误
-
-
-#### 生成前端代码，开发前端
->1.	运行test/UmiFacadeProcessor.java   
->2.	webstorm打开前端代码 ，配置webpack解读代码  
->3.	yarn 下载前端依赖  
->4.	fiddler 脚本设置 onBeforeRequest 函数中        
-
-```
-        var url:String=oSession.PathAndQuery;
-  
-        if (oSession.host=="localhost:8000") {         
-            if ( url.StartsWith("/tradeCms/api/") || url.StartsWith("/tradeCms/uploads/") ) {
-                oSession.host="localhost:8080";
-            }            
-        } 
-        else if (oSession.host=="localhost:8001") {
-            if ( url.StartsWith("/tradeApp/api/") || url.StartsWith("/tradeApp/uploads/") ) {
-                oSession.host="localhost:8080";
-            }            
-        }
-```
-
->5.	后端发布到eclipse tomcat中,运行  
->6.	yarn run dev  
->7. 后端代码变化后， 直接运行对应的 XXXFacadeProcessor.java，前端可实时开发编译
 
 #### 打包 前后端 （注意：因为stategen编译前端是在maven test阶段，所以不能添加参数 -Dmaven.test.skip=true）
 ```

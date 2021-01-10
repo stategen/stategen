@@ -1,0 +1,155 @@
+graph TD
+sqlUser-."需求技术分析后<br>增添或修改字段".->sqlUser
+sqlUser-.->tableCmd
+tableCmd==>dalgenXtable
+dalgenXtable=="生成后不再覆盖"==>userXml
+dalgenXtable=="自动生成覆盖"==>userXthml
+userXthml--"xml引用装配给"-->userXml
+userXml-."少量自定义sql<br>ibatis语法+辅助提示<br>借鉴Typescript判空语法糖".->userXml
+
+userXml-.->dalCmd
+
+dalCmd=="sql 通过"==>dalgenXDal
+dalCmd=="sql 失败"==>userXml
+dalgenXDal==>dalAutoFacade
+dalgenXDal==>dalAutoDao
+dalgenXDal==>dalAutoCtrollerBase
+dalgenXDal==>dalAutoService
+
+dalAutoFacade=="生成"==>dubboRefXml
+dalAutoFacade=="自动保留自定方法"==>UserServiceTrade
+UserServiceTrade-."添加方法".->UserServiceTrade
+dalAutoFacade=="自动保留自定义字段和方法<br>无DDD模式失忆问题<br>并归类到不同的代码区域<br>自定义代码一目了然"==>UserJava
+
+dalAutoDao=="自动保留import"==>UserDao
+dalAutoDao=="自动保留import"==>UserDaoImpl
+dalAutoDao=="生成"==>daoXml
+dalAutoDao=="生成"==>userBatisMapping
+
+dalAutoService=="自动保留自定义方法"==>UserService
+dalAutoService=="自动保留自定义方法和字段<br>自动保留修改过的方法<br>只增量追加新的方法"==>UserServiceImpl
+dalAutoService=="生成"==>serviceXml
+dalAutoService=="统计全部ServiceTrade<br>有方法的FacadeSerive会被保留"==>dubboProviderXml
+
+dalAutoCtrollerBase=="自动保留自定义方法和字段<br>自动保留修改过的方法<br>只增量追加新的方法"==>UserControlerBase
+
+UserJava-->TradePojoJar
+OtherJojo-->TradePojoJar
+enums-->TradePojoJar
+
+TradePojoJar-->TradeFacadeJar
+dubboRefMenulXml--> TradeFacadeJar 
+dubboRefXml-->TradeFacadeJar
+UserServiceTrade-->TradeFacadeJar
+otherFacadeFiles-->TradeFacadeJar
+
+TradePojoJar-.->MavenCmd
+TradeFacadeJar-.->MavenCmd
+MavenCmd-->MavenPrivateResp
+
+TradeFacadeJar-->TradeDaoJar
+UserDao-->TradeDaoJar
+UserDaoImpl-->TradeDaoJar
+daoXml-->TradeDaoJar
+userBatisMapping-->TradeDaoJar
+
+TradeDaoJar-->MavenNotCmd
+MavenNotCmd--"X 不会被发布"-->MavenPrivateResp
+otherFacaeJar-->intergradeJar
+
+TradeDaoJar-->TradeSeriveJar
+UserService-->TradeSeriveJar
+serviceXml-->TradeSeriveJar
+UserServiceImpl-->TradeSeriveJar
+dubboProviderXml-->TradeSeriveJar
+serviceManualXml-->TradeSeriveJar
+intergradeJar-->TradeSeriveJar
+otherServiceJava-->TradeSeriveJar
+otherServiceJava-."IDE或编译器<br>发现兼容bug并修正".->otherServiceJava
+TradeSeriveJar-->MavenNotCmd
+
+TradeSeriveJar--"遵从同一个数据库<br>只有一个套crud服务的法则"-->TradeWebBaseJar
+commonControllers-->TradeWebBaseJar
+UserControlerBase-->TradeWebBaseJar
+UserControlerBase-."增加自定义方法和字段".->UserControlerBase
+commonControllers-."IDE或编译器<br>发现兼容bug并修正".->commonControllers
+TradeWebBaseJar-->MavenNotCmd
+H5FacadeGernerator-->ScrTextJava
+ScrTestJava--->TradeApp
+TradeWebBaseJar--->TradeApp
+
+TradeWebBaseJar-->TradeCms
+TradeWebBaseJar-->TradeXxx
+TradeApp-."IDE或编译器<br>发现兼容bug并修正".->TradeApp
+TradeCms-."IDE或编译器<br>发现兼容bug并修正".->TradeCms
+TradeXxx-."IDE或编译器<br>发现兼容bug并修正".->TradeXxx
+TradeApp-.->MavenNotCmd
+TradeCms-.->MavenNotCmd
+TradeXxx-.->MavenNotCmd
+TradeApp-."开发时手动调用".->H5FacadeGernerator
+
+MavenNotCmd-->tradeAppTarget
+MavenNotCmd--"maven插件调用"-->H5FacadeGernerator
+
+H5FacadeGernerator==>H5Progen
+H5Progen==>H5FontEndReactCode
+H5FontEndReactCode-.->H5GitPush
+H5GitPush-->H5FrontCode
+H5FrontCode-."IDE或编译器<br>发现兼容bug并修正".->H5FrontCode
+
+UserDao--impliments-->UserDaoImpl
+UserServiceTrade--extends-->UserService
+UserService--impliments-->UserServiceImpl
+
+UserJava-."添加自定义字段和方法<br>增加缺失的import".->UserJava
+UserServiceImpl-."添加自定义字段和方法".->UserServiceImpl
+UserService-."添加自定义方法".->UserService
+
+
+sqlUser(user sql table)
+dalgenXtable>"dalgenX table xml生成器"]
+tableCmd>"gen.sh table user<br>或运行DevGenerator.java"]
+dalCmd{"gen.sh dal user<br>或运行DevGenerator.java<br>parser和运行sqls"}
+dalgenXDal>"dalgenX dal生成器"]
+
+userXml["自定义sql<br>(user.xml)"]
+userXthml["基本crud sql<br>(use.xml.xhtml"]
+
+UserJava[User.java]
+UserServiceTrade[UserServiceTrade.java<br>外部接口标名系统名]
+dubboRefXml[dubbo<br>refrence xml配置]
+dubboRefMenulXml[手动dubbo<br>refrence xml配置]
+
+UserDao[UserDao.java]
+UserDaoImpl[UserDaoImpl.java]
+userBatisMapping[user batis<br>Mapping配置文件]
+UserService[UserService.java]
+UserServiceImpl[UserServiceImpl.java]
+serviceManualXml["手动 service xml"]
+serviceXml["Service xml"]
+
+TradeXxx["后端项目TradeXxx<br>springboot<br>spring cloud alibaba<br>nacos,sentinel,seata,dubbbo"]
+TradeCms["后端项目TradeCms<br>springboot<br>spring cloud alibaba<br>nacos,sentinel,seata,dubbbo"]
+TradeApp["后端项目TradeApp<br>springboot<br>spring cloud alibaba<br>nacos,sentinel,seata,dubbbo"]
+
+otherFacadeFiles["其它表Facade文件"]
+TradeFacadeJar["TradeFacade.jar"]
+H5Progen>"前端生成器<br>自动收集项目中的Controller<br>加载对应的模版<br>H5|Flutter|Web"]
+
+H5FontEndReactCode["前端交互代码<br>H5|Flutter|Web"]
+
+dalAutoFacade>"自动生成<br>迭代Facade层<br>非粗暴覆盖"]
+dalAutoDao>"自动生成<br>迭代Dao层<br>非粗暴覆盖"]
+dalAutoCtrollerBase>"自动生成<br>WebBase层<br>非粗暴覆盖"]
+dalAutoService>"自动生成<br>迭代Service层<br>非粗暴覆盖"]
+
+commonControllers["通用Controller如:<br>LoginContorller<br>DefaultController<br>..."]
+
+tradeAppTarget>生成可运行<br>jar或war]
+
+H5GitPush>git push]
+MavenCmd["mvn<br>|install<br>|deploy"]
+MavenPrivateResp>"私有Maven仓库<br>本地Maven仓库"]
+MavenNotCmd["mvn<br>|install<br>|deploy<br>|package"]
+H5FacadeGernerator["运行<br>H5|Flutter|Web<br>FacadeGenerator.java"]
+ScrTestJava["src/test/java"]

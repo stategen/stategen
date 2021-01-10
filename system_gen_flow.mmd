@@ -1,0 +1,35 @@
+graph TB
+开始-."gen.sh system com.mycompany.biz trade".->systemGen
+systemGen==>TradePojo
+systemGen==>TradeFacade
+systemGen==>TradeIntergrade
+systemGen==>TradeDao
+systemGen==>TradeService
+systemGen==>TradeWebBase
+TradePojo-->TradeFacade
+TradeFacade-->TradeDao
+TradeIntergrade-->TradeService
+TradeDao-->TradeService
+TradeService--"目的：遵从同一个数据库<br>只有一个套crud服务的法则"-->TradeWebBase
+TradeWebBase-."step2.(3个参数) <br>gen.sh project cms|app|xxx".->projectGen
+projectGen==>TradeCms
+projectGen==>TradeApp
+projectGen==>TradeXxx
+TradeApp-."gen.sh client h5|flutter|web".->clientGen
+projectGen=="或step2.(4个参数) <br>gen.sh project app h5|flutter|web"==>clientGen
+TradeWebBase-."手工添加或者<br>运行gitinit.sh".->tradeGit
+subgraph 前端   
+    clientGen==>AppH5Front
+    AppH5Front-."手工添加或者<br>运行git_add_to_parent_as_sub.sh".->AppH5FrontGit
+    AppH5FrontGit==>tradeSubGit
+end
+
+tradeSubGit=="目的，当发布时前后端版本一致"==>tradeGit
+
+systemGen>"StateGen后端系统骨架生成器"]
+projectGen>"StateGen后端项目生成器"]
+clientGen>"StateGen前端架构骨架生成器"]
+AppH5Front>"AppH5前端项目"]
+tradeGit[Trade系统git项目]
+AppH5FrontGit[AppH5前端git项目]
+tradeSubGit[Trade子git项目]
