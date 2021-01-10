@@ -24,17 +24,12 @@ web端
 - ### 我非常赞同的
   - 重复可能是软件中一切邪恶的根源。—— Robert C.Martin
 
-- ### 我的一些编程总结
-  - 硬编码和不可感知的字符串是项目迭代中的定时炸弹.  
-  - 写在规章制度里的开发规范是被人用来打破的，好的规范应该是从技术上直接框定。 
-  - 最好的沟通是避免沟通。 不应该把一些约定、常话浪费在会议室里 
-
 - ### StateGen把重复性前后端代码生成器生成
   - 轻代码?  **NO**; 
   - 用可视化界面配置生成?  **NO**
   - StateGen开变原开发模式?  **NO**
 
-- ### Stategen构成
+- ### Stategen架构的构成
   - springboot
 
     - 直接支持 jar war打包模式
@@ -43,25 +38,27 @@ web端
 
     - nacos,seata,sentinel,dubbo,开箱即用
     - 分布式  微服务+**本地服务**
-
+  
   - 后端骨架生成器
-
+    
   - 前端骨架生成器
-
+    
   - 后端可迭代开发生器(dalgen演化而来dalgenX，全网唯一可支持迭代开发??)
-
+    
   - 前端开发生成器，可把后端所有任意java api随时一键导出为前端的交互代码(mvvm,reactive,react(umi,dva,saga),flutter(provider),依据模版种类)
-
+  
+  - **没有限定使用者集成其它技术**
+  
 - ### 骨架代码生成流程图
 
   - 虚线为人工参与点
   
-- 实线为maven或系统自动装配
+  - 实线为maven或系统自动装配
   - 粗实线为StateGen自动生成的线路
   - 系统骨架和项目骨架生成器运行是**幂等**，在已有的项目上重新运行只会追加，不会覆盖.
   
-- "trade"为演示时，指stategen中的系统,app|cms|xxx指项目
-
+    - "trade"为演示时，指stategen架构中的系统,   app或cms或xxx指项目
+  
 - ![骨架代码生成流程图](https://github.com/stategen/stategen/blob/master/system_gen_flow.svg)
 
 
@@ -168,9 +165,6 @@ gen.sh project cms web –e
 也可以 
 gen.sh project cms –e 
 ```
->>cms 项目名称
->>web 以web(模版所在的文件夹生成前端) ，目前提供2个模版web|app，不要这个参数，即没有前端
-
 5.  创建shedule项目,不带前端  (可选,也可以以后再创建)	
 ```
 gen.sh project schedule –e  //无前端，可以跑定时任务
