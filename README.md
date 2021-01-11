@@ -86,19 +86,9 @@ trade (trade相当于微服务中当前服务名、系统名)
 │       └── stategen
 └── tables
 ```
--  #### 迭代开发流程图
-    - 虚线为人工代码参与点
+- #### 
 
-    - 实线为maven或系统自动装配
-    - 粗实线为dalgenX自动生成和迭代的线路
-    - 从流行程上来看，
-      - **dalgenX没有改变原开发模式**
-      - **保留之前工作代码成果，新生成代码增量添加**
-      - **人工编写的代码可以做到仅限业务**
-
-![迭代开发流程图](https://github.com/stategen/stategen/blob/master/dalgenx_gen_flow.svg)
-
-- #### 快速开始
+- #### 骨架快速开始
   - ##### 运行环境
 
 >  服务端/windows(linux类似)
@@ -109,9 +99,9 @@ trade (trade相当于微服务中当前服务名、系统名)
 >  > E.	 nacos-server-1.3.2 (因为目前架构中用到的spring cloud alibaba denpencies版本为2.2.3,其中限定nacos client为1.3.3,它与nacos1.4.0-server通信有障碍，本架构用于生产，不在尝鲜版上纠缠，等他们稳定了再升级)
 >  > F.	sentinel dashboard-1.8.0    ps：因为在dashboard上操作不能反向持久化到nacos中，有大神制了了nacos反向持久化版，我稍微忧化，欢迎下载使用,https://github.com/stategen/sentinel-dashboard-nacos,它的启动方式是这样的:
 >  >
->  > ```
->  > java -Dnacos.server-addr=localhost:8848 -Dserver.port=8880 -Dcsp.sentinel.dashboard.server=localhost:8880 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard-nacos-1.8.0.jar
->  > ```
+```
+ java -Dnacos.server-addr=localhost:8848 -Dserver.port=8880 -Dcsp.sentinel.dashboard.server=localhost:8880 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard-nacos-1.8.0.jar
+```
 >  > G.	seata-server-1.4.0
 
 - ##### 开发环境安装
@@ -171,36 +161,125 @@ gen.sh project schedule –e  //无前端，可以跑定时任务
 ```
 
 //变为git版本控制, trade 为git 项目，app-frontend-flutter为trade的子项目 
+```
 cd app-frontend-flutter
 sh git_add_to_parent_as_sub.sh
 ```
 
 6.	环境及表  
->> 创建trade数据库并运行 运行 trade.sql 也可以建一个空表.
->>把opt复制到同盘(tomcat所以盘或者你的ide同盘，这样目的是保持开发和运行环境一致。windows下/opt指的容器同盘目录)根目录下,修改stategen.xml中的数据库配置,只需要关注mysql,nacos，相关配置，zookeeper和redis可以不用管
->>7-xxx下的stategen.xml相关的内容合并到/opt/config/stategen/stategen.xml中
->>修改gen_config.xml中的开发数据库配置  
->>因为一些文件可以用生成器获取，所以不在版本控制里，先后在 gitbatsh中运行 tablebatch.sh 和 dalbatch.sh ,空表的不需要
-```
+>创建trade数据库并运行 运行 trade.sql 也可以建一个空表.
+>把opt复制到同盘(tomcat所以盘或者你的ide同盘，这样目的是保持开发和运行环境一致。windows下/opt指的容器同盘目录)根目录下,修改stategen.xml中的数据库配置,只需要关注mysql,nacos，相关配置，zookeeper和redis可以不用管
+>7-xxx下的stategen.xml相关的内容合并到/opt/config/stategen/stategen.xml中
+>修改gen_config.xml中的开发数据库配置  
+>因为一些文件可以用生成器获取，所以不在版本控制里，先后在 gitbatsh中运行 tablebatch.sh 和 dalbatch.sh ,空表的不需要
+
 
 ```
 sh ./tablebatch.sh 
 sh ./dalbatch.sh 
 ```
 
+启动TradeAppApplication.java 每个7中都有一个TradeXxxApplication.java
 
+启动成功后控制台可以看到以下信息:
 
 ```
-8.  sourceTree查看,修改项目提交地址，提交  
+	Application  is running! Access URLs:
+	servletWebServerFactory  类型	：UndertowServletWebServerFactory:
+	Local访问网址: 		http://localhost:8080/tradeApp
+	应用访问网址: 		http://192.168.112.1:8080/tradeApp
+	Swagger网址: 		http://192.168.112.1:8080/tradeApp/doc/index.html
+```
 
-#### 一个典型Stategen 系统 结构图
+在nacos上应该可以看到duubo服务:
+
+![nacos_trade截图](https://github.com/stategen/docs/blob/master/nacos_service_provider_trade.png)
+
+在swagger中 调用一下一个AppController.java中的下面api
+
+```java
+    /***测试限流降级分布式事务*/
+    @ApiRequestMappingAutoWithMethodName(method = RequestMethod.GET)
+    @SentinelResource(/* blockHandler = "orderBlockHandler",fallback = "orderFallback", */ )
+    public User testSentinel(@ApiParam(value="用户ID",defaultValue="1") @RequestParam() String  userId) {
+        //MockUtil只能用于测试，不能打包，执行 mvn package 由 插件 forbiddenapis 检测
+        MockUtil.throwRandomException(2);
+        User user = this.userService.getUserByUserId(userId);
+        return user;
+    }
+    
+```
+
+到Sentinel-dashboard中可以看到
+
+
+
+![sentinel-trade](https://github.com/stategen/docs/blob/master/sentinel-trade.png)
+
+看到限流如下:设置限流降级,单机阈值设为2,快速在swagger中调用,可以看到如下返回值
+
+```javascript
+{
+  "code": 500,
+  "exeptionClass": "UndeclaredThrowableException",
+  "message": "该阶段不支持该操作(限流)，请稍后再试",
+  "status": "ERROR",
+  "success": false
+}
+```
+
+9. 微服务:
+
+   按上面我们再创建一个系统:verify     ,(另一个文件夹),
+
+   ```
+    //创建系统
+    gen.sh system com.mycompany.verify auth -e
+    //创建系统中的项目
+    gen.sh project microServ -e
+   ```
+
+   mavan打包: 
+
+   ```
+   mvn install|deploy
+   ```
+
+   trade-intergrade中pom.xml只要引用即可
+
+   ```xml
+           <dependency>
+               <groupId>com.mycompany.verify</groupId>
+               <artifactId>auth-facade</artifactId>
+               <!-- verify 系统每次变更，要改 verfy-facade.version版本号-->
+               <version>1.0.0</version>
+           </dependency>
+```
+   
+   
+   
+   10 .  一个典型Stategen 系统 结构图
+
 ![Image](https://github.com/stategen/docs/blob/master/stg-fm-bbr.png) 
+
+- #### 迭代开发流程图
+
+  - 虚线为人工代码参与点
+
+  - 实线为maven或系统自动装配
+  - 粗实线为dalgenX自动生成和迭代的线路
+  - 从流行程上来看，
+    - **dalgenX没有改变原开发模式**
+    - **保留之前工作代码成果，新生成代码增量添加**
+    - **人工编写的代码可以做到仅限业务**
+
+![迭代开发流程图](https://github.com/stategen/stategen/blob/master/dalgenx_gen_flow.svg)
 
 
 #### 演示Teacher需求开发 (一键开发，一键迭代,显式代码，所见即所得)
 ```
-DROP TABLE IF EXISTS `teacher`;
-CREATE TABLE `teacher` (
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
   `teacher_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '老师ID',
   `teacher_name` varchar(64) DEFAULT NULL COMMENT '老师名',
   `password` varchar(64) DEFAULT NULL COMMENT '密码，测试，明文',
@@ -232,23 +311,29 @@ CREATE TABLE `teacher` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 ```
->1.运行命令生成表sql配置和java代码 (或者在6-${systemName}-web-base/test下运行 DevGennerator.java)
+
+1.运行命令生成表sql配置和java代码 (或者在6-${systemName}-web-base/test下运行 DevGennerator.java)
 ```
-gen.sh table teacher –e
+gen.sh table user –e
 ```
 >2.检查teacher.xml对应的java类是否正确，去掉?及一行空格
 ```
-gen.sh dal teacher –e
+gen.sh dal user –e
 ```
+服务的继承关系为 :
+**UserServiceImpl implements <<UserService  extends  <<UserServiceTrade**
+UserService内的服务都是本地服务，复制接口到 UserServiceTrade中，即可暴露微服务
+
 >3.F5刷新eclipse 检查import是否完整  
 >4.手动做一个controller或者用命令初始化一个controller
 ```
-gen.sh api teacher cms|app
+//只是辅助快速生成一个UserController.java,一但生成后，每二次执行不会覆盖
+gen.sh api user cms|app
 ```
 >5.	eclipse打开查看是否有代码错误
 
 
-#### 生成前端代码，开发前端
+#### 生成前端代码，开发前端（不做前端可以暂时不用看）
 >1.	运行test/UmiFacadeProcessor.java   
 >2.	webstorm打开前端代码 ，配置webpack解读代码  
 >3.	yarn 下载前端依赖  
