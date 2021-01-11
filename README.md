@@ -235,7 +235,7 @@ ps: 2. StateGen默认你的项目会越来越大（谁个系统还没有百把�
 ```javascript
 {
   "code": 500,
-  "exeptionClass": "UndeclaredThrowableException",
+  "exeptionClass": "FlowException",
   "message": "该阶段不支持该操作(限流)，请稍后再试",
   "status": "ERROR",
   "success": false
@@ -268,7 +268,7 @@ mavan打包发到公司私有仓库或者安装到本地仓库:
 mvn install|deploy
 ```
 
-在原来的trade系统中3-trade-intergrade中pom.xml里面，只要引用即可
+在原来的trade系统中3-trade-intergrade中pom.xml里面，只要引用即可。
 
 ```xml
 <dependency>
