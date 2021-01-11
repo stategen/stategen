@@ -97,7 +97,8 @@ trade (trade相当于微服务中当前服务名、系统名)
 >  > C.	mysql5.7  
 >  > D.	gitbash(安装git2.0 自带,目的是可在windows上执行bash脚本)  
 >  > E.	 nacos-server-1.3.2 (因为目前架构中用到的spring cloud alibaba denpencies版本为2.2.3,其中限定nacos client为1.3.3,它与nacos1.4.0-server通信有障碍，本架构用于生产，不在尝鲜版上纠缠，等他们稳定了再升级)
->  > F.	sentinel dashboard-1.8.0    ps：因为在dashboard上操作不能反向持久化到nacos中，有大神制了了nacos反向持久化版，我稍微忧化，欢迎下载使用,https://github.com/stategen/sentinel-dashboard-nacos,它的启动方式是这样的:
+>  > F.	sentinel dashboard-1.8.0    ps：因为在dashboard上操作不能反向持久化到nacos中，有大神制了了nacos反向持久化版，我稍微忧化，欢迎下载使用,https://github.com/stategen/sentinel-dashboard-nacos
+>  > 它的启动方式是这样的:
 >  >
 ```
  java -Dnacos.server-addr=localhost:8848 -Dserver.port=8880 -Dcsp.sentinel.dashboard.server=localhost:8880 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard-nacos-1.8.0.jar
