@@ -42,14 +42,14 @@ web端
   
   - **没有限定使用者集成其它技术**
 - ### StateGen中的开发生成器，和市面上那些谈虎色皮的生成器什么区别?
-  1. a.后端dalgenx生成器，从大名鼎鼎的支付宝生成器dalgen演化而来,单dalgen可以说把市面上所有的java orm层生成器秒成渣，dalgenX则在此基础上拓展可迭代功能。dalgen只支持ibatis(个人认为:不开源和不支持mybatis使它推广不开来),而dalgenX则可以在ibatis与mybatis之间自由切换.
-    b. dalgenX生成器中的sql相当于Batis sql的用来简化开发的语法糖，它生成代码时，代替肉身查找替换。因为是语法糖，它不参与运行期，不用提心”国产“框架的坑。
-    c.dalgenX生成代码时，会解析已有的java代码，自动增加生成，代替肉身增量备份代码。自动维护pojo等一系列代码,源头上做到一个Pojo可以自代替DTO,VO,PO，Pojo本来就是干这些事的，只是其它生成器做不到而已，它也有效治好了DDD模型中的失血模式下的失忆的毛病。
+  1. a.后端dalgenx生成器，从大名鼎鼎的支付宝生成器dalgen演化而来,单dalgen可以说把市面上所有的java orm层生成器秒成渣，dalgenX则在此基础上拓展可迭代功能。dalgen只支持ibatis(个人认为:不开源和不支持mybatis使它推广不开来),而dalgenX则可以在ibatis与mybatis之间自由切换.    
+    b. dalgenX生成器中的sql相当于Batis sql的用来简化开发的语法糖，它生成代码时，代替肉身查找替换。因为是语法糖，它不参与运行期，不用提心”国产“框架的坑。   
+    c.dalgenX生成代码时，会解析已有的java代码，自动增加生成，代替肉身增量备份代码。自动维护pojo等一系列代码,源头上做到一个Pojo可以自代替DTO,VO,PO，Pojo本来就是干这些事的，只是其它生成器做不到而已，它也有效治好了DDD模型中的失血模式下的失忆的毛病。   
    2. 前端生成器只是在原controller层api方法上加了个java标注 @State而已，对后端代码零侵入,零工作量.
          它成立的理论基础是:
-            a. 响应式前端，交互和页面是分开的。
-            b. 后端任意一个api,它对应的前端代码：入参、出参对象化，序列化，反序列化，网络调用，状态化都是固定，谁肉身来写都相同的，所以可以用生成器覆盖。
-            c. 前端开发生成器只是**托管intergrade文件夹**下的内容，其它代码只是辅助生成，不再覆盖，使用的同学可无限制优化里面的代码，可以换成自己的理想的前端骨架。
+            a. 响应式前端，交互和页面是分开的。  
+            b. 后端任意一个api,它对应的前端代码：入参、出参对象化，序列化，反序列化，网络调用，状态化都是固定，谁肉身来写都相同的，所以可以用生成器覆盖。   
+            c. 前端开发生成器只是**托管intergrade文件夹**下的内容，其它代码只是辅助生成，不再覆盖，使用的同学可无限制优化里面的代码，可以换成自己的理想的前端骨架。    
    3. 个人觉得几个生成器可以减少80%的工作，这还不算主要的，**主要是底层代码规范，上层代码就不会乱**.我见过太多的代码死在不规范上，只是局中人意识不到而已，锅从来都是这一任甩给上一任.
 
 - ### 骨架代码生成流程图
@@ -99,7 +99,6 @@ trade (trade相当于微服务中当前服务名、系统名)
 >  > E.	 nacos-server-1.3.2 (因为目前架构中用到的spring cloud alibaba denpencies版本为2.2.3,其中限定nacos client为1.3.3,它与nacos1.4.0-server通信有障碍，本架构用于生产，不在尝鲜版上纠缠，等他们稳定了再升级)
 >  > F.	sentinel dashboard-1.8.0    ps：因为在dashboard上操作不能反向持久化到nacos中,开发和生产很不方便，有大神制从原版中修改了代码制了nacos反向持久化版，我稍微忧化可用性和方便性，,https://github.com/stategen/sentinel-dashboard-nacos
 >  > 它的启动方式是这样的:
->  >
 ```
  java -Dnacos.server-addr=localhost:8848 -Dserver.port=8880 -Dcsp.sentinel.dashboard.server=localhost:8880 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard-nacos-1.8.0.jar
 ```
