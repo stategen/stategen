@@ -323,13 +323,39 @@ gen.sh dal user –e
 服务的继承关系为 :
 **UserServiceImpl implements <<UserService  extends  <<UserServiceTrade**
 UserService内的服务都是本地服务，复制接口到 UserServiceTrade中，即可暴露微服务
+我个人觉得dubbo还有一个开发优势是微服务异常也可以原文传递
 
->3.F5刷新eclipse 检查import是否完整  
->4.手动做一个controller或者用命令初始化一个controller
+F5刷新eclipse 检查import是否完整  
+动做一个controller或者用命令初始化一个controller
 ```
 //只是辅助快速生成一个UserController.java,一但生成后，每二次执行不会覆盖
 gen.sh api user cms|app
 ```
+
+分布式事务Seata已经集成到里面了,使用的地方禁注一下@GlobalTransactional.,如:
+```java
+    /***测试seata分布式事务*/
+    @ApiRequestMappingAutoWithMethodName(method = RequestMethod.GET)
+    @GlobalTransactional
+    public User testSeata() {
+        User user = this.userService.appendUserAge("2");
+        return user;
+    }
+```
+分布式id生成器baidu uid也集成在里面,不用再像以前一样往redis或zookeeper内肉身放置
+```java
+public class UserServiceImpl implements UserService, IdGenerateService<String> {
+
+    @Resource
+    private IIdGenerator idGenerator;
+
+    @Override
+    public User insert(User user) {
+        return userDao.insert(user, this);
+    }
+end    
+```
+
 >5.	eclipse打开查看是否有代码错误
 
 
