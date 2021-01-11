@@ -44,9 +44,9 @@ web端
 - ### StateGen中的开发生成器，和市面上那些谈虎色皮的生成器什么区别?
   1. a.后端dalgenx生成器，从大名鼎鼎的支付宝生成器dalgen演化而来,单dalgen可以说把市面上所有的java orm层生成器秒成渣，dalgenX则在此基础上拓展可迭代功能。dalgen只支持ibatis(个人认为:不开源和不支持mybatis使它推广不开来),而dalgenX则可以在ibatis与mybatis之间自由切换.    
     b. dalgenX生成器中的sql相当于Batis sql的用来简化开发的语法糖，它生成代码时，代替肉身查找替换。因为是语法糖，它不参与运行期，不用提心”国产“框架的坑。   
-    c.dalgenX生成代码时，会解析已有的java代码，自动增加生成，代替肉身增量备份代码。自动维护pojo等一系列代码,源头上做到一个Pojo可以自代替DTO,VO,PO，Pojo本来就是干这些事的，只是其它生成器做不到而已，它也有效治好了DDD模型中的失血模式下的失忆的毛病。   
+    c.dalgenX生成代码时，会解析已有的java代码，自动增量比对生成，代替肉身增量备份代码。自动维护pojo等一系列代码,源头上做到一个Pojo可以自代替DTO,VO,PO，Pojo本来就是干这些事的，只是其它生成器做不到而已，它也有效治好了DDD模型中的失血模式下的失忆的毛病。   
    2. 前端生成器只是在原controller层api方法上加了个java标注 @State而已，对后端代码零侵入,零工作量.
-         它成立的理论基础是:
+         它成立的理论基础是:   
             a. 响应式前端，交互和页面是分开的。  
             b. 后端任意一个api,它对应的前端代码：入参、出参对象化，序列化，反序列化，网络调用，状态化都是固定，谁肉身来写都相同的，所以可以用生成器覆盖。   
             c. 前端开发生成器只是**托管intergrade文件夹**下的内容，其它代码只是辅助生成，不再覆盖，使用的同学可无限制优化里面的代码，可以换成自己的理想的前端骨架。    
@@ -195,7 +195,7 @@ sh ./dalbatch.sh
 	应用访问网址: 		http://192.168.112.1:8080/tradeApp
 	Swagger网址: 		http://192.168.112.1:8080/tradeApp/doc/index.html
 ```
-ps: 1.StateGen生成的架构的代码，启动时对端口做了占用检查，因些一个项目启动多个实例也是没问题,只要不启动太快，如8080端口,它的配置是这样的
+ps: 1.StateGen生成的架构的代码，启动时对端口做了占用检查，因此：一个项目启动多个实例也是没问题(只要不启动太快)，如8080端口,它的配置是这样的
 ```xml
     <bean class="org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory">
         <property name="contextPath" value="/${spring.application.name}" />
@@ -203,18 +203,18 @@ ps: 1.StateGen生成的架构的代码，启动时对端口做了占用检查，
         <property name="port" value="#{T(util.Net).from(${tradeApp.port:8080})} " />
     </bean>
 ```
-ps: 2. StateGen默认你的项目会越来越大（谁个系统还没有百把张表）,除了必要的bean是代码创建的外，都是xml配置的，大系统内，xml才是王道 .
+ps: 2. StateGen默认你的项目会越来越大（谁个系统还没有百把张表或者自定义实现spring系统bean）,因此：除了必要的bean是代码创建的外，都是xml配置的，大系统，xml才是王道 .
 
-在nacos上应该可以看到duubo服务:
+在nacos上应该可以看到dubbo服务:
 
 ![nacos_trade截图](https://github.com/stategen/docs/blob/master/nacos_service_provider_trade.png)
 
-在swagger中 调用一下一个AppController.java中的下面api
+在swagger中 调用一下一个AppController.java中的 testSentinel api
 
 ```java
     /***测试限流降级分布式事务*/
     @ApiRequestMappingAutoWithMethodName(method = RequestMethod.GET)
-    @SentinelResource(/* blockHandler = "orderBlockHandler",fallback = "orderFallback", */ )
+    @SentinelResource()
     public User testSentinel(@ApiParam(value="用户ID",defaultValue="1") @RequestParam() String  userId) {
         //MockUtil只能用于测试，不能打包，执行 mvn package 由 插件 forbiddenapis 检测
         MockUtil.throwRandomException(2);
@@ -230,7 +230,7 @@ ps: 2. StateGen默认你的项目会越来越大（谁个系统还没有百把�
 
 ![sentinel-trade](https://github.com/stategen/docs/blob/master/sentinel-trade.png)
 
-看到限流如下:设置限流降级,单机阈值设为2,快速在swagger中调用testSentinel,可以看到如下限流返回值
+设置限流降级,单机阈值设为2,快速在swagger中调用testSentinel,可以看到如下限流返回值
 
 ```javascript
 {
@@ -251,7 +251,7 @@ ps: 2. StateGen默认你的项目会越来越大（谁个系统还没有百把�
     </bean>
 ```
 
-9. 微服务:
+9. 微服务集群相互调用:
 
    按上面我们再创建一个系统:verify     ,(另一个文件夹),
 
