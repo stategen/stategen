@@ -1,4 +1,4 @@
-- ### 截图  
+### 截图  
 
 
 <p float="left">
@@ -21,15 +21,15 @@ web端
 
 
 
-- ### 我非常赞同的
+ ### 我非常赞同的
   - 重复可能是软件中一切邪恶的根源。—— Robert C.Martin
 
-- ### StateGen?
+### StateGen?
   - 轻代码or敏捷开发?  **NO**; 
   - 用可视化界面配置生成?  **NO**
   - 改变原开发模式?  **NO**
 
-- ### Stategen架构的构成
+### Stategen架构的构成
   - springboot
     - 直接支持 jar war打包模式
   - spring cloud alibaba
@@ -41,10 +41,10 @@ web端
   - 前端开发生成器，可把后端所有任意java api随时一键导出为前端的交互代码(mvvm,reactive,react(umi,dva,saga),flutter(provider),依据模版种类)
   
   - **没有限定使用者集成其它技术**
-- ### StateGen中的开发生成器，和市面上那些谈虎色变的生成器什么区别?
+### StateGen中的开发生成器，和市面上那些谈虎色变的生成器什么区别?
   1. a.后端dalgenx生成器，从大名鼎鼎的支付宝生成器dalgen演化而来,单dalgen可以说把市面上所有的java orm层生成器秒成渣，dalgenX则在此基础上拓展可迭代功能。dalgen只支持ibatis(个人认为:不开源和不支持mybatis使它推广不开来),而dalgenX则可以在ibatis与mybatis之间自由切换.    
-    b. dalgenX生成器中的sql相当于Batis sql的用来简化开发的语法糖，它生成代码时，代替肉身查找替换。因为是语法糖，它不参与运行期，不用提心”国产“框架的坑。   
-    c.dalgenX生成代码时，会解析已有的java代码，自动增量比对生成，代替肉身备份代码比对还原代码。自动维护pojo等一系列代码,源头上做到一个Pojo可以自代替DTO,VO,PO，Pojo本来就是干这些事的，只是其它生成器做不到而已，它也有效治好了DDD模型中的失血模式下的失忆的毛病。   
+      b. dalgenX生成器中的sql相当于Batis sql的用来简化开发的语法糖，它生成代码时，代替肉身查找替换。因为是语法糖，它不参与运行期，不用提心”国产“框架的坑。   
+      c.dalgenX生成代码时，会解析已有的java代码，自动增量比对生成，代替肉身备份代码比对还原代码。自动维护pojo等一系列代码,源头上做到一个Pojo可以自代替DTO,VO,PO，Pojo本来就是干这些事的，只是其它生成器做不到而已，它也有效治好了DDD模型中的失血模式下的失忆的毛病。   
    2. 前端生成器只是在原controller层api方法上加了个java标注 @State而已，对后端代码零侵入,零工作量.
          它成立的理论基础是:   
             a. 响应式前端，交互和页面是分开的。  
@@ -52,7 +52,7 @@ web端
             c. 前端开发生成器只是**托管intergrade文件夹**下的内容，其它代码只是辅助生成，不再覆盖，使用的同学可无限制优化里面的代码，可以换成自己的理想的前端骨架。    
    3. 个人觉得几个生成器可以减少80%的工作，这还不算主要的，**主要是底层代码规范，上层代码就不会乱**.我见过太多的代码死在不规范上，只是局中人意识不到而已，锅从来都是这一任甩给上一任.
 
-- ### 骨架代码生成流程图
+### 骨架代码生成流程图
   - 虚线为人工参与点
   - 实线为maven或系统自动装配
   - 粗实线为StateGen自动生成的线路
@@ -88,8 +88,8 @@ trade (trade相当于微服务中当前服务名、系统名)
 为什么是多层的？建议把架构设计7大原则读一遍,这里不纠缠。
 - #### 
 
-- #### 骨架快速开始
-  - ##### 运行环境
+#### 骨架快速开始
+  ##### 运行环境
 
 >  服务端/windows(linux类似)
 >  > A.	java 1.8+  
@@ -104,7 +104,7 @@ trade (trade相当于微服务中当前服务名、系统名)
 ```
 >  > G.	seata-server-1.4.0
 
-- ##### 开发环境安装
+##### 开发环境安装
 
 因项目依赖jars我已经发布maven中央仓库了，不需要使用的同学再辛苦自行编译，只需要git clone dalgenX,这是一个GMAVEN项目,
 1.  配置 dalgenX
@@ -120,7 +120,7 @@ git clone https://github.com/stategen/dalgenx.git
 >>key type: system Id  
 >>key: https://github.com/stategen/dalgenx/blob/master/gen.schemas-1.0.dtd
 
-- ##### 用命令初始化系统及项目/范例
+##### 用命令初始化系统及项目/范例
 ps: 以下gen.sh 必须在gitbash中运行，不能在cmd中运行。linux可以无需考虑。
 1.  帮助
 ```
@@ -282,7 +282,7 @@ mvn install|deploy
 
 ![Image](https://github.com/stategen/docs/blob/master/stg-fm-bbr.png) 
 
-- #### 迭代开发流程图
+#### 迭代开发流程图
 
   - 虚线为人工代码参与点
 
@@ -630,7 +630,6 @@ stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由
 
 9. 国际化...以后再讲，我觉得也很屌
 
-## 
 11. dalgenX生成器支持在ibatis和mybatis语言两种orm之间切换:
 
 ```xml 
@@ -669,7 +668,7 @@ stategen中的cookieGroup就是对_tb_token_的开源实现，支持混淆码由
 
     </operation>
 ```
-#####  
+##### 
 1. in语法糖: 
 
 ```sql
@@ -761,7 +760,7 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
 	}
 	...
 ```
-- ##### dalgenx将水平权限（数据权限）融入架构中解决
+##### dalgenx将水平权限（数据权限）融入架构中解决
 
 1. 生成规则。水平权限要完全做到绕开暴力尝试,或者避免在别的api中泄露id被利用,显然，采用复杂id(uid、随机)生成方式治标不治本。同时，要兼顾代码速度、迭代、人员权限调整、下面简要地阐述一种水平权限方案，可以直接由dalgenX生成器来生成，大大降低开发成本，非常适合产品需求上的迭代，代码可以做到以不变应万变.
 ```
@@ -780,7 +779,7 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
      和参数：Boolean inclCurrOrgId, Long currOrgId, String currUserId
    G.由程序员在调用topicService的方法时，自由控制inclCurrOrgId，currOrgId，currUserId
 ```
-- ##### dalgenX兼顾避免一些开发习惯上的坑。比如
+##### dalgenX兼顾避免一些开发习惯上的坑。比如
 ```java
    /*根据主键查询，一般dao中的方法名是getById,
    我们在很多遗留的代码中，经常review到下面这样的代码，，
@@ -803,7 +802,7 @@ public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
    userById.method2();
    userById.method3();   
 ```
-- ##### dalgenX在Service中生成一些符合合成/复用原则（CARP）的java代码，这种开发规范好理解也节约业务层大量开发
+ ##### dalgenX在Service中生成一些符合合成/复用原则（CARP）的java代码，这种开发规范好理解也节约业务层大量开发
 ```java
 public class UserServiceImpl implements UserService {
     
@@ -861,71 +860,12 @@ public class UserServiceImpl implements UserService {
 
 
 #### StateGen已经支持flutter   
-  采用google 2019 i/o大会上推荐的provider   
+  采用google 2019 i/o大会上推荐的provider   ,具体看demo中演示  
 
-1. 在maven deploy｜package阶段，不要附带 ~~ -Dmaven.test.skip=true ~~  
-    或者开发时，直接运行调用src/java/test/xxxxxxFacadeProcessor.java也可以直接生成前端代码.
-```java
-public class FlutterFacadeProcessor extends BaseGenFacadeProcessor {
-    public static void main(String[] args) {
-        FlutterFacadeProcessor flutterFacadeProcessor = new FlutterFacadeProcessor();
-        try {
-            logger.info("================== flutter 前端代码生成开始===========================");
-            flutterFacadeProcessor.genFacade();
-            logger.info("================== flutter 前端代码生成结束===========================");
-        } catch (Exception e) {
-            logger.error("生成前端代码时出错:", e);
-        }
-    }
-    //...
-}    
-```
-```xml
-    <!-- pom.xml -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id><![CDATA[>>>>>>>>>>>>>>>>tradeApp auto generate flutter frondend
-                        files  生成 flutter 前端代码 &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;]]></id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>FlutterFacadeProcessor</mainClass>
-                            <classpathScope>test</classpathScope>
-                            <cleanupDaemonThreads>false</cleanupDaemonThreads>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>    
-```
-
-2. 支持任意api、任意返回值、任意参数,不是那种市面上简单的增删除修改。  
-```java
-@ApiConfig
-public class TopicController extends TopicControllerBase {
-    
-    @ApiRequestMappingAutoWithMethodName
-    @State(init = true, dataOpt = DataOpt.APPEND_OR_UPDATE)
-    @GenRefresh
-    public AntdPageList<Topic> getTopicPageList(
-            TopicType topicType,
-            Boolean mdrender,
-            @ApiParam(hidden = true) Topic topic,
-            Pagination pagination) {
-        topic.setCreateTimeMax(DatetimeUtil.current());
-        PageList<Topic> topicPageList = this.topicService.getPageList(topic,
-            pagination.getPageSize(), pagination.getPage());
-        topicService.assignTopicExtraProperties(topicPageList.getItems());
-        return new AntdPageList<Topic>(topicPageList);
-    }
-```
-以下以typescript和dart为例（Stategen采用freemark模版，也可以生成其它语言样式,懂rxSwift或rxAndroid的朋友也可以协助制作相关代码）.
-特别说明，Stategen前端代码生成器,主要功能是通过对前端integrade文件夹的自动托管，让前端的工作量尽量集中在排版和美工上,前端龙骨代码是一次性的，程序员可以自行修改（龙骨代码并非我擅长，再说再好的龙骨代码也不是永久都是最好，所以没有写死，也不把前端朋友限定死,原则就是不挖坑）。  
+以下以typescript和dart为例（StateGen采用freemark模版，也可以生成其它语言样式,懂rxSwift或rxAndroid的朋友也可以协助制作相关代码）.
+特别说明，Stategen前端代码生成器,主要功能是通过对前端integrade文件夹的自动托管，让前端的工作量尽量集中在排版和美工上,前端龙骨代码是一次性的，程序员可以自行修改（骨架代码并非我擅长，再说再好的骨架代码也不是永久都是最好，所以没有写死，也不把前端朋友限定死,原则就是不挖坑）。  
 以下代码都是在integrade文件夹内.
+
 ```typescript
 //typescript
 export default class TopicApis {
@@ -1154,9 +1094,9 @@ abstract class TopicCommand {
 ```
 mvn package 
 ```
-## 七、早期视频
+### 早期视频
 [Stategen快速调试开发运行精简教程](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)  
-### 详细视频 共6小时
+#### 详细视频 共6小时
 [1.stategen之前 微博 趣图](https://v.youku.com/v_show/id_XNDIwODcxNzk2OA==.html?spm=a2h3j.8428770.3416059.1)          
 [2.stategen简介](https://v.youku.com/v_show/id_XNDIwOTk1MjE0MA==.html?spm=a2h3j.8428770.3416059.1)          
 [3.stategen依赖环境](https://v.youku.com/v_show/id_XNDIwOTk1Mzc2OA==.html?spm=a2h3j.8428770.3416059.1)          
@@ -1169,7 +1109,7 @@ mvn package
 [10.stategen前端dva](https://v.youku.com/v_show/id_XNDIwOTkxNDg2MA==.html?spm=a2h3j.8428770.3416059.1)          
 [11.stategen前端form 生成和实现](https://v.youku.com/v_show/id_XNDIwOTkxNDgzNg==.html?spm=a2h3j.8428770.3416059.1)          
 [12.stategen运行前后端和开发](https://v.youku.com/v_show/id_XNDIwOTk1Mzc4NA==.html?spm=a2h3j.8428770.3416059.1)          
-## 鸣谢
+### 鸣谢
    [react] https://github.com/facebook/react，   
    [ant-design] https://github.com/ant-design/ant-design   
    [dva] https://github.com/dvajs/dva   
