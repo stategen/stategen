@@ -254,6 +254,7 @@ sh ./dalbatch.sh
                <!-- verify 系统每次变更，要改 verfy-facade.version版本号-->
                <version>1.0.0</version>
            </dependency>
+   ```
 ```
    
    
@@ -277,7 +278,7 @@ sh ./dalbatch.sh
 
 
 #### 演示Teacher需求开发 (一键开发，一键迭代,显式代码，所见即所得)
-```
+```sql
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `teacher_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '老师ID',
@@ -333,7 +334,7 @@ gen.sh api user cms|app
 ```
 
 分布式事务Seata已经集成到里面了,使用的地方禁注一下@GlobalTransactional.,如:
-```java
+​```java
     /***测试seata分布式事务*/
     @ApiRequestMappingAutoWithMethodName(method = RequestMethod.GET)
     @GlobalTransactional
@@ -411,7 +412,7 @@ end
         }
 ```
 上面的java代码里到处对返回值封装，现在可以通过以下方式让spring自动封装返回值
-```xml
+​```xml
     <!-- Response可以自定义，也即自定义封装 -->
     <bean id="response" class="com.mycompany.biz.domain.Response" 
     scope="prototype"/>
