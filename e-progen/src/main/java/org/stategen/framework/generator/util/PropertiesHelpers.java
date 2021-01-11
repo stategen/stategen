@@ -29,18 +29,21 @@ import lombok.Cleanup;
  * The Class PropertiesHelpers.
  */
 public class PropertiesHelpers {
+    
     public static Properties load(String... files) throws InvalidPropertiesFormatException, IOException {
         Properties properties = new Properties();
         for (String f : files) {
-            File        file  = FileHelpers.getFile(f);
-            @Cleanup
-            InputStream input = new FileInputStream(file);
-            if (file.getPath().endsWith(".xml")) {
-                properties.loadFromXML(input);
-            } else {
-                properties.load(input);
+            File proFile = FileHelpers.getFile(f);
+            if (proFile.isFile() && proFile.exists()) {
+                @Cleanup
+                InputStream input = new FileInputStream(proFile);
+                if (proFile.getPath().endsWith(".xml")) {
+                    properties.loadFromXML(input);
+                } else {
+                    properties.load(input);
+                }
+                properties.putAll(properties);
             }
-            properties.putAll(properties);
         }
         return properties;
     }

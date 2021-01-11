@@ -23,6 +23,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.stategen.framework.generator.util.ClassHelper;
+
 /**
  * Utility methods for resolving resource locations to files in the
  * file system. Mainly for internal use within the framework.

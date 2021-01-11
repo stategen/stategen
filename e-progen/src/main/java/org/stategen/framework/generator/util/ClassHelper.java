@@ -1,4 +1,4 @@
-package cn.org.rapid_framework.generator.util;
+package org.stategen.framework.generator.util;
 
 
 public class ClassHelper {

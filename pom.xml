@@ -6,7 +6,7 @@
     <groupId>org.stategen.framework</groupId>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>stategen-parent</artifactId>
-    <version>stg.2.3.0.RELEASE</version>
+    <version>stg.2.3.1.RELEASE</version>
     <packaging>pom</packaging>
     <name>a_stategen-parent</name>
     <description>spring+springmvc+mybatis|ibatis+apache.dubbo framework with gernerator and dev generator</description>
@@ -24,7 +24,7 @@
         <swagger.springfox.version>2.4.0</swagger.springfox.version>
 
         <swagger-annotations-version>1.5.20</swagger-annotations-version>
-        <stategen-version>stg.2.3.0.RELEASE</stategen-version>
+        <stategen-version>stg.2.3.1.RELEASE</stategen-version>
 
         <DI-tbSchedule-version>3.3.3.2</DI-tbSchedule-version>
 

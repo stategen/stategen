@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.stategen.framework</groupId>
         <artifactId>stategen-parent</artifactId>
-        <version>stg.2.3.0.RELEASE</version>
+        <version>stg.2.3.1.RELEASE</version>
         <relativePath>../</relativePath>
     </parent>
 
     <groupId>org.stategen.framework.layers</groupId>
     <artifactId>stategen-layer-parent-pom</artifactId>
-    <version>stgp.1.0-stg.2.3.0.RELEASE</version>
+    <version>stgp.1.0-stg.2.3.1.RELEASE</version>
     <packaging>pom</packaging>
     <name>j-0-stategen-layer-parent-pom</name>
 

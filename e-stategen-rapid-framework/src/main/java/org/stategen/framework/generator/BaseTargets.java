@@ -24,7 +24,6 @@ import java.util.Properties;
 import org.stategen.framework.generator.util.DaoType;
 import org.stategen.framework.generator.util.FileHelpers;
 import org.stategen.framework.generator.util.GenProperties;
-import org.stategen.framework.util.AssertUtil;
 import org.stategen.framework.util.CollectionUtil;
 import org.stategen.framework.util.Consts;
 import org.stategen.framework.util.Setting;
@@ -69,6 +68,7 @@ public class BaseTargets extends HashMap<String, Object> {
     
     public void makeConst() {
         Properties pts = GeneratorProperties.getProperties();
+        pts.putAll(System.getenv());
         dir_table_configs  = pts.getProperty(Consts.dir_table_configs);
         dir_templates_root = pts.getProperty(Consts.dir_templates_root);
         packageName        = pts.getProperty(Consts.packageName);
@@ -231,12 +231,9 @@ public class BaseTargets extends HashMap<String, Object> {
                 Helper.getTableConfigFiles(tablesDirFile));
         
         GLogger.info("pojo_module_name<===========>:" + "api");
+
         Properties pts        = GeneratorProperties.getProperties();
-        String     systemName = pts.getProperty("systemName");
-        
-        String projectFolderName = StringUtil.trimLeftFormRightTo(cmdPath, StringUtil.SLASH);
-        AssertUtil.mustTrue(projectFolderName.startsWith("7-" + systemName + "-web-"),
-                "api 命令必须在" + "7-" + systemName + "-web-xxx 执行");
+        GenProperties.checkCmdIn7(pts,"api");
         
         String controllerTempPath = FileHelpers.getCanonicalPath(dir_templates_root + "/java/api/dal");
         GLogger.info(controllerTempPath);

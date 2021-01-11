@@ -51,7 +51,7 @@ public class BaseGenFacadeProcessor {
     
     public void scanControllerAndGenFacade() throws InvalidPropertiesFormatException, IOException, TemplateException {
 
-        Properties mergedPros = GenProperties.getAllMergedProps(GenProperties.getGenConfigXmlIfRunTest());
+        Properties mergedPros = GenProperties.getAllMergedPropsByOrder(GenProperties.getGenConfigXmlIfRunTest());
         
         String packageName = mergedPros.getProperty("packageName");
         packageName =packageName+".controller";

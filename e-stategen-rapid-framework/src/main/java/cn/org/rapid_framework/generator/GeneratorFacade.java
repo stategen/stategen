@@ -40,7 +40,7 @@ import cn.org.rapid_framework.generator.provider.db.table.TableFactory;
 import cn.org.rapid_framework.generator.provider.db.table.model.Table;
 import cn.org.rapid_framework.generator.provider.java.model.JavaClass;
 import cn.org.rapid_framework.generator.util.BeanHelper;
-import cn.org.rapid_framework.generator.util.ClassHelper;
+import org.stategen.framework.generator.util.ClassHelper;
 import cn.org.rapid_framework.generator.util.GLogger;
 import cn.org.rapid_framework.generator.util.GeneratorException;
 import lombok.Cleanup;

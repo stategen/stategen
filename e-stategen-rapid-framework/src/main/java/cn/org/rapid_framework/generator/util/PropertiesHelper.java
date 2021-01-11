@@ -14,6 +14,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import org.stategen.framework.generator.util.ClassHelper;
+
 import cn.org.rapid_framework.generator.util.PropertyPlaceholderHelper.PropertyPlaceholderConfigurerResolver;
 
 import lombok.Cleanup;

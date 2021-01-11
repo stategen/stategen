@@ -60,17 +60,17 @@ public class BaseProgen {
 
 
     protected Properties getRootProperties() throws IOException {
-        String     genConfigXmlIfRunTest = GenProperties.getGenConfigXmlIfRunTest();
-        Properties root                  = GenProperties.getAllMergedProps(genConfigXmlIfRunTest);
-        root.put("generator_tools_class", "org.stategen.framework.util.StringUtil");
-        String demo = root.getProperty(ROLE);
-        root.put(ROLE, StringUtil.equals("true", demo));
+        String     genConfigXml = GenProperties.getGenConfigXmlIfRunTest();
+        Properties mergedProps                  = GenProperties.getAllMergedPropsByOrder(genConfigXml);
 
-        GenProperties.systemName  = root.getProperty(GenNames.systemName);
-        GenProperties.packageName = root.getProperty(GenNames.packageName);
-        GenProperties.cmdPath     = root.getProperty(GenNames.cmdPath);
+        String demo = mergedProps.getProperty(ROLE);
+        mergedProps.put(ROLE, StringUtil.equals("true", demo));
 
-        return root;
+        GenProperties.systemName  = mergedProps.getProperty(GenNames.systemName);
+        GenProperties.packageName = mergedProps.getProperty(GenNames.packageName);
+        GenProperties.cmdPath     = mergedProps.getProperty(GenNames.cmdPath);
+
+        return mergedProps;
     }
 
     private String processTempleteFiles(Properties root, String tempPath) throws TemplateException, IOException {
@@ -79,7 +79,7 @@ public class BaseProgen {
         File          tempFolderFile = FileHelpers.getFile(tempPath);
         conf.setDirectoryForTemplateLoading(tempFolderFile);
         List<File>   allFiles    = FileHelpers.searchAllNotIgnoreFile(tempFolderFile);
-        String       projectName = null;
+        String       projectFoldName = null;
         int          folderCount = 0;
         List<String> outFiles    = new ArrayList<String>();
         for (File ftlFile : allFiles) {
@@ -93,12 +93,12 @@ public class BaseProgen {
                 filePath = FileHelpers.replaceUnOverridePath(filePath);
                 FileHelpers.parentMkdir(filePath);
                 folderCount++;
-                if (projectName == null && folderCount == 2) {
-                    projectName = targetFileName;
+                if (projectFoldName == null && folderCount == 2) {
+                    projectFoldName = targetFileName;
                 }
             }
         }
-        return projectName;
+        return projectFoldName;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -116,7 +116,7 @@ public class BaseProgen {
         Properties root = getRootProperties();
         GenProperties.projectName = System.getProperty("projectName");
 
-        putAppName(root,GenProperties.projectName);
+        GenProperties.putAppName(root,GenProperties.projectName);
 
         root.putAll(StringHelper.getDirValuesMap((Map)root));
 
@@ -180,58 +180,17 @@ public class BaseProgen {
     }
 
 
-    protected String processProjectFolder(Properties root, String commandName) {
-        String projectFolderName = StringUtil.trimLeftFormRightTo(GenProperties.cmdPath, StringUtil.SLASH);
-        String projectFrefix     = "7-" + GenProperties.systemName + "-web-";
-        AssertUtil.mustTrue(projectFolderName.startsWith(projectFrefix),
-                commandName + " 命令必须在" + "7-" + GenProperties.systemName + "-web-xxx 执行");
 
-        GenProperties.projectName = StringUtil.trimePrefixIgnoreCase(projectFolderName, projectFrefix);
-        String projectName =GenProperties.projectName;
-        root.put("projectName", projectName);
 
-        putAppName(root, projectName);
 
-        return projectFolderName;
-    }
 
-    private void putAppName(Properties root, String projectName) {
-        String systemName = root.getProperty("systemName");
-        String appName = StringUtil.capfirst(systemName)+StringUtil.capfirst(projectName);
-        root.put("appName", appName);
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void boot() throws IOException, TemplateException {
-        AssertUtil.throwException("现在的StateGen就是一个Springboot+springcloud+alibaba项目，支持war和jar两种打包形式，不需要再转换");
-        Properties root = getRootProperties();
-        root.putAll(StringHelper.getDirValuesMap((Map)root));
-
-        String projectFolderName = processProjectFolder(root, "boot");
-
-        String springRootTempPath = FileHelpers
-                .getCanonicalPath(GenProperties.dir_templates_root + "/java/spring-boot@/");
-        String currentProjectPath = StringUtil.concatPath(GenProperties.getProjectsPath(), projectFolderName);
-        processTempleteFiles(root, springRootTempPath);
-
-        String projectPomXml  = StringUtil.concatPath(currentProjectPath, "pom.xml");
-        String projectPomText = IOHelpers.readFile(new File(projectPomXml), StringUtil.UTF_8);
-        for (String springBootForReplace : springbootForReplaces) {
-            String spingBootReplaceFileName = StringUtil.concatPath(currentProjectPath, "src/main/java/config/",
-                    springBootForReplace);
-            String spingBootReplaceText     = IOHelpers.readFile(new File(spingBootReplaceFileName), StringUtil.UTF_8);
-
-            projectPomText = projectPomText.replace("<!--" + springBootForReplace + "-->", spingBootReplaceText);
-        }
-        IOHelpers.saveFile(new File(projectPomXml), projectPomText, StringUtil.UTF_8);
-
-    }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void client() throws IOException, TemplateException, DocumentException {
         Properties root = getRootProperties();
+        String projectFolderName=GenProperties.checkCmdIn7(root,"client");
+
         root.putAll(StringHelper.getDirValuesMap((Map)root));
-        String projectFolderName = processProjectFolder(root, "client");
 
         Boolean hasClient = false;
         String  webType   = System.getProperty("webType");

@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.stategen.framework</groupId>
         <artifactId>stategen-parent</artifactId>
-        <version>stg.2.3.0.RELEASE</version>
+        <version>stg.2.3.1.RELEASE</version>
     </parent>
     <artifactId>swagger2-ui</artifactId>
     <name>i-swagger2-ui</name>

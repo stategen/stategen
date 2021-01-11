@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.stategen.framework.generator.util.ClassHelper;
 import org.stategen.framework.util.StringUtil;
 
 import lombok.Cleanup;

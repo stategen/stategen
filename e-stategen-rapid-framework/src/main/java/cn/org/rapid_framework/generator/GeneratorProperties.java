@@ -127,10 +127,7 @@ public class GeneratorProperties {
 	public static String getNullIfBlank(GeneratorConstants key) {
 		return getHelper().getNullIfBlank(key.code);
 	}
-	
-	public static String[] getStringArray(String key) {
-		return getHelper().getStringArray(key);
-	}
+
 	
 	public static String[] getStringArray(GeneratorConstants key) {
 		return getHelper().getStringArray(key.code);
