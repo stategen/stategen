@@ -232,34 +232,30 @@ sh ./dalbatch.sh
 
    按上面我们再创建一个系统:verify     ,(另一个文件夹),
 
-   ```
-    //创建系统
-    gen.sh system com.mycompany.verify auth -e
-    //创建系统中的项目
-    gen.sh project microServ -e
-   ```
-
-   mavan打包: 
-
-   ```
-   mvn install|deploy
-   ```
-
-   trade-intergrade中pom.xml只要引用即可
-
-   ```xml
-           <dependency>
-               <groupId>com.mycompany.verify</groupId>
-               <artifactId>auth-facade</artifactId>
-               <!-- verify 系统每次变更，要改 verfy-facade.version版本号-->
-               <version>1.0.0</version>
-           </dependency>
-   ```
 ```
-   
-   
-   
-   10 .  一个典型Stategen 系统 结构图
+//创建系统
+gen.sh system com.mycompany.verify auth -e
+//创建系统中的项目
+gen.sh project microServ -e
+```
+
+mavan打包: 
+
+```
+mvn install|deploy
+```
+
+trade-intergrade中pom.xml只要引用即可
+
+```xml
+<dependency>
+    <groupId>com.mycompany.verify</groupId>
+    <artifactId>auth-facade</artifactId>
+    <!-- verify 系统每次变更，要改 verfy-facade.version版本号-->
+    <version>1.0.0</version>
+</dependency>
+```
+10 .  一个典型Stategen 系统 结构图
 
 ![Image](https://github.com/stategen/docs/blob/master/stg-fm-bbr.png) 
 
@@ -334,7 +330,7 @@ gen.sh api user cms|app
 ```
 
 分布式事务Seata已经集成到里面了,使用的地方禁注一下@GlobalTransactional.,如:
-​```java
+```java
     /***测试seata分布式事务*/
     @ApiRequestMappingAutoWithMethodName(method = RequestMethod.GET)
     @GlobalTransactional
@@ -397,7 +393,7 @@ end
 #### stategen对服务端代码的增强介绍
   Stategen要做的事，尽量地合理实现一个商业框架（不是开源后阉割版的那种）。一些过时的技术比如osgi摈弃，尽量在spring技术范围内解决。一些拓展点技术（非spring）我个人觉得对业务代码没有帮助而是挖坑（大牛一走，项目搞不下去了）
 1.  @Wrap对返回置封装,对业务代码**零侵入**
-​```java
+```java
         //以前的代码是这样地恶心
         @SuppressWarnings("unchecked")
         @ResponseBody
@@ -412,7 +408,7 @@ end
         }
 ```
 上面的java代码里到处对返回值封装，现在可以通过以下方式让spring自动封装返回值
-​```xml
+```xml
     <!-- Response可以自定义，也即自定义封装 -->
     <bean id="response" class="com.mycompany.biz.domain.Response" 
     scope="prototype"/>
