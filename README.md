@@ -43,7 +43,7 @@ web端
   - **没有限定使用者集成其它技术**
 ### StateGen中的开发生成器，和市面上那些谈虎色变的生成器什么区别?
   1. a.后端dalgenx生成器，从大名鼎鼎的支付宝生成器dalgen演化而来,单dalgen可以说把市面上所有的java orm层生成器秒成渣，dalgenX则在此基础上拓展可迭代功能。dalgen只支持ibatis(个人认为:不开源和不支持mybatis使它推广不开来),而dalgenX则可以在ibatis与mybatis之间自由切换.    
-      b. dalgenX生成器中的sql相当于Batis sql的用来简化开发的语法糖，它生成代码时，代替肉身查找替换。因为是语法糖，它不参与运行期，不用提心”国产“框架的坑。   
+      b. dalgenX生成器中的sql相当于Batis sql的用来简化开发的语法糖，它生成可见的纯batis sql和相关java,xml代码，代替肉身查找替换。语法糖不参与运行期，不用提心”国产“框架的坑。   
       c.dalgenX生成代码时，会解析已有的java代码，自动增量比对生成，代替肉身备份代码比对还原代码。自动维护pojo等一系列代码,源头上做到一个Pojo可以自代替DTO,VO,PO，Pojo本来就是干这些事的，只是其它生成器做不到而已，它也有效治好了DDD模型中的失血模式下的失忆的毛病。   
    2. 前端生成器只是在原controller层api方法上加了个java标注 @State而已，对后端代码零侵入,零工作量.
          它成立的理论基础是:   
@@ -742,7 +742,7 @@ mybatis3:
         </foreach>
     </if>
 ```
-3. dalgenX生成mybatis文件时，也完整地实现mapper/daoImpl,襾不是采用mybatis的java代理方式，原因2个，反正生成的代码不需要维护，显式代码安全，2，显式代码调试跟踪断点日志都方便。
+3. dalgenX生成mybatis文件时，也完整地实现mapper/daoImpl,襾不是采用mybatis的java代理方式，原因2个，反正生成的代码不需要维护，显式代码执行速度比代理快，2，显式代码调试跟踪断点日志方便。
 ```
 public class UserDaoImpl  extends SqlDaoSupportBase implements UserDao {
 	/**
