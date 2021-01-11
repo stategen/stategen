@@ -47,11 +47,11 @@ public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler imple
             HttpServletResponse httpServletResponse,
             Object handler,
             Exception ex) {
-        String        failMessage = ex.getMessage();
-        StringBuilder sb          = new StringBuilder(httpServletRequest.getRequestURI()).append(" ");
-        Throwable     throwable   = ex;
-        boolean       find        = true;
-        String exceptionName =ex.getClass().getSimpleName();
+        String        failMessage   = ex.getMessage();
+        StringBuilder sb            = new StringBuilder(httpServletRequest.getRequestURI()).append(" ");
+        Throwable     throwable     = ex;
+        boolean       find          = true;
+        String        exceptionName = ex.getClass().getSimpleName();
         if (ex instanceof BaseBusinessException) {
             sb.append("业务异常：").append("\n").append(failMessage);
         } else if (ex instanceof UndeclaredThrowableException) {
@@ -62,7 +62,8 @@ public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler imple
             String blockMsg = throwable.getMessage();
             if (StringUtil.isEmpty(blockMsg)) {
                 //从缓存中拿,这个消息是 配置 bean SentinelBlockHandler 后才有的
-                blockMsg = ResponseUtil.BLOCK_MAP.get(throwable.getClass().getSimpleName());
+                blockMsg      = ResponseUtil.BLOCK_MAP.get(throwable.getClass().getSimpleName());
+                exceptionName = throwable.getClass().getSimpleName();
             }
             
             if (StringUtil.isNotEmpty(blockMsg)) {
@@ -78,7 +79,7 @@ public class CollectExceptionJsonHandler extends ResponseStatusTypeHandler imple
                 //判断是不是远程另一个微服务产生的降级限流
                 exceptionName = failMessage.substring(SentinelBlockExceptionFlag.length()).trim();
                 String blockMsg = ResponseUtil.BLOCK_MAP.get(exceptionName);
-                failMessage =blockMsg!=null?blockMsg:failMessage;
+                failMessage = blockMsg != null ? blockMsg : failMessage;
                 sb.append("请求截获一个限流异常:").append("\n").append(failMessage).append(" \n");
                 find = true;
             }
