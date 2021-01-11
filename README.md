@@ -25,15 +25,15 @@ web端
   - 重复可能是软件中一切邪恶的根源。—— Robert C.Martin
 
 - ### StateGen?
-  - 轻代码?  **NO**; 
+  - 轻代码or敏捷开发?  **NO**; 
   - 用可视化界面配置生成?  **NO**
-  - StateGen开变原开发模式?  **NO**
+  - 改变原开发模式?  **NO**
 
 - ### Stategen架构的构成
   - springboot
     - 直接支持 jar war打包模式
   - spring cloud alibaba
-    - nacos,seata,sentinel,dubbo,开箱即用
+    - nacos,seata,sentinel,dubbo,mybatis|ibatis开箱即用
     - 分布式  微服务+**本地服务**
   - 后端骨架生成器
   - 前端骨架生成器
