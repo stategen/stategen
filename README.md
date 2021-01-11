@@ -24,43 +24,42 @@ web端
 - ### 我非常赞同的
   - 重复可能是软件中一切邪恶的根源。—— Robert C.Martin
 
-- ### StateGen把重复性前后端代码生成器生成
+- ### StateGen?
   - 轻代码?  **NO**; 
   - 用可视化界面配置生成?  **NO**
   - StateGen开变原开发模式?  **NO**
 
 - ### Stategen架构的构成
   - springboot
-
     - 直接支持 jar war打包模式
-
   - spring cloud alibaba
-
     - nacos,seata,sentinel,dubbo,开箱即用
     - 分布式  微服务+**本地服务**
-  
   - 后端骨架生成器
-    
   - 前端骨架生成器
-    
   - 后端可迭代开发生器(dalgen演化而来dalgenX，全网唯一可支持迭代开发??)
-    
   - 前端开发生成器，可把后端所有任意java api随时一键导出为前端的交互代码(mvvm,reactive,react(umi,dva,saga),flutter(provider),依据模版种类)
   
   - **没有限定使用者集成其它技术**
-  
-- ### 骨架代码生成流程图
+- ### StateGen中的开发生成器，和市面上那些谈虎色皮的生成器什么区别?
+  -  1. 后端dalgenx生成器，从大名鼎鼎的支付宝生成器dalgen演化而来,单dalgen可以说把市面上所有的java orm层生成器秒成渣，dalgenX则在此基础上拓展可迭代功能。dalgen只支持ibatis,而dalgenX则可以在ibatis与mybatis之间自由切换.
+  dalgenX生成器中的sql相当于Batis sql的用来简化开发的语法糖，它生成代码时，代替肉身查找替换。因为是语法糖，它不参与运行期，不用提心”国产“框架的坑。
+  dalgenX生成代码时，会解析已有的java代码，自动增加生成，代替肉身增量备份代码。自动维护pojo等一系列代码,源头上做到一个pojo可以自代替DTO,VO,PO，Pojo本来就是干这些事的，只是其它生成器做不到而已，解决DDD模型中的失血模式下的失忆问题。
+   2. 前端生成器只是在原controller层api方法上加了个java标注 @State而已，对后端代码零侵入,零工作量.
+        它成立的理论基础是:
+        a. 响应式前端，交互和页面是分开的。
+        b. 后端任意一个api,它对应的前端代码：入参、出参对象化，序列化，反序列化，网络调用，状态化都是固定，谁肉身来写都相同的，所以可以用生成器覆盖。
+        c. 前端开发生成器只是**托管intergrade文件夹**下的内容，其它代码只是辅助生成，不再覆盖，使用的同学可无限制优化里面的代码，可以换成自己的理想的前端骨架。
+   3. 我个人觉得几个生成器可以减少80%的工作，这还不算主要的，**主要是底层代码规范，上层代码就不会乱**.我见过太多的代码死在不规范上，只是局中人意识不到.
 
+- ### 骨架代码生成流程图
   - 虚线为人工参与点
-  
   - 实线为maven或系统自动装配
   - 粗实线为StateGen自动生成的线路
-  - 系统骨架和项目骨架生成器运行是**幂等**，在已有的项目上重新运行只会追加，不会覆盖.
-  
-    - "trade"为演示时，指stategen架构中的系统,   app或cms或xxx指项目
+  - 系统骨架和项目骨架生成器运行时都是**幂等**，在已有的项目上重新运行只会追加，不会覆盖，不用担心手贱的毛病.
+  - 图中"trade"指stategen架构中的系统名   app或cms或xxx指项目
   
 - ![骨架代码生成流程图](https://github.com/stategen/stategen/blob/master/system_gen_flow.svg)
-
 
 
 - ​	直观文件夹树型图:
@@ -86,6 +85,7 @@ trade (trade相当于微服务中当前服务名、系统名)
 │       └── stategen
 └── tables
 ```
+为什么是多层的？建议把架构设计7大原则读一遍,这里不纠缠。
 - #### 
 
 - #### 骨架快速开始
@@ -97,7 +97,7 @@ trade (trade相当于微服务中当前服务名、系统名)
 >  > C.	mysql5.7  
 >  > D.	gitbash(安装git2.0 自带,目的是可在windows上执行bash脚本)  
 >  > E.	 nacos-server-1.3.2 (因为目前架构中用到的spring cloud alibaba denpencies版本为2.2.3,其中限定nacos client为1.3.3,它与nacos1.4.0-server通信有障碍，本架构用于生产，不在尝鲜版上纠缠，等他们稳定了再升级)
->  > F.	sentinel dashboard-1.8.0    ps：因为在dashboard上操作不能反向持久化到nacos中，有大神制了了nacos反向持久化版，我稍微忧化，欢迎下载使用,https://github.com/stategen/sentinel-dashboard-nacos
+>  > F.	sentinel dashboard-1.8.0    ps：因为在dashboard上操作不能反向持久化到nacos中,开发和生产很不方便，有大神制从原版中修改了代码制了nacos反向持久化版，我稍微忧化可用性和方便性，,https://github.com/stategen/sentinel-dashboard-nacos
 >  > 它的启动方式是这样的:
 >  >
 ```
@@ -107,7 +107,7 @@ trade (trade相当于微服务中当前服务名、系统名)
 
 - ##### 开发环境安装
 
-因项目依赖jars我已经发布maven中央仓库了，不需要使用者再辛苦自行编译，只需要下载 dalgenX,这是一个GMAVEN项目,
+因项目依赖jars我已经发布maven中央仓库了，不需要使用的同学再辛苦自行编译，只需要git clone dalgenX,这是一个GMAVEN项目,
 1.  配置 dalgenX
 ```
 git clone https://github.com/stategen/dalgenx.git
@@ -115,56 +115,61 @@ git clone https://github.com/stategen/dalgenx.git
 2. 设置 DALGENX_HOME 环境变量为 dalgenx所在目录  
 3. 将 %DALGENX_HOME% 添加至 PATH 中  
 
-4. Ide中配置（eclipse|myeclipse|idea）xml文件，方便开发时，打字提示.
+4. Ide中配置（eclipse|myeclipse|idea）xml文件，方便开发时打字提示.
 
 >>location: {DALGENX_HOME}\gen.schemas-1.0.dtd  
 >>key type: system Id  
 >>key: https://github.com/stategen/dalgenx/blob/master/gen.schemas-1.0.dtd
 
 - ##### 用命令初始化系统及项目/范例
-
+ps: 以下gen.sh 必须在gitbash中运行，不能在cmd中运行。linux可以无需考虑。
 1.  帮助
 ```
 gen.sh -h
 ```
-2.  创建系统骨架,注意，骨架|脚手架生成器操作是幂等的，可以多次执行. -e 是当有错误时，输出错误信息.
+2.  创建系统骨架,注意，骨架|脚手架生成器操作是幂等的，可以多次执行. 
+    -e 是当有错误时，输出错误信息.
 ```
 gen.sh system com.mycompany.biz trade -e  
 ```
 >>com.mycompany.biz 为包名   
 >>trade 系统名 /数据库名 dubbo 系统名  
-至些，一个StateGen系统创建完成,接下来添加项目，可以无限添加项目，它们尊从同一个数据库只有一套crud服务的原则.减少扯皮，减少在泡在会议室的时间，改完了表，必须改想关的影响点(因为在同一个系统中，ide会帮你发现兼容bug)
+至些，一个StateGen系统分分中创建完成,接下来添加项目，可以无限添加项目，为啥这样搞？它们遵从**同一个数据库只有一套crud服务**的原则.减少扯皮，减少在泡在会议室的时间，谁改完了表，都得改想关的影响点,，好在，因为架构上它们在同一个系统中，ide会帮你及时发现兼容bug
 
-3.  创建app web api 项目  (可选) ,
+3.  创建app web api 项目  (可选) , （**不想参与前端的同学，涉及到前端的命令参数都可以忽略**）
 ```
-gen.sh project app h5 –e  //创建后端项目时，同时创建前端,前端目前有3个模版 h5,web,flutter 
-也可以,
-//**h5和web对应的前端是nodojs项目，ssr模式，因此打包时,maven插件会编译前端，因些需要安装nojs和yarn,也可到7-tradeApp的pom.xml中，把编译注释掉**
-gen.sh project app –e    //不生成前端 ,以后再运行上面命令也可以,无需担心已有的代码会被覆盖.
-// **视频里是旧版，gen.sh project app app –e ,要把后一个app改为h5 **
+//创建后端项目时，同时创建前端,前端目前有3个模版 h5,web,flutter 
+gen.sh project app h5 –e  //带前端
+//也可以：
+gen.sh project app –e  //不带前端
+//**h5和web对应的前端是nodojs项目，ssr模式，因此打包时,maven插件会编译前端**
+//**必须安装nojs和yarn才能编译通过,也可到7-tradeApp的pom.xml中，把编译注释掉**
 
-gen.sh project app flutter –e  //因为app项目止面已创建，生成器会判断，它只创建了一个flutter 前端
+  
+//因为app项目止面已创建，生成器会判断，以下命令只创建了一个flutter前端
+gen.sh project app flutter –e  
 
 //或者时入子目录
 cd 7-trade-web-app
 gen.sh client flutter -e //这样也可以创建flutter前端
 ```
 
-4.  创建cms web 项目  (可选,也可以以后再创建)
+4.  创建cms web 项目 cms指后台管理系统, (可选,也可以以后再创建或不要)
 ```
 gen.sh project cms web –e 
 也可以 
 gen.sh project cms –e 
 ```
-5.  创建shedule项目,不带前端  (可选,也可以以后再创建)	
+5.  创建shedule项目,不带前端, (可选,也可以以后再创建或不要)
 ```
 gen.sh project schedule –e  //无前端，可以跑定时任务
 ```
 
-//变为git版本控制, trade 为git 项目，app-frontend-flutter为trade的子项目 
+//变为git版本控制, trade 为git 项目，app-frontend-flutter为trade的子项目,(git子项目其实也是一个独立的git项目，我个人觉得git这点比svn理念先进).
 ```
+sh gitinit.sh //变为git项目
 cd app-frontend-flutter
-sh git_add_to_parent_as_sub.sh
+sh git_add_to_parent_as_sub.sh //变为trade 的git子项目
 ```
 
 6.	环境及表  
@@ -172,7 +177,7 @@ sh git_add_to_parent_as_sub.sh
 >把opt复制到同盘(tomcat所以盘或者你的ide同盘，这样目的是保持开发和运行环境一致。windows下/opt指的容器同盘目录)根目录下,修改stategen.xml中的数据库配置,只需要关注mysql,nacos，相关配置，zookeeper和redis可以不用管
 >7-xxx下的stategen.xml相关的内容合并到/opt/config/stategen/stategen.xml中
 >修改gen_config.xml中的开发数据库配置  
->因为一些文件可以用生成器获取，所以不在版本控制里，先后在 gitbatsh中运行 tablebatch.sh 和 dalbatch.sh ,空表的不需要
+>因为一些文件可以用生成器获取，所以不在版本控制里，先后在 gitbatsh中运行 tablebatch.sh 和 dalbatch.sh ,空表则不需要运行.
 
 
 ```
@@ -191,6 +196,14 @@ sh ./dalbatch.sh
 	应用访问网址: 		http://192.168.112.1:8080/tradeApp
 	Swagger网址: 		http://192.168.112.1:8080/tradeApp/doc/index.html
 ```
+ps: 1.StateGen生成的架构的代码，启动时对端口做了占用检查，因些一个项目启动多个实例也是没问题,只要不启动太快，如8080端口,它的配置是这样的
+```xml
+    <bean class="org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory">
+        <property name="contextPath" value="/${spring.application.name}" />
+        <property name="port" value="#{T(util.Net).from(${tradeApp.port:8080})} " />
+    </bean>
+```
+ps: 2. StateGen默认你的项目会越来越大（谁个系统还没有百把张表）,除了必要的bean是代码创建的外，都是xml配置的，大系统内，xml才是王道 .
 
 在nacos上应该可以看到duubo服务:
 
@@ -217,7 +230,7 @@ sh ./dalbatch.sh
 
 ![sentinel-trade](https://github.com/stategen/docs/blob/master/sentinel-trade.png)
 
-看到限流如下:设置限流降级,单机阈值设为2,快速在swagger中调用,可以看到如下返回值
+看到限流如下:设置限流降级,单机阈值设为2,快速在swagger中调用testSentinel,可以看到如下限流返回值
 
 ```javascript
 {
@@ -227,6 +240,15 @@ sh ./dalbatch.sh
   "status": "ERROR",
   "success": false
 }
+```
+上面的message信息可以配置的:
+```xml
+    <bean class="org.stategen.framework.spring.mvc.SentinelBlockHandler">
+        <property name="blockResponseStatus">
+            <util:constant static-field="com.mycompany.biz.enums.ResponseStatus.BLOCK" />
+        </property>
+        <property name="msgFlowException" value="该阶段不支持该操作(限流)，请稍后再试"/>
+    </bean>
 ```
 
 9. 微服务:
@@ -240,13 +262,13 @@ gen.sh system com.mycompany.verify auth -e
 gen.sh project microServ -e
 ```
 
-mavan打包: 
+mavan打包发到公司私有仓库或者安装到本地仓库: 
 
 ```
 mvn install|deploy
 ```
 
-trade-intergrade中pom.xml只要引用即可
+在原来的trade系统中3-trade-intergrade中pom.xml里面，只要引用即可
 
 ```xml
 <dependency>
@@ -274,14 +296,14 @@ trade-intergrade中pom.xml只要引用即可
 ![迭代开发流程图](https://github.com/stategen/stategen/blob/master/dalgenx_gen_flow.svg)
 
 
-#### 演示Teacher需求开发 (一键开发，一键迭代,显式代码，所见即所得)
+#### 演示User需求开发 (一键开发，一键迭代,显式代码，所见即所得)
 ```sql
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-  `teacher_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '老师ID',
-  `teacher_name` varchar(64) DEFAULT NULL COMMENT '老师名',
+  `teacher_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户ID',
+  `teacher_name` varchar(64) DEFAULT NULL COMMENT '用户名',
   `password` varchar(64) DEFAULT NULL COMMENT '密码，测试，明文',
-  `role_type` varchar(32) DEFAULT NULL COMMENT '老师角色 ADMIN,DEFAULT,DEVELOPER',
+  `role_type` varchar(32) DEFAULT NULL COMMENT '用户角色 ADMIN,DEFAULT,DEVELOPER',
   `name` varchar(64) DEFAULT NULL COMMENT '姓名',
   `nickName` varchar(32) DEFAULT NULL COMMENT '别名',
   `age` int(11) DEFAULT NULL COMMENT '年龄',
@@ -306,7 +328,7 @@ CREATE TABLE `user` (
   UNIQUE KEY `teacher_name` (`teacher_name`),
   KEY `province_id` (`province_id`),
   KEY `city_id` (`city_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 ```
 
@@ -388,6 +410,8 @@ end
 #### 帮助
 
 - StateGen(QQ群：728343119)
+- 没有人可以擅长所有，StateGen 要做的把好的思想集中起来。欢迎加入，一起飞。
+- 目前最缺vue,swift,kotlin,tora状态化模版,
 
 - 增加一篇论文介绍原理:[利用java反射和java-parser制作可以迭代、分布式、全栈代码生成器的研究](https://github.com/stategen/stategen/blob/master/%E5%88%A9%E7%94%A8java%E5%8F%8D%E5%B0%84%E5%92%8Cjava-parser%E5%88%B6%E4%BD%9C%E5%8F%AF%E4%BB%A5%E8%BF%AD%E4%BB%A3%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E3%80%81%E5%85%A8%E6%A0%88%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E7%A0%94%E7%A9%B6.md)    
 
