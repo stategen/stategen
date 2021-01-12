@@ -34,7 +34,7 @@ web端
     - 直接支持 jar war打包模式
   - spring cloud alibaba
     - nacos,seata,sentinel,dubbo,mybatis|ibatis开箱即用
-    - 分布式  微服务+**本地服务**
+    - 分布式  微服务+本地服务
   - 后端骨架生成器
   - 前端骨架生成器
   - 后端可迭代开发生器(dalgen演化而来dalgenX，全网唯一可支持迭代开发??)
