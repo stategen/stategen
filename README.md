@@ -110,7 +110,7 @@ trade (trade相当于微服务中当前服务名、系统名)
 ##### 开发环境安装
 
 因项目依赖jars我已经发布maven中央仓库了，不需要使用的同学再辛苦自行编译，只需要git clone dalgenX,这是一个GMAVEN项目,
-1.  配置 dalgenX
+1.  配置 dalgenX (ps:dalgenX并不依赖于相StateGen架构，它可以配到其它spring项目中单独生成前后端代码)
 ```
 git clone https://github.com/stategen/dalgenx.git
 ```
