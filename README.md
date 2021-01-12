@@ -45,11 +45,11 @@ web端
   1. a.后端dalgenx生成器，从大名鼎鼎的支付宝生成器dalgen演化而来,单dalgen可以说把市面上所有的java orm层生成器秒成渣，dalgenX则在此基础上拓展可迭代功能。dalgen只支持ibatis(个人认为:不开源和不支持mybatis使它推广不开来),而dalgenX则可以在ibatis与mybatis之间自由切换.    
       b. dalgenX生成器中的sql相当于Batis sql的用来简化开发的语法糖，它生成可见的纯batis sql和相关java,xml代码，代替肉身查找替换。语法糖不参与运行期，不用提心”国产“框架的坑。   
       c.dalgenX生成代码时，会解析已有的java代码，自动增量比对生成，代替肉身备份代码比对还原代码。自动维护pojo等一系列代码,源头上做到一个Pojo可以自代替DTO,VO,PO，Pojo本来就是干这些事的，只是其它生成器做不到而已，它也有效治好了DDD模型中的失血模式下的失忆的毛病。   
-   2. 前端生成器只是在原controller层api方法上加了个java标注 @State而已，对后端代码零侵入,零工作量.
-         它成立的理论基础是:   
-            a. 响应式前端，交互和页面是分开的。  
-            b. 后端任意一个api,它对应的前端代码：入参、出参对象化，序列化，反序列化，网络调用，状态化都是固定，谁肉身来写都相同的，所以可以用生成器覆盖。   
-            c. 前端开发生成器只是**托管intergrade文件夹**下的内容，其它代码只是辅助生成，不再覆盖，使用的同学可无限制优化里面的代码，可以换成自己的理想的前端骨架。    
+   2. 前端生成器只是在原controller层api方法上加了个java标注 @State而已，对后端代码零侵入,零工作量.    
+   它成立的理论基础是:   
+       a. 响应式前端，交互和页面是分开的。  
+       b. 后端任意一个api,它对应的前端代码：入参、出参对象化，序列化，反序列化，网络调用，状态化都是固定，谁肉身来写都相同的，所以可以用生成器覆盖。   
+       c. 前端开发生成器只是托管intergrade文件夹下的内容，即**响应式前端前后端交互部分**，其它代码只是辅助生成，不再覆盖，使用的同学可无限制优化里面的代码，可以换成自己的理想的前端骨架。    
    3. 个人觉得几个生成器可以减少80%的工作，这还不算主要的，**主要是底层代码规范，上层代码就不会乱**
 
 ### 骨架代码生成流程图
@@ -1094,6 +1094,33 @@ abstract class TopicCommand {
 #### 打包 前后端 （注意：因为stategen编译前端是在maven test阶段，所以不能添加参数 -Dmaven.test.skip=true）
 ```
 mvn package 
+```
+### 早期视频
+[Stategen快速调试开发运行精简教程](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)  
+#### 详细视频 共6小时
+[1.stategen之前 微博 趣图](https://v.youku.com/v_show/id_XNDIwODcxNzk2OA==.html?spm=a2h3j.8428770.3416059.1)          
+[2.stategen简介](https://v.youku.com/v_show/id_XNDIwOTk1MjE0MA==.html?spm=a2h3j.8428770.3416059.1)          
+[3.stategen依赖环境](https://v.youku.com/v_show/id_XNDIwOTk1Mzc2OA==.html?spm=a2h3j.8428770.3416059.1)          
+[4.stategen安装和配置](https://v.youku.com/v_show/id_XNDIwOTc4MTU1Mg==.html?spm=a2h3j.8428770.3416059.1)          
+[5.生成stategen系统以及工程](https://v.youku.com/v_show/id_XNDIwOTg5MjQ0MA==.html?spm=a2h3j.8428770.3416059.1)          
+[6.stategen服务端开发代码演示(上)](https://v.youku.com/v_show/id_XNDIwOTg5MjM3Mg==.html?spm=a2h3j.8428770.3416059.1)          
+[7.stategen服务端开发代码演示_迭代开发(中)](https://v.youku.com/v_show/id_XNDIwOTg5MjM5Ng==.html?spm=a2h3j.8428770.3416059.1)          
+[8.stategen.mvc](https://v.youku.com/v_show/id_XNDIwOTkxNDg1Mg==.html?spm=a2h3j.8428770.3416059.1)          
+[9.stategen前端简介](https://v.youku.com/v_show/id_XNDIwOTkxNDgyOA==.html?spm=a2h3j.8428770.3416059.1)          
+[10.stategen前端dva](https://v.youku.com/v_show/id_XNDIwOTkxNDg2MA==.html?spm=a2h3j.8428770.3416059.1)          
+[11.stategen前端form 生成和实现](https://v.youku.com/v_show/id_XNDIwOTkxNDgzNg==.html?spm=a2h3j.8428770.3416059.1)          
+[12.stategen运行前后端和开发](https://v.youku.com/v_show/id_XNDIwOTk1Mzc4NA==.html?spm=a2h3j.8428770.3416059.1)          
+### 鸣谢
+   [react] https://github.com/facebook/react，   
+   [ant-design] https://github.com/ant-design/ant-design   
+   [dva] https://github.com/dvajs/dva   
+   [umi] https://github.com/umijs   
+   [rapid-framework] https://github.com/badqiu/rapid-framework    
+   [zuiidea] https://github.com/zuiidea/antd-admin   
+   [dubbox] https://dangdangdotcom.github.io/dubbox   
+   [spring-framework] https://github.com/spring-projects/spring-framework   
+   ...
+ 
 ```
 ### 早期视频
 [Stategen快速调试开发运行精简教程](https://v.youku.com/v_show/id_XNDIxMzM4ODQzMg==.html?spm=a2h3j.8428770.3416059.1)  
