@@ -50,7 +50,7 @@ web端
             a. 响应式前端，交互和页面是分开的。  
             b. 后端任意一个api,它对应的前端代码：入参、出参对象化，序列化，反序列化，网络调用，状态化都是固定，谁肉身来写都相同的，所以可以用生成器覆盖。   
             c. 前端开发生成器只是**托管intergrade文件夹**下的内容，其它代码只是辅助生成，不再覆盖，使用的同学可无限制优化里面的代码，可以换成自己的理想的前端骨架。    
-   3. 个人觉得几个生成器可以减少80%的工作，这还不算主要的，**主要是底层代码规范，上层代码就不会乱**.我见过太多的代码死在不规范上，只是局中人意识不到而已，锅从来都是这一任甩给上一任.
+   3. 个人觉得几个生成器可以减少80%的工作，这还不算主要的，**主要是底层代码规范，上层代码就不会乱**
 
 ### 骨架代码生成流程图
   - 虚线为人工参与点
@@ -92,13 +92,14 @@ trade (trade相当于微服务中当前服务名、系统名)
   ##### 运行环境
 
 >  服务端/windows(linux类似)
->  > A.	java 1.8+  
->  > B.	maven 3  （3.5.0有bug,请使用3.5.2+）
->  > C.	mysql5.7  
->  > D.	gitbash(安装git2.0 自带,目的是可在windows上执行bash脚本)  
->  > E.	 nacos-server-1.3.2 (因为目前架构中用到的spring cloud alibaba denpencies版本为2.2.3,其中限定nacos client为1.3.3,它与nacos1.4.0-server通信有障碍，本架构用于生产，不在尝鲜版上纠缠，等他们稳定了再升级)
->  > F.	sentinel dashboard-1.8.0    ps：因为在dashboard上操作不能反向持久化到nacos中,开发和生产很不方便，有大神制从原版中修改了代码制了nacos反向持久化版，我稍微忧化可用性和方便性，,https://github.com/stategen/sentinel-dashboard-nacos
->  > 它的启动方式是这样的:
+>
+>  A.	java 1.8+  
+>  B.	maven 3  （3.5.0有bug,请使用3.5.2+）
+>  C.	mysql5.7  
+>  D.	gitbash(安装git2.0 自带,目的是可在windows上执行bash脚本)  
+>  E.	 nacos-server-1.3.2 (因为目前架构中用到的spring cloud alibaba denpencies版本为2.2.3,其中限定nacos client为1.3.3,它与nacos1.4.0-server通信有障碍，本架构用于生产，不在尝鲜版上纠缠，等他们稳定了再升级)
+>  F.	sentinel dashboard-1.8.0    ps：因为在dashboard上操作不能反向持久化到nacos中,开发和生产很不方便，有大神制从原版中修改了代码制了nacos反向持久化版，我稍微忧化可用性和方便性，,https://github.com/stategen/sentinel-dashboard-nacos
+>  它的启动方式是这样的:
 ```
  java -Dnacos.server-addr=localhost:8848 -Dserver.port=8880 -Dcsp.sentinel.dashboard.server=localhost:8880 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard-nacos-1.8.0.jar
 ```
@@ -116,9 +117,9 @@ git clone https://github.com/stategen/dalgenx.git
 
 4. Ide中配置（eclipse|myeclipse|idea）xml文件，方便开发时打字提示.
 
->>location: {DALGENX_HOME}\gen.schemas-1.0.dtd  
->>key type: system Id  
->>key: https://github.com/stategen/dalgenx/blob/master/gen.schemas-1.0.dtd
+>location: {DALGENX_HOME}\gen.schemas-1.0.dtd  
+>key type: system Id  
+>key: https://github.com/stategen/dalgenx/blob/master/gen.schemas-1.0.dtd
 
 ##### 用命令初始化系统及项目/范例
 ps: 以下gen.sh 必须在gitbash中运行，不能在cmd中运行。linux可以无需考虑。
