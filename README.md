@@ -42,7 +42,7 @@ web端
   
   - **没有限定使用者集成其它技术**
 ### StateGen中的开发生成器，和市面上那些谈虎色变的生成器什么区别?
-1. 后端dalgenx生成器：
+1. 后端dalgenx生成器：   
     a.从大名鼎鼎的支付宝生成器dalgen演化而来,单dalgen可以说把市面上所有的java orm层生成器秒成渣，dalgenX则在此基础上拓展可迭代功能。dalgen只支持ibatis(个人认为:不开源和不支持mybatis使它推广不开来),而dalgenX则可以在ibatis与mybatis之间自由切换.    
     b. dalgenX生成器中的sql相当于Batis sql的用来简化开发的语法糖，它生成可见的纯batis sql和相关java,xml代码，代替肉身查找替换。语法糖不参与运行期，不用提心”国产“框架的坑。   
     c.dalgenX生成代码时，会解析已有的java代码，自动增量比对生成，代替肉身备份代码比对还原代码。自动维护pojo等一系列代码,源头上做到一个Pojo可以自代替DTO,VO,PO，Pojo本来就是干这些事的，只是其它生成器做不到而已，它也有效治好了DDD模型中的失血模式下的失忆的毛病。   
