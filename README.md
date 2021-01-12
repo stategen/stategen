@@ -73,7 +73,7 @@ trade (trade相当于微服务中当前服务名、系统名)
 ├── 3-trade-intergrade		//单纯引用别的系统中的jar,不依赖于本系统中其它jar,方便做jar冲突排查
 ├── 4-trade-dao			//限定为crud,无业务逻辑
 ├── 5-trade-service      //业务逻辑实现部分
-├── 6-trade-web-base     //业务逻辑实现部分+和共用项目controller，让后面的7遵从每个数据库只有一个curd服务的原则。
+├── 6-trade-web-base     //业务逻辑实现部分+和共用项目controller，让后面的7遵从每个数据库只有一套curd服务的原则。
 ├── 7-trade-web-app      //springboot application,引用 6-trade-web-base和实现自身独特业务逻辑
 │   ├── app-frontend-flutter
 │   ├── app-frontend-h5
