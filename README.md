@@ -38,7 +38,7 @@ web端
   - 后端骨架生成器
   - 前端骨架生成器
   - 后端可迭代开发生器(dalgen演化而来dalgenX，全网唯一可支持迭代开发??)
-  - 前端开发生成器，可把后端所有任意java api随时一键导出为前端的交互代码(mvvm,reactive,react(umi,dva,saga),flutter(provider),依据模版种类)
+  - 前端开发生成器，可把后端所有**任意java api**转化为前端的交互代码(mvvm,reactive,react(umi,dva,saga),flutter(provider),依据模版种类)
   
   - **没有限定使用者集成其它技术**
 ### StateGen中的开发生成器，和市面上那些谈虎色变的生成器什么区别?
