@@ -63,8 +63,8 @@ web端
 - ![骨架代码生成流程图](https://github.com/stategen/stategen/blob/master/system_gen_flow.svg)
 
 
-- ​	直观文件夹树型图: 为什么是多层的？这不是技术范畴而是为了规范和原则：StateGen架构默认你的系统会越来越大，它通过限定每层pom中引用jar包的限定了每层的功能，比如dao只能crud,不能出现业务逻辑,这种方式比写硬邦邦规章制度好。
--  stg.2.3.1.RELEASE版本可选3种文件夹格式： numHeader（默认）：1-trade-pojo；numMid：trade-1-pojo； numNone：trade-pojo，在ide中排序后人眼对系统结构顺序一目了然。
+- ​	直观文件夹树型图: 为什么是多层的？这不是技术范畴而是为了规范和原则，业务系统会做大，层越单纯越安全，通过限定每层pom中引用jar包来限定了每层的功能，比如限定dao只能crud不能出现业务,这种方式比写硬邦邦规章制度好。
+-  stg.2.3.1.RELEASE版本可选3种文件夹格式： numHeader（默认）：1-trade-pojo；numMid：trade-1-pojo； numNone：trade-pojo，在ide中排序后人眼对系统结构顺序一目了然（有序依赖的业务系统在ide内无序排列每打开一次抓狂一次）
 
 ```
 trade (trade相当于微服务中当前服务名、系统名)
