@@ -28,6 +28,7 @@ web端
   - 轻代码or敏捷开发?  **NO**; 
   - 用可视化界面配置生成?  **NO**
   - 改变原开发模式?  **NO**
+  - **StateGen追求的是易于上手、高效开发、容易维护、可拓展、线上风险小，易于排查的架构**
 
 ### Stategen架构的构成
   - springboot
@@ -109,8 +110,8 @@ trade (trade相当于微服务中当前服务名、系统名)
 
 ##### 开发环境安装
 
-因项目依赖jars我已经发布maven中央仓库了，不需要使用的同学再辛苦自行编译，只需要git clone dalgenX,这是一个GMAVEN项目,
-1.  配置 dalgenX (ps:dalgenX并不依赖于相StateGen架构，它可以配到其它spring项目中单独生成前后端代码)
+因项目依赖jars我已经发布maven中央仓库了，不需要使用的同学再辛苦自行编译，只需要git clone dalgenX,这是一个GMAVEN项目,无需打包
+1.  配置 dalgenX (ps:dalgenX并不依赖于相StateGen架构，它可以配到其它spring项目中单独生成前后端代码),
 ```
 git clone https://github.com/stategen/dalgenx.git
 ```
