@@ -24,14 +24,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 对controller上的 responsebody method进行包装，非侵入式，它找spring xml中 id 为response的类，把数据返回给前端 
  * The Interface Wrap.
  */
-@Target({ElementType.METHOD,ElementType.TYPE,ElementType.ANNOTATION_TYPE})
+@Target({ ElementType.METHOD, ElementType.TYPE, ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
 public @interface Wrap {
-//    boolean exclude() default false;
+    //    boolean exclude() default false;
     
+    /***如果在controller上整体配置Wrap，但又需要将某个method排除在外，可以设置 false*/
     boolean value() default true;
+    
 }

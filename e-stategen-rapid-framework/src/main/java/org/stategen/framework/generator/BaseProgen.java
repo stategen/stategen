@@ -148,6 +148,8 @@ public class BaseProgen {
 
     }
 
+
+
     private void processClient(
             Properties root,
             Boolean hasClient,
@@ -163,26 +165,25 @@ public class BaseProgen {
         root.put("frontendName", frontendName);
         //向pom中增加插件
         String pomToReplaceFileName = StringUtil.concatPath(currentProjectPath, GenProperties.projectName + "-frontend-" + webType, "pomPluginText");
+        String pomToReplaceFileName_lock =pomToReplaceFileName+".lock";
+        //和之前的兼容,查看一下不带.lock的是否存在
+        boolean pomToReplaceFileOldExists = FileHelpers.isExists(pomToReplaceFileName);
+        if (pomToReplaceFileOldExists == false){
+            pomToReplaceFileOldExists = FileHelpers.isExists(pomToReplaceFileName_lock);
+        }
 
-        File    pomToReplaceFile          = new File(pomToReplaceFileName);
-        boolean pomToReplaceFileOldExists = pomToReplaceFile.exists() && pomToReplaceFile.isFile();
         processTempleteFiles(root, webTypePath);
 
-        if (!pomToReplaceFileOldExists) {
-            String mavenPluginExcutionText = IOHelpers.readFile(new File(pomToReplaceFileName), StringUtil.UTF_8);
+        if (pomToReplaceFileOldExists == false) {
+            String mavenPluginExcutionText = IOHelpers.readFile(new File(pomToReplaceFileName_lock), StringUtil.UTF_8);
             mavenPluginExcutionText ="\n" + mavenPluginExcutionText + "\n                            " + APPEND_TAG_DO_NOT_CHANGE;
-            
+
             String projectPomXml  = StringUtil.concatPath(currentProjectPath, "pom.xml");
             String projectPomText = IOHelpers.readFile(new File(projectPomXml), StringUtil.UTF_8);
             projectPomText = projectPomText.replaceFirst(APPEND_TAG_DO_NOT_CHANGE_REG, mavenPluginExcutionText);
             IOHelpers.saveFile(new File(projectPomXml), projectPomText, StringUtil.UTF_8);
         }
     }
-
-
-
-
-
 
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

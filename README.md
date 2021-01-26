@@ -28,29 +28,31 @@ web端
   - 轻代码or敏捷开发?  **NO**; 
   - 用可视化界面配置生成?  **NO**
   - 改变原开发模式?  **NO**
+  - **StateGen不是DEMO,而是一个架构,追求的是易于上手、高效开发、容易维护、可拓展、运行稳定，易于排查的架构**
 
 ### Stategen架构的构成
   - springboot
     - 直接支持 jar war打包模式
   - spring cloud alibaba
     - nacos,seata,sentinel,dubbo,mybatis|ibatis开箱即用
-    - 分布式  微服务+**本地服务**
+    - 分布式  微服务+本地服务
   - 后端骨架生成器
   - 前端骨架生成器
   - 后端可迭代开发生器(dalgen演化而来dalgenX，全网唯一可支持迭代开发??)
-  - 前端开发生成器，可把后端所有任意java api随时一键导出为前端的交互代码(mvvm,reactive,react(umi,dva,saga),flutter(provider),依据模版种类)
+  - 前端开发生成器，可把后端所有**任意java api**转化为前端的交互代码(mvvm,reactive,react(umi,dva,saga),flutter(provider),依据模版种类)
   
   - **没有限定使用者集成其它技术**
 ### StateGen中的开发生成器，和市面上那些谈虎色变的生成器什么区别?
-  1. a.后端dalgenx生成器，从大名鼎鼎的支付宝生成器dalgen演化而来,单dalgen可以说把市面上所有的java orm层生成器秒成渣，dalgenX则在此基础上拓展可迭代功能。dalgen只支持ibatis(个人认为:不开源和不支持mybatis使它推广不开来),而dalgenX则可以在ibatis与mybatis之间自由切换.    
-      b. dalgenX生成器中的sql相当于Batis sql的用来简化开发的语法糖，它生成可见的纯batis sql和相关java,xml代码，代替肉身查找替换。语法糖不参与运行期，不用提心”国产“框架的坑。   
-      c.dalgenX生成代码时，会解析已有的java代码，自动增量比对生成，代替肉身备份代码比对还原代码。自动维护pojo等一系列代码,源头上做到一个Pojo可以自代替DTO,VO,PO，Pojo本来就是干这些事的，只是其它生成器做不到而已，它也有效治好了DDD模型中的失血模式下的失忆的毛病。   
-   2. 前端生成器只是在原controller层api方法上加了个java标注 @State而已，对后端代码零侵入,零工作量.
-         它成立的理论基础是:   
-            a. 响应式前端，交互和页面是分开的。  
-            b. 后端任意一个api,它对应的前端代码：入参、出参对象化，序列化，反序列化，网络调用，状态化都是固定，谁肉身来写都相同的，所以可以用生成器覆盖。   
-            c. 前端开发生成器只是**托管intergrade文件夹**下的内容，其它代码只是辅助生成，不再覆盖，使用的同学可无限制优化里面的代码，可以换成自己的理想的前端骨架。    
-   3. 个人觉得几个生成器可以减少80%的工作，这还不算主要的，**主要是底层代码规范，上层代码就不会乱**.我见过太多的代码死在不规范上，只是局中人意识不到而已，锅从来都是这一任甩给上一任.
+1. 后端dalgenx生成器：   
+    a.从大名鼎鼎的支付宝生成器dalgen演化而来,单dalgen可以说把市面上所有的java orm层生成器秒成渣，dalgenX则在此基础上拓展可迭代功能。dalgen只支持ibatis(个人认为:不开源和不支持mybatis使它推广不开来),而dalgenX则可以在ibatis与mybatis之间自由切换.    
+    b. dalgenX生成器中的sql相当于Batis sql的用来简化开发的语法糖，它生成可见的纯batis sql和相关java,xml代码，代替肉身做一系列复杂的工作包括查找替换。语法糖不参与运行期，不用提心”国产“框架的坑。   
+    c.dalgenX生成代码时，会解析已有的java代码，自动增量比对生成，代替肉身备份代码比对还原代码。更方便维护pojo等一系列代码,它也有效治好了DDD模型中的失血模式下的失忆的毛病。   
+2. 前端生成器只是在原controller层api方法上加了个java标注 @State而已，对后端代码零侵入,零工作量.    
+它成立的理论基础是:   
+    a. 响应式前端，交互和页面是分开的。  
+    b. 后端任意一个api,它对应的前端代码：入参、出参对象化，序列化，反序列化，网络调用，状态化都是固定，谁肉身来写都相同的，所以可以用生成器覆盖。   
+    c. 前端开发生成器只是托管intergrade文件夹下的内容，重点是**响应式前端前后端交互部分代码**，其它代码只是辅助生成，不再覆盖，使用的同学可无限制优化里面的代码，可以换成自己的理想的前端骨架。    
+3. 个人觉得几个生成器可以减少80%的工作，这还不算主要的，**主要是底层代码规范，上层代码就不会乱**
 
 ### 骨架代码生成流程图
   - 虚线为人工参与点
@@ -62,43 +64,45 @@ web端
 - ![骨架代码生成流程图](https://github.com/stategen/stategen/blob/master/system_gen_flow.svg)
 
 
-- ​	直观文件夹树型图:
+- ​	直观文件夹树型图: 为什么是多层的？这不是技术范畴而是为了规范和原则，业务系统会做大，层越单纯越安全，通过限定每层pom中引用jar包来限定了每层的功能，比如限定dao只能crud不能出现业务,这种方式比写硬邦邦规章制度好。
+-  stg.2.3.1.RELEASE版本可选3种文件夹格式： numHeader（默认）：1-trade-pojo；numMid：trade-1-pojo； numNone：trade-pojo，在ide中排序后人眼对系统结构顺序一目了然（有序依赖的业务系统在ide内有序排列工作效率会高）
 
 ```
 trade (trade相当于微服务中当前服务名、系统名)
-├── 1-trade-pojo
-├── 2-trade-facade
-├── 3-trade-intergrade
-├── 4-trade-dao
-├── 5-trade-service
-├── 6-trade-web-base
-├── 7-trade-web-app
+├── 1-trade-pojo		//失血或贫血模式，无复杂业务逻辑，不暴露隐私业务逻辑。
+├── 2-trade-facade		//和1-trade-pojo组成对外jar包，超纯洁越好
+├── 3-trade-intergrade		//单纯引用别的系统中的jar,不依赖于本系统中其它jar,方便做jar冲突排查
+├── 4-trade-dao			//限定为crud,无业务逻辑
+├── 5-trade-service      //业务逻辑实现部分
+├── 6-trade-web-base     //业务逻辑实现部分+和共用项目controller，让后面的7遵从每个数据库只有一套curd服务的原则。
+├── 7-trade-web-app      //springboot application,引用 6-trade-web-base和实现自身独特业务逻辑
 │   ├── app-frontend-flutter
 │   ├── app-frontend-h5
-│   └── WebRoot
-├── 7-trade-web-cms
+│   └── WebRoot           
+├── 7-trade-web-cms		//springboot application,引用 6-trade-web-base和实现自身独特业务逻辑
 │   ├── cms-frontend-web
 │   └── WebRoot
-├── 7-trade-web-...
+├── 7-trade-web-...		//springboot application,引用 6-trade-web-base和实现自身独特业务逻辑
 ├── opt
 │   └── config
 │       └── stategen
 └── tables
 ```
-为什么是多层的？建议把架构设计7大原则读一遍,这里不纠缠。
+
 - #### 
 
 #### 骨架快速开始
   ##### 运行环境
 
 >  服务端/windows(linux类似)
->  > A.	java 1.8+  
->  > B.	maven 3  （3.5.0有bug,请使用3.5.2+）
->  > C.	mysql5.7  
->  > D.	gitbash(安装git2.0 自带,目的是可在windows上执行bash脚本)  
->  > E.	 nacos-server-1.3.2 (因为目前架构中用到的spring cloud alibaba denpencies版本为2.2.3,其中限定nacos client为1.3.3,它与nacos1.4.0-server通信有障碍，本架构用于生产，不在尝鲜版上纠缠，等他们稳定了再升级)
->  > F.	sentinel dashboard-1.8.0    ps：因为在dashboard上操作不能反向持久化到nacos中,开发和生产很不方便，有大神制从原版中修改了代码制了nacos反向持久化版，我稍微忧化可用性和方便性，,https://github.com/stategen/sentinel-dashboard-nacos
->  > 它的启动方式是这样的:
+>
+>  A.	java 1.8+  
+>  B.	maven 3  （3.5.0有bug,请使用3.5.2+）
+>  C.	mysql5.7  
+>  D.	gitbash(安装git2.0 自带,目的是可在windows上执行bash脚本)  
+>  E.	 nacos-server-1.3.2 (因为目前架构中用到的spring cloud alibaba denpencies版本为2.2.3,其中限定nacos client为1.3.3,它与nacos1.4.0-server通信有障碍，本架构用于生产，不在尝鲜版上纠缠，等他们稳定了再升级)
+>  F.	sentinel dashboard-1.8.0    ps：因为在dashboard上操作不能反向持久化到nacos中,开发和生产很不方便，有大神制从原版中修改了代码制了nacos反向持久化版，我稍微忧化可用性和方便性，,https://github.com/stategen/sentinel-dashboard-nacos
+>  它的启动方式是这样的:
 ```
  java -Dnacos.server-addr=localhost:8848 -Dserver.port=8880 -Dcsp.sentinel.dashboard.server=localhost:8880 -Dproject.name=sentinel-dashboard -jar sentinel-dashboard-nacos-1.8.0.jar
 ```
@@ -106,8 +110,8 @@ trade (trade相当于微服务中当前服务名、系统名)
 
 ##### 开发环境安装
 
-因项目依赖jars我已经发布maven中央仓库了，不需要使用的同学再辛苦自行编译，只需要git clone dalgenX,这是一个GMAVEN项目,
-1.  配置 dalgenX
+因项目依赖jars我已经发布maven中央仓库了，不需要使用的同学再辛苦自行编译，只需要git clone dalgenX,这是一个GMAVEN项目,无需打包
+1.  配置 dalgenX (ps:dalgenX并不依赖于相StateGen架构，它可以配到其它spring项目中单独生成前后端代码),
 ```
 git clone https://github.com/stategen/dalgenx.git
 ```
@@ -116,9 +120,9 @@ git clone https://github.com/stategen/dalgenx.git
 
 4. Ide中配置（eclipse|myeclipse|idea）xml文件，方便开发时打字提示.
 
->>location: {DALGENX_HOME}\gen.schemas-1.0.dtd  
->>key type: system Id  
->>key: https://github.com/stategen/dalgenx/blob/master/gen.schemas-1.0.dtd
+>location: {DALGENX_HOME}\gen.schemas-1.0.dtd  
+>key type: system Id  
+>key: https://github.com/stategen/dalgenx/blob/master/gen.schemas-1.0.dtd
 
 ##### 用命令初始化系统及项目/范例
 ps: 以下gen.sh 必须在gitbash中运行，不能在cmd中运行。linux可以无需考虑。

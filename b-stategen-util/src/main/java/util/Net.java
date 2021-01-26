@@ -28,6 +28,9 @@ public class Net {
         try {
             bindPort("0.0.0.0", port);
             bindPort(InetAddress.getLocalHost().getHostAddress(), port);
+            if (log.isInfoEnabled()) {
+                log.info(String.format("Port %d is free and will be selected!", port));
+            }
             return true;
         } catch (Exception e) {
             log.error(String.format("Port %d can't use!", port));
@@ -51,6 +54,7 @@ public class Net {
         return -1;
     }
     
+    /***不能两个系统启动同时太快启动，比如都在竞争8080端口，当同时启动时，两2 app同时发现8080端口没有被占用*/
     public static int from(int start) {
         return findAvailablePort(start, 65535);
     }

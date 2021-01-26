@@ -293,6 +293,11 @@
             <artifactId>sentinel-apache-dubbo-adapter</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-stream-rocketmq</artifactId>
+        </dependency>
+
         <!-- Spring Cloud End -->
 
     </dependencies>

@@ -83,23 +83,27 @@ public class FastJsonHttpMessageConverter extends com.alibaba.fastjson.support.s
             String                text   = (String) obj;
             @Cleanup
             ByteArrayOutputStream outnew = new ByteArrayOutputStream();
+            
             outnew.write(text.getBytes(fastJsonConfig.getCharset()));
             
             //headers先获得
             HttpHeaders  headers = outputMessage.getHeaders();
-            OutputStream out     = outputMessage.getBody();
             
-            if (fastJsonConfig.isWriteContentLength()) {
-                int len = text.length();
-                headers.setContentLength(len);
-            }
+            //1.2.70中不设置，让它自己计算，更准确,否则不能在swagger中显示
+            //if (fastJsonConfig.isWriteContentLength()) {
+                //int len = text.length();
+                //headers.setContentLength(len);
+            //}
+            headers.setContentType(MediaType.TEXT_PLAIN);
             
             //chrome中的response可以看到,swagger2中不展示，应该不是bug 
-            outnew.writeTo(out);
-            
+            OutputStream body = outputMessage.getBody();
+            outnew.writeTo(body);
+            //显示调用关闭 ，不然在 swagger中，显示 {"error": "no response from server" }
+            body.close();
             if (logger.isDebugEnabled()) {
                 //不能打印text,否则有泄密的风险
-                logger.debug(new StringBuilder("==>fastjson write plain text\n,len:").append(text.length()).toString());
+                logger.debug(new StringBuilder("==>fastjson write a plain text, len:").append(text.length()).toString());
             }
             
             //clean

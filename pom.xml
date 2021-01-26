@@ -16,7 +16,7 @@
     <properties>
             
         <!-- 当项目转会为spring-boot后，这个值必须与spring-boot内的值相同，否则会有兼容问题 -->
-        <spring.version>5.2.3.RELEASE</spring.version>
+        <spring.version>5.2.7.RELEASE</spring.version>
         <spring-data-redis-version>2.1.10.RELEASE</spring-data-redis-version>
 
         <!-- <swagger.springfox.version>2.10.5</swagger.springfox.version> -->
@@ -35,7 +35,7 @@
         <logback-version>1.2.3</logback-version>
         <dom4j.version>1.6.1</dom4j.version>
 
-        <spring.boot.version>2.1.9.RELEASE</spring.boot.version>
+        <spring.boot.version>2.3.1.RELEASE</spring.boot.version>
         <mybatis2.version>2.4.4</mybatis2.version>
         <mybatis.version>3.5.3</mybatis.version>
         <sentinel.version>1.8.0</sentinel.version>

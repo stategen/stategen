@@ -154,7 +154,7 @@ public class GenProperties {
     public static  void convertToFoldNumberType(Properties mergedProps){
         String foldNumberType = mergedProps.getProperty("foldNumberType");
         logger.info(new StringBuilder("输出info信息: foldNumberType:").append(foldNumberType).toString());
-        FoldNumberType.convertToFoldNumberType(foldNumberType);
+        FoldNumberType.convertToGlobFoldNumberType(foldNumberType);
     }
 
     public static Properties getAllMergedPropsByOrder(String genConfigXml) throws IOException {

@@ -41,7 +41,7 @@ public enum FoldNumberType {
         return globFoldNumberType;
     }
 
-    public static void convertToFoldNumberType(String foldNumberType) {
+    public static void convertToGlobFoldNumberType(String foldNumberType) {
         if (StringUtil.isNotEmpty(foldNumberType)) {
             foldNumberType =foldNumberType.toLowerCase();
             for (FoldNumberType type :values()) {
@@ -52,6 +52,5 @@ public enum FoldNumberType {
             }
             
         }
-        FoldNumberType.globFoldNumberType =numHeader;
     }
 }

@@ -18,7 +18,7 @@ package org.stategen.framework.lite;
 
 /**
  * The Class BaseResponse.
- * 该类用来包装spring mvc http 请求,当方法上标注@ResponseBody后，返回值会被setData 部分,注意null,string值不会被封装
+ * 该类用来包装spring mvc http 请求,当方法上标注@ResponseBody后，返回值会被setData 部分,null string也会破封装，除非方法上有wrap(false)
  *
  * @author Xia Zhengsheng
  * @param <T> the generic type
