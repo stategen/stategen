@@ -1,0 +1,5 @@
+org.springframework.boot.env.EnvironmentPostProcessor:\
+
+
+org.springframework.boot.autoconfigure.EnableAutoConfiguration:\
+org.stategen.framework.cloud.DefinitionAutoValueConfigration

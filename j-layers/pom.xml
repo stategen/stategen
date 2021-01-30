@@ -148,6 +148,12 @@
                 <artifactId>stategen-mvc</artifactId>
                 <version>${stategen-version}</version>
             </dependency>
+            
+            <dependency>
+                <groupId>org.stategen.framework</groupId>
+                <artifactId>aa-stategen-cloud</artifactId>
+                <version>${stategen-version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.stategen.framework</groupId>

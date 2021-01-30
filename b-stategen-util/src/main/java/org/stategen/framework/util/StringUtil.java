@@ -618,14 +618,23 @@ public class StringUtil {
     }
 
     public static String join(String joinStr, String... dests) {
-        StringBuilder sb = new StringBuilder();
-        for (String dest : dests) {
-            sb.append(dest);
-            if (!dest.endsWith(joinStr)) {
-                sb.append(joinStr);
-            }
+        if (CollectionUtil.isEmpty(dests)) {
+            return null;
         }
-        return sb.toString();
+        
+        if (dests.length>1) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < dests.length; i++) {
+                String dest = dests[i];
+                sb.append(dest);
+                if (i < dests.length -1 && !dest.endsWith(joinStr)) {
+                    sb.append(joinStr);
+                }
+            }
+            return sb.toString();
+        }
+        
+        return dests[0];
     }
 
     public static String joinSLash(String... dests) {

@@ -106,21 +106,20 @@
             <version>1.0.16</version>
             <scope>provided</scope>
         </dependency>
-
+		
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-spring-webmvc-adapter</artifactId>
             <version>${sentinel.version}</version>
             <scope>provided</scope>
         </dependency>
-
+		
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-parameter-flow-control</artifactId>
             <version>${sentinel.version}</version>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
 
     <build>
