@@ -524,11 +524,13 @@ public class StringUtil {
         }
         return "";
     }
-
+    
+    /***最后个结尾有 ‘/’ */
     public static String concatWithSlash(String... subPaths) {
         return concatWithSlash(false, subPaths);
     }
 
+    /***最后个结尾有 ‘/’,同时，替换 '\'为 '/' */
     public static String concatPath(String... subPaths) {
         return concatWithSlash(true, subPaths);
     }
@@ -636,7 +638,7 @@ public class StringUtil {
         
         return dests[0];
     }
-
+    /***最后一个结尾没有 '/' */
     public static String joinSLash(String... dests) {
         return join(SLASH, dests);
     }
