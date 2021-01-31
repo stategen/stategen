@@ -36,6 +36,7 @@ web端
   - spring cloud alibaba
     - nacos,seata,sentinel,dubbo,mybatis|ibatis开箱即用
     - 分布式  微服务+本地服务
+    - **超动态**自动装配消息系统 (spring-stream-3,支持 rocketMq,原则上同时支持kafuka和activeMq)
   - 后端骨架生成器
   - 前端骨架生成器
   - 后端可迭代开发生器(dalgen演化而来dalgenX，全网唯一可支持迭代开发??)
@@ -70,7 +71,8 @@ web端
 ```
 trade (trade相当于微服务中当前服务名、系统名)
 ├── 1-trade-pojo		//失血或贫血模式，无复杂业务逻辑，不暴露隐私业务逻辑。
-├── 2-trade-facade		//和1-trade-pojo组成对外jar包，超纯洁越好
+├── 2-trade-facade		//和1-trade-pojo组成对外jar包，越纯洁越好
+├── 2-trade-sink-facade		//消息订阅方jar，别人按你的格式发送消息,Provider不需要配置，配置自动装配
 ├── 3-trade-intergrade		//单纯引用别的系统中的jar,不依赖于本系统中其它jar,方便做jar冲突排查
 ├── 4-trade-dao			//限定为crud,无业务逻辑
 ├── 5-trade-service      //业务逻辑实现部分
@@ -114,6 +116,7 @@ trade (trade相当于微服务中当前服务名、系统名)
 1.  配置 dalgenX (ps:dalgenX并不依赖于相StateGen架构，它可以配到其它spring项目中单独生成前后端代码),
 ```
 git clone https://github.com/stategen/dalgenx.git
+(把 gen.custom.xml.templete 复制一份为 把 gen.custom.xml)
 ```
 2. 设置 DALGENX_HOME 环境变量为 dalgenx所在目录  
 3. 将 %DALGENX_HOME% 添加至 PATH 中  
