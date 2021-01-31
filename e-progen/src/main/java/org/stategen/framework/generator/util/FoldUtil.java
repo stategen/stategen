@@ -27,19 +27,18 @@ import org.stategen.framework.util.StringUtil;
  */
 public class FoldUtil {
     
-    
-    public static String get(Integer num,String systemName){
+    public static String get(Integer num, String systemName) {
         systemName = StringUtil.uncapfirst(systemName);
-
-        if (FoldNumberType.getGlobFoldNumberType()==FoldNumberType.numHeader){
-            return  String.format("%d-%s",num,systemName);
+        FoldNumberType globFoldNumberType = FoldNumberType.getGlobFoldNumberType();
+        
+        if (globFoldNumberType == FoldNumberType.numHeader) {
+            return String.format("%d-%s", num, systemName);
         }
-
-        if (FoldNumberType.getGlobFoldNumberType()==FoldNumberType.numMid){
-            return  String.format("%s-%d",systemName,num);
-
+        
+        if (globFoldNumberType == FoldNumberType.numMid) {
+            return String.format("%s-%d", systemName, num);
         }
-
+        
         return systemName;
         
     }
