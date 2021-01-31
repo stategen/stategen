@@ -10,7 +10,7 @@
       "name": "spring.config.intergration-location",
       "type": "java.lang.String",
       "sourceType": "org.springframework.boot.context.config.ConfigFileApplicationListener",
-      "description": "lowest Config file locations ,can in jars, can be such as 'classpath*:/config/*/'"
+      "description": "lowest Config file locations ,can in jars, can be such as 'classpath*:/sink/*/'"
     }
   ]
 }

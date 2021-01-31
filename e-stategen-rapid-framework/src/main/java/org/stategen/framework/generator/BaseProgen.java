@@ -164,7 +164,7 @@ public class BaseProgen {
         String frontendName = GenProperties.projectName + "_frontend_" + webType;
         root.put("frontendName", frontendName);
         //向pom中增加插件
-        String pomToReplaceFileName = StringUtil.concatPath(currentProjectPath, GenProperties.projectName + "-frontend-" + webType, "pomPluginText");
+        String pomToReplaceFileName = StringUtil.joinSLash(currentProjectPath, GenProperties.projectName + "-frontend-" + webType, "pomPluginText");
         String pomToReplaceFileName_lock =pomToReplaceFileName+".lock";
         //和之前的兼容,查看一下不带.lock的是否存在
         boolean pomToReplaceFileOldExists = FileHelpers.isExists(pomToReplaceFileName);

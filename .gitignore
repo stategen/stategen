@@ -11,3 +11,4 @@
 .rar
 target/
 gen.custom.xml
+pom.properties
