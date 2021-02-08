@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.logging.Log;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -717,8 +718,7 @@ public class ConfigFileApplicationListener implements EnvironmentPostProcessor, 
 						asResolvedSet(ConfigFileApplicationListener.this.searchLocations, DEFAULT_SEARCH_LOCATIONS));
 			}
 			//xia
-			Set<String> intergrationLocs = getSearchLocations(CONFIG_INTERGRATION_LOCATION_PROPERTY,true);
-			locations.addAll(intergrationLocs);
+			locations.addAll(getSearchLocations(CONFIG_INTERGRATION_LOCATION_PROPERTY,true));
 			//xia
 			return locations;
 		}
