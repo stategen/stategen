@@ -12,6 +12,5 @@
       "sourceType": "org.springframework.boot.context.config.ConfigFileApplicationListener",
       "description": "lowest config file locations ,when intergrate dynamic jars, the value can be such as 'classpath*:/sink/*/'"
     }     
-    }
   ]
 }
