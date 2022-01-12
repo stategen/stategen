@@ -48,7 +48,7 @@
         <mybatis2.version>2.4.4</mybatis2.version>
         <mybatis.version>3.5.3</mybatis.version>
         <!-- 当项目转会为spring-boot后，这个值必须与spring-boot内的值相同，否则会有兼容问题 -->
-        <spring.version>5.2.7.RELEASE</spring.version>
+        <spring.version>5.3.14</spring.version>
         <spring.boot.version>2.3.1.RELEASE</spring.boot.version>
         <!-- 这个版本对应nacos是的1.3.x(不可上1.4),sentinel dashboard版本可以到 1.8 -->
         <alibaba.spring.cloud.version>2.2.4.RELEASE</alibaba.spring.cloud.version>
